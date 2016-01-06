@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+    <!-- 标题栏 -->
+
+    <include layout="@layout/layout_title_bar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <!--                 <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="32dp"
+                                    android:layout_marginTop="10dp"
+                                    android:background="@color/white"></View> -->
+
+                <RelativeLayout
+                    android:id="@+id/grid_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background">
+
+                    <com.putao.widget.stickygridheaders.StickyGridHeadersGridView
+                        android:id="@+id/asset_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:columnWidth="80dip"
+                        android:horizontalSpacing="3dp"
+                        android:listSelector="@drawable/selector_collage_grid"
+                        android:numColumns="auto_fit"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:scrollbars="none"
+                        android:verticalSpacing="3dp" />
+
+                    <LinearLayout
+                        android:id="@+id/body_iv_none"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:visibility="invisible"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/grey_light"
+                            android:layout_margin="10dp"
+                            android:textSize="30dp"
+                            android:text="您还没有照片" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/grey_dark"
+                            android:layout_margin="10dp"
+                            android:textSize="16dp"
+                            android:text="开始使用葡萄相机记录您的生活吧" />
+
+                        <ImageView
+                            android:id="@+id/body_iv_none_camera"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/album_camera_btn" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/jigsaw_photo_selected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_photo_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/collage_select_image"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btn_ok"
+                        style="@style/button.red"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/background_view_grey"
+                        android:text="下一步" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="95dp"
+                    android:layout_above="@id/camera_button_bar"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/select_image_contanier"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <include layout="@layout/gallery_list_panel" />
+
+    </FrameLayout>
+</LinearLayout>

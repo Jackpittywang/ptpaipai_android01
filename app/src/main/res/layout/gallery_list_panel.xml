@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gallery_list_panel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/sl_gallery_list"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/layout_gallery_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:divider="@color/white"
+            android:dividerHeight="1dp"
+            android:listSelector="@drawable/selector_collage_grid"></ListView>
+    </LinearLayout>
+
+</RelativeLayout>

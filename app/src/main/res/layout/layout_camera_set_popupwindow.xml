@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/flash_switch_bg"
+    android:orientation="vertical"
+    android:paddingLeft="15dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="延时拍照"
+            android:textColor="@color/text_color_dark_898989"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_delay_take_pic"
+            style="@style/button.red"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="关闭"
+            android:textSize="@dimen/dimens_14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="画面比例"
+            android:textColor="@color/text_color_dark_898989"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_camrea_ratio"
+            style="@style/button.red"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="3:4"
+            android:textSize="@dimen/dimens_14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="HDR        "
+            android:textColor="@color/text_color_dark_898989"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_camera_hdr"
+            style="@style/button.red"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="关闭"
+            android:textSize="@dimen/dimens_14sp" />
+
+    </LinearLayout>
+</LinearLayout>

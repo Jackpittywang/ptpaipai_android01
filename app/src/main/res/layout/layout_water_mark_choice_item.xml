@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:background="@color/transparent">
+
+
+    <ImageView
+        android:id="@+id/water_marker_item_icon_im"
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="centerCrop"></ImageView>
+
+    <!--<ImageView-->
+    <!--android:id="@+id/editmark_icon"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:background="@drawable/mark_tips_edit"></ImageView>-->
+
+</RelativeLayout>

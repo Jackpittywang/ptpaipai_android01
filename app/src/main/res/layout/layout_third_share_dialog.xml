@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/water_mark_page_indicator_bg">
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="left"
+            android:id="@+id/dialog_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="拼图已成功保存，请分享:"
+            android:layout_margin="5dp"
+            android:textColor="@color/grey_dark"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <com.putao.camera.thirdshare.view.ThirdShareItemView
+                    android:id="@+id/third_share_qzone_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    custom:item_background="@drawable/third_share_qzone_icon"
+                    custom:text="QQ空间" />
+
+
+                <com.putao.camera.thirdshare.view.ThirdShareItemView
+                    android:id="@+id/third_share_weixin_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    custom:item_background="@drawable/third_share_weixin_icon"
+                    custom:text="微信好友" />
+
+
+                <com.putao.camera.thirdshare.view.ThirdShareItemView
+                    android:id="@+id/third_share_pengyouquan_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    custom:item_background="@drawable/third_share_pengyouquan_icon"
+                    custom:text="朋友圈" />
+
+                <com.putao.camera.thirdshare.view.ThirdShareItemView
+                    android:id="@+id/third_share_sina_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    custom:item_background="@drawable/third_share_sina_icon"
+                    custom:text="新浪微博"
+                    android:orientation="vertical" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

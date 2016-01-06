@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:ignore="MergeRootFrame">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/camera_top_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/flash_light_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/dimens_10dp"
+            android:background="@drawable/camera_flash_off" />
+
+        <Button
+            android:id="@+id/switch_camera_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:background="@drawable/camera_button_turn" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/camera_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.putao.camera.camera.view.RedPointBaseButton
+                android:id="@+id/camera_back_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/movie_button_close" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/take_photo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/film_camera_btn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <com.putao.camera.camera.view.AlbumButton
+                android:id="@+id/album_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/photo_button_album" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/camera_bottom">
+
+        <Button
+            android:id="@+id/btn_enhance_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_5dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/button_enhance_off" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/orientation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/camera_bottom"
+        android:layout_below="@id/camera_top_rl"
+        android:visibility="invisible"
+        android:background="#99000000"
+        android:src="@drawable/movie_camera_orientation" />
+
+</RelativeLayout>

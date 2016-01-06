@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ConversationActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_cloud_bg" />
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- 标题 -->
+
+        <include layout="@layout/layout_title_bar" />
+
+        <!-- content -->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- 编辑框 -->
+
+                    <EditText
+                        android:id="@+id/umeng_fb_reply_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/xmlbg_feedback_edittext"
+                        android:gravity="top|left"
+                        android:hint="想和产品经理,一起聊聊天、吐吐槽,谈谈心么?"
+                        android:lines="6"
+                        android:maxLength="100"
+                        android:padding="5dp"
+                        android:singleLine="false"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tv_count_limit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="0/100"
+                        android:textColor="@color/white" />
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_fb_reply_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="官方微博 @葡萄相机"
+                    android:textColor="@color/grey_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_fb_reply_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="官方微信: 葡萄拍拍(putaopaipai)"
+                    android:textColor="@color/grey_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/umeng_fb_reply_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="E-mail: camera@putao.com"
+                    android:textColor="@color/grey_light" />
+            </LinearLayout>
+
+
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

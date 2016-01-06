@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <!-- 标题栏 -->
+
+    <include layout="@layout/layout_title_bar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/grid_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background">
+
+            <com.putao.widget.stickygridheaders.StickyGridHeadersGridView
+                android:id="@+id/asset_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:columnWidth="80dip"
+                android:horizontalSpacing="3dp"
+                android:listSelector="@drawable/selector_collage_grid"
+                android:numColumns="auto_fit"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:scrollbars="none"
+                android:verticalSpacing="3dp" />
+
+            <LinearLayout
+                android:id="@+id/body_iv_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey_light"
+                    android:layout_margin="10dp"
+                    android:textSize="30dp"
+                    android:text="您还没有照片" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey_dark"
+                    android:layout_margin="10dp"
+                    android:textSize="16dp"
+                    android:text="开始使用葡萄相机记录您的生活吧" />
+
+                <ImageView
+                    android:id="@+id/body_iv_none_camera"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/album_camera_btn" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <include layout="@layout/gallery_list_panel" />
+    </FrameLayout>
+
+</LinearLayout>

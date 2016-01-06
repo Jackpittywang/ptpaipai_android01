@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+     Copyright (C) 2012 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <!-- 滤镜效果 -->
+    <string-array name="filter_effect">
+
+        <!--
+        <item>None</item>
+
+        <item>Min/Max Color Intensity</item>
+        <item>Brightness</item>
+        <item>Contrast</item>
+
+        <item>Duo Tone</item>
+        <item>bw</item>
+        <item>Flip Vertical</item>
+        <item>Flip Horizontal</item>
+        <item>Grain</item>
+
+
+        <item>Negative</item>
+        <item>Posterize</item>
+        <item>Rotate</item>
+
+        <item>Sharpen</item>
+
+        <item>lomoish</item>
+
+        <item>vignette</item>
+        <item>grayscale</item>
+ <item>documentary</item>
+        <item>autofix</item>
+        <item>fisheye</item>
+        -->
+
+        <item>None</item>
+        <item>brightness</item>
+        <item>crossprocess</item>
+        <item>filllight</item>
+        <item>saturate</item>
+        <item>sepia</item>
+        <item>temperature</item>
+        <item>tint</item>
+        <item>vignette</item>
+    </string-array>
+
+</resources>

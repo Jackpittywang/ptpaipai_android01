@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="gray">#F0F0F0</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="blue">#28adf0</color>
+    <color name="transparent">#00000000</color>
+    <color name="text_color_dark_898989">#ff898989</color>
+    <color name="text_color_dark_626262">#ff626262</color>
+    <color name="text_color_dark_aaaaaa">#ffaaaaaa</color>
+    <color name="text_color_dark_eb5350">#ffeb5350</color>
+    <color name="text_color_dark_b5b5b5">#ffb5b5b5</color>
+
+    <color name="background">#eeefea</color>
+    <color name="text_color_white">@color/white</color>
+    <color name="text_color_red">#ffff0000</color>
+    <color name="grey_dark">@color/text_color_dark_626262</color>
+    <color name="grey_light">@color/text_color_dark_898989</color>
+    <color name="title_bg_color">@color/white</color>
+    <color name="title_text_color">@color/grey_light</color>
+    <color name="text_color_water_mark_choice_orange">#ff9600</color>
+    <color name="text_color_water_mark_choice_green">#4fdabb</color>
+    <color name="button_res_download">#ff9600</color>
+    <color name="watermark_selected_color">#4dbfa6</color>
+    <color name="color_50e3c2">#50e3c2</color>
+    <color name="color_252525">#252525</color>
+    <color name="color_c9c9c9">#c9c9c9</color>
+    <color name="color_eeefea">#eeefea</color>
+    <color name="color_c8c7c5">#c8c7c5</color>
+    <color name="color_bfbfbf">#bfbfbf</color>
+
+</resources>

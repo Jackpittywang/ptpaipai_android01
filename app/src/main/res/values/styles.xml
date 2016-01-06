@@ -1,0 +1,170 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
+    <style name="MyDialogStyleBottom" parent="@android:style/Theme.Light">
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+        <item name="android:windowAnimationStyle">@style/AnimBottom</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+    <style name="dialog_style" parent="android:Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- 从底部弹出 -->
+    <style name="AnimBottom" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_push_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_push_bottom_out</item>
+    </style>
+
+    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+        <item name="android:textAppearance">@style/CustomTabPageIndicator.Text</item>
+        <item name="android:textColor">#FFF8F8F8</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:dividerPadding">10dp</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:paddingLeft">11dp</item>
+        <item name="android:paddingRight">11dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">8dp</item>
+    </style>
+
+    <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="popuStyle">
+        <item name="android:windowEnterAnimation">@anim/popup_anim_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_anim_out</item>
+    </style>
+
+    <!--<style name="MyTheme">-->
+    <!--&lt;!&ndash; float_box为我们定义的窗口背景 &ndash;&gt;-->
+    <!--<item name="android:backgroundDimEnabled">true</item>-->
+    <!--<item name="android:windowFrame">@null</item>-->
+    <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+    <!--<item name="android:windowIsTranslucent">true</item>-->
+    <!--<item name="android:windowContentOverlay">@null</item>-->
+    <!--<item name="android:windowNoTitle">true</item>-->
+    <!--<item name="android:windowFullscreen">true</item>-->
+    <!--<item name="android:windowAnimationStyle">@style/AnimationActivity</item>-->
+    <!--</style>-->
+
+    <!--<style name="AnimationActivity" mce_bogus="1" parent="@android:style/Animation.Activity">-->
+    <!--<item name="android:activityOpenEnterAnimation">@anim/welcome_to_left_in</item>-->
+    <!--<item name="android:activityOpenExitAnimation">@anim/welcome_to_left_out</item>-->
+    <!--<item name="android:activityCloseEnterAnimation">@anim/welcome_to_left_in</item>-->
+    <!--<item name="android:activityCloseExitAnimation">@anim/welcome_to_left_out</item>-->
+    <!--</style>-->
+
+    <style name="dialog_movie_caption_list" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    <!-- 字体大小  begin -->
+    <style name="Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.Body.font">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Text.Body.font.large">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Text.Body.font.normal">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.Body.font.litle">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Text.Body.font.small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.Body.font.large.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Body.font.normal.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Body.font.litle.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Body.font.small.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 字体大小  end -->
+
+
+    <style name="button" parent="@android:style/TextAppearance.Widget.Button">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+
+    </style>
+
+    <style name="button.red" parent="@style/button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/red_btn_bg</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="button.transparent" parent="@style/button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textColor">@color/text_color_dark_626262</item>
+        <item name="android:textSize">18dp</item>
+
+    </style>
+</resources>

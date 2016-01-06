@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.putao.camera.setting.SettingActivity">
+
+    <!-- The PullToRefreshGridView replaces a standard GridView widget. -->
+    <com.putao.widget.pulltorefresh.PullToRefreshGridView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_refresh_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="fill"
+        android:horizontalSpacing="10dp"
+        android:listSelector="@drawable/selector_collage_grid"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        ptr:ptrDrawable="@drawable/default_ptr_rotate"
+        ptr:ptrMode="disabled" />
+
+</LinearLayout>

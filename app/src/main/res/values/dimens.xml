@@ -1,0 +1,42 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_title_size">18dp</dimen>
+
+
+    <integer name="move_zh_length">30</integer>
+    <integer name="move_en_length">90</integer>
+
+    <!-- water_fall -->
+    <dimen name="water_fall_item_horizontal_divider">5.0dip</dimen>
+    <dimen name="water_fall_item_vertical_divider">9.0dip</dimen>
+    <dimen name="water_fall_left_margin">7.0dip</dimen>
+    <dimen name="water_fall_right_margin">6.0dip</dimen>
+    <dimen name="water_fall_top_margin">5.0dip</dimen>
+    <dimen name="stgv_margin">8dp</dimen>
+    <dimen name="indicator_right_padding">10dp</dimen>
+    <dimen name="indicator_corner_radius">12dp</dimen>
+    <dimen name="indicator_internal_padding">4dp</dimen>
+    <dimen name="header_footer_left_right_padding">24dp</dimen>
+    <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+    <dimen name="need_refresh_delta">30dp</dimen>
+    <dimen name="head_view_height">100dp</dimen>
+
+
+    <!-- dp  begin -->
+    <dimen name="dimens_45dp">45dp</dimen>
+    <dimen name="dimens_5dp">5dp</dimen>
+    <dimen name="dimens_12dp">12dp</dimen>
+    <dimen name="dimens_24dp">24dp</dimen>
+    <dimen name="dimens_4dp">4dp</dimen>
+    <dimen name="dimens_2dp">2dp</dimen>
+    <dimen name="dimens_10dp">10dp</dimen>
+    <dimen name="dimens_20dp">20dp</dimen>
+    <dimen name="dimens_16dp">16dp</dimen>
+    <dimen name="dimens_11sp">11sp</dimen>
+    <dimen name="dimens_14sp">14sp</dimen>
+    <dimen name="dimens_24sp">24sp</dimen>
+    <!-- dp end -->
+</resources>

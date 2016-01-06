@@ -1,0 +1,226 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/qiuji_bg"
+    android:orientation="vertical">
+
+    <!--<com.putao.widget.gif.GifView-->
+    <!--android:id="@+id/longzhou_gif"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|right"-->
+    <!--android:layout_marginBottom="3dp"-->
+    <!--android:layout_marginRight="-5dp" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:text="@string/app_name"
+                android:textColor="@color/text_color_dark_626262"
+                android:textSize="@dimen/dimens_20dp"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/home_logo" />
+
+
+            <Button
+                android:id="@+id/menu_home_setting_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/photograph_set" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+
+                <Button
+                    android:id="@+id/menu_home_material_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_material" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_home_material_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="最新素材"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"></TextView>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:src="@drawable/home_tips_new" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <Button
+                    android:id="@+id/menu_home_camera_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_camera" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_home_camera_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="美宝相机"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"
+
+                    ></TextView>
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <Button
+                    android:id="@+id/menu_home_stickers_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_stickers" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_home_stickers_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="童趣美化"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"
+
+                    ></TextView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <Button
+                    android:id="@+id/menu_home_jigsaw_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_jigsaw" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_home_jigsaw_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="萌萌拼图"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"
+
+                    ></TextView>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+
+                <Button
+                    android:id="@+id/menu_home_movie_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_movie" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_home_movie_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="电影童星"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"></TextView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:visibility="invisible">
+
+                <Button
+                    android:id="@+id/take_photo_btn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/menu_home_movie" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/take_photo_btn2"
+                    android:layout_centerHorizontal="true"
+                    android:text="素材库"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/dimens_16dp"
+
+                    ></TextView>
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

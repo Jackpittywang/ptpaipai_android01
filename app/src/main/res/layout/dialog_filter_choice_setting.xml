@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/album_list_bg"
+    android:orientation="vertical">
+
+    <!-- 标题 -->
+
+    <RelativeLayout
+        android:id="@+id/title_bar_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <LinearLayout
+            android:id="@+id/left_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@drawable/selector_back_btn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"></LinearLayout>
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/girdview_filter_effect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:listSelector="@drawable/selector_collage_grid"
+        android:numColumns="3"></GridView>
+
+</LinearLayout>

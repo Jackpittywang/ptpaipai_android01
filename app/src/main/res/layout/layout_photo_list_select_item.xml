@@ -1,0 +1,33 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="1dp"
+        android:background="@drawable/album_item_bg"
+        android:paddingBottom="3dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="1dp">
+
+        <com.putao.camera.album.view.HighLightImageView
+            android:id="@+id/photo_body_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"></com.putao.camera.album.view.HighLightImageView>
+
+        <CheckBox
+            android:id="@+id/photo_selected_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/selector_album_checkbox"
+            android:button="@null"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+</merge>

@@ -1,0 +1,327 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context="com.putao.camera.editor.PhotoShareActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_cloud_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_title_bar" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/save_tips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp"
+                    android:paddingTop="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/share_button_save" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="已保存到相册"
+                            android:textColor="@color/grey_light" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_filepath"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="40dp"
+                        android:textColor="@color/grey_light"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/share_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/save_tips"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:gravity="left"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="分享至"
+                            android:textColor="@color/text_color_dark_eb5350"
+                            android:textSize="18dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/share_line_one"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:weightSum="4">
+
+                        <Button
+                            android:id="@+id/share_btn_friend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_friend"
+                            android:text="朋友圈"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp" />
+
+                        <Button
+                            android:id="@+id/share_btn_wechat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_wechat"
+                            android:text="微信好友"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp" />
+
+                        <Button
+                            android:id="@+id/share_btn_qq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_qq"
+                            android:text="QQ好友"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp" />
+
+                        <Button
+                            android:id="@+id/share_btn_sina"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_sina"
+                            android:text="新浪微博"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/share_line_two"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="left"
+                        android:weightSum="4">
+
+                        <Button
+                            android:id="@+id/share_btn_qzone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_qzone"
+                            android:text="QQ空间"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp" />
+
+                        <Button
+                            android:id="@+id/share_btn_333"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_wechat"
+                            android:text="微信好友"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp"
+                            android:visibility="invisible" />
+
+                        <Button
+                            android:id="@+id/share_btn_2222"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_friend"
+                            android:text="朋友圈"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp"
+                            android:visibility="invisible" />
+
+                        <Button
+                            android:id="@+id/share_btn_11111"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/transparent"
+                            android:drawableTop="@drawable/share_button_qq"
+                            android:text="QQ好友"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="13dp"
+                            android:visibility="invisible" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="25dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/btn_go_chartlet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/background_view_eb5350"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/share_buttonstickers" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="再来一张"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_go_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/background_view_eb5350"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/share_button_camera" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="拍照"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_go_collage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/set_button_bg"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/share_button_jigsaw" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="拼图"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="20dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_go_movie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/set_button_bg"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/share_button_jigsaw" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="大片"
+                            android:textColor="@color/grey_dark"
+                            android:textSize="20dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,37 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/scene_menu_bar_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/water_mark_scene_none_tv"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/water_mark_menu_none_circle_icon"
+            android:text="关闭"
+            android:textColor="@color/text_color_water_mark_choice_orange"
+            android:textSize="16dp"
+            android:gravity="center_horizontal"
+            android:paddingLeft="10dip" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/scene_menu_bar_scroll_bar_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"></LinearLayout>
+
+        </HorizontalScrollView>
+    </LinearLayout>
+</merge>

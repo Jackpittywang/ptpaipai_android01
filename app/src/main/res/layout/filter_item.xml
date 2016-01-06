@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <com.putao.camera.editor.view.FilterEffectThumbnailView
+            android:id="@+id/filter_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/filter_none" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/filter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textColor="@color/text_color_dark_898989" />
+
+</LinearLayout>

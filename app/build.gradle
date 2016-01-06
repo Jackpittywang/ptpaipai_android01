@@ -1,0 +1,126 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.putao.camera"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 12
+        versionName "1.2.3"
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    //源码集
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+            jniLibs.srcDirs = ['libs']
+            assets.srcDirs = ['src/main/assets']
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("../putao_paipai_keystore.jks")
+            storePassword "123456"
+            keyAlias "putao_paipai"
+            keyPassword "123456"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+    //产品渠道配置
+    productFlavors {
+//        local_release {
+//            versionName = "V" + defaultConfig.versionName
+//        }
+//        local_debug {
+//            versionName = "D" + defaultConfig.versionName
+//        }
+        channel_putao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
+        }
+        channel_yingyonghui {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyonghui"]
+        }
+        channel_360 {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
+        }
+        channel_yingyongbao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyongbao"]
+        }
+        channel_anzhi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhi"]
+        }
+        channel_baidu {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baidu"]
+        }
+        channel_wandoujia {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_wandoujia"]
+        }
+        channel_91 {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
+        }
+        channel_xiaomi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
+        }
+        channel_meizu {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_meizu"]
+        }
+        channel_oppo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
+        }
+        channel_lenovo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_lenovo"]
+        }
+        channel_woshangdian {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_woshangdian"]
+        }
+        channel_huawei {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_huawei"]
+        }
+        channel_coolpad {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_coolpad"]
+        }
+        channel_ppzhushou {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
+        }
+        channel_sougoushoujizhushou {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_sougoushoujizhushou"]
+        }
+        channel_jinli {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_jinli"]
+        }
+        channel_mmpintai {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mmpintai"]
+        }
+//        all {
+//            flavorDimension "abi"
+//            ndk {
+//                abiFilter "armeabi"
+//            }
+//        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.loopj.android:android-async-http:1.4.7'
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
+    compile 'com.nineoldandroids:library:2.4.0'
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_watermark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <GridView
+                android:id="@+id/water_mark_collection_icon_gv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="auto_fit"
+                android:stretchMode="spacingWidthUniform"></GridView>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical" >-->
+
+    <!--<GridView-->
+    <!--android:id="@+id/water_mark_collection_icon_gv"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:animateLayoutChanges="false"-->
+    <!--android:animationCache="false"-->
+    <!--android:cacheColorHint="@android:color/transparent"-->
+    <!--android:horizontalSpacing="7dp"-->
+    <!--android:listSelector="@android:color/transparent"-->
+    <!--android:numColumns="3"-->
+    <!--android:paddingLeft="7dp"-->
+    <!--android:paddingRight="7dp"-->
+    <!--android:scrollbarStyle="outsideOverlay"-->
+    <!--android:scrollingCache="false"-->
+    <!--android:verticalSpacing="6dp" >-->
+    <!--</GridView>-->
+    <!--</LinearLayout>-->
+
+</LinearLayout>
