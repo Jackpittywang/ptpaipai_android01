@@ -21,4 +21,7 @@
     <string name="pull_to_refresh_release_label">松开刷新…</string>
     <string name="pull_to_refresh_refreshing_label">载入中…</string>
 
+    <string name="device_not_supported">Device not supported</string>
+    <string name="device_not_supported_message">FFmpeg is not supported on your device</string>
+
 </resources>
