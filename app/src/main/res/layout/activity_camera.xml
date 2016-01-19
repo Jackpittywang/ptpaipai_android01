@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/photograph_home_x" />
+                android:background="@drawable/icon_back_index" />
         </LinearLayout>
 
         <LinearLayout
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/photograph_home_x" />
+                android:background="@drawable/icon_capture_20_01" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/photograph_home_x" />
+                android:background="@drawable/icon_capture_20_05" />
         </LinearLayout>
 
         <LinearLayout
