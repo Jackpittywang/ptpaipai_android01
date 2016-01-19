@@ -15,8 +15,10 @@ import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.movie.MovieCameraActivity;
+import com.putao.camera.setting.AboutActivity;
 import com.putao.camera.setting.SettingActivity;
 import com.putao.camera.setting.watermark.MaterialCenterActivity;
+import com.putao.camera.umengfb.UmengFeedbackActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.NetType;
@@ -100,23 +102,27 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.menu_home_material_btn:
+            case R.id.menu_home_material_btn://素材中心--原最新素材
                 ActivityHelper.startActivity(this, MaterialCenterActivity.class);
                 break;
-            case R.id.menu_home_stickers_btn:
-                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
+            case R.id.menu_home_stickers_btn://意见反馈--童趣美化
+//                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
+                ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
-            case R.id.menu_home_camera_btn:
+            case R.id.menu_home_camera_btn://葡萄时光--原美宝相机
                 ActivityHelper.startActivity(this, ActivityCamera.class);
                 break;
-            case R.id.menu_home_jigsaw_btn:
+            case R.id.menu_home_jigsaw_btn://关于我们--原萌萌拼图
                 ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+//                ActivityHelper.startActivity(this, AboutActivity.class);
                 break;
             case R.id.menu_home_movie_btn:
                 ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
-            case R.id.menu_home_setting_btn:
-                ActivityHelper.startActivity(this, SettingActivity.class);
+            case R.id.menu_home_setting_btn://拍照--原设置界面
+//                ActivityHelper.startActivity(this, SettingActivity.class);
+                ActivityHelper.startActivity(this, ActivityCamera.class);
+//                ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
             //            case R.id.water_mark_btn:
             //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
