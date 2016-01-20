@@ -70,7 +70,7 @@ import java.util.List;
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list;
-    private Button camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch;
+    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch;
     private RedPointBaseButton show_sticker_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
@@ -135,9 +135,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_top_rl = queryViewById(R.id.camera_top_rl);
         flash_light_btn = queryViewById(R.id.flash_light_btn);
         camera_timer_btn = queryViewById(R.id.camera_timer_btn);
-
-
-
+        camera_scale_btn = queryViewById(R.id.camera_scale_btn);
 
         switch_camera_btn = queryViewById(R.id.switch_camera_btn);
         show_sticker_btn = queryViewById(R.id.show_sticker_btn);
@@ -151,7 +149,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_top = queryViewById(R.id.fill_blank_top);
         fill_blank_bottom = queryViewById(R.id.fill_blank_bottom);
         btn_enhance_switch = queryViewById(R.id.btn_enhance_switch);
-        addOnClickListener(camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn,
+        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn,
                 back_home_btn, camera_set_btn, btn_enhance_switch);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
@@ -332,7 +330,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 showFlashMenu(this, v);
                 break;
             case R.id.camera_timer_btn:
-
+                break;
+            case R.id.camera_scale_btn:
                 break;
             case R.id.switch_camera_btn:
                 if (hasTwoCameras) {
@@ -577,6 +576,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         Button flash_auto_btn = (Button) menuView.findViewById(R.id.flash_auto_btn);
         Button flash_on_btn = (Button) menuView.findViewById(R.id.flash_on_btn);
         Button flash_off_btn = (Button) menuView.findViewById(R.id.flash_off_btn);
+        Button flash_light_btn = (Button) menuView.findViewById(R.id.flash_light_btn);
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -596,19 +596,27 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         setFlashResource(current.getCurrentModeCode());
                         pw.dismiss();
                         break;
+                    case R.id.flash_light_btn:
+                        current.setflashMode(flashModeCode.light);
+                        setFlashResource(current.getCurrentModeCode());
+                        pw.dismiss();
+                        break;
                 }
             }
         };
         if (current.getCurrentModeCode() == flashModeCode.auto) {
-            flash_auto_btn.setBackgroundResource(R.drawable.photograph_flashmodeautoa);
+            flash_auto_btn.setBackgroundResource(R.drawable.icon_capture_20_01);
         } else if (current.getCurrentModeCode() == flashModeCode.on) {
-            flash_on_btn.setBackgroundResource(R.drawable.photograph_flashmodeb);
+            flash_on_btn.setBackgroundResource(R.drawable.icon_capture_20_03);
         } else if (current.getCurrentModeCode() == flashModeCode.off) {
-            flash_off_btn.setBackgroundResource(R.drawable.photograph_flashmodeenablea);
+            flash_off_btn.setBackgroundResource(R.drawable.icon_capture_20_02);
+        } else if (current.getCurrentModeCode() == flashModeCode.light) {
+            flash_off_btn.setBackgroundResource(R.drawable.icon_capture_20_04);
         }
         flash_auto_btn.setOnClickListener(listener);
         flash_on_btn.setOnClickListener(listener);
         flash_off_btn.setOnClickListener(listener);
+        flash_light_btn.setOnClickListener(listener);
     }
 
     public void onEvent(BasePostEvent event) {
@@ -810,11 +818,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     public void setFlashResource(flashModeCode code) {
         int resId = 0;
         if (code == flashModeCode.auto) {
-            resId = R.drawable.photograph_flashmodeautoc_auto;
+            resId = R.drawable.icon_capture_20_01;
         } else if (code == flashModeCode.on) {
-            resId = R.drawable.photograph_flashmodeaa;
+            resId = R.drawable.icon_capture_20_03;
         } else if (code == flashModeCode.off) {
-            resId = R.drawable.photograph_flashmodeenablec;
+            resId = R.drawable.icon_capture_20_02;
+        } else if (code == flashModeCode.light) {
+            resId = R.drawable.icon_capture_20_04;
         }
         flash_light_btn.setBackgroundResource(resId);
     }

@@ -235,7 +235,6 @@
                     android:background="@drawable/film_favorite" />
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>

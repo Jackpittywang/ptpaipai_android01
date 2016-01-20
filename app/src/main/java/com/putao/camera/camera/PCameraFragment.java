@@ -305,6 +305,8 @@ public class PCameraFragment extends CameraFragment {
             flashMode = Parameters.FLASH_MODE_ON;
         } else if (mode == flashModeCode.auto) {
             flashMode = Parameters.FLASH_MODE_AUTO;
+        } else if (mode == flashModeCode.light) {
+            flashMode = Parameters.FLASH_MODE_ON;
         } else {
             flashMode = Parameters.FLASH_MODE_OFF;
         }
@@ -316,7 +318,7 @@ public class PCameraFragment extends CameraFragment {
     }
 
     public enum flashModeCode {
-        on, off, auto
+        on, off, auto, light
     }
 
     /**
