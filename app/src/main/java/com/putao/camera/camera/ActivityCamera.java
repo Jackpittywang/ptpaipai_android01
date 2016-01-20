@@ -2,7 +2,6 @@
 package com.putao.camera.camera;
 
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -87,15 +85,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private OrientationEventListener mOrientationEvent;
     private boolean hasTwoCameras = (Camera.getNumberOfCameras() > 1);
     private List<View> mSceneWaterMarkViewList;
-    private PictureRatio mPictureRatio = PictureRatio.RATIO_DEFAULT;
+    private PictureRatio mPictureRatio = PictureRatio.RATIO_FULL;
     private boolean mShowSticker = false;
     private WaterMarkView last_mark_view;
     private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
 
-    private static final String SCALETYPE_FULL = "full";
-    private static final String SCALETYPE_ONE = "1;1";
-    private static final String SCALETYPE_THREE = "3:4";
-    private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
 
     /**
      * 延时拍照倒计时
@@ -111,7 +105,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
      * 照片比例
      */
     public enum PictureRatio {
-        RATIO_DEFAULT, RATIO_THREE_TO_FOUR, RATIO_ONE_TO_ONE
+        RATIO_FULL, RATIO_THREE_TO_FOUR, RATIO_ONE_TO_ONE
     }
 
     /**
@@ -256,7 +250,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     void setCameraRatio() {
         if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
             setCameraRatioOneToOne();
-        } else if (mPictureRatio == PictureRatio.RATIO_THREE_TO_FOUR || mPictureRatio == PictureRatio.RATIO_DEFAULT) {
+        } else if (mPictureRatio == PictureRatio.RATIO_THREE_TO_FOUR || mPictureRatio == PictureRatio.RATIO_FULL) {
             setCameraRatioThreeToFour();
         }
     }
@@ -341,30 +335,30 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.camera_scale_btn:
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
-                switch (scaleType) {
-                    case SCALETYPE_ONE :
+                switch (mPictureRatio) {
+                    case RATIO_ONE_TO_ONE :
                         camera_activy.getBackground().setAlpha(0);
                         camera_top_rl.getBackground().setAlpha(0);
                         bar.getBackground().setAlpha(0);
                         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
-                        scaleType = SCALETYPE_FULL;
+                        mPictureRatio = PictureRatio.RATIO_FULL;
                         break;
-                    case SCALETYPE_THREE :
+                    case RATIO_THREE_TO_FOUR :
                         camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
                         params.height = getResources().getDisplayMetrics().widthPixels;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
-                        scaleType = SCALETYPE_ONE;
+                        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
                         break;
-                    case SCALETYPE_FULL :
+                    case RATIO_FULL :
                         camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
-                        scaleType = SCALETYPE_THREE;
+                        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                         break;
                 }
                 container.setLayoutParams(params);
@@ -534,14 +528,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         dismisPw(pw);
                         break;
                     case R.id.btn_camrea_ratio:
-                        if (mPictureRatio == PictureRatio.RATIO_DEFAULT) {
+                        if (mPictureRatio == PictureRatio.RATIO_FULL) {
                             mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
                             setCameraRatioOneToOne();
                         } else if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
                             mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                             setCameraRatioThreeToFour();
                         } else {
-                            mPictureRatio = PictureRatio.RATIO_DEFAULT;
+                            mPictureRatio = PictureRatio.RATIO_FULL;
                             setCameraRatioThreeToFour();
                         }
                         setButtonText(btn_camrea_ratio);
@@ -583,7 +577,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     void setButtonText(Button btn) {
         switch (btn.getId()) {
             case R.id.btn_camrea_ratio:
-                btn.setText((mPictureRatio == PictureRatio.RATIO_DEFAULT) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
+                btn.setText((mPictureRatio == PictureRatio.RATIO_FULL) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
                 break;
             case R.id.btn_delay_take_pic:
                 btn.setText(mTakedelaytime == TakeDelayTime.DELAY_THREE ? "3″" : mTakedelaytime == TakeDelayTime.DELAY_FIVE ? "5″" : "默认");
