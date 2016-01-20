@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.ListPopupWindow;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -20,6 +21,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -63,6 +66,7 @@ import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.common.TimerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -337,6 +341,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 showFlashMenu(this, v);
                 break;
             case R.id.camera_timer_btn:
+                setTakeDelay();
                 break;
             case R.id.camera_scale_btn:
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
@@ -1008,4 +1013,23 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         }
     };
+
+
+    /**
+     * 设置拍照延时
+     */
+    private void setTakeDelay() {
+        final Integer datas[] = { R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11 };
+        ListPopupWindow popupWindow = new ListPopupWindow(mContext);
+        popupWindow.setAdapter(new TimerAdapter(mContext, R.layout.popup_timer_item, datas));
+        popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+            }
+        });
+        popupWindow.setAnchorView(camera_timer_btn);
+        popupWindow.show();
+    }
+
 }
