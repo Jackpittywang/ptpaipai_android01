@@ -351,7 +351,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         scaleType = SCALETYPE_FULL;
                         break;
                     case SCALETYPE_THREE :
-//                        camera_activy.getBackground().setAlpha(255);
+                        camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
                         params.height = getResources().getDisplayMetrics().widthPixels;
@@ -359,6 +359,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         scaleType = SCALETYPE_ONE;
                         break;
                     case SCALETYPE_FULL :
+                        camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
