@@ -70,7 +70,7 @@ import java.util.List;
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list;
-    private Button flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch;
+    private Button camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch;
     private RedPointBaseButton show_sticker_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
@@ -134,6 +134,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         container = queryViewById(R.id.container);
         camera_top_rl = queryViewById(R.id.camera_top_rl);
         flash_light_btn = queryViewById(R.id.flash_light_btn);
+        camera_timer_btn = queryViewById(R.id.camera_timer_btn);
+
+
+
+
         switch_camera_btn = queryViewById(R.id.switch_camera_btn);
         show_sticker_btn = queryViewById(R.id.show_sticker_btn);
         take_photo_btn = queryViewById(R.id.take_photo_btn);
@@ -146,7 +151,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_top = queryViewById(R.id.fill_blank_top);
         fill_blank_bottom = queryViewById(R.id.fill_blank_bottom);
         btn_enhance_switch = queryViewById(R.id.btn_enhance_switch);
-        addOnClickListener(switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn, back_home_btn, camera_set_btn, btn_enhance_switch);
+        addOnClickListener(camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn,
+                back_home_btn, camera_set_btn, btn_enhance_switch);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -324,6 +330,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.flash_light_btn:
                 showFlashMenu(this, v);
+                break;
+            case R.id.camera_timer_btn:
+
                 break;
             case R.id.switch_camera_btn:
                 if (hasTwoCameras) {

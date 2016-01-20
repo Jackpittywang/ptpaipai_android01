@@ -3,13 +3,14 @@
     android:id="@+id/camera_activy"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame">
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"></FrameLayout>
 
     <!--<android.support.v4.view.ViewPager-->
@@ -32,8 +33,10 @@
         android:id="@+id/camera_top_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00000000"
+        android:background="@android:color/black"
         android:gravity="center_vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -56,7 +59,7 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/back_home1_btn"
+                android:id="@+id/flash_light_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -70,7 +73,7 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/back_home2_btn"
+                android:id="@+id/camera_scale_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -84,25 +87,11 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/flash_light_btn"
+                android:id="@+id/camera_timer_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:background="@drawable/photograph_flashmodeenablec" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/switch_camera_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/camera_button_turn" />
+                android:background="@drawable/icon_capture_20_08" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,7 +105,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/photograph_set" />
+                android:background="@drawable/icon_capture_20_12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/switch_camera_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/icon_capture_20_14" />
         </LinearLayout>
     </LinearLayout>
 
@@ -175,7 +178,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#00000000"
+        android:background="@android:color/black"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
