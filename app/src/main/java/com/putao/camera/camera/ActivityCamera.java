@@ -2,6 +2,7 @@
 package com.putao.camera.camera;
 
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -75,6 +77,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
+    private RelativeLayout camera_activy;
     private List<WaterMarkView> mMarkViewList;
     private int text_index = -1;
     private int mOrientation = 0;
@@ -88,6 +91,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private boolean mShowSticker = false;
     private WaterMarkView last_mark_view;
     private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
+
+    private static final String SCALETYPE_FULL = "full";
+    private static final String SCALETYPE_ONE = "1;1";
+    private static final String SCALETYPE_THREE = "3:4";
+    private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
 
     /**
      * 延时拍照倒计时
@@ -136,7 +144,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         flash_light_btn = queryViewById(R.id.flash_light_btn);
         camera_timer_btn = queryViewById(R.id.camera_timer_btn);
         camera_scale_btn = queryViewById(R.id.camera_scale_btn);
-
         switch_camera_btn = queryViewById(R.id.switch_camera_btn);
         show_sticker_btn = queryViewById(R.id.show_sticker_btn);
         take_photo_btn = queryViewById(R.id.take_photo_btn);
@@ -145,6 +152,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_set_btn = queryViewById(R.id.camera_set_btn);
         bar = queryViewById(R.id.bar);
         layout_sticker = queryViewById(R.id.layout_sticker);
+        camera_activy = queryViewById(R.id.camera_activy);
         layout_sticker_list = queryViewById(R.id.layout_sticker_list);
         fill_blank_top = queryViewById(R.id.fill_blank_top);
         fill_blank_bottom = queryViewById(R.id.fill_blank_bottom);
@@ -332,6 +340,33 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.camera_timer_btn:
                 break;
             case R.id.camera_scale_btn:
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+                switch (scaleType) {
+                    case SCALETYPE_ONE :
+                        camera_activy.getBackground().setAlpha(0);
+                        camera_top_rl.getBackground().setAlpha(0);
+                        bar.getBackground().setAlpha(0);
+                        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
+                        scaleType = SCALETYPE_FULL;
+                        break;
+                    case SCALETYPE_THREE :
+//                        camera_activy.getBackground().setAlpha(255);
+                        camera_top_rl.getBackground().setAlpha(255);
+                        bar.getBackground().setAlpha(255);
+                        params.height = getResources().getDisplayMetrics().widthPixels;
+                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
+                        scaleType = SCALETYPE_ONE;
+                        break;
+                    case SCALETYPE_FULL :
+                        camera_top_rl.getBackground().setAlpha(255);
+                        bar.getBackground().setAlpha(255);
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
+                        scaleType = SCALETYPE_THREE;
+                        break;
+                }
+                container.setLayoutParams(params);
                 break;
             case R.id.switch_camera_btn:
                 if (hasTwoCameras) {
