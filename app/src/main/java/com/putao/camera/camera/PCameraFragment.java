@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,7 +36,6 @@ import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
 import com.putao.camera.camera.utils.CameraFragment;
-import com.putao.camera.camera.utils.CameraHost;
 import com.putao.camera.camera.utils.CameraView;
 import com.putao.camera.camera.utils.CameraView.onCameraFocusChangeListener;
 import com.putao.camera.camera.utils.OrientationUtil;
@@ -146,6 +144,7 @@ public class PCameraFragment extends CameraFragment {
         JNIFUN.getHdrLibraryVersion();
         return (results);
     }
+
 
     void showGif() {
         if (isEnableEnhance()) {
@@ -548,5 +547,6 @@ public class PCameraFragment extends CameraFragment {
         }
         return bitmap;
     }
+
 
 }

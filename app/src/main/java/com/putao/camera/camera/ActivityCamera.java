@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,6 +68,9 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.common.TimerAdapter;
+import com.putao.common.util.CameraInterface;
+import com.putao.common.util.FaceView;
+import com.putao.common.util.GoogleFaceDetect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +102,30 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String SCALETYPE_ONE = "1;1";
     private static final String SCALETYPE_THREE = "3:4";
     private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
+
+    private FaceView faceView;
+    private GoogleFaceDetect googleFaceDetect;
+//    googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
+
+    /**
+     * 人脸识别handler
+     */
+    private Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case FaceView.UPDATE_FACE_RECT:
+                    Camera.Face[] faces = (Camera.Face[]) msg.obj;
+                    faceView.setFaces(faces);
+                    break;
+                case FaceView.CAMERA_HAS_STARTED_PREVIEW:
+                    startGoogleFaceDetect();
+                    break;
+            }
+        }
+    };
 
 
     /**
@@ -1032,6 +1060,28 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         });
         popupWindow.setAnchorView(camera_timer_btn);
         popupWindow.show();
+    }
+
+
+    private void startGoogleFaceDetect() {
+        Camera.Parameters params = CameraInterface.getInstance().getCameraParams();
+        if (params.getMaxNumDetectedFaces() > 0) {
+            if (faceView != null) {
+                faceView.clearFaces();
+                faceView.setVisibility(View.VISIBLE);
+            }
+            CameraInterface.getInstance().getCameraDevice().setFaceDetectionListener(googleFaceDetect);
+            CameraInterface.getInstance().getCameraDevice().startFaceDetection();
+        }
+    }
+
+    private void stopGoogleFaceDetect() {
+        Camera.Parameters params = CameraInterface.getInstance().getCameraParams();
+        if (params.getMaxNumDetectedFaces() > 0) {
+            CameraInterface.getInstance().getCameraDevice().setFaceDetectionListener(null);
+            CameraInterface.getInstance().getCameraDevice().stopFaceDetection();
+            faceView.clearFaces();
+        }
     }
 
 }
