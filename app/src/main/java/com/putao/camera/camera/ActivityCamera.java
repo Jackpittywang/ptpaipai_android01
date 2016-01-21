@@ -283,7 +283,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         } else {
             layout_sticker_params.topMargin = bar.getTop();
         }
-        layout_sticker.setVisibility(View.VISIBLE);
+        layout_sticker.setVisibility(View.GONE);
     }
 
     void setCameraRatioOneToOne() {
