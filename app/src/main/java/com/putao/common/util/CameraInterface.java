@@ -10,9 +10,6 @@ import android.hardware.Camera.Size;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.putao.face.util.CamParaUtil;
-import com.putao.face.util.FileUtil;
-import com.putao.face.util.ImageUtil;
 
 import java.io.IOException;
 import java.util.List;
