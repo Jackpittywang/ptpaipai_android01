@@ -4,8 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 public class ImageUtil {
+
 	/**
-	 * ��תBitmap
+	 * 旋转图片
 	 * @param b
 	 * @param rotateDegree
 	 * @return

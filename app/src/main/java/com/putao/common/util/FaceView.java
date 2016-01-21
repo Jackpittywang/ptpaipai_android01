@@ -56,14 +56,14 @@ public class FaceView extends ImageView {
         boolean isMirror = false;
         int Id = CameraInterface.getInstance().getCameraId();
         if (Id == CameraInfo.CAMERA_FACING_BACK) {
-            isMirror = false; //����Camera����mirror
+            isMirror = false;
         } else if (Id == CameraInfo.CAMERA_FACING_FRONT) {
-            isMirror = true;  //ǰ��Camera��Ҫmirror
+            isMirror = true;
         }
         Util.prepareMatrix(mMatrix, isMirror, 90, getWidth(), getHeight());
         canvas.save();
-        mMatrix.postRotate(0); //Matrix.postRotateĬ����˳ʱ��
-        canvas.rotate(-0);   //Canvas.rotate()Ĭ������ʱ��
+        mMatrix.postRotate(0);
+        canvas.rotate(-0);
         for (int i = 0; i < mFaces.length; i++) {
             Paint paint = new Paint();//依靠此类开始画线
             paint.setColor(Color.RED);
