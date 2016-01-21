@@ -17,13 +17,13 @@ public class TimerAdapter extends ArrayAdapter{
 
     private Context context;
     private Integer[] datas;
-    private LayoutInflater inflater;
+    private int layoutId;
 
     public TimerAdapter(Context context, int resource, Integer[] datas) {
         super(context, resource, datas);
         this.context = context;
         this.datas = datas;
-        inflater = LayoutInflater.from(context);
+        layoutId = resource;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class TimerAdapter extends ArrayAdapter{
         ViewHolder holder;
         if(null == convertView) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.popup_timer_item, null);
+            convertView = LayoutInflater.from(context).inflate(layoutId, null);
+            holder.img_timer = (ImageView) convertView.findViewById(R.id.img_timer);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ImageView img_timer = (ImageView) convertView.findViewById(R.id.img_timer);
         holder.img_timer.setBackgroundResource(datas[position]);
         return convertView;
     }
