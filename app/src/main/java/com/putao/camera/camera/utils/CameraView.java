@@ -620,4 +620,12 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             }
         }
     }
+
+    /**
+     * 获取照相机实例
+     */
+    public Camera getCameraInstance() {
+        return camera;
+    }
+
 }

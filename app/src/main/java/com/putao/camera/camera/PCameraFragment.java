@@ -21,8 +21,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,9 @@ import com.putao.camera.editor.view.WaterMarkView;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
+import com.putao.common.util.CameraInterface;
+import com.putao.common.util.FaceView;
+import com.putao.common.util.GoogleFaceDetect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +115,37 @@ public class PCameraFragment extends CameraFragment {
      */
     private ExposureLevel mExposureLevel = ExposureLevel.NORMAL;
 
+
+    private FaceView faceView;
+    private GoogleFaceDetect googleFaceDetect;
+
+    /**
+     * 人脸识别handler
+     */
+    private Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case FaceView.UPDATE_FACE_RECT:
+                    Camera.Face[] faces = (Camera.Face[]) msg.obj;
+                    faceView.setFaces(faces);
+                    break;
+                case FaceView.CAMERA_HAS_STARTED_PREVIEW:
+                    startGoogleFaceDetect();
+                    break;
+            }
+        }
+    };
+
+
+
+
+
+
+
+
     public static PCameraFragment newInstance(boolean useFFC) {
         PCameraFragment f = new PCameraFragment();
         Bundle args = new Bundle();
@@ -145,6 +182,14 @@ public class PCameraFragment extends CameraFragment {
         return (results);
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        faceView = (FaceView)view.findViewById(R.id.face_view);
+        googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
+        mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
+    }
 
     void showGif() {
         if (isEnableEnhance()) {
@@ -546,6 +591,28 @@ public class PCameraFragment extends CameraFragment {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+
+    private void startGoogleFaceDetect() {
+        Camera.Parameters params =cameraView.getCameraInstance().getParameters();
+        if (params.getMaxNumDetectedFaces() > 0) {
+            if (faceView != null) {
+                faceView.clearFaces();
+                faceView.setVisibility(View.VISIBLE);
+            }
+            cameraView.getCameraInstance().setFaceDetectionListener(googleFaceDetect);
+            cameraView.getCameraInstance().startFaceDetection();
+        }
+    }
+
+    private void stopGoogleFaceDetect() {
+        Camera.Parameters params = cameraView.getCameraInstance().getParameters();
+        if (params.getMaxNumDetectedFaces() > 0) {
+            cameraView.getCameraInstance().setFaceDetectionListener(null);
+            cameraView.getCameraInstance().stopFaceDetection();
+            faceView.clearFaces();
+        }
     }
 
 

@@ -11,7 +11,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"></FrameLayout>
+        android:layout_centerInParent="true"/>
 
     <!--<android.support.v4.view.ViewPager-->
     <!--android:id="@+id/water_mark_scene_view_pager"-->

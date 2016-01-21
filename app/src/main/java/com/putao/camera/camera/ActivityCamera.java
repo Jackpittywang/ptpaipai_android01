@@ -23,7 +23,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -103,30 +102,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String SCALETYPE_THREE = "3:4";
     private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
 
-    private FaceView faceView;
-    private GoogleFaceDetect googleFaceDetect;
-//    googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
-
-    /**
-     * 人脸识别handler
-     */
-    private Handler mHandler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case FaceView.UPDATE_FACE_RECT:
-                    Camera.Face[] faces = (Camera.Face[]) msg.obj;
-                    faceView.setFaces(faces);
-                    break;
-                case FaceView.CAMERA_HAS_STARTED_PREVIEW:
-                    startGoogleFaceDetect();
-                    break;
-            }
-        }
-    };
-
 
     /**
      * 延时拍照倒计时
@@ -202,6 +177,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         }
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
+
 
     }
 
@@ -1062,26 +1038,5 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.show();
     }
 
-
-    private void startGoogleFaceDetect() {
-        Camera.Parameters params = CameraInterface.getInstance().getCameraParams();
-        if (params.getMaxNumDetectedFaces() > 0) {
-            if (faceView != null) {
-                faceView.clearFaces();
-                faceView.setVisibility(View.VISIBLE);
-            }
-            CameraInterface.getInstance().getCameraDevice().setFaceDetectionListener(googleFaceDetect);
-            CameraInterface.getInstance().getCameraDevice().startFaceDetection();
-        }
-    }
-
-    private void stopGoogleFaceDetect() {
-        Camera.Parameters params = CameraInterface.getInstance().getCameraParams();
-        if (params.getMaxNumDetectedFaces() > 0) {
-            CameraInterface.getInstance().getCameraDevice().setFaceDetectionListener(null);
-            CameraInterface.getInstance().getCameraDevice().stopFaceDetection();
-            faceView.clearFaces();
-        }
-    }
 
 }
