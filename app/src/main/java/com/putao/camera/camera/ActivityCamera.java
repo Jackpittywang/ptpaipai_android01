@@ -338,7 +338,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.flash_light_btn:
-                showFlashMenu(this, v);
+                showFlashMenu(this, flash_light_btn);
                 break;
             case R.id.camera_timer_btn:
                 setTakeDelay();
@@ -612,7 +612,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         pw.setFocusable(true); // 如果把焦点设置为false，则其他部份是可以点击的，也就是说传递事件时，不会先走PopupWindow
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
-        pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0], location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
+//        pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0], location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
+        pw.showAsDropDown(parent, -32, 62);
         Button flash_auto_btn = (Button) menuView.findViewById(R.id.flash_auto_btn);
         Button flash_on_btn = (Button) menuView.findViewById(R.id.flash_on_btn);
         Button flash_off_btn = (Button) menuView.findViewById(R.id.flash_off_btn);
@@ -1020,12 +1021,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
      */
     private void setTakeDelay() {
         final Integer datas[] = { R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11 };
-        ListPopupWindow popupWindow = new ListPopupWindow(mContext);
+        final ListPopupWindow popupWindow = new ListPopupWindow(mContext);
         popupWindow.setAdapter(new TimerAdapter(mContext, R.layout.popup_timer_item, datas));
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 camera_timer_btn.setBackgroundResource(datas[position]);
+                popupWindow.dismiss();
             }
         });
         popupWindow.setAnchorView(camera_timer_btn);

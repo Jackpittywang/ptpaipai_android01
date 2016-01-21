@@ -34,7 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
-        android:gravity="center_vertical"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:orientation="horizontal" >
@@ -62,7 +61,6 @@
                 android:id="@+id/flash_light_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:background="@drawable/icon_capture_20_01" />
         </LinearLayout>
 
@@ -76,7 +74,6 @@
                 android:id="@+id/camera_scale_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:background="@drawable/icon_capture_20_05" />
         </LinearLayout>
 
@@ -90,7 +87,6 @@
                 android:id="@+id/camera_timer_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:background="@drawable/icon_capture_20_08" />
         </LinearLayout>
 
@@ -104,7 +100,6 @@
                 android:id="@+id/camera_set_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/icon_capture_20_12" />
         </LinearLayout>
 
@@ -118,7 +113,6 @@
                 android:id="@+id/switch_camera_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:background="@drawable/icon_capture_20_14" />
         </LinearLayout>
     </LinearLayout>
