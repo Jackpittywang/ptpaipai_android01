@@ -10,7 +10,7 @@ import android.util.Log;
 
 
 /**
- * 脸部识别
+ * 脸部识别实现类
  */
 public class GoogleFaceDetect implements FaceDetectionListener {
 

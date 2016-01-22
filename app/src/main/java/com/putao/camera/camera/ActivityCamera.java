@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.ListPopupWindow;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -67,9 +66,6 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.common.TimerAdapter;
-import com.putao.common.util.CameraInterface;
-import com.putao.common.util.FaceView;
-import com.putao.common.util.GoogleFaceDetect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -402,6 +398,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     mMarkViewList.add(last_mark_view);
                 }
                 takePhoto();
+                current.sendMessage();
                 break;
             case R.id.album_btn:
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);

@@ -26,6 +26,7 @@ import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +132,7 @@ public class PCameraFragment extends CameraFragment {
                 case FaceView.UPDATE_FACE_RECT:
                     Camera.Face[] faces = (Camera.Face[]) msg.obj;
                     faceView.setFaces(faces);
+                    Log.i("YanZi", "onFaceDetection...update");
                     break;
                 case FaceView.CAMERA_HAS_STARTED_PREVIEW:
                     startGoogleFaceDetect();
@@ -138,10 +140,6 @@ public class PCameraFragment extends CameraFragment {
             }
         }
     };
-
-
-
-
 
 
 
@@ -613,6 +611,10 @@ public class PCameraFragment extends CameraFragment {
             cameraView.getCameraInstance().stopFaceDetection();
             faceView.clearFaces();
         }
+    }
+
+    public void sendMessage() {
+        mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
     }
 
 
