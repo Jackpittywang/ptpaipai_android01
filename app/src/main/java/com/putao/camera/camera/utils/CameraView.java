@@ -54,7 +54,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     private OnOrientationChange onOrientationChange = null;
     private int displayOrientation = -1;
     private int outputOrientation = -1;
-    private int cameraId = -1;
+    public int cameraId = -1;
     private Parameters previewParams = null;
     private boolean isDetectingFaces = false;
     private boolean isAutoFocusing = false;
