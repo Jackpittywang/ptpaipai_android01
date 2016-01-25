@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.ListPopupWindow;
 import android.util.Log;
 import android.view.Gravity;
@@ -72,6 +73,7 @@ import com.putao.common.TimerAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PCameraFragment std, ffc, current;
@@ -135,6 +137,21 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         AUTO
     }
 
+    /**
+     * 刷新界面动画显示的handler
+     */
+    private Handler refreshHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+
+
+
+        }
+    };
+
+
+
     @Override
     public int doGetContentViewId() {
         return R.layout.activity_camera;
@@ -185,6 +202,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        
+
+
+
+
 
     }
 

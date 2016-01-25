@@ -154,7 +154,7 @@ public final class FileUtils {
      * 解压assets的zip压缩文件到指定目录
      *
      * @param context   上下文对象
-     * @param assetName 压缩文件名
+     * @param assetName 压缩文件名  需带文件类型后缀
      * @param outputDir 输出目录
      * @param isReWrite 是否覆盖
      * @throws IOException
