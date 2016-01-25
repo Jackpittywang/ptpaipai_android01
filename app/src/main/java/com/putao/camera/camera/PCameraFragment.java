@@ -183,6 +183,7 @@ public class PCameraFragment extends CameraFragment {
         super.onViewCreated(view, savedInstanceState);
 
         faceView = (FaceView)view.findViewById(R.id.face_view);
+        faceView.setCameraView(cameraView);
         googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
         mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
     }

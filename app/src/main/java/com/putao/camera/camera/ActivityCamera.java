@@ -12,6 +12,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.ListPopupWindow;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -65,8 +66,10 @@ import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.common.FileUtils;
 import com.putao.common.TimerAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +177,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
+        try {
+            FileUtils.unZipInAsset(mContext, "axfl.zip", "PutaoCamera", false);
+            FileUtils.unZipInAsset(mContext, "hy.zip", "PutaoCamera", false);
+            FileUtils.unZipInAsset(mContext, "icon.zip", "PutaoCamera", false);
+            FileUtils.unZipInAsset(mContext, "xhx.zip", "PutaoCamera", false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -398,7 +409,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     mMarkViewList.add(last_mark_view);
                 }
                 takePhoto();
-                current.sendMessage();
+//                current.sendMessage();
                 break;
             case R.id.album_btn:
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
