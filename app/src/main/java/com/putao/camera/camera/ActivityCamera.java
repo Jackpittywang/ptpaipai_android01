@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.ListPopupWindow;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -147,10 +148,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         public void handleMessage(Message msg) {
 
 
-
-
         }
     };
+    private  List<String> list;
+    private  int position;
 
 
 
@@ -196,8 +197,19 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
-        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath()+"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+        String stickersPath = FileUtils.getStickersPath();
+        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+        list = new ArrayList<>();
+        List<String> imageNames = animation.getMouth().getImageList().getImageName();
+        for(int i = 0; i < imageNames.size(); i++) {
+            String imageName = stickersPath  + "/xhx/" + imageNames.get(i);
+            Log.i("yang", imageName);
+            list.add(imageName);
+        }
+        animation.getMouth().getImageList().setImageName(list);
         Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
+
+        refreshHandler.post(refreshRunable);
 
     }
 
@@ -1059,7 +1071,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.show();
     }
 
-
+    /**
+     * 读取本地资源
+     * @param filePath
+     * @return
+     */
     private String readSdcardFile(String filePath) {
         String result = null;
         try {
@@ -1074,5 +1090,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         }
         return result;
     }
+
+    Runnable refreshRunable = new Runnable(){
+        @Override
+        public void run() {
+
+            refreshHandler.postDelayed(this, 50);
+        }
+    };
 
 }
