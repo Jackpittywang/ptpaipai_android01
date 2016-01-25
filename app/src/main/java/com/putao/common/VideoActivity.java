@@ -8,6 +8,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.putao.camera.R;
+import com.putao.video.VideoHelper;
 
 /**
  * Created by guchenkai on 2016/1/6.
@@ -20,7 +22,7 @@ public class VideoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_ntest);
 
         tv_xml = (TextView) findViewById(R.id.tv_xml);
 

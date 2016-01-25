@@ -25,10 +25,12 @@ import com.putao.camera.util.NetType;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.common.FileUtils;
 import com.putao.widget.gif.GifView;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -65,6 +67,15 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                 menu_home_setting_btn);
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
+
+        try {
+            FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
+            FileUtils.unZipInAsset(mContext, "hy.zip", FileUtils.FILE_PARENT_NAME, false);
+            FileUtils.unZipInAsset(mContext, "icon.zip", FileUtils.FILE_PARENT_NAME, false);
+            FileUtils.unZipInAsset(mContext, "xhx.zip", FileUtils.FILE_PARENT_NAME, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

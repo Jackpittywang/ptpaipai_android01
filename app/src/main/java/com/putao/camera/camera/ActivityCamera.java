@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.ListPopupWindow;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -31,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
@@ -69,11 +69,13 @@ import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.common.FileUtils;
 import com.putao.common.TimerAdapter;
+import com.putao.common.XmlUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PCameraFragment std, ffc, current;
@@ -194,20 +196,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
-        try {
-            FileUtils.unZipInAsset(mContext, "axfl.zip", "PutaoCamera", false);
-            FileUtils.unZipInAsset(mContext, "hy.zip", "PutaoCamera", false);
-            FileUtils.unZipInAsset(mContext, "icon.zip", "PutaoCamera", false);
-            FileUtils.unZipInAsset(mContext, "xhx.zip", "PutaoCamera", false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        
-
-
-
-
+        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath()+"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+        Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
 
     }
 
@@ -1069,5 +1059,20 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.show();
     }
 
+
+    private String readSdcardFile(String filePath) {
+        String result = null;
+        try {
+            InputStream is = new FileInputStream(filePath);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            result = new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }

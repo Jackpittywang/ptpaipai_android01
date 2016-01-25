@@ -52,4 +52,5 @@ public class Animation implements Serializable {
                 ", bottom=" + bottom +
                 '}';
     }
+
 }

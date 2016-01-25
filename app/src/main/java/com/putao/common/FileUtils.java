@@ -25,6 +25,8 @@ import java.util.zip.ZipInputStream;
  */
 public final class FileUtils {
 
+    public static final String FILE_PARENT_NAME = "PutaoCamera";
+
     /**
      * 读取文件内容
      *
@@ -386,6 +388,13 @@ public final class FileUtils {
      */
     public static String getSdcardPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    /**
+     * 获取sd卡路径
+     */
+    public static String getStickersPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + FILE_PARENT_NAME;
     }
 
     /**
