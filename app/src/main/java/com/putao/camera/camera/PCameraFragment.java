@@ -142,8 +142,6 @@ public class PCameraFragment extends CameraFragment {
     };
 
 
-
-
     public static PCameraFragment newInstance(boolean useFFC) {
         PCameraFragment f = new PCameraFragment();
         Bundle args = new Bundle();
