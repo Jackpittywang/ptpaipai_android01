@@ -5,13 +5,16 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.ListPopupWindow;
 import android.util.Log;
 import android.view.Gravity;
@@ -143,15 +146,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     /**
      * 刷新界面动画显示的handler
      */
-    private Handler refreshHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-
-        }
-    };
+    private Handler refreshHandler;
     private  List<String> list;
     private  int position;
+    private  ImageView postImage;
 
 
 
@@ -197,6 +195,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
+        //加载本地资源图片
         String stickersPath = FileUtils.getStickersPath();
         com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
         list = new ArrayList<>();
@@ -207,9 +206,15 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             list.add(imageName);
         }
         animation.getMouth().getImageList().setImageName(list);
-        Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
 
+
+        postImage = new ImageView(mContext);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
+        camera_activy.addView(postImage, params);
+        refreshHandler = new Handler();
         refreshHandler.post(refreshRunable);
+
 
     }
 
@@ -1091,11 +1096,30 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         return result;
     }
 
+    Bitmap bitmap;
+    /**
+     * 图片轮播
+     */
     Runnable refreshRunable = new Runnable(){
         @Override
         public void run() {
+            if (position != 0) {
+                bitmap.recycle();
+            }
+            refreshHandler.postDelayed(this, 100);
+            Log.w("yang", "图片张数"+list.size());
+            Log.w("yang", position+"");
 
-            refreshHandler.postDelayed(this, 50);
+            if(position < list.size()) {
+                bitmap = BitmapFactory.decodeFile(list.get(position));
+                postImage.setImageBitmap(bitmap);
+                position++;
+            }else {
+                position = 0;
+                bitmap = BitmapFactory.decodeFile(list.get(position));
+                postImage.setImageBitmap(bitmap);
+            }
+
         }
     };
 
