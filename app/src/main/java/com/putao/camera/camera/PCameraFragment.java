@@ -17,6 +17,7 @@ package com.putao.camera.camera;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -31,6 +32,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,10 +54,15 @@ import com.putao.camera.editor.view.WaterMarkView;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
+import com.putao.common.FileUtils;
+import com.putao.common.XmlUtils;
 import com.putao.common.util.CameraInterface;
 import com.putao.common.util.FaceView;
 import com.putao.common.util.GoogleFaceDetect;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,7 +193,28 @@ public class PCameraFragment extends CameraFragment {
         faceView = (FaceView)view.findViewById(R.id.face_view);
         faceView.setCameraView(cameraView);
         googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
+
+        //加载本地资源图片
+        String stickersPath = FileUtils.getStickersPath();
+        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+        list = new ArrayList<>();
+        List<String> imageNames = animation.getMouth().getImageList().getImageName();
+        for(int i = 0; i < imageNames.size(); i++) {
+            String imageName = stickersPath  + "/xhx/" + imageNames.get(i);
+            Log.i("yang", imageName);
+            list.add(imageName);
+        }
+        animation.getMouth().getImageList().setImageName(list);
+//        Toast.makeText(getActivity(), animation.toString(), Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
+        refreshHandler = new Handler();
+        refreshHandler.post(refreshRunable);
     }
 
     void showGif() {
@@ -615,6 +644,61 @@ public class PCameraFragment extends CameraFragment {
     public void sendMessage() {
         mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
     }
+
+
+    /**
+     * 读取本地资源
+     * @param filePath
+     * @return
+     */
+    private String readSdcardFile(String filePath) {
+        String result = null;
+        try {
+            InputStream is = new FileInputStream(filePath);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            result = new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    /**
+     * 刷新界面动画显示的handler
+     */
+    private Handler refreshHandler;
+    private List<String> list;
+    private Bitmap bitmap;
+    private int position;
+    /**
+     * 图片轮播
+     */
+    Runnable refreshRunable = new Runnable(){
+        @Override
+        public void run() {
+            if (position != 0) {
+                bitmap.recycle();
+            }
+            refreshHandler.postDelayed(this, 100);
+            Log.w("yang", "图片张数"+list.size());
+            Log.w("yang", position+"");
+            if(position < list.size()) {
+                bitmap = BitmapFactory.decodeFile(list.get(position));
+                faceView.setImageBitmap(bitmap);
+                position++;
+            }else {
+                position = 0;
+                bitmap = BitmapFactory.decodeFile(list.get(position));
+                faceView.setImageBitmap(bitmap);
+            }
+
+        }
+    };
+
 
 
 }

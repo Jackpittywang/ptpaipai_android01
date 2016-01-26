@@ -143,15 +143,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         AUTO
     }
 
-    /**
-     * 刷新界面动画显示的handler
-     */
-    private Handler refreshHandler;
-    private  List<String> list;
-    private  int position;
-    private  ImageView postImage;
-
-
 
     @Override
     public int doGetContentViewId() {
@@ -195,26 +186,25 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current = std;
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
-        //加载本地资源图片
-        String stickersPath = FileUtils.getStickersPath();
-        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
-        list = new ArrayList<>();
-        List<String> imageNames = animation.getMouth().getImageList().getImageName();
-        for(int i = 0; i < imageNames.size(); i++) {
-            String imageName = stickersPath  + "/xhx/" + imageNames.get(i);
-            Log.i("yang", imageName);
-            list.add(imageName);
-        }
-        animation.getMouth().getImageList().setImageName(list);
-//        Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
-
-
-        postImage = new ImageView(mContext);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
-        camera_activy.addView(postImage, params);
-        refreshHandler = new Handler();
-        refreshHandler.post(refreshRunable);
-
+//        //加载本地资源图片
+//        String stickersPath = FileUtils.getStickersPath();
+//        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+//        list = new ArrayList<>();
+//        List<String> imageNames = animation.getMouth().getImageList().getImageName();
+//        for(int i = 0; i < imageNames.size(); i++) {
+//            String imageName = stickersPath  + "/xhx/" + imageNames.get(i);
+//            Log.i("yang", imageName);
+//            list.add(imageName);
+//        }
+//        animation.getMouth().getImageList().setImageName(list);
+////        Toast.makeText(mContext, animation.toString(), Toast.LENGTH_LONG).show();
+//
+//
+//        postImage = new ImageView(mContext);
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
+//        camera_activy.addView(postImage, params);
+//        refreshHandler = new Handler();
+//        refreshHandler.post(refreshRunable);
 
     }
 
@@ -1096,31 +1086,38 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         return result;
     }
 
-    Bitmap bitmap;
-    /**
-     * 图片轮播
-     */
-    Runnable refreshRunable = new Runnable(){
-        @Override
-        public void run() {
-            if (position != 0) {
-                bitmap.recycle();
-            }
-            refreshHandler.postDelayed(this, 100);
-            Log.w("yang", "图片张数"+list.size());
-            Log.w("yang", position+"");
 
-            if(position < list.size()) {
-                bitmap = BitmapFactory.decodeFile(list.get(position));
-                postImage.setImageBitmap(bitmap);
-                position++;
-            }else {
-                position = 0;
-                bitmap = BitmapFactory.decodeFile(list.get(position));
-                postImage.setImageBitmap(bitmap);
-            }
-
-        }
-    };
+//    /**
+//     * 刷新界面动画显示的handler
+//     */
+//    private Handler refreshHandler;
+//    private List<String> list;
+//    private ImageView postImage;
+//    private Bitmap bitmap;
+//    private int position;
+//    /**
+//     * 图片轮播
+//     */
+//    Runnable refreshRunable = new Runnable(){
+//        @Override
+//        public void run() {
+//            if (position != 0) {
+//                bitmap.recycle();
+//            }
+//            refreshHandler.postDelayed(this, 100);
+//            Log.w("yang", "图片张数"+list.size());
+//            Log.w("yang", position+"");
+//            if(position < list.size()) {
+//                bitmap = BitmapFactory.decodeFile(list.get(position));
+//                postImage.setImageBitmap(bitmap);
+//                position++;
+//            }else {
+//                position = 0;
+//                bitmap = BitmapFactory.decodeFile(list.get(position));
+//                postImage.setImageBitmap(bitmap);
+//            }
+//
+//        }
+//    };
 
 }
