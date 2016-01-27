@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
@@ -711,6 +712,13 @@ public class PCameraFragment extends CameraFragment {
 
         }
     };
+
+
+
+
+//    Point midPoint = new Point((leftEye.x+rightEye.x)/2, (leftEye.y+rightEye.y)/2);
+//    setFace(FaceView.this, model, midPoint, 2.5f, 15*0.0174f);
+
 
     private int screenWidth;
     private int screenHeight;

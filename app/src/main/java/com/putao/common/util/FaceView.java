@@ -9,17 +9,21 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.putao.camera.R;
 import com.putao.camera.camera.utils.CameraView;
+import com.putao.common.Animation;
+import com.putao.common.Location;
 
 
 public class FaceView extends ImageView {
@@ -39,9 +43,10 @@ public class FaceView extends ImageView {
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         // TODO Auto-generated constructor stub
-        initPaint();
         mContext = context;
-        mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
+        initPaint();
+
+//        mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
 
     }
 
@@ -82,42 +87,39 @@ public class FaceView extends ImageView {
         mMatrix.postRotate(0);
         canvas.rotate(-0);
 
-        for (int i = 0; i < mFaces.length; i++) {
-
-            Point leftEye = mFaces[i].leftEye;
-            Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
-            Point rightEye = mFaces[i].rightEye;
-            Log.d(TAG, "右眼位置:x=" + rightEye.x + ",y=" + rightEye.y);
-            Point mouth = mFaces[i].mouth;
-            Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
-
-            canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, mPaint);
-//            canvas.drawLine(rightEye.x, rightEye.y, mouth.x, mouth.y, paint);
-            mRect.set(leftEye.x, leftEye.y, rightEye.x, rightEye.y);
-//            mRect.set(mFaces[i].rect);
-            mMatrix.mapRect(mRect);
-            mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
-                    Math.round(mRect.right), Math.round(mRect.bottom));
-            mFaceIndicator.draw(canvas);
-//			canvas.drawRect(mRect, mLinePaint);
-        }
-
-//        Paint paint = new Paint();//依靠此类开始画线
-//        paint.setColor(Color.RED);
-//        Point leftEye = mFaces[mFaces.length-1].leftEye;
-//        Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
-//        Point rightEye = mFaces[mFaces.length-1].rightEye;
-//        Log.d(TAG, "右眼位置:x=" + rightEye.x + ",y=" + rightEye.y);
-//        Point mouth = mFaces[mFaces.length-1].mouth;
-//        Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
-//        canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, paint);
+//        for (int i = 0; i < mFaces.length; i++) {
 //
-////        mRect.set(mFaces[mFaces.length - 1].rect);
+//            Point leftEye = mFaces[i].leftEye;
+//            Point rightEye = mFaces[i].rightEye;
+//            Point mouth = mFaces[i].mouth;
+//            Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
+//             Log.d(TAG, "右眼位置:x=" + rightEye.x + ",y=" + rightEye.y);
+//            Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
+//
+//            canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, mPaint);
+////            canvas.drawLine(rightEye.x, rightEye.y, mouth.x, mouth.y, paint);
+//            mRect.set(leftEye.x, leftEye.y, rightEye.x, rightEye.y);
+////            mRect.set(mFaces[i].rect);
+//            mMatrix.mapRect(mRect);
+//            mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
+//                    Math.round(mRect.right), Math.round(mRect.bottom));
+//            mFaceIndicator.draw(canvas);
+////			canvas.drawRect(mRect, mLinePaint);
+//        }
+
+        Point leftEye = mFaces[mFaces.length-1].leftEye;
+        Point rightEye = mFaces[mFaces.length-1].rightEye;
+        Point mouth = mFaces[mFaces.length-1].mouth;
+        Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
+        Log.d(TAG, "右眼位置:x=" + rightEye.x + ",y=" + rightEye.y);
+        Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
+//        canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, mPaint);
+        mRect.set(mFaces[mFaces.length - 1].rect);
 //        mRect.set(leftEye.x, leftEye.y, rightEye.x, rightEye.y);
-//        mMatrix.mapRect(mRect);
-//        mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
-//                Math.round(mRect.right), Math.round(mRect.bottom));
-//        mFaceIndicator.draw(canvas);
+        mMatrix.mapRect(mRect);
+        mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
+                Math.round(mRect.right), Math.round(mRect.bottom));
+        mFaceIndicator.draw(canvas);
 
         canvas.restore();
         super.onDraw(canvas);
@@ -130,7 +132,6 @@ public class FaceView extends ImageView {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setColor(0x80ff0000);
         mPaint.setStrokeWidth(3);
-
     }
 
     public void setImage(Bitmap bm) {
