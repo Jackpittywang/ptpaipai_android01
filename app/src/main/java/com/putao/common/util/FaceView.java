@@ -1,6 +1,8 @@
 package com.putao.common.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -8,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
@@ -26,6 +29,7 @@ public class FaceView extends ImageView {
 
     private Context mContext;
     private Paint mLinePaint;
+    private Paint mPaint;
     private Face[] mFaces;
     private Matrix mMatrix = new Matrix();
     private RectF mRect = new RectF();
@@ -38,6 +42,7 @@ public class FaceView extends ImageView {
         initPaint();
         mContext = context;
         mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
+
     }
 
 
@@ -76,9 +81,9 @@ public class FaceView extends ImageView {
         canvas.save();
         mMatrix.postRotate(0);
         canvas.rotate(-0);
+
         for (int i = 0; i < mFaces.length; i++) {
-            Paint paint = new Paint();//依靠此类开始画线
-            paint.setColor(Color.RED);
+
             Point leftEye = mFaces[i].leftEye;
             Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
             Point rightEye = mFaces[i].rightEye;
@@ -86,7 +91,7 @@ public class FaceView extends ImageView {
             Point mouth = mFaces[i].mouth;
             Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
 
-            canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, paint);
+            canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, mPaint);
 //            canvas.drawLine(rightEye.x, rightEye.y, mouth.x, mouth.y, paint);
             mRect.set(leftEye.x, leftEye.y, rightEye.x, rightEye.y);
 //            mRect.set(mFaces[i].rect);
@@ -119,13 +124,17 @@ public class FaceView extends ImageView {
     }
 
     private void initPaint() {
-        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//		int color = Color.rgb(0, 150, 255);
-        int color = Color.rgb(98, 212, 68);
-//		mLinePaint.setColor(Color.RED);
-        mLinePaint.setColor(color);
-        mLinePaint.setStyle(Style.STROKE);
-        mLinePaint.setStrokeWidth(5f);
-        mLinePaint.setAlpha(180);
+        mPaint = new Paint();//依靠此类开始画线
+//            paint.setColor(Color.RED);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setColor(0x80ff0000);
+        mPaint.setStrokeWidth(3);
+
     }
+
+    public void setImage(Bitmap bm) {
+        mFaceIndicator = new BitmapDrawable(mContext.getResources(), bm);
+    }
+
 }

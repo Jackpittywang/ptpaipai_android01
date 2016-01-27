@@ -22,11 +22,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +57,9 @@ import com.putao.camera.editor.view.WaterMarkView;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
+import com.putao.common.Animation;
 import com.putao.common.FileUtils;
+import com.putao.common.Location;
 import com.putao.common.XmlUtils;
 import com.putao.common.util.CameraInterface;
 import com.putao.common.util.FaceView;
@@ -196,16 +201,20 @@ public class PCameraFragment extends CameraFragment {
 
         //加载本地资源图片
         String stickersPath = FileUtils.getStickersPath();
-        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/xhx/xhx.xml"), "animation", com.putao.common.Animation.class);
+        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/hy/hy.xml"), "animation", com.putao.common.Animation.class);
         list = new ArrayList<>();
-        List<String> imageNames = animation.getMouth().getImageList().getImageName();
+        List<String> imageNames = animation.getEye().getImageList().getImageName();
         for(int i = 0; i < imageNames.size(); i++) {
-            String imageName = stickersPath  + "/xhx/" + imageNames.get(i);
+            String imageName = stickersPath  + "/hy/" + imageNames.get(i);
             Log.i("yang", imageName);
             list.add(imageName);
         }
-        animation.getMouth().getImageList().setImageName(list);
+        animation.getEye().getImageList().setImageName(list);
 //        Toast.makeText(getActivity(), animation.toString(), Toast.LENGTH_LONG).show();
+        // 获取屏幕高宽
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
 
     }
 
@@ -674,6 +683,7 @@ public class PCameraFragment extends CameraFragment {
     private List<String> list;
     private Bitmap bitmap;
     private int position;
+
     /**
      * 图片轮播
      */
@@ -688,17 +698,47 @@ public class PCameraFragment extends CameraFragment {
             Log.w("yang", position+"");
             if(position < list.size()) {
                 bitmap = BitmapFactory.decodeFile(list.get(position));
-                faceView.setImageBitmap(bitmap);
+                faceView.setImage(bitmap);
                 position++;
             }else {
                 position = 0;
                 bitmap = BitmapFactory.decodeFile(list.get(position));
-                faceView.setImageBitmap(bitmap);
+                faceView.setImage(bitmap);
             }
+
+            // 需要算出 中心点位置，放大倍数和角度
+//            setFace(faceView, model, midPoint, 2.5f, 15*0.0174f);
 
         }
     };
 
+    private int screenWidth;
+    private int screenHeight;
+    // angle是弧度
+    private void setFace(ImageView image, Location model, PointF location,
+                         float scale, float angle) {
+
+        Matrix matrix = new Matrix();
+        Matrix matrixRotation = new Matrix();
+        Matrix matrixTranslate = new Matrix();
+        matrixTranslate.setTranslate(location.x-scale*model.getCenterX(), location.y - scale*model.getCenterY());
+        Matrix matrixScale = new Matrix();
+        matrixScale.setScale(scale, scale);
+
+        // 此处旋转用的是角度 不是弧度
+        matrixRotation.setRotate((float)(angle*180f/Math.PI), location.x, location.y);
+        matrix.setConcat(matrixRotation, matrixTranslate);
+        matrix.setConcat(matrix, matrixScale);
+
+        Bitmap targetBitmap = Bitmap.createBitmap(screenWidth, screenHeight,
+                Config.ARGB_8888);
+        Canvas canvas = new Canvas(targetBitmap);
+
+        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
+        canvas.drawBitmap(bitmap, matrix, new Paint());
+        image.setImageBitmap(targetBitmap);
+
+    }
 
 
 }
