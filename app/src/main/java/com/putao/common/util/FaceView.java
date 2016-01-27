@@ -121,6 +121,7 @@ public class FaceView extends ImageView {
                 Math.round(mRect.right), Math.round(mRect.bottom));
         mFaceIndicator.draw(canvas);
 
+//        canvas.drawBitmap(mBitmap, mMatrix, mPaint);
         canvas.restore();
         super.onDraw(canvas);
     }
@@ -134,7 +135,9 @@ public class FaceView extends ImageView {
         mPaint.setStrokeWidth(3);
     }
 
+    private Bitmap mBitmap;
     public void setImage(Bitmap bm) {
+//        mBitmap = bm;
         mFaceIndicator = new BitmapDrawable(mContext.getResources(), bm);
     }
 
