@@ -203,14 +203,15 @@ public class PCameraFragment extends CameraFragment {
         //加载本地资源图片
         String stickersPath = FileUtils.getStickersPath();
         com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/hy/hy.xml"), "animation", com.putao.common.Animation.class);
-        list = new ArrayList<>();
+        bitmapAnimation = new ArrayList<>();
         List<String> imageNames = animation.getEye().getImageList().getImageName();
         for(int i = 0; i < imageNames.size(); i++) {
             String imageName = stickersPath  + "/hy/" + imageNames.get(i);
-            Log.i("yang", imageName);
-            list.add(imageName);
+//            Log.i("yang", imageName);
+//            list.add(imageName);
+            bitmapAnimation.add(BitmapFactory.decodeFile(imageName));
         }
-        animation.getEye().getImageList().setImageName(list);
+//        animation.getEye().getImageList().setImageName(list);
 //        Toast.makeText(getActivity(), animation.toString(), Toast.LENGTH_LONG).show();
         // 获取屏幕高宽
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -681,7 +682,7 @@ public class PCameraFragment extends CameraFragment {
      * 刷新界面动画显示的handler
      */
     private Handler refreshHandler;
-    private List<String> list;
+    private List<Bitmap> bitmapAnimation;
     private Bitmap bitmap;
     private int position;
 
@@ -691,20 +692,18 @@ public class PCameraFragment extends CameraFragment {
     Runnable refreshRunable = new Runnable(){
         @Override
         public void run() {
-            if (position != 0) {
-                bitmap.recycle();
-            }
+//            if (position != 0) {
+//                bitmap.recycle();
+//            }
             refreshHandler.postDelayed(this, 100);
-            Log.w("yang", "图片张数"+list.size());
+            Log.w("yang", "图片张数"+bitmapAnimation.size());
             Log.w("yang", position+"");
-            if(position < list.size()) {
-                bitmap = BitmapFactory.decodeFile(list.get(position));
-                faceView.setImage(bitmap);
+            if(position < bitmapAnimation.size()) {
+                faceView.setImage(bitmapAnimation.get(position));
                 position++;
             }else {
                 position = 0;
-                bitmap = BitmapFactory.decodeFile(list.get(position));
-                faceView.setImage(bitmap);
+                faceView.setImage(bitmapAnimation.get(position));
             }
 
             // 需要算出 中心点位置，放大倍数和角度
