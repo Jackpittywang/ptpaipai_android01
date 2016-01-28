@@ -2,28 +2,21 @@ package com.putao.common.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Face;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.putao.camera.R;
 import com.putao.camera.camera.utils.CameraView;
-import com.putao.common.Animation;
-import com.putao.common.Location;
 
 
 public class FaceView extends ImageView {
@@ -39,6 +32,7 @@ public class FaceView extends ImageView {
     private RectF mRect = new RectF();
     private Drawable mFaceIndicator = null;
     private CameraView mCameraView;
+    private boolean mMirror;
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,10 +71,11 @@ public class FaceView extends ImageView {
             return;
         }
         if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_BACK) {
-            prepareMatrix(mMatrix, 1, 90, getWidth(), getHeight());
+            mMirror = false;
         } else if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_FRONT) {
-            prepareMatrix(mMatrix, -1, 90, getWidth(), getHeight());
+            mMirror = true;
         }
+        prepareMatrix(mMatrix, mMirror, 90, getWidth(), getHeight());
         canvas.save();
         mMatrix.postRotate(0);
         canvas.rotate(-0);
@@ -111,15 +106,16 @@ public class FaceView extends ImageView {
         Log.d(TAG, "左眼位置:x=" + leftEye.x + ",y=" + leftEye.y);
         Log.d(TAG, "右眼位置:x=" + rightEye.x + ",y=" + rightEye.y);
         Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
-//        canvas.drawLine(leftEye.x, leftEye.y, rightEye.x, rightEye.y, mPaint);
+
+//        Point midPoint = new Point((leftEye.x+rightEye.x)/2, (leftEye.y+rightEye.y)/2);
+//        mMatrix.postRotate((float)Math.atan2(midPoint.y, midPoint.x));
+
         mRect.set(mFaces[mFaces.length - 1].rect);
-//        mRect.set(leftEye.x, leftEye.y, rightEye.x, rightEye.y);
         mMatrix.mapRect(mRect);
         mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
                 Math.round(mRect.right), Math.round(mRect.bottom));
         mFaceIndicator.draw(canvas);
 
-//        canvas.drawBitmap(mBitmap, mMatrix, mPaint);
         canvas.restore();
         super.onDraw(canvas);
     }
@@ -133,15 +129,14 @@ public class FaceView extends ImageView {
         mPaint.setStrokeWidth(3);
     }
 
-    private Bitmap mBitmap;
     public void setImage(Bitmap bm) {
         mFaceIndicator = new BitmapDrawable(mContext.getResources(), bm);
     }
 
-    public  void prepareMatrix(Matrix matrix, int mirror, int displayOrientation,
+    public  void prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation,
                                      int viewWidth, int viewHeight) {
-        // Need mirror for front camera.
-        matrix.setScale(mirror, 1);
+        // Need mMirror for front camera.
+        matrix.setScale(mirror ? -1 : 1, 1);
         // This is the value for android.hardware.Camera.setDisplayOrientation.
         matrix.postRotate(displayOrientation);
         // Camera driver coordinates range from (-1000, -1000) to (1000, 1000).

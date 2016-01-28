@@ -201,18 +201,25 @@ public class PCameraFragment extends CameraFragment {
         googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
 
         //加载本地资源图片
-        String stickersPath = FileUtils.getStickersPath();
-        com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/hy/hy.xml"), "animation", com.putao.common.Animation.class);
-        bitmapAnimation = new ArrayList<>();
-        List<String> imageNames = animation.getEye().getImageList().getImageName();
-        for(int i = 0; i < imageNames.size(); i++) {
-            String imageName = stickersPath  + "/hy/" + imageNames.get(i);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String stickersPath = FileUtils.getStickersPath();
+                com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/hy/hy.xml"), "animation", com.putao.common.Animation.class);
+                bitmapAnimation = new ArrayList<>();
+                List<String> imageNames = animation.getEye().getImageList().getImageName();
+                for(int i = 0; i < imageNames.size(); i++) {
+                    String imageName = stickersPath  + "/hy/" + imageNames.get(i);
 //            Log.i("yang", imageName);
 //            list.add(imageName);
-            bitmapAnimation.add(BitmapFactory.decodeFile(imageName));
-        }
-//        animation.getEye().getImageList().setImageName(list);
+                    bitmapAnimation.add(BitmapFactory.decodeFile(imageName));
+                }
+//            animation.getEye().getImageList().setImageName(list);
+            }
+        }).start();
+
 //        Toast.makeText(getActivity(), animation.toString(), Toast.LENGTH_LONG).show();
+
         // 获取屏幕高宽
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
@@ -223,9 +230,7 @@ public class PCameraFragment extends CameraFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mHandler.sendEmptyMessageDelayed(FaceView.CAMERA_HAS_STARTED_PREVIEW, 1500);
-        refreshHandler = new Handler();
-        refreshHandler.post(refreshRunable);
+
     }
 
     void showGif() {
@@ -643,13 +648,13 @@ public class PCameraFragment extends CameraFragment {
         }
     }
 
-    private void stopGoogleFaceDetect() {
-        Camera.Parameters params = cameraView.getCameraInstance().getParameters();
-        if (params.getMaxNumDetectedFaces() > 0) {
-            cameraView.getCameraInstance().setFaceDetectionListener(null);
-            cameraView.getCameraInstance().stopFaceDetection();
-            faceView.clearFaces();
-        }
+    public void stopGoogleFaceDetect() {
+//        Camera.Parameters params = cameraView.getCameraInstance().getParameters();
+//        if (params.getMaxNumDetectedFaces() > 0) {
+//            cameraView.getCameraInstance().setFaceDetectionListener(null);
+//            cameraView.getCameraInstance().stopFaceDetection();
+//            faceView.clearFaces();
+//        }
     }
 
     public void sendMessage() {
@@ -683,8 +688,24 @@ public class PCameraFragment extends CameraFragment {
      */
     private Handler refreshHandler;
     private List<Bitmap> bitmapAnimation;
-    private Bitmap bitmap;
     private int position;
+
+    /**
+     * 开始图片轮播
+     */
+    public void startAnimation() {
+        if(refreshHandler == null) {
+            refreshHandler = new Handler();
+        }
+        refreshHandler.post(refreshRunable);
+    }
+
+    /**
+     * 停止图片轮播
+     */
+    public void stopAnimation() {
+        refreshHandler.removeCallbacks(refreshRunable);
+    }
 
     /**
      * 图片轮播
@@ -695,7 +716,7 @@ public class PCameraFragment extends CameraFragment {
 //            if (position != 0) {
 //                bitmap.recycle();
 //            }
-            refreshHandler.postDelayed(this, 100);
+            refreshHandler.postDelayed(this, 300);
             Log.w("yang", "图片张数"+bitmapAnimation.size());
             Log.w("yang", position+"");
             if(position < bitmapAnimation.size()) {
@@ -714,8 +735,6 @@ public class PCameraFragment extends CameraFragment {
 
 
 
-
-//    Point midPoint = new Point((leftEye.x+rightEye.x)/2, (leftEye.y+rightEye.y)/2);
 //    setFace(FaceView.this, model, midPoint, 2.5f, 15*0.0174f);
 
 
