@@ -44,7 +44,7 @@ public class FaceView extends ImageView {
         super(context, attrs);
         // TODO Auto-generated constructor stub
         mContext = context;
-        initPaint();
+//        initPaint();
 
 //        mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
 
@@ -76,13 +76,11 @@ public class FaceView extends ImageView {
         if (mFaces == null || mFaces.length < 1) {
             return;
         }
-        boolean isMirror = false;
         if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_BACK) {
-            isMirror = false;
+            prepareMatrix(mMatrix, 1, 90, getWidth(), getHeight());
         } else if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_FRONT) {
-            isMirror = true;
+            prepareMatrix(mMatrix, -1, 90, getWidth(), getHeight());
         }
-        Util.prepareMatrix(mMatrix, isMirror, 90, getWidth(), getHeight());
         canvas.save();
         mMatrix.postRotate(0);
         canvas.rotate(-0);
@@ -137,8 +135,20 @@ public class FaceView extends ImageView {
 
     private Bitmap mBitmap;
     public void setImage(Bitmap bm) {
-//        mBitmap = bm;
         mFaceIndicator = new BitmapDrawable(mContext.getResources(), bm);
     }
+
+    public  void prepareMatrix(Matrix matrix, int mirror, int displayOrientation,
+                                     int viewWidth, int viewHeight) {
+        // Need mirror for front camera.
+        matrix.setScale(mirror, 1);
+        // This is the value for android.hardware.Camera.setDisplayOrientation.
+        matrix.postRotate(displayOrientation);
+        // Camera driver coordinates range from (-1000, -1000) to (1000, 1000).
+        // UI coordinates range from (0, 0) to (width, height).
+        matrix.postScale(viewWidth / 1500f, viewHeight / 1500f);
+        matrix.postTranslate(viewWidth / 2f, viewHeight / 2f);
+    }
+
 
 }
