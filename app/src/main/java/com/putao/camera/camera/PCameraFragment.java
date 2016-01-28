@@ -212,7 +212,11 @@ public class PCameraFragment extends CameraFragment {
                     String imageName = stickersPath  + "/hy/" + imageNames.get(i);
 //            Log.i("yang", imageName);
 //            list.add(imageName);
-                    bitmapAnimation.add(BitmapFactory.decodeFile(imageName));
+                    if (mBitmap != null) {
+                        mBitmap.recycle();
+                    }
+                    mBitmap = BitmapFactory.decodeFile(imageName);
+                    bitmapAnimation.add(mBitmap);
                 }
 //            animation.getEye().getImageList().setImageName(list);
             }
@@ -688,6 +692,7 @@ public class PCameraFragment extends CameraFragment {
      */
     private Handler refreshHandler;
     private List<Bitmap> bitmapAnimation;
+    private Bitmap mBitmap;
     private int position;
 
     /**
@@ -713,17 +718,19 @@ public class PCameraFragment extends CameraFragment {
     Runnable refreshRunable = new Runnable(){
         @Override
         public void run() {
-//            if (position != 0) {
-//                bitmap.recycle();
-//            }
+            if (mBitmap != null) {
+                mBitmap.recycle();
+            }
             refreshHandler.postDelayed(this, 300);
             Log.w("yang", "图片张数"+bitmapAnimation.size());
             Log.w("yang", position+"");
             if(position < bitmapAnimation.size()) {
-                faceView.setImage(bitmapAnimation.get(position));
+                mBitmap = bitmapAnimation.get(position);
+                faceView.setImage(mBitmap);
                 position++;
             }else {
                 position = 0;
+                mBitmap = bitmapAnimation.get(position);
                 faceView.setImage(bitmapAnimation.get(position));
             }
 
@@ -766,5 +773,10 @@ public class PCameraFragment extends CameraFragment {
 
     }
 
-
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        bitmapAnimation.clear();
+//        bitmapAnimation = null;
+//    }
 }

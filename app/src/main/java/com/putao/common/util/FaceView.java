@@ -108,7 +108,7 @@ public class FaceView extends ImageView {
         Log.d(TAG, "嘴巴位置:x=" + mouth.x + ",y=" + mouth.y);
 
 //        Point midPoint = new Point((leftEye.x+rightEye.x)/2, (leftEye.y+rightEye.y)/2);
-//        mMatrix.postRotate((float)Math.atan2(midPoint.y, midPoint.x));
+//        mMatrix.postRotate((float)(Math.atan2(midPoint.y, midPoint.x)*0.0174f*180f/Math.PI));
 
         mRect.set(mFaces[mFaces.length - 1].rect);
         mMatrix.mapRect(mRect);
