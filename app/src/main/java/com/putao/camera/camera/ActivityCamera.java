@@ -418,8 +418,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 //                        current.stopGoogleFaceDetect();
                     } else {
                         doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_SELF_CAMERA);
-                        current.sendMessage();
-                        current.startAnimation();
+//                        current.sendMessage();
+//                        current.startAnimation();
                     }
                 }
                 ClearWaterMark();

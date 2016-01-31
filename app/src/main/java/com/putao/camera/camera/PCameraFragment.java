@@ -213,7 +213,7 @@ public class PCameraFragment extends CameraFragment {
 //            Log.i("yang", imageName);
 //            list.add(imageName);
                     if (mBitmap != null) {
-                        mBitmap.recycle();
+                        mBitmap = null;
                     }
                     mBitmap = BitmapFactory.decodeFile(imageName);
                     bitmapAnimation.add(mBitmap);
@@ -234,6 +234,9 @@ public class PCameraFragment extends CameraFragment {
     @Override
     public void onStart() {
         super.onStart();
+        sendMessage();
+        refreshHandler = new Handler();
+        refreshHandler.post(refreshRunable);
 
     }
 
@@ -719,7 +722,7 @@ public class PCameraFragment extends CameraFragment {
         @Override
         public void run() {
             if (mBitmap != null) {
-                mBitmap.recycle();
+                mBitmap = null;
             }
             refreshHandler.postDelayed(this, 300);
             Log.w("yang", "图片张数"+bitmapAnimation.size());
@@ -731,7 +734,7 @@ public class PCameraFragment extends CameraFragment {
             }else {
                 position = 0;
                 mBitmap = bitmapAnimation.get(position);
-                faceView.setImage(bitmapAnimation.get(position));
+                faceView.setImage(mBitmap);
             }
 
             // 需要算出 中心点位置，放大倍数和角度
