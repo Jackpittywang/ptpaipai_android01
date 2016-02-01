@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +24,7 @@ import com.putao.camera.camera.utils.CameraView;
 
 
 public class FaceView extends ImageView {
-    private static final String TAG = "YanZi";
+    private static final String TAG = "faceView";
     public static final int UPDATE_FACE_RECT = 0;
     public static final int CAMERA_HAS_STARTED_PREVIEW = 1;
 
@@ -51,7 +52,7 @@ public class FaceView extends ImageView {
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
 
-//        mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
+        mFaceIndicator = getResources().getDrawable(R.drawable.ic_face_find_2);
 
     }
 
@@ -81,12 +82,14 @@ public class FaceView extends ImageView {
         if (mFaces == null || mFaces.length < 1 || mBitmap == null) {
             return;
         }
+        mMatrix.reset();
+        mMatrixRotate.reset();
         if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_BACK) {
             mMirror = false;
         } else if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_FRONT) {
             mMirror = true;
         }
-//        prepareMatrix(mMatrix, mMirror, 90, getWidth(), getHeight());
+        prepareMatrix(mMatrix, mMirror, 90, getWidth(), getHeight());
 //        canvas.save();
 //        mMatrix.postRotate(0);
 //        canvas.rotate(-0);
@@ -111,7 +114,7 @@ public class FaceView extends ImageView {
 //        }
 
 
-        mMatrix.reset();
+//        mMatrix.reset();
 
         Point leftEye = mFaces[mFaces.length-1].leftEye;
         Point rightEye = mFaces[mFaces.length-1].rightEye;
@@ -124,7 +127,6 @@ public class FaceView extends ImageView {
 //        if ((rightEye.x - leftEye.x) != 0) {
 //            double angle = -Math.atan((rightEye.y - leftEye.y)/(rightEye.x - leftEye.x));
 ////            mMatrix.postRotate((float)Math.toDegrees(angle));
-////            mMatrix.postRotate((float)Math.toDegrees(angle));
 //            mMatrix.setRotate(45);
 //            Log.w("yang", "angle = " + angle);
 //            Log.w("yang", "angle角度值 = " + Math.toDegrees(angle));
@@ -134,18 +136,43 @@ public class FaceView extends ImageView {
 //        mMatrix.setRotate(45,getWidth()/2f,getHeight()/2f);
 //        mMatrix.setRotate(45, (rightEye.x + leftEye.x) / 2, (rightEye.y + leftEye.y) / 2);
 //        mMatrix.setRotate(45, (getWidth()/2f-leftEye.y + getWidth()/2f-rightEye.y) / 2, (getHeight()/2f-leftEye.x + getHeight()/2f-rightEye.x) / 2);
-          mMatrix.setRotate(45, (getWidth()/2f-leftEye.x + getWidth()/2f-rightEye.x) / 2, (getHeight()/2f-leftEye.y + getHeight()/2f-rightEye.y) / 2);
+//          mMatrix.setRotate(45, (getWidth()/2f-leftEye.x + getWidth()/2f-rightEye.x) / 2, (getHeight()/2f-leftEye.y + getHeight()/2f-rightEye.y) / 2);
 //        mMatrix.postTranslate(0, 100);
 //        mMatrix.setRotate(45,100,100);
 //        mMatrix.postRotate(60, (rightEye.x + leftEye.x) / 2, (rightEye.y + leftEye.y) / 2);
 //        mMatrix.postScale(getWidth()/1500f, getHeight()/1500f);
 
-//        mRect.set(mFaces[mFaces.length - 1].rect);
-//        mMatrix.mapRect(mRect);
-//        mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
-//                Math.round(mRect.right), Math.round(mRect.bottom));
-//        mFaceIndicator.draw(canvas);
-        canvas.drawBitmap(mBitmap, mMatrix, null);
+//        mMatrix.setRotate(45,getWidth()/2f,getHeight()/2f);
+
+        if(mFaces[0].leftEye.x != -1000 ){
+        }
+
+        Rect eyeRect = new Rect();
+        eyeRect.left = mFaces[0].leftEye.x;
+        eyeRect.top = mFaces[0].leftEye.y;
+        eyeRect.right = mFaces[0].rightEye.x;
+        eyeRect.bottom = mFaces[0].rightEye.y;
+
+        mRect.set(mFaces[mFaces.length - 1].rect);
+        mMatrix.mapRect(mRect);
+        Log.w(TAG, "eyeRect values = " + eyeRect.toString());
+        Log.w(TAG, "mRect values = " + mRect.toString());
+
+        float faceCenterX = (mRect.left + mRect.right) / 2f;
+        float faceCenterY = (mRect.top + mRect.bottom) / 2f;
+//        float faceCenterY = mRect.top;
+        Log.w(TAG, "旋转中心点坐标 = " + "x: " + faceCenterX + "y: " + faceCenterY);
+
+        mMatrixRotate.setRotate(60, faceCenterX, faceCenterY);
+//        mMatrixRotate.postRotate(60, faceCenterX, faceCenterY);
+        mMatrixRotate.mapRect(mRect);
+        Log.w(TAG, "mRect2 values = " + mRect.toString());
+
+        mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
+                Math.round(mRect.right), Math.round(mRect.bottom));
+        mFaceIndicator.draw(canvas);
+
+//        canvas.drawBitmap(mBitmap, mMatrix, null);
 
 //        canvas.restore();
         super.onDraw(canvas);
@@ -178,7 +205,7 @@ public class FaceView extends ImageView {
         matrix.postTranslate(viewWidth / 2f, viewHeight / 2f);
     }
 
-    private Matrix matrixRotation = new Matrix();
+    private Matrix mMatrixRotate = new Matrix();
     private Matrix matrixTranslate = new Matrix();
     private Matrix matrixScale = new Matrix();
 
