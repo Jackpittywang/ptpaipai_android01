@@ -82,8 +82,6 @@ public class FaceView extends ImageView {
         if (mFaces == null || mFaces.length < 1 || mBitmap == null) {
             return;
         }
-        mMatrix.reset();
-        mMatrixRotate.reset();
         if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_BACK) {
             mMirror = false;
         } else if (mCameraView.cameraId == CameraInfo.CAMERA_FACING_FRONT) {
@@ -153,6 +151,7 @@ public class FaceView extends ImageView {
         eyeRect.right = mFaces[0].rightEye.x;
         eyeRect.bottom = mFaces[0].rightEye.y;
 
+//        mRect.set(mFaces[0].leftEye.x, mFaces[0].leftEye.y, mFaces[0].rightEye.x,  mFaces[0].mouth.y);
         mRect.set(mFaces[mFaces.length - 1].rect);
         mMatrix.mapRect(mRect);
         Log.w(TAG, "eyeRect values = " + eyeRect.toString());
