@@ -59,6 +59,8 @@ import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
 import com.putao.common.Animation;
+import com.putao.common.AnimationImageView;
+import com.putao.common.AnimationModel;
 import com.putao.common.FileUtils;
 import com.putao.common.Location;
 import com.putao.common.XmlUtils;
@@ -71,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 public class PCameraFragment extends CameraFragment {
@@ -131,7 +134,7 @@ public class PCameraFragment extends CameraFragment {
     private ExposureLevel mExposureLevel = ExposureLevel.NORMAL;
 
 
-    private FaceView faceView;
+    private AnimationImageView faceView;
     private GoogleFaceDetect googleFaceDetect;
 
     /**
@@ -145,8 +148,14 @@ public class PCameraFragment extends CameraFragment {
             switch (msg.what) {
                 case FaceView.UPDATE_FACE_RECT:
                     Camera.Face[] faces = (Camera.Face[]) msg.obj;
-                    faceView.setFaces(faces);
-                    Log.i("YanZi", "onFaceDetection...update");
+                    // faceView.setFaces(faces);
+
+                    if(faces.length>0){
+                        Log.i("YanZi", "x y is:"+faces[0].leftEye.x+":"+faces[0].leftEye.y);
+                        faceView.setPositionByFace(faces[0]);
+
+                    }
+                    // Log.i("YanZi", "onFaceDetection...update");
                     break;
                 case FaceView.CAMERA_HAS_STARTED_PREVIEW:
                     startGoogleFaceDetect();
@@ -192,18 +201,47 @@ public class PCameraFragment extends CameraFragment {
         return (results);
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        faceView = (FaceView)view.findViewById(R.id.face_view);
-        faceView.setCameraView(cameraView);
+
+        faceView = (AnimationImageView)view.findViewById(R.id.face_view);
+        AnimationModel model = new AnimationModel();
+        model.setCenterX(150);
+        model.setCenterY(170);
+        model.setWidth(300);
+        model.setHeight(400);
+        model.setDuration(0.08f);
+        model.setDistance(90);
+        List<String> imageList = new ArrayList<String>();
+        imageList.add("fd0001@2x");
+        imageList.add("fd0002@2x");
+        imageList.add("fd0003@2x");
+        imageList.add("fd0004@2x");
+        imageList.add("fd0005@2x");
+        imageList.add("fd0006@2x");
+        imageList.add("fd0007@2x");
+        imageList.add("fd0008@2x");
+        imageList.add("fd0009@2x");
+        imageList.add("fd0010@2x");
+        model.setImageList(imageList);
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
+        faceView.setData(model, screenWidth, screenHeight);
+
+        // faceView.setCameraView(cameraView);
         googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
 
-        //加载本地资源图片
+      /*  //加载本地资源图片
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                Log.i("PCCamera", "image loaded ...");
                 String stickersPath = FileUtils.getStickersPath();
                 com.putao.common.Animation animation = XmlUtils.xmlToModel(readSdcardFile(stickersPath +"/hy/hy.xml"), "animation", com.putao.common.Animation.class);
                 bitmapAnimation = new ArrayList<>();
@@ -220,14 +258,11 @@ public class PCameraFragment extends CameraFragment {
                 }
 //            animation.getEye().getImageList().setImageName(list);
             }
-        }).start();
+        }).start();*/
 
 //        Toast.makeText(getActivity(), animation.toString(), Toast.LENGTH_LONG).show();
 
-        // 获取屏幕高宽
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        screenWidth = dm.widthPixels;
-        screenHeight = dm.heightPixels;
+
 
     }
 
@@ -644,10 +679,10 @@ public class PCameraFragment extends CameraFragment {
 
 
     private void startGoogleFaceDetect() {
-        Camera.Parameters params =cameraView.getCameraInstance().getParameters();
+        Parameters params =cameraView.getCameraInstance().getParameters();
         if (params.getMaxNumDetectedFaces() > 0) {
             if (faceView != null) {
-                faceView.clearFaces();
+                // faceView.clearFaces();
                 faceView.setVisibility(View.VISIBLE);
             }
             cameraView.getCameraInstance().setFaceDetectionListener(googleFaceDetect);
@@ -721,6 +756,8 @@ public class PCameraFragment extends CameraFragment {
     Runnable refreshRunable = new Runnable(){
         @Override
         public void run() {
+            return;
+            /*
             if (mBitmap != null) {
                 mBitmap = null;
             }
@@ -739,7 +776,7 @@ public class PCameraFragment extends CameraFragment {
 
             // 需要算出 中心点位置，放大倍数和角度
 //            setFace(faceView, model, midPoint, 2.5f, 15*0.0174f);
-
+            */
         }
     };
 
@@ -757,7 +794,7 @@ public class PCameraFragment extends CameraFragment {
         Matrix matrix = new Matrix();
         Matrix matrixRotation = new Matrix();
         Matrix matrixTranslate = new Matrix();
-        matrixTranslate.setTranslate(location.x-scale*model.getCenterX(), location.y - scale*model.getCenterY());
+        matrixTranslate.setTranslate(location.x-scale* Float.valueOf(model.getCenterX()), location.y - scale*Float.valueOf(model.getCenterY()));
         Matrix matrixScale = new Matrix();
         matrixScale.setScale(scale, scale);
 

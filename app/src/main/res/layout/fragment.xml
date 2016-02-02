@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.putao.common.util.FaceView
+        <com.putao.common.AnimationImageView
             android:id="@+id/face_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
