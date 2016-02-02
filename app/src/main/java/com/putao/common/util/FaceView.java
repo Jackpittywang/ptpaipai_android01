@@ -160,7 +160,7 @@ public class FaceView extends ImageView {
         float faceCenterX = (mRect.left + mRect.right) / 2f;
         float faceCenterY = (mRect.top + mRect.bottom) / 2f;
 //        float faceCenterY = mRect.top;
-        Log.w(TAG, "旋转中心点坐标 = " + "x: " + faceCenterX + "y: " + faceCenterY);
+        Log.w(TAG, "旋转中心点坐标 = " + "x: " + faceCenterX + "  ||  y: " + faceCenterY);
 
         mMatrixRotate.setRotate(60, faceCenterX, faceCenterY);
 //        mMatrixRotate.postRotate(60, faceCenterX, faceCenterY);
