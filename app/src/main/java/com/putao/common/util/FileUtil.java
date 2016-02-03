@@ -3,51 +3,56 @@ package com.putao.common.util;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtil {
+
 	private static final String TAG = "FileUtil";
-	private static final File parentPath = Environment.getExternalStorageDirectory();
-	private static String storagePath = "";
-	private static final String DST_FOLDER_NAME = "PlayCamera";
-
-
-	private static String initPath(){
-		if(storagePath.equals("")){
-			storagePath = parentPath.getAbsolutePath()+"/" + DST_FOLDER_NAME;
-			File f = new File(storagePath);
-			if(!f.exists()){
-				f.mkdir();
-			}
-		}
-		return storagePath;
-	}
-
+	private static final String PARENT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PutaoCamera";
 
 	/**
-	 * 保存图片到sd卡
-	 * @param b
+	 * view shot
+	 * @return Bitmap
 	 */
-	public static void saveBitmap(Bitmap b){
+	private Bitmap getViewShot (View view) {
 
-		String path = initPath();
-		long dataTake = System.currentTimeMillis();
-		String jpegName = path + "/" + dataTake +".jpg";
-		Log.i(TAG, "saveBitmap:jpegName = " + jpegName);
+		view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+		view.setDrawingCacheEnabled(true);
+		view.buildDrawingCache();
+		Bitmap bitmap = view.getDrawingCache();
+
+		view.destroyDrawingCache();
+		return bitmap;
+	}
+
+	/**
+	 * save bitmap to sdCard
+	 * @param bitmap	src
+	 * @param fileName	sample:"xxx.png"
+	 */
+	public static void saveBitmap(Bitmap bitmap, String fileName) {
+
 		try {
-			FileOutputStream fout = new FileOutputStream(jpegName);
-			BufferedOutputStream bos = new BufferedOutputStream(fout);
-			b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-			bos.flush();
-			bos.close();
-			Log.i(TAG, "saveBitmap保存成功");
+
+			Log.w(TAG, "PARENT_PATH = " + PARENT_PATH);
+			File directory = new File(PARENT_PATH);
+			if (!directory.exists()) directory.mkdirs();
+
+			FileOutputStream fos = new FileOutputStream(new File(PARENT_PATH + File.separator + fileName));
+			bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);
+			fos.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Log.i(TAG, "saveBitmap保存失败");
 			e.printStackTrace();
 		}
 
