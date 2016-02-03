@@ -192,4 +192,10 @@ public class CameraInterface {
             isPreviewing = true;
         }
     };
+
+
+
+
+
+
 }
