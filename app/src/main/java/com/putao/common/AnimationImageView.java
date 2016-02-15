@@ -1,6 +1,9 @@
 package com.putao.common;
 
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,7 @@ public class AnimationImageView extends ImageView {
 	// private Canvas mCanvas;
 	private int animationPosition = 0;
 	private Handler refreshHandler;
-	private AnimationModel animationModel;
+	private Location animationModel;
 	private boolean animationRunning = false;
 	private float imageAngle = 0f;
 	private float imageScale = 0f;
@@ -49,6 +52,7 @@ public class AnimationImageView extends ImageView {
     private Matrix matrixScale = new Matrix();
 	
 	private List<Bitmap> bitmapArr = new ArrayList<Bitmap>();
+	private Bitmap mBitmap;
 	    
 	public AnimationImageView(Context c) {
 		super(c);         
@@ -59,15 +63,15 @@ public class AnimationImageView extends ImageView {
 		super(c, attrs);
 
 	}
-	
-	public void setData(AnimationModel model, int screenWidth, int screenHeight){
+
+	public void setData(final Location model, int screenWidth, int screenHeight){
 		bitmapArr.clear();
 		animationPosition = 0;
 		animationModel = model;
-		Options option = new Options();
+		final Options option = new Options();
 		option.inScaled = false;
 		
-	    Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(),
+	    /*Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.fd0001, option);
 	    bitmapArr.add(bitmap1);
 	    Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(),
@@ -93,9 +97,30 @@ public class AnimationImageView extends ImageView {
 	    bitmapArr.add(bitmap8);
 	    Bitmap bitmap9 = BitmapFactory.decodeResource(getResources(),
 				R.drawable.fd0009, option);
-	    bitmapArr.add(bitmap9);
-	    
-	    
+	    bitmapArr.add(bitmap9);*/
+
+		  //加载本地资源图片
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.i("PCCamera", "image loaded ...");
+                String stickersPath = FileUtils.getStickersPath();
+
+                List<String> imageNames = model.getImageList().getImageName();
+                for(int i = 0; i < imageNames.size(); i++) {
+                    String imageName = stickersPath  + "/hy/" + imageNames.get(i);
+                    if (mBitmap != null) {
+                        mBitmap = null;
+                    }
+                    mBitmap = BitmapFactory.decodeFile(imageName, option);
+					bitmapArr.add(mBitmap);
+                }
+//            animation.getEye().getImageList().setImageName(list);
+            }
+        }).start();
+
+
 /*		for(int i = 0; i<model.getImageList().size(); i++){
 			File file = new File(Environment.getExternalStorageDirectory()+File.separator+"paipai"+File.separator+model.getImageList().get(i));
 		    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
@@ -233,5 +258,6 @@ public class AnimationImageView extends ImageView {
         canvas.restore();
 	    
         super.onDraw(canvas); 
-	}       
+	}
+
 }

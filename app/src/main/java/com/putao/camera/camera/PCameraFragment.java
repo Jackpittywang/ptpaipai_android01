@@ -208,30 +208,35 @@ public class PCameraFragment extends CameraFragment {
 
 
         faceView = (AnimationImageView)view.findViewById(R.id.face_view);
-        AnimationModel model = new AnimationModel();
-        model.setCenterX(150);
-        model.setCenterY(170);
-        model.setWidth(300);
-        model.setHeight(400);
-        model.setDuration(0.08f);
-        model.setDistance(90);
-        List<String> imageList = new ArrayList<String>();
-        imageList.add("fd0001@2x");
-        imageList.add("fd0002@2x");
-        imageList.add("fd0003@2x");
-        imageList.add("fd0004@2x");
-        imageList.add("fd0005@2x");
-        imageList.add("fd0006@2x");
-        imageList.add("fd0007@2x");
-        imageList.add("fd0008@2x");
-        imageList.add("fd0009@2x");
-        imageList.add("fd0010@2x");
-        model.setImageList(imageList);
+
+//        AnimationModel model = new AnimationModel();
+//        model.setCenterX(150);
+//        model.setCenterY(170);
+//        model.setWidth(300);
+//        model.setHeight(400);
+//        model.setDuration(0.08f);
+//        model.setDistance(90);
+//        List<String> imageList = new ArrayList<String>();
+//        imageList.add("fd0001@2x");
+//        imageList.add("fd0002@2x");
+//        imageList.add("fd0003@2x");
+//        imageList.add("fd0004@2x");
+//        imageList.add("fd0005@2x");
+//        imageList.add("fd0006@2x");
+//        imageList.add("fd0007@2x");
+//        imageList.add("fd0008@2x");
+//        imageList.add("fd0009@2x");
+//        imageList.add("fd0010@2x");
+//        model.setImageList(imageList);
+
+        Animation model = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath() +"/hy/hy.xml"), "animation", Animation.class);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
-        faceView.setData(model, screenWidth, screenHeight);
+
+
+        faceView.setData(model.getEye(), screenWidth, screenHeight);
 
         // faceView.setCameraView(cameraView);
         googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);

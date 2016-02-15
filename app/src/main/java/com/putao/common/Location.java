@@ -6,60 +6,66 @@ import java.io.Serializable;
  * Created by guchenkai on 2016/1/5.
  */
 public class Location implements Serializable {
-    private String width;
-    private String height;
-    private String distance;
-    private String centerX;
-    private String centerY;
-    private String duration;
+    private int width;
+    private int height;
+    private int distance;
+    private int centerX;
+    private int centerY;
+    private float duration;
     private Image imageList;
+    private long durationLong = 0;
 
-    public String getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setWidth(String width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
-    public String getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public String getDistance() {
+    public int getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(int distance) {
         this.distance = distance;
     }
 
-    public String getCenterX() {
+    public int getCenterX() {
         return centerX;
     }
 
-    public void setCenterX(String centerX) {
+    public void setCenterX(int centerX) {
         this.centerX = centerX;
     }
 
-    public String getCenterY() {
+    public int getCenterY() {
         return centerY;
     }
 
-    public void setCenterY(String centerY) {
+    public void setCenterY(int centerY) {
         this.centerY = centerY;
     }
 
-    public String getDuration() {
+    public float getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(float duration) {
         this.duration = duration;
+        durationLong = (long) (this.duration*1000);
+    }
+
+    public long getDurationLong(){
+        return durationLong;
     }
 
     public Image getImageList() {
@@ -73,13 +79,14 @@ public class Location implements Serializable {
     @Override
     public String toString() {
         return "Location{" +
-                "width='" + width + '\'' +
-                ", height='" + height + '\'' +
-                ", distance='" + distance + '\'' +
-                ", centerX='" + centerX + '\'' +
-                ", centerY='" + centerY + '\'' +
-                ", duration='" + duration + '\'' +
+                "width=" + width +
+                ", height=" + height +
+                ", distance=" + distance +
+                ", centerX=" + centerX +
+                ", centerY=" + centerY +
+                ", duration=" + duration +
                 ", imageList=" + imageList +
                 '}';
     }
+
 }
