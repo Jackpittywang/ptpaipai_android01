@@ -12,6 +12,7 @@ import com.putao.camera.R;
 import com.putao.video.VideoHelper;
 
 /**
+ * 视频拼接示例
  * Created by guchenkai on 2016/1/6.
  */
 public class VideoActivity extends Activity {
@@ -29,7 +30,7 @@ public class VideoActivity extends Activity {
 //        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/Camera");
 //        pictureFileList = file.listFiles();
 
-        final String command = "-f image2 -i " + Environment.getExternalStorageDirectory() + "/test_video/image%d.jpg"
+        final String command = "-f image2 -i " + Environment.getExternalStorageDirectory() + "/test_video/image%02d.jpg"
                 + " -vcodec mpeg4 -r 5 -b 200k -s 480x360 " + Environment.getExternalStorageDirectory() + "/test_video/out.mp4";
 
         VideoHelper.getInstance(this).exectueFFmpegCommand(command.split(" "), new ExecuteBinaryResponseHandler() {
