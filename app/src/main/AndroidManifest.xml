@@ -1,334 +1,303 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.putao.camera"
-    android:versionCode="12"
-    android:versionName="1.2.3">
+<manifest package="com.putao.camera"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:versionCode="12"
+          android:versionName="1.2.3">
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="true"/>
     <uses-feature
         android:name="android.hardware.camera.front"
-        android:required="false" />
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:required="false"/>
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
-        android:name="com.putao.camera.application.MainApplication"
+        android:name=".application.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true">
-
         <activity
-            android:name="com.putao.camera.logo.LogoActivity"
+            android:name=".logo.LogoActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.putao.camera.welcome.CircleSwitchActivity"
+            android:name=".welcome.CircleSwitchActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name="com.putao.camera.album.PhotoListActivity"
+            android:name=".album.PhotoListActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
-            android:name="com.putao.camera.editor.PhotoEditorActivity"
+            android:name=".editor.PhotoEditorActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
             android:name=".editor.PhotoShareActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
-            android:name="com.putao.camera.camera.ActivityCamera"
+            android:name=".camera.ActivityCamera"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name="com.putao.camera.gallery.GalleryFileActivity"
+            android:name=".gallery.GalleryFileActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name="com.putao.camera.album.CategoryPhotoListActivity"
+            android:name=".album.CategoryPhotoListActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
-            android:name="com.putao.camera.album.AlbumPhotoSelectActivity"
+            android:name=".album.AlbumPhotoSelectActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
-            android:name="com.putao.camera.umengfb.UmengFeedbackActivity"
+            android:name=".umengfb.UmengFeedbackActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="com.putao.camera.editor.CitySelectActivity"
+            android:name=".editor.CitySelectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.editor.FestivalSelectActivity"
+            android:name=".editor.FestivalSelectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".collage.CollagePhotoSelectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.collage.CollageMakeActivity"
+            android:name=".collage.CollageMakeActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.collage.CollageSampleSelectActivity"
+            android:name=".collage.CollageSampleSelectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.voice.VoicePhotoActivity"
+            android:name=".voice.VoicePhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.setting.SettingActivity"
+            android:name=".setting.SettingActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.setting.AboutActivity"
+            android:name=".setting.AboutActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.setting.DLManagerActivity"
+            android:name=".setting.DLManagerActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.voice.VoiceCategoryPhotoListActivity"
+            android:name=".voice.VoiceCategoryPhotoListActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.voice.VoiceCameraActivity"
+            android:name=".voice.VoiceCameraActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.voice.VoicePhotoShareActivity"
+            android:name=".voice.VoicePhotoShareActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".collage.ConnectPhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".menu.MenuActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
-            android:name="com.putao.camera.movie.MovieCameraActivity"
+            android:name=".movie.MovieCameraActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
-            android:name="com.putao.camera.movie.MoviePhotoCutActivity"
+            android:name=".movie.MoviePhotoCutActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".camera.TestActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".editor.PhotoEditorCutActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
             android:name=".movie.MovieMakeActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".movie.MovieCaptionsActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" />
-
-
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".setting.watermark.management.WaterMarkCategoryManagementActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
             android:name=".setting.watermark.management.CollageManagementActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
             android:name=".setting.watermark.management.WaterMarkCategoryDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
             android:name=".setting.watermark.download.DownloadFinishActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
         <activity
             android:name=".setting.watermark.MaterialCenterActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
+            android:theme="@android:style/Theme.NoTitleBar"/>
 
         <!-- 微博分享配置 -->
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name="com.putao.camera.thirdshare.activity.WeiboEntryActivity">
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".thirdshare.activity.WeiboEntryActivity">
             <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <!-- 微信分享配置 -->
         <activity
-            android:name="com.putao.camera.wxapi.WXEntryActivity"
-            android:exported="true" />
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"/>
         <!-- umeng意见反馈 -->
-        <activity android:name="com.umeng.fb.ConversationActivity" />
+        <activity android:name="com.umeng.fb.ConversationActivity"/>
         <!-- Umeng更新组件 -->
 
         <service
             android:name="com.umeng.update.net.DownloadingService"
-            android:process=":DownloadingService" />
+            android:process=":DownloadingService"/>
 
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
             android:noHistory="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent1104075952" />
+                <data android:scheme="tencent1104075952"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- Umeng消息推送组件 -->
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
-
             android:exported="false"
-            android:process=":push" />
+            android:process=":push"/>
         <receiver
             android:name="com.umeng.message.SystemReceiver"
             android:process=":push">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
 
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
-                <data android:scheme="package" />
+                <data android:scheme="package"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.umeng.message.MessageReceiver"
             android:process=":push">
-
             <intent-filter>
-                <action android:name="org.agoo.android.intent.action.RECEIVE" />
+                <action android:name="org.agoo.android.intent.action.RECEIVE"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.umeng.message.ElectionReceiver"
             android:process=":push">
-
             <intent-filter>
-                <action android:name="org.agoo.android.intent.action.ELECTION_RESULT_V4" />
-                <category android:name="umeng" />
+                <action android:name="org.agoo.android.intent.action.ELECTION_RESULT_V4"/>
+
+                <category android:name="umeng"/>
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.umeng.message.RegistrationReceiver"
             android:exported="false">
-
             <intent-filter>
-                <action android:name="com.putao.camera.intent.action.COMMAND" />
+                <action android:name="com.putao.camera.intent.action.COMMAND"/>
             </intent-filter>
         </receiver>
-
         <receiver android:name="com.umeng.message.BootBroadcastReceiver">
-
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
@@ -337,66 +306,67 @@
             android:exported="true"
             android:label="PushService"
             android:process=":push">
+            <intent-filter>
+                <action android:name="com.putao.camera.intent.action.START"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.putao.camera.intent.action.COCKROACH"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.PING_V4"/>
 
-            <intent-filter>
-                <action android:name="com.putao.camera.intent.action.START" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.putao.camera.intent.action.COCKROACH" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="org.agoo.android.intent.action.PING_V4" />
-                <category android:name="umeng" />
+                <category android:name="umeng"/>
             </intent-filter>
         </service>
-        <service android:name="com.umeng.message.UmengIntentService" />
-
+        <service android:name="com.umeng.message.UmengIntentService"/>
         <service
             android:name="com.umeng.message.UmengMessageIntentReceiverService"
             android:exported="true"
             android:process=":push">
             <intent-filter>
-                <action android:name="org.android.agoo.client.MessageReceiverService" />
+                <action android:name="org.android.agoo.client.MessageReceiverService"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="org.android.agoo.client.ElectionReceiverService" />
+                <action android:name="org.android.agoo.client.ElectionReceiverService"/>
             </intent-filter>
         </service>
-
-        <service android:name="com.umeng.message.UmengDownloadResourceService" />
-        <service android:name=".service.UmengPushIntentService" />
-        <service android:name=".downlad.DownloadFileService" />
+        <service android:name="com.umeng.message.UmengDownloadResourceService"/>
+        <service android:name=".service.UmengPushIntentService"/>
+        <service android:name=".downlad.DownloadFileService"/>
         <service
-            android:name="com.putao.camera.gps.GpsService"
-
-            android:process=":ptgps" />
+            android:name=".gps.GpsService"
+            android:process=":ptgps"/>
 
         <!-- Umeng appkey -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="54851ce6fd98c5648b000656" />
+            android:value="54851ce6fd98c5648b000656"/>
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="${UMENG_CHANNEL_VALUE}" />
+            android:value="${UMENG_CHANNEL_VALUE}"/>
         <meta-data
             android:name="UMENG_MESSAGE_SECRET"
-            android:value="83e9b8518405155e7e87909573fe5984" />
+            android:value="83e9b8518405155e7e87909573fe5984"/>
         <meta-data
             android:name="TA_APPKEY"
-            android:value="1104075952" />
+            android:value="1104075952"/>
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true">
-            <!--<intent-filter>android:process=":remote"-->
-            <!--<action android:name="com.baidu.location.service_v2.2"></action>-->
-            <!--</intent-filter>-->
+
+            <!-- <intent-filter>android:process=":remote" -->
+            <!-- <action android:name="com.baidu.location.service_v2.2"></action> -->
+            <!-- </intent-filter> -->
         </service>
 
         <!-- meta-data需要写在application中 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="T0tGNYcHYTiitfGsWp2eYv0r" />
+            android:value="T0tGNYcHYTiitfGsWp2eYv0r"/>
+
+        <activity android:name="com.putao.common.PhotoActivity">
+        </activity>
     </application>
 
 </manifest>

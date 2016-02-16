@@ -11,11 +11,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.FaceDetector;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,9 +67,17 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.common.Animation;
+import com.putao.common.AnimationModel;
+import com.putao.common.FileUtils;
+import com.putao.common.Location;
+import com.putao.common.XmlUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -137,6 +149,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         addOnClickListener(btn_picture_filter, choice_water_mark_btn, saveBtn, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
                 btn_new_res, btn_cut_image);
         EventBus.getEventBus().register(this);
+
     }
 
     @Override
@@ -925,4 +938,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             }
         }
     };
+
+
+
 }
