@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.FaceDetector;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -28,10 +30,24 @@ public class FaceAnimaitonImageView extends ImageView {
     private int animationPosition = 0;
     private Location animationModel;
 
+    private PointF midPoint;
+
 
 
     private List<Bitmap> bitmapArr = new ArrayList<>();
     private Bitmap mBitmap;
+
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if(msg.what == 0x123) {
+                startAnimation();
+            }
+        }
+    };
 
 
 
@@ -50,11 +66,16 @@ public class FaceAnimaitonImageView extends ImageView {
     /**
      * 设置动画资源
      */
-    public void setData(final Location model) {
+    public void setData(final Location model, FaceDetector.Face face) {
 
         bitmapArr.clear();
         animationPosition = 0;
         animationModel = model;
+
+        midPoint = new PointF();
+        face.getMidPoint(midPoint);
+
+
         final BitmapFactory.Options option = new BitmapFactory.Options();
         option.inScaled = false;
 
@@ -75,10 +96,11 @@ public class FaceAnimaitonImageView extends ImageView {
                     mBitmap = BitmapFactory.decodeFile(imageName, option);
                     bitmapArr.add(mBitmap);
                 }
+
+                mHandler.sendEmptyMessage(0x123);
             }
         }).start();
 
-        startAnimation();
     }
 
     public void startAnimation(){
@@ -90,9 +112,9 @@ public class FaceAnimaitonImageView extends ImageView {
     }
 
     public void stopAnimation(){
-        animationRunning = false;
-        this.setVisibility(View.INVISIBLE);
-        animationModel = null;
+//        animationRunning = false;
+//        this.setVisibility(View.INVISIBLE);
+//        animationModel = null;
 
     }
 
@@ -119,6 +141,7 @@ public class FaceAnimaitonImageView extends ImageView {
         super.onDraw(canvas);
 
         Matrix matrix = new Matrix();
+        matrix.postTranslate(0, 500);
 
         canvas.drawBitmap(bitmapArr.get(animationPosition), matrix, new Paint());
 

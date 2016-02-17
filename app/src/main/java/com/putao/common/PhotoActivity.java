@@ -1,22 +1,18 @@
 package com.putao.common;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.FaceDetector;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
@@ -27,7 +23,6 @@ import com.putao.camera.util.StringHelper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class PhotoActivity extends BaseActivity {
 
@@ -64,17 +59,6 @@ public class PhotoActivity extends BaseActivity {
         photoView = queryViewById(R.id.iv_photo);
         faceView = queryViewById(R.id.iv_animation);
 
-        Animation animation = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath() +"/hy/hy.xml"), "animation", Animation.class);
-        faceView.setData(animation.getEye());
-
-//        model = new AnimationModel();
-//        model.setWidth(291);
-//        model.setHeight(191);
-//        model.setDistance(100);
-//        model.setCenterX(140);
-//        model.setCenterY(191);
-//        model.setDuration(0.5f);
-
         // 获取屏幕高宽
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
@@ -93,16 +77,6 @@ public class PhotoActivity extends BaseActivity {
         mFaceHeight = mFaceBitmap.getHeight();
         photoView.setImageBitmap(mFaceBitmap);
 
-        // 加载贴图
-        BitmapFactory.Options option = new BitmapFactory.Options();
-        option.inScaled = false;
-        postBitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.fd0006, option);
-
-//        faceView.setImageBitmap(postBitmap);
-//        postImagePara = new LinearLayout.LayoutParams(screenWidth, screenHeight);
-//        this.addContentView(postImage, postImagePara);
-
         // 检测脸
         FaceDetector fd;
         FaceDetector.Face[] faces = new FaceDetector.Face[MAX_FACES];
@@ -118,10 +92,12 @@ public class PhotoActivity extends BaseActivity {
             Log.e(TAG, "find face error");
             return;
         }
-        PointF midPoint = new PointF();
-        faces[0].getMidPoint(midPoint);
+//        PointF midPoint = new PointF();
+//        faces[0].getMidPoint(midPoint);
 
-//        faceView.setFace(bitmap);
+        Animation animation = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath() +"/hy/hy.xml"), "animation", Animation.class);
+        faceView.setData(animation.getEye(), faces[0]);
+
 
         // 需要算出 中心点位置，放大倍数和角度
 //        setFace(faceView, bitmap, model, midPoint, 2.5f, 15*0.0174f);
