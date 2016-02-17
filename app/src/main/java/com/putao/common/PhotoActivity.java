@@ -13,11 +13,13 @@ import android.media.FaceDetector;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.putao.camera.R;
+import com.putao.camera.base.BaseActivity;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.StringHelper;
@@ -25,8 +27,9 @@ import com.putao.camera.util.StringHelper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
-public class PhotoActivity extends Activity {
+public class PhotoActivity extends BaseActivity {
 
     private static String TAG = "FaceDetect";
     private ImageView mIV;
@@ -46,30 +49,36 @@ public class PhotoActivity extends Activity {
     private AnimationModel model;
     private Bitmap originImageBitmap;
     private String photo_data;
-
+    private ImageView photoView;
+    private FaceAnimaitonImageView faceView;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo);
+    public int doGetContentViewId() {
+        return R.layout.activity_photo;
+    }
 
-        model = new AnimationModel();
-        model.setWidth(291);
-        model.setHeight(191);
-        model.setDistance(100);
-        model.setCenterX(140);
-        model.setCenterY(191);
-        model.setDuration(0.5f);
+    @Override
+    public void doInitSubViews(View view) {
+
+        photoView = queryViewById(R.id.iv_photo);
+        faceView = queryViewById(R.id.iv_animation);
+
+        Animation animation = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath() +"/hy/hy.xml"), "animation", Animation.class);
+        faceView.setData(animation.getEye());
+
+//        model = new AnimationModel();
+//        model.setWidth(291);
+//        model.setHeight(191);
+//        model.setDistance(100);
+//        model.setCenterX(140);
+//        model.setCenterY(191);
+//        model.setDuration(0.5f);
 
         // 获取屏幕高宽
         DisplayMetrics dm = getResources().getDisplayMetrics();
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
-
-        mIV = new ImageView(this);
-        this.addContentView(mIV, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
@@ -82,18 +91,17 @@ public class PhotoActivity extends Activity {
 
         mFaceWidth = mFaceBitmap.getWidth();
         mFaceHeight = mFaceBitmap.getHeight();
-        mIV.setImageBitmap(mFaceBitmap);
+        photoView.setImageBitmap(mFaceBitmap);
 
         // 加载贴图
-        postImage = new ImageView(this);
         BitmapFactory.Options option = new BitmapFactory.Options();
         option.inScaled = false;
         postBitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.fd0006, option);
 
-        postImage.setImageBitmap(postBitmap);
-        postImagePara = new LinearLayout.LayoutParams(screenWidth, screenHeight);
-        this.addContentView(postImage, postImagePara);
+//        faceView.setImageBitmap(postBitmap);
+//        postImagePara = new LinearLayout.LayoutParams(screenWidth, screenHeight);
+//        this.addContentView(postImage, postImagePara);
 
         // 检测脸
         FaceDetector fd;
@@ -113,12 +121,16 @@ public class PhotoActivity extends Activity {
         PointF midPoint = new PointF();
         faces[0].getMidPoint(midPoint);
 
-//        Animation model = XmlUtils.xmlToModel(readSdcardFile(FileUtils.getStickersPath() +"/hy/hy.xml"), "animation", Animation.class);
+//        faceView.setFace(bitmap);
+
         // 需要算出 中心点位置，放大倍数和角度
-        setFace(postImage, model, midPoint, 2.5f, 15*0.0174f);
+//        setFace(faceView, bitmap, model, midPoint, 2.5f, 15*0.0174f);
 
     }
 
+    @Override
+    public void doInitData() {
+    }
 
     /**
      * 读取本地资源
@@ -142,7 +154,7 @@ public class PhotoActivity extends Activity {
 
 
     // angle是弧度
-    private void setFace(ImageView image, AnimationModel model, PointF location,
+    private void setFace(ImageView image, Bitmap map, AnimationModel model, PointF location,
                          float scale, float angle) {
 
         Matrix matrix = new Matrix();
@@ -162,9 +174,10 @@ public class PhotoActivity extends Activity {
         Canvas canvas = new Canvas(targetBitmap);
 
         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap();
-        canvas.drawBitmap(bitmap, matrix, new Paint());
+//        canvas.drawBitmap(bitmap, matrix, new Paint());
+        canvas.drawBitmap(map, matrix, new Paint());
         image.setImageBitmap(targetBitmap);
 
-    }
 
+    }
 }
