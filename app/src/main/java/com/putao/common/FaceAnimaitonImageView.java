@@ -25,17 +25,25 @@ import java.util.List;
  */
 public class FaceAnimaitonImageView extends ImageView {
 
+    private static final String TAG = "FaceAnimaitonImageView";
     private Handler refreshHandler;
     private boolean animationRunning = false;
     private int animationPosition = 0;
-    private Location animationModel;
-
-    private PointF midPoint;
-
-
 
     private List<Bitmap> bitmapArr = new ArrayList<>();
     private Bitmap mBitmap;
+
+    private Location animationModel;
+    private PointF midPoint;
+    private float eyesDistance;
+    private Matrix matrix = new Matrix();
+    private Matrix matrixRotation = new Matrix();
+    private Matrix matrixTranslate = new Matrix();
+    private Matrix matrixScale = new Matrix();
+    private Paint paint = new Paint();
+    private float centerX;
+    private float centerY;
+
 
 
     private Handler mHandler = new Handler() {
@@ -74,6 +82,7 @@ public class FaceAnimaitonImageView extends ImageView {
 
         midPoint = new PointF();
         face.getMidPoint(midPoint);
+        eyesDistance = face.eyesDistance();
 
 
         final BitmapFactory.Options option = new BitmapFactory.Options();
@@ -140,10 +149,19 @@ public class FaceAnimaitonImageView extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Matrix matrix = new Matrix();
-        matrix.postTranslate(0, 500);
-
-        canvas.drawBitmap(bitmapArr.get(animationPosition), matrix, new Paint());
+        if(animationModel!=null){
+//            matrixTranslate.setTranslate(centerX-imageScale* Float.valueOf(animationModel.getCenterX()), centerY - imageScale*Float.valueOf(animationModel.getCenterY()));
+//            matrixScale.setScale(imageScale, imageScale);
+            // 此处旋转用的是角度 不是弧度
+//            matrixRotation.setRotate((float)(imageAngle*180f/Math.PI), centerX, centerY);
+//            matrix.setConcat(matrixRotation, matrixTranslate);
+//            matrix.setConcat(matrix, matrixScale);
+            matrix.setTranslate(midPoint.x, midPoint.y);
+            matrix.postTranslate(-eyesDistance, 0);
+            Log.w(TAG, "midPoint.x = " + midPoint.x + " -- midPoint.y = " + midPoint.y);
+//            canvas.drawBitmap(bitmapArr.get(animationPosition), midPoint.x - eyesDistance, midPoint.y, paint);
+            canvas.drawBitmap(bitmapArr.get(animationPosition), matrix, paint);
+        }
 
     }
 
