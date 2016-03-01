@@ -53,6 +53,27 @@ public class CommonUtils {
         return mediaFile;
     }
 
+    public static File getOutputVideoFile() {
+        File mediaStorageDir = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+
+                PuTaoConstants.PAIAPI_PHOTOS_FOLDER);
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("PAIAPI_PHOTOS_FOLDER", "failed to create directory");
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+        File mediaFile;
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + "IMG_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");
+
+        return mediaFile;
+    }
+
 
     public static Dialog dialog(Context context, String message, String b1text,
                                 String b2text, OnClickListener... listeners) {

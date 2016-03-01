@@ -1,4 +1,4 @@
-package com.putao.common;
+package com.putao.camera.util;
 
 import android.content.Context;
 import android.view.LayoutInflater;

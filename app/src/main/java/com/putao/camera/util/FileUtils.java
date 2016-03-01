@@ -1,15 +1,17 @@
-package com.putao.common;
+package com.putao.camera.util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
-
-import com.putao.camera.application.MainApplication;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,6 +28,8 @@ import java.util.zip.ZipInputStream;
 public final class FileUtils {
 
     public static final String FILE_PARENT_NAME = "PutaoCamera";
+
+    public static final String FILE_AR_PARENT_NAME = "ARStickers";
 
     /**
      * 读取文件内容
@@ -391,10 +395,11 @@ public final class FileUtils {
     }
 
     /**
-     * 获取sd卡路径
+     * 获取sd卡 ar sticker路径
+     * @return
      */
-    public static String getStickersPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + FILE_PARENT_NAME;
+    public static String getARStickersPath(){
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + FILE_PARENT_NAME + File.separator + FILE_AR_PARENT_NAME + File.separator;
     }
 
     /**
@@ -407,5 +412,26 @@ public final class FileUtils {
         return context.getResources().getAssets();
     }
 
+
+    /**
+     * 从assets里面获取文件字符串
+     * @param context
+     * @param fileName
+     * @return
+     */
+    public static String readAssetsFile(Context context, String fileName) {
+        String result = null;
+        try {
+            InputStream is = context.getAssets().open(fileName);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            result = new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }

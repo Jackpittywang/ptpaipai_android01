@@ -161,7 +161,7 @@ public class Texture2dProgram {
         if (mProgramHandle == 0) {
             throw new RuntimeException("Unable to create program");
         }
-        Log.d(TAG, "Created program " + mProgramHandle + " (" + programType + ")");
+        // Log.d(TAG, "Created program " + mProgramHandle + " (" + programType + ")");
 
         // get locations of attributes and uniforms
 
@@ -199,7 +199,7 @@ public class Texture2dProgram {
      * the program).
      */
     public void release() {
-        Log.d(TAG, "deleting program " + mProgramHandle);
+        // Log.d(TAG, "deleting program " + mProgramHandle);
         GLES20.glDeleteProgram(mProgramHandle);
         mProgramHandle = -1;
     }

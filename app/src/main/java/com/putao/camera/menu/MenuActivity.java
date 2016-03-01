@@ -6,7 +6,6 @@ import android.widget.Button;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
-import com.putao.camera.album.AlbumPhotoSelectActivity;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.WaterMarkRequestInfo;
@@ -15,8 +14,6 @@ import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.movie.MovieCameraActivity;
-import com.putao.camera.setting.AboutActivity;
-import com.putao.camera.setting.SettingActivity;
 import com.putao.camera.setting.watermark.MaterialCenterActivity;
 import com.putao.camera.umengfb.UmengFeedbackActivity;
 import com.putao.camera.util.ActivityHelper;
@@ -25,11 +22,11 @@ import com.putao.camera.util.NetType;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.putao.common.FileUtils;
-import com.putao.widget.gif.GifView;
+import com.putao.camera.util.FileUtils;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -69,10 +66,20 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
 
         try {
-            FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
-            FileUtils.unZipInAsset(mContext, "hy.zip", FileUtils.FILE_PARENT_NAME, false);
-            FileUtils.unZipInAsset(mContext, "icon.zip", FileUtils.FILE_PARENT_NAME, false);
-            FileUtils.unZipInAsset(mContext, "xhx.zip", FileUtils.FILE_PARENT_NAME, false);
+            File folder = new File(FileUtils.getARStickersPath());
+            if (folder.exists() == false) folder.mkdir();
+
+            // FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
+            String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
+            FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "icon.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "kq.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "mhl.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "xhx.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "xm.zip", folderName, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

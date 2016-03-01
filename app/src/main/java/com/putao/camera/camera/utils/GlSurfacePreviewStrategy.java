@@ -60,7 +60,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        Loger.d("onFrameAvailable" + surfaceTexture);
+        // Loger.d("onFrameAvailable" + surfaceTexture);
         this.mGLView.requestRender();
     }
 

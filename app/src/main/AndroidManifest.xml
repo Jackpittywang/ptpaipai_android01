@@ -175,6 +175,11 @@
             android:name=".editor.PhotoEditorCutActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <!--图片加上AR动态贴纸，然后保存视频页面-->
+        <activity
+            android:name=".editor.PhotoARShowActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <activity
             android:name=".movie.MovieMakeActivity"
             android:screenOrientation="portrait"
@@ -365,8 +370,6 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="T0tGNYcHYTiitfGsWp2eYv0r"/>
 
-        <activity android:name="com.putao.common.PhotoActivity">
-        </activity>
     </application>
 
 </manifest>

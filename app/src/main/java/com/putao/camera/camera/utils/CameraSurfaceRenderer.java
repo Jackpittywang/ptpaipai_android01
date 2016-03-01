@@ -53,7 +53,7 @@ public class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        Loger.d("on surfaceChanged width:" + width + " , height:" + height);
+        // Loger.d("on surfaceChanged width:" + width + " , height:" + height);
         mCameraHandler.sendMessage(mCameraHandler.obtainMessage(
                 GlSurfacePreviewStrategy.CameraHandler.MSG_SET_SURFACE_TEXTURE_SIZE,
                 new GlSurfacePreviewStrategy.PtTextureSize(width, height)));
@@ -64,11 +64,16 @@ public class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        Loger.d("begin drawing texture-----1");
+        // Loger.d("begin drawing texture-----1");
         if (mSurfaceTexture == null || mFullScreen == null)
             return;
-        mSurfaceTexture.updateTexImage();
-        Loger.d("begin drawing texture-----2::" + mIncomingWidth + ",  " + mIncomingHeight);
+        try {
+            mSurfaceTexture.updateTexImage();
+        }
+        catch (Exception e){
+
+        }
+        // Loger.d("begin drawing texture-----2::" + mIncomingWidth + ",  " + mIncomingHeight);
         if (mIncomingWidth <= 0 || mIncomingHeight <= 0) {
             // Texture size isn't set yet.  This is only used for the filters, but to be
             // safe we can just skip drawing while we wait for the various races to resolve.
@@ -76,7 +81,7 @@ public class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
             Loger.w("Drawing before incoming texture size set; skipping");
             return;
         }
-        Loger.d("begin drawing texture..........");
+        // Loger.d("begin drawing texture..........");
         try {
             mFullScreen.changeProgram(new Texture2dProgram(Texture2dProgram.ProgramType.TEXTURE_EXT));
             mFullScreen.getProgram().setTexSize(mIncomingWidth, mIncomingHeight);

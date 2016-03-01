@@ -181,12 +181,20 @@ public class ToasterHelper {
             if (mToast == null) {
                 mToast = new Toast(context);
             }
-            // ����Toast��λ��
+
             mToast.setGravity(Gravity.CENTER, 0, 0);
             mToast.setDuration(duration);
-            // ��Toast��ʾΪ�����Զ��������
             mToast.setView(view);
             mToast.show();
         }
+    }
+
+    /**
+     * 显示toast
+     * @param context
+     * @param msg
+     */
+    public static void show(Context context, String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 }

@@ -37,7 +37,6 @@ import com.putao.camera.movie.MoviePhotoCutActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.PhotoLoaderHelper;
-import com.putao.common.PhotoActivity;
 import com.putao.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.io.File;
@@ -193,8 +192,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.EVENT_COLLAGE_PHOTO_SELECT, bundle));
             finish();
         } else {// 图片编辑
-//            Intent intent = new Intent(this, PhotoEditorActivity.class);
-            Intent intent = new Intent(this, PhotoActivity.class);
+            Intent intent = new Intent(this, PhotoEditorActivity.class);
             intent.putExtra("photo_data", path);
             this.startActivity(intent);
         }

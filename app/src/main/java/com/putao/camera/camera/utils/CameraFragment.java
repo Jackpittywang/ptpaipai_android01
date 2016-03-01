@@ -35,6 +35,7 @@ import com.putao.camera.util.Loger;
 public class CameraFragment extends Fragment {
     private CameraView cameraView = null;
     private CameraHost host = null;
+    private boolean isShowAR = false;
 
     /*
      * (non-Javadoc)
@@ -147,9 +148,12 @@ public class CameraFragment extends Fragment {
      *             the picture to be taken
      */
     public void takePicture(PictureTransaction xact) {
-        cameraView.takePicture(xact);
+        cameraView.takePicture(xact, isShowAR);
     }
 
+    public void setShowAR(boolean flag){
+        isShowAR = flag;
+    }
 
     /**
      * @return the orientation of the screen, in degrees

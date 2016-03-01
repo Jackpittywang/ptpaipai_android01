@@ -5,21 +5,9 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/camera"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true">
-
-        <FrameLayout
-            android:id="@+id/camera"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <com.putao.common.AnimationImageView
-            android:id="@+id/face_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </FrameLayout>
+        android:layout_height="match_parent"/>
 
     <com.putao.camera.camera.view.StarsView
         android:id="@+id/stars_view"

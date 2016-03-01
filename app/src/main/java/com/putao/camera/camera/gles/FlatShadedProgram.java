@@ -56,7 +56,7 @@ public class FlatShadedProgram {
         if (mProgramHandle == 0) {
             throw new RuntimeException("Unable to create program");
         }
-        Log.d(TAG, "Created program " + mProgramHandle);
+        // Log.d(TAG, "Created program " + mProgramHandle);
 
         // get locations of attributes and uniforms
 

@@ -14,9 +14,14 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.util.LruCache;
 
+import com.putao.ahibernate.sql.Operate;
 import com.putao.camera.application.MainApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
@@ -123,7 +128,7 @@ public class BitmapHelper {
         return inSampleSize;
     }
 
-    public Bitmap getBitmapFromPath(String path) {
+    public static Bitmap getBitmapFromPath(String path) {
         try {
             return BitmapFactory.decodeFile(path);
         } catch (Exception e) {
@@ -403,5 +408,69 @@ public class BitmapHelper {
         }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
                 bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap resizeBitmap(Bitmap bitmap, float scale) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizeBmp;
+    }
+
+
+    public static Bitmap getBitmapFromPath(String url, BitmapFactory.Options option) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeFile(url, option);
+        } catch (Exception e) {
+
+        }
+        return bitmap;
+    }
+
+
+    /**
+     * 合并两张bitmap为一张
+     *
+     * @param background
+     * @param foreground
+     * @return Bitmap
+     */
+    public static Bitmap combineBitmap(Bitmap background, Bitmap foreground, int posX, int posY) {
+        if (background == null) {
+            return null;
+        }
+        int bgWidth = background.getWidth();
+        int bgHeight = background.getHeight();
+        int fgWidth = foreground.getWidth();
+        int fgHeight = foreground.getHeight();
+        Bitmap newmap = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newmap);
+        canvas.drawBitmap(background, 0, 0, null);
+        canvas.drawBitmap(foreground, posX, posY, null);
+        canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.restore();
+        return newmap;
+    }
+
+    /**
+     * 保存方法
+     */
+    public static void saveBitmap(Bitmap bitmap, String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -1,22 +1,20 @@
 
 package com.putao.camera.camera;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.ListPopupWindow;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -34,7 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
@@ -47,12 +44,15 @@ import com.putao.camera.camera.PCameraFragment.TakePictureListener;
 import com.putao.camera.camera.PCameraFragment.flashModeCode;
 import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.utils.RoundUtil;
+import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
+import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.RedPointBaseButton;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.CitySelectActivity;
 import com.putao.camera.editor.FestivalSelectActivity;
+import com.putao.camera.editor.PhotoARShowActivity;
 import com.putao.camera.editor.dialog.WaterTextDialog;
 import com.putao.camera.editor.view.NormalWaterMarkView;
 import com.putao.camera.editor.view.TextWaterMarkView;
@@ -71,20 +71,17 @@ import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.putao.common.FileUtils;
-import com.putao.common.TimerAdapter;
-import com.putao.common.XmlUtils;
+import com.putao.camera.util.FileUtils;
+import com.putao.camera.util.TimerAdapter;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
+    private String TAG = ActivityCamera.class.getName();
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list;
-    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch;
+    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar;
     private RedPointBaseButton show_sticker_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
@@ -104,11 +101,20 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private WaterMarkView last_mark_view;
     private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
 
+    // 上一次选中的图标
+    private ARImageView lastSelectArImageView = null;
+
     private static final String SCALETYPE_FULL = "full";
     private static final String SCALETYPE_ONE = "1;1";
     private static final String SCALETYPE_THREE = "3:4";
     private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
 
+    private AnimationImageView animation_view;
+    private float screenDensity = 1.0f;
+    private int saveFaceCenterX = 0;
+    private int saveFaceCenterY = 0;
+    private float saveFaceScale = 0;
+    private float saveFaceAngle = 0;
 
     /**
      * 延时拍照倒计时
@@ -152,6 +158,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void doInitSubViews(View view) {
         fullScreen(true);
+
+        DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
+
         EventBus.getEventBus().register(this);
         container = queryViewById(R.id.container);
         camera_top_rl = queryViewById(R.id.camera_top_rl);
@@ -171,8 +182,16 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_top = queryViewById(R.id.fill_blank_top);
         fill_blank_bottom = queryViewById(R.id.fill_blank_bottom);
         btn_enhance_switch = queryViewById(R.id.btn_enhance_switch);
+        btn_close_ar_list = queryViewById(R.id.btn_close_ar_list);
+        btn_clear_ar = queryViewById(R.id.btn_clear_ar);
+
+        animation_view = queryViewById(R.id.animation_view);
+        // 必须设置图片的文件夹，否则显示不出图片
+        animation_view.setImageFolder(FileUtils.getARStickersPath());
+        animation_view.setScreenDensity(screenDensity);
+
         addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch);
+                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -183,7 +202,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             switch_camera_btn.setVisibility(View.GONE);
             std.setPhotoSaveListener(photoListener);
         }
-        current = std;
+        switchCamera();
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
     }
@@ -197,7 +216,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     album_btn.setImageBitmap(photo, true);
                     take_photo_btn.setEnabled(true);
                     last_mark_view = null;
-                    ClearWaterMark();
+                    // ClearWaterMark();
                 }
             });
         }
@@ -256,7 +275,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         };
         mMarkViewList = new ArrayList<WaterMarkView>();
         mSceneWaterMarkViewList = new ArrayList<View>();
-        doInitWaterMarkScene(0);
+        // 加载静态贴图
+        // doInitWaterMarkScene(0);
+        // 加载动态贴图
+        doInitARStick();
     }
 
     @Override
@@ -288,13 +310,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_top.setVisibility(View.GONE);
         fill_blank_bottom.setVisibility(View.GONE);
         bar_height_diff = btm_bar_height_new - btm_bar_height_old;
-        RelativeLayout.LayoutParams layout_sticker_params = (RelativeLayout.LayoutParams) layout_sticker.getLayoutParams();
-        if (camera_watermark_setting) {
-            layout_sticker_params.topMargin = bar.getTop() - layout_sticker.getHeight() - bar_height_diff;
-        } else {
-            layout_sticker_params.topMargin = bar.getTop();
-        }
-        layout_sticker.setVisibility(View.GONE);
+        setStickerStatus();
     }
 
     void setCameraRatioOneToOne() {
@@ -317,13 +333,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_btm_params.height = fill_blank_height / 2;
         fill_blank_bottom.setLayoutParams(fill_blank_btm_params);
         bar_height_diff = btm_bar_height_new - btm_bar_height_old;
-        RelativeLayout.LayoutParams layout_sticker_params = (RelativeLayout.LayoutParams) layout_sticker.getLayoutParams();
-        if (camera_watermark_setting) {
-            layout_sticker_params.topMargin = bar.getTop() - layout_sticker.getHeight() - bar_height_diff;
-        } else {
-            layout_sticker_params.topMargin = bar.getTop();
-        }
-        layout_sticker.setVisibility(View.VISIBLE);
+        setStickerStatus();
     }
 
     @Override
@@ -331,17 +341,33 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         super.onResume();
         mOrientationEvent.enable();
         resetAlbumPhoto();
+        if (lastSelectArImageView != null) {
+            String animationName = (String) lastSelectArImageView.getTag();
+            animation_view.setData(animationName, false);
+        }
+        // 这里启动脸检测
+        if (current != null) {
+            current.setAnimationView(animation_view);
+            current.startFaceDetect();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mOrientationEvent.disable();
+        if (animation_view != null) {
+            animation_view.clearData();
+        }
+        // 这里需要停止脸检测
+        if (current != null) current.stopFaceDetect();
     }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (animation_view != null) animation_view.clearData();
         EventBus.getEventBus().unregister(this);
     }
 
@@ -357,7 +383,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.camera_scale_btn:
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
                 switch (scaleType) {
-                    case SCALETYPE_ONE :
+                    case SCALETYPE_ONE:
                         camera_activy.getBackground().setAlpha(0);
                         camera_top_rl.getBackground().setAlpha(0);
                         bar.getBackground().setAlpha(0);
@@ -365,7 +391,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
                         scaleType = SCALETYPE_FULL;
                         break;
-                    case SCALETYPE_THREE :
+                    case SCALETYPE_THREE:
                         camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
@@ -373,7 +399,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
                         scaleType = SCALETYPE_ONE;
                         break;
-                    case SCALETYPE_FULL :
+                    case SCALETYPE_FULL:
                         camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
@@ -386,8 +412,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.switch_camera_btn:
                 if (hasTwoCameras) {
-                    current = (current == std) ? ffc : std;
-                    flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
+                    switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
                     /*
                      * Umeng事件统计
@@ -412,7 +437,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     last_mark_view.setEditState(false);
                     mMarkViewList.add(last_mark_view);
                 }
+                saveAnimationImageData();
+                //
                 takePhoto();
+                take_photo_btn.setEnabled(true);
 //                current.sendMessage();
                 break;
             case R.id.album_btn:
@@ -423,9 +451,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 finish();
                 break;
             case R.id.show_sticker_btn:
+                showSticker(true);
                 if (!camera_watermark_setting) {
                     mShowSticker = !mShowSticker;
-                    showSticker(mShowSticker);
                 }
                 break;
             case R.id.camera_set_btn:
@@ -435,9 +463,47 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 current.setEnableEnhance(!current.isEnableEnhance());
                 setEnhanceButton();
                 break;
+            case R.id.btn_clear_ar:
+                clearAnimationData();
+                break;
+            case R.id.btn_close_ar_list:
+                showSticker(false);
+                break;
             default:
                 break;
         }
+    }
+
+    private void clearAnimationData() {
+        if (animation_view == null) return;
+        animation_view.clearData();
+        if (lastSelectArImageView != null) lastSelectArImageView.setChecked(false);
+    }
+
+    private void saveAnimationImageData() {
+        saveFaceCenterX = (int) animation_view.centerXFilter.getData();
+        saveFaceCenterY = (int) animation_view.centerYFilter.getData();
+        saveFaceScale = animation_view.scaleFilter.getData();
+        saveFaceAngle = animation_view.angleFilter.getData();
+    }
+
+    /**
+     * 切换前后camera
+     */
+    private void switchCamera() {
+        boolean isMirror = false;
+        if (current == null) {
+            current = std;
+            isMirror = false;
+        } else {
+            current.stopFaceDetect();
+            current = (current == std) ? ffc : std;
+            flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
+            if(current  == ffc) isMirror = true;
+        }
+        current.setAnimationView(animation_view);
+        animation_view.setIsMirror(isMirror);
+        current.startFaceDetect();
     }
 
     private void setEnhanceButton() {
@@ -497,6 +563,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             current.setPictureRatio(mPictureRatio, camera_top_rl.getHeight() + fill_blank_top.getHeight());
         }
 
+        // 是否要显示AR贴纸
+        current.setShowAR(animation_view.isAnimationRunning());
+
         if (mHdrState == HDRSTATE.ON) {
             current.takeSimplePicture(mMarkViewList, true);
         } else if (mHdrState == HDRSTATE.AUTO) {
@@ -504,17 +573,54 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         } else {
             current.takeSimplePicture(mMarkViewList);
         }
+
     }
 
-    void showSticker(boolean show) {
-        int start = 0;
-        int end = 0;
+    //  把layout_sticker设置到最下面
+    private void setStickerStatus() {
+        layout_sticker.setVisibility(View.INVISIBLE);
+        layout_sticker.setAlpha(0);
+    }
+
+    private void showSticker(boolean show) {
+        layout_sticker.setVisibility(View.VISIBLE);
+
         if (show) {
-            end = -layout_sticker.getHeight() - bar_height_diff;
+            layout_sticker.setAlpha(0.f);
+            ObjectAnimator anim = ObjectAnimator//
+                    .ofFloat(layout_sticker, "alpha", 0.0F, 1.0F)//
+                    .setDuration(300);//
+            anim.start();
         } else {
-            start = -layout_sticker.getHeight() - bar_height_diff;
+            layout_sticker.setAlpha(1.f);
+            ObjectAnimator anim = ObjectAnimator//
+                    .ofFloat(layout_sticker, "alpha", 1.0F, 0.0F)//
+                    .setDuration(300);//
+            anim.start();
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    layout_sticker.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+            });
         }
-        ObjectAnimator.ofFloat(layout_sticker, "translationY", start, end).setDuration(300).start();
+
+
     }
 
     public void showSetWindow(final Context context, View parent) {
@@ -688,6 +794,16 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case PuTaoConstants.WATER_MARK_TEXT_EDIT:
                 updateTextEditViewText(event.bundle);
+                break;
+            case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
+                Intent intent = new Intent(mContext, PhotoARShowActivity.class);
+                intent.putExtra("imagePath", event.bundle.getString("imagePath"));
+                intent.putExtra("faceCenterX", saveFaceCenterX);
+                intent.putExtra("faceCenterY", saveFaceCenterY);
+                intent.putExtra("faceScale", saveFaceScale);
+                intent.putExtra("faceAngle", saveFaceAngle);
+                intent.putExtra("animationName", animation_view.getAnimtionName());
+                mContext.startActivity(intent);
                 break;
         }
     }
@@ -955,6 +1071,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
     private WaterMarkConfigInfo mWaterMarkConfigInfo;
 
+    private void doInitARStick() {
+        loadARThumbnail();
+    }
+
+    // 加载静态贴图
     private void doInitWaterMarkScene(int index) {
         mSceneWaterMarkViewList.clear();
         if (mWaterMarkConfigInfo == null) {
@@ -974,6 +1095,61 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         }
     }
+
+
+    /**
+     * 加载相机拍照界面动态贴图缩略图
+     */
+    private void loadARThumbnail() {
+        // 第一版本数据写死，因为后台接口都没有通，以后的版本此处要包括随app打包的和从服务器上下载的所有ar贴纸
+        ArrayList<String> elements = new ArrayList<String>();
+        elements.add("cn");
+        elements.add("fd");
+        elements.add("hy");
+        elements.add("hz");
+        elements.add("kq");
+        elements.add("mhl");
+        elements.add("xhx");
+        elements.add("xm");
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 5, 0, 5);
+
+        for (int i = 0; i < elements.size(); i++) {
+            String iconInfo = elements.get(i);
+            if (StringHelper.isEmpty(iconInfo)) continue;
+            ARImageView arImageView = new ARImageView(mActivity);
+
+            String imagePath = FileUtils.getARStickersPath() + iconInfo + "_icon.png";
+            //Log.i(TAG, "imagePath is:"+imagePath);
+            arImageView.setData(imagePath);
+            arImageView.setTag(iconInfo);
+            arImageView.setOnClickListener(arStickerOnclickListener);
+            layout_sticker_list.addView(arImageView);
+        }
+    }
+
+    // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
+    OnClickListener arStickerOnclickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (current == null) return;
+            if (animation_view.isAnimationLoading()) {
+                showToast("动画加载中请稍后");
+                return;
+            }
+            if (lastSelectArImageView != null) {
+                lastSelectArImageView.setChecked(false);
+            }
+            lastSelectArImageView = (ARImageView) v;
+            lastSelectArImageView.setChecked(true);
+            String animationName = (String) v.getTag();
+            animation_view.setData(animationName, false);
+
+
+        }
+    };
+
 
     /**
      * 加载相机拍照界面贴图缩略图
@@ -1003,6 +1179,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         }
     }
+
 
     OnClickListener stickerOnclickListener = new OnClickListener() {
         @Override
@@ -1036,7 +1213,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
      * 设置拍照延时
      */
     private void setTakeDelay() {
-        final Integer datas[] = { R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11 };
+        final Integer datas[] = {R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11};
         final ListPopupWindow popupWindow = new ListPopupWindow(mContext);
         popupWindow.setAdapter(new TimerAdapter(mContext, R.layout.popup_timer_item, datas));
         popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -1049,5 +1226,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.setAnchorView(camera_timer_btn);
         popupWindow.show();
     }
+
 
 }

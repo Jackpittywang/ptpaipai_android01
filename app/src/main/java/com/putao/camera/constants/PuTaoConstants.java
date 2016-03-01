@@ -47,6 +47,11 @@ public class PuTaoConstants {
 
     public static final int EVENT_FINISH_LOGO = 0x19;
 
+    // 打开图片上面显示AR贴纸
+    public static final int OPEN_AR_SHOW_ACTIVITY = 0x20;
+    // 保存AR动态视频的时候，整组图片保存结束事件
+    public static final int SAVE_AR_SHOW_IMAGE_COMPELTE = 0x21;
+
     public static final String WEIBO_APP_KEY = "2876121208";
     //微信葡萄拍拍
     //	public static final String WEIXIN_APP_KEY = "wx1bcb58803cd0a297";

@@ -19,13 +19,17 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -37,8 +41,15 @@ import android.widget.FrameLayout;
 
 import com.putao.camera.camera.utils.CameraHost.FailureReason;
 import com.putao.camera.camera.view.DrawingFocusView;
+import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.editor.PhotoARShowActivity;
+import com.putao.camera.editor.PhotoEditorActivity;
+import com.putao.camera.event.BasePostEvent;
+import com.putao.camera.event.EventBus;
 import com.putao.camera.util.Loger;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +70,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     private boolean isDetectingFaces = false;
     private boolean isAutoFocusing = false;
     private Context mContext;
+    // 是否需要显示AR贴纸
+    private boolean isShowAR = false;
+
     private AutoFocusCallback myAutoFocusCallback = new AutoFocusCallback() {
         @Override
         public void onAutoFocus(boolean success, Camera camera) {
@@ -235,7 +249,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             return;
         }
-        if (camera == null) {
+        if (camera == null || getWidth() == 0 || getHeight() == 0) {
             return;
         }
         final Rect targetFocusRect = new Rect(tfocusRect.left * 2000 / getWidth() - 1000, tfocusRect.top * 2000 / getHeight() - 1000,
@@ -343,6 +357,12 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         }
     }
 
+
+    public void takePicture(final PictureTransaction xact, boolean flag) {
+        this.isShowAR =  flag;
+        takePicture(xact);
+    }
+
     public void autoFocus() {
         if (inPreview) {
             camera.autoFocus(this);
@@ -411,7 +431,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
      */
     public void startPreview() {
         try {
-            Loger.d("start preview..........." + previewSize.width + "," + previewSize.height);
+            // Loger.d("start preview..........." + previewSize.width + "," + previewSize.height);
             if (camera != null) {
                 Parameters parameters = camera.getParameters();
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
@@ -610,14 +630,43 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            camera.setParameters(previewParams);
-            if (data != null) {
-                Loger.d("picture_camera_take_over------->" + SystemClock.currentThreadTimeMillis());
-                new ImageCleanupTask(getContext(), data, cameraId, xact).start();
+            // 加入动态贴纸之前的代码，直接保存到相册
+//            camera.setParameters(previewParams);
+//            if (data != null) {
+//                Loger.d("picture_camera_take_over------->" + SystemClock.currentThreadTimeMillis());
+//                new ImageCleanupTask(getContext(), data, cameraId, xact).start();
+//            }
+//            if (!xact.useSingleShotMode()) {
+//                startPreview();
+//            }
+            // 动态贴纸之后，如果有动态贴纸就出动态贴纸的保存，否则出图像编辑的页面
+            // 先保存临时文件
+            String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
+            FileOutputStream fos;
+            try {
+                File file = new File(imagePath);
+                if(!file.exists())
+                    file.createNewFile();
+                fos = new FileOutputStream(file);
+                fos.write(data);
+                fos.close();
+
+            } catch (Exception e) {
+                return;
             }
-            if (!xact.useSingleShotMode()) {
-                startPreview();
+            if(isShowAR == true) {
+                Bundle bundle = new Bundle();
+                bundle.putString("imagePath", imagePath);
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.OPEN_AR_SHOW_ACTIVITY, bundle));
+
             }
+            else{
+                Intent intent = new Intent(mContext, PhotoEditorActivity.class);
+                intent.putExtra("photo_data", imagePath);
+                mContext.startActivity(intent);
+
+            }
+
         }
     }
 
