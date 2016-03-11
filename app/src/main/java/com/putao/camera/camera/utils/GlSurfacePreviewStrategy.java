@@ -5,11 +5,22 @@ import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.util.Loger;
+import com.putao.facedetect.NativeCode;
+
+import android.hardware.Camera.Size;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -18,11 +29,19 @@ import java.lang.ref.WeakReference;
  * Created by jidongdong on 15/5/25.
  */
 public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture.OnFrameAvailableListener, Camera.PreviewCallback {
+    private String TAG = GlSurfacePreviewStrategy.class.getName();
+
     private CameraView cameraView;
     private GLSurfaceView mGLView;
     private CameraSurfaceRenderer mRenderer;
     private Camera mCamera;
     private CameraHandler mCameraHandler;
+
+    private Size cameraSize;
+    private Mat mYuv;
+    private Mat previewMat;
+
+    private AnimationImageView animationImageView;
 
     public GlSurfacePreviewStrategy(CameraView cameraView) {
         this.cameraView = cameraView;
@@ -37,12 +56,19 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
+    public void setAnimationView(AnimationImageView view){
+        animationImageView = view;
+    }
+
+    public void clearAnimationView(){
+        animationImageView = null;
+    }
 
     void handleSetSurfaceTexture(SurfaceTexture st) {
         try {
             Loger.d("set PreviewTexture:" + st + "camera:" + mCamera);
             if (mCamera != null) {
-//                mCamera.setPreviewCallback(this);
+                mCamera.setPreviewCallback(this);
                 st.setOnFrameAvailableListener(this);
                 mCamera.setPreviewTexture(st);
 
@@ -66,6 +92,39 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
+
+        // Loger.d("onPreviewFrame  ....   .... .. animationImageView is:"+animationImageView);
+
+        if(animationImageView == null) return;
+
+//        long startTime = System.currentTimeMillis();
+//        long gap = 0;
+        if (cameraSize == null)
+            cameraSize = camera.getParameters().getPreviewSize();
+
+        int width = cameraSize.width;
+        int height = cameraSize.height;
+
+        if(mYuv == null) mYuv = new Mat( height + height/2, width, CvType.CV_8UC1 );
+        mYuv.put(0, 0, data);
+
+        if(previewMat == null) previewMat = new Mat();
+        Imgproc.cvtColor(mYuv, previewMat, Imgproc.COLOR_YUV420sp2RGB, 4);
+        Imgproc.cvtColor(previewMat, previewMat, Imgproc.COLOR_RGB2GRAY);
+
+        Core.flip(previewMat.t(), previewMat, 1);
+        // Highgui.imwrite("/mnt/sdcard/test.jpg", previewMat);
+
+//        gap = System.currentTimeMillis() -startTime;
+//        Log.i("PaiPai", "gap time 111111 is:" + gap);
+//        startTime = System.currentTimeMillis();
+
+        int [] points = NativeCode.FaceDetectAndFlandmarks(previewMat);
+        Highgui.imwrite("/mnt/sdcard/test.jpg", previewMat);
+        animationImageView.setPositionAndStartAnimation(points);
+
+//        gap = System.currentTimeMillis() -startTime;
+//        Log.i("PaiPai", "gap time 222222 is:" + gap);
 
     }
 

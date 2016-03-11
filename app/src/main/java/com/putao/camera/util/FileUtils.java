@@ -434,4 +434,22 @@ public final class FileUtils {
         return result;
     }
 
+    public static boolean putDataFileInLocalDir(Context context, int id, File f) {
+        try {
+            InputStream is = context.getResources().openRawResource(id);
+            FileOutputStream os = new FileOutputStream(f);
+            byte[] buffer = new byte[2048];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            is.close();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 }

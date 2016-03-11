@@ -344,12 +344,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         if (lastSelectArImageView != null) {
             String animationName = (String) lastSelectArImageView.getTag();
             animation_view.setData(animationName, false);
+            // 这里启动脸检测
+            if (current != null) {
+                current.setAnimationView(animation_view);
+                current.startFaceDetect();
+            }
         }
-        // 这里启动脸检测
-        if (current != null) {
-            current.setAnimationView(animation_view);
-            current.startFaceDetect();
-        }
+
+
     }
 
     @Override
@@ -477,6 +479,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private void clearAnimationData() {
         if (animation_view == null) return;
         animation_view.clearData();
+        std.clearAnimationView();
+        ffc.clearAnimationView();
         if (lastSelectArImageView != null) lastSelectArImageView.setChecked(false);
     }
 
@@ -501,7 +505,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
             if(current  == ffc) isMirror = true;
         }
-        current.setAnimationView(animation_view);
+        // current.setAnimationView(animation_view);
         animation_view.setIsMirror(isMirror);
         current.startFaceDetect();
     }
@@ -1145,7 +1149,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             lastSelectArImageView.setChecked(true);
             String animationName = (String) v.getTag();
             animation_view.setData(animationName, false);
-
+            std.setAnimationView(animation_view);
+            ffc.setAnimationView(animation_view);
 
         }
     };

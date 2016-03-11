@@ -1,6 +1,7 @@
 
 package com.putao.camera.menu;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -23,10 +24,15 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.camera.util.FileUtils;
+import com.putao.facedetect.NativeCode;
 
 import org.json.JSONObject;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
+import java.io.IOError;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -38,6 +44,9 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 
     //    private int remote_waterMark_version_code;
     //    private ServiceConnection mDownloadFileServiceCon;
+
+    private boolean openCVLibraryLoaded = false;
+
     @Override
     public void doBefore() {
         if (SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_CAMERA_ENTER_SETTING, false)) {
@@ -83,6 +92,11 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        copyDataFile2LocalDir();
+        // 初始化opencv facedetect
+        NativeCode.initFaceData("/data/data/com.putao.camera/app_data/haarcascade_frontalface_alt2.xml", "/data/data/com.putao.camera/app_data/flandmark_model.dat");
+
     }
 
     @Override
@@ -107,14 +121,20 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 //        longzhou_gif.setMovieResource(R.raw.longzhou);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-//        try {
-//            LogoActivity.instance.finish();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
+        // 加载opencv库
+        if(OpenCVLoader.initDebug()){
+            if(openCVLibraryLoaded == true) return;
+            openCVLibraryLoaded = true;
+            //默认加载opencv_java.so库
+            mLoaderCallback.onManagerConnected( LoaderCallbackInterface.SUCCESS);
+            //加载依赖opencv_java.so的jni库
+            System.loadLibrary("opencv_java");
+        }
     }
 
     @Override
@@ -212,5 +232,43 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_UPDATE_PACKAGE_URL + "config_watermark.json", map,
                 mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
+    }
+
+
+    // opencv 库加载回调，不能删除
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+
+                case LoaderCallbackInterface.SUCCESS: {
+                    // Log.i(TAG, "OpenCV loaded successfully");
+                }
+                break;
+                default: {
+                    mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+                }
+                break;
+            }
+        }
+    };
+
+    // 把opencv需要用到的文件从raw里面的文件复制到data文件夹下
+    private void copyDataFile2LocalDir() {
+        try {
+            File dataDir = this.getDir("data", this.MODE_PRIVATE);
+            File f_frontalface = new File(dataDir,
+                    "haarcascade_frontalface_alt2.xml");
+            File f_fmodel = new File(dataDir, "flandmark_model.dat");
+
+            FileUtils.putDataFileInLocalDir(this,
+                    R.raw.haarcascade_frontalface_alt2, f_frontalface);
+
+            FileUtils.putDataFileInLocalDir(this,
+                    R.raw.flandmark_model, f_fmodel);
+
+        } catch (IOError e) {
+            e.printStackTrace();
+        }
     }
 }

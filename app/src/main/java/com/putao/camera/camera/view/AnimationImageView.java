@@ -332,6 +332,41 @@ public class AnimationImageView extends ImageView {
         matrix.postTranslate(viewWidth / 2f, viewHeight / 2f);
     }
 
+    /**
+     * points 0: face
+     * @param points
+     */
+
+    // 0: face x, 1 face y, 2 face w, 3 face h
+    // 4,5 face middel x,y
+    // 6,7 left eye center side;
+    // 8,9 right eye center side;
+    // 10, 11 mouth left side;
+    // 12, 13 mouth right side;
+    // 14, 15 left eye out side;
+    // 16, 17 right eye out side;
+
+    public void setPositionAndStartAnimation(int [] points){
+        if(animationModel == null) return;
+        float scale = 0f;
+        float angle = 0f;
+        int leftEyeX = (points[6]+points[14])/2;
+        int leftEyeY = (points[7]+points[15])/2;
+        int rightEyeX = (points[8]+points[16])/2;
+        int rightEyeY = (points[9]+points[17])/2;
+        int cx = (leftEyeX+rightEyeX)/2;
+        int cy = (leftEyeY+rightEyeY)/2;
+        float eyeDistance = calDistance(leftEyeX, leftEyeY, rightEyeX, rightEyeY);
+        // 计算旋转角度
+        if (leftEyeX == leftEyeY) angle = (float) 3.14 / 2;
+        else {
+            angle = (float) Math.atan(( rightEyeY - leftEyeY) / (rightEyeX - leftEyeX));
+        }
+        scale = eyeDistance / animationModel.getDistance();
+
+        setPositionAndStartAnimation(cx, cy, scale, angle);
+    }
+
     public void setPositionAndStartAnimation(int centerX, int centerY, float scale, float angle) {
         if (animationModel == null) return;
         if (isAnimationRunning == false) {

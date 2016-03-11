@@ -40,6 +40,7 @@ import android.view.Surface;
 import android.widget.FrameLayout;
 
 import com.putao.camera.camera.utils.CameraHost.FailureReason;
+import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.DrawingFocusView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.PhotoARShowActivity;
@@ -56,8 +57,8 @@ import java.util.List;
 @SuppressLint("NewApi")
 public class CameraView extends FrameLayout implements AutoFocusCallback {
     static final String TAG = "Pt-Camera";
-    //    private PreviewStrategy previewStrategy;
     private PreviewStrategy previewStrategy;
+    public GlSurfacePreviewStrategy glSurfacePreviewStrategy;
     private Camera.Size previewSize;
     private Camera camera = null;
     private boolean inPreview = false;
@@ -130,10 +131,19 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         return (host);
     }
 
+    public void setAnmationView(AnimationImageView view){
+        if(glSurfacePreviewStrategy!=null) glSurfacePreviewStrategy.setAnimationView(view);
+    }
+
+    public void clearAnmationView(){
+        if(glSurfacePreviewStrategy!=null) glSurfacePreviewStrategy.clearAnimationView();
+    }
+
     // must call this after constructor, before onResume()
     public void setHost(CameraHost host) {
         this.host = host;
-        previewStrategy = new GlSurfacePreviewStrategy(this);
+        glSurfacePreviewStrategy = new GlSurfacePreviewStrategy(this);
+        previewStrategy = glSurfacePreviewStrategy;
     }
 
 
