@@ -135,6 +135,7 @@ public class PCameraFragment extends CameraFragment {
      */
     public void setAnimationView(AnimationImageView view) {
         this.animationView = view;
+        if(cameraView!=null) cameraView.setAnmationView(view);
     }
 
     /**
@@ -143,6 +144,7 @@ public class PCameraFragment extends CameraFragment {
     public void clearAnimationView() {
 
         this.animationView = null;
+        if(cameraView!=null) cameraView.clearAnmationView();
     }
 
 
@@ -610,8 +612,9 @@ public class PCameraFragment extends CameraFragment {
                 // faceView.clearFaces();
                 animationView.setVisibility(View.VISIBLE);
             }
-            cameraView.getCameraInstance().setFaceDetectionListener(googleFaceDetect);
-            cameraView.getCameraInstance().startFaceDetection();
+            // 测试暂时去掉google人脸检测
+            // cameraView.getCameraInstance().setFaceDetectionListener(googleFaceDetect);
+            // cameraView.getCameraInstance().startFaceDetection();
         }
     }
 
@@ -630,7 +633,7 @@ public class PCameraFragment extends CameraFragment {
     public void startFaceDetect() {
         if (isFaceDetecting == true) return;
         isFaceDetecting = true;
-        mHandler.sendEmptyMessageDelayed(googleFaceDetect.CAMERA_HAS_STARTED_PREVIEW, 1500);
+        // mHandler.sendEmptyMessageDelayed(googleFaceDetect.CAMERA_HAS_STARTED_PREVIEW, 1500);
     }
 
     public Point getCameraSize() {
