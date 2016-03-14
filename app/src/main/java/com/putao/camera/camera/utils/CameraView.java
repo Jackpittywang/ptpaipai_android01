@@ -52,6 +52,7 @@ import com.putao.camera.util.Loger;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @SuppressLint("NewApi")
@@ -142,7 +143,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     // must call this after constructor, before onResume()
     public void setHost(CameraHost host) {
         this.host = host;
-        glSurfacePreviewStrategy = new GlSurfacePreviewStrategy(this);
+        glSurfacePreviewStrategy = new GlSurfacePreviewStrategy(mContext,this);
         previewStrategy = glSurfacePreviewStrategy;
     }
 
@@ -182,7 +183,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             if (cameraId >= 0) {
                 try {
                     Loger.d("open camera");
-                    camera = Camera.open(cameraId);
+//                    camera = Camera.open(cameraId);
+                    camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
                     if (getActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                         onOrientationChange.enable();
                     }
@@ -341,6 +343,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);
                 pictureParams.setPictureSize(pictureSize.width, pictureSize.height);
                 pictureParams.setPictureFormat(ImageFormat.JPEG);
+                pictureParams.setPreviewFormat(ImageFormat.NV21);
+                setOptimalPreviewSize(pictureParams, 640, 640);
                 if (xact.flashMode != null) {
                     pictureParams.setFlashMode(xact.flashMode);
                 }
@@ -364,6 +368,31 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             }
         } else {
             throw new IllegalStateException("Preview mode must have started before you can take a picture");
+        }
+    }
+
+    private void setOptimalPreviewSize(Camera.Parameters cameraParams,
+                                       int targetWidth, int targetHeight) {
+        List<Camera.Size> supportedPreviewSizes = cameraParams
+                .getSupportedPreviewSizes();
+        if (null == supportedPreviewSizes) {
+        } else {
+            Camera.Size optimalSize = null;
+            double minDiff = 1.7976931348623157E308D;
+            Iterator mIterator = supportedPreviewSizes.iterator();
+
+            while (mIterator.hasNext()) {
+                Camera.Size size = (Camera.Size) mIterator.next();
+                if ((double) Math.abs(size.width - targetWidth) < minDiff) {
+                    optimalSize = size;
+                    minDiff = (double) Math.abs(size.width - targetWidth);
+                }
+            }
+
+            int iw = optimalSize.width;
+            int ih = optimalSize.height;
+
+            cameraParams.setPreviewSize(iw, ih);
         }
     }
 
