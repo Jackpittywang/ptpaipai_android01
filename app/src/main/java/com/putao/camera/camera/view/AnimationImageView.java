@@ -361,8 +361,13 @@ public class AnimationImageView extends ImageView {
         float rightEyeX = (points[25 * 2] + points[28 * 2]) / 2;
         float rightEyeY = (points[25 * 2 + 1] + points[28 * 2 + 1]) / 2;
 
+        Log.d(TAG, "leftEyeX: "+leftEyeX);
+        Log.d(TAG, "rightEyeX: "+leftEyeX);
+
         float cx = (leftEyeX + rightEyeX) / 2;
         float cy = (leftEyeY + rightEyeY) / 2;
+
+
         float eyeDistance = calDistance(leftEyeX, leftEyeY, rightEyeX, rightEyeY);
         // 计算旋转角度
         if (leftEyeX == leftEyeY) angle = (float) Math.PI / 2;
