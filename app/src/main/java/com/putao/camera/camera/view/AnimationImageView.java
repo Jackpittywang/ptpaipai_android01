@@ -156,9 +156,10 @@ public class AnimationImageView extends ImageView {
         return animationModel;
     }
 
-    public void setIsMirror(boolean flag){
+    public void setIsMirror(boolean flag) {
         isMirror = flag;
     }
+
     public void setData(String animName, final boolean startAnim) {
         final AnimationModel model = AnimationUtils.getModelFromXML(animName);
         if (model == null) return;
@@ -334,6 +335,7 @@ public class AnimationImageView extends ImageView {
 
     /**
      * points 0: face
+     *
      * @param points
      */
 
@@ -345,26 +347,32 @@ public class AnimationImageView extends ImageView {
     // 12, 13 mouth right side;
     // 14, 15 left eye out side;
     // 16, 17 right eye out side;
-
-    public void setPositionAndStartAnimation(int [] points){
-        if(animationModel == null) return;
+    public void setPositionAndStartAnimation(float[] points) {
+        if (animationModel == null) return;
         float scale = 0f;
         float angle = 0f;
-        int leftEyeX = (points[6]+points[14])/2;
-        int leftEyeY = (points[7]+points[15])/2;
-        int rightEyeX = (points[8]+points[16])/2;
-        int rightEyeY = (points[9]+points[17])/2;
-        int cx = (leftEyeX+rightEyeX)/2;
-        int cy = (leftEyeY+rightEyeY)/2;
+//        int leftEyeX = (points[6]+points[14])/2;
+//        int leftEyeY = (points[7]+points[15])/2;
+//        int rightEyeX = (points[8]+points[16])/2;
+//        int rightEyeY = (points[9]+points[17])/2;
+        //hezhiyun修改
+        float leftEyeX = (points[19 * 2] + points[22 * 2]) / 2;
+        float leftEyeY = (points[19 * 2 + 1] + points[22 * 2 + 1]) / 2;
+        float rightEyeX = (points[25 * 2] + points[28 * 2]) / 2;
+        float rightEyeY = (points[25 * 2 + 1] + points[28 * 2 + 1]) / 2;
+
+        float cx = (leftEyeX + rightEyeX) / 2;
+        float cy = (leftEyeY + rightEyeY) / 2;
         float eyeDistance = calDistance(leftEyeX, leftEyeY, rightEyeX, rightEyeY);
         // 计算旋转角度
-        if (leftEyeX == leftEyeY) angle = (float) 3.14 / 2;
+        if (leftEyeX == leftEyeY) angle = (float) Math.PI / 2;
         else {
-            angle = (float) Math.atan(( rightEyeY - leftEyeY) / (rightEyeX - leftEyeX));
+            angle = (float) Math.atan((rightEyeY - leftEyeY) / (rightEyeX - leftEyeX));
+            Log.d(TAG, (angle * 180f / Math.PI) + "");
         }
         scale = eyeDistance / animationModel.getDistance();
 
-        setPositionAndStartAnimation(cx, cy, scale, angle);
+        setPositionAndStartAnimation((int) cx, (int) cy, scale, angle);
     }
 
     public void setPositionAndStartAnimation(int centerX, int centerY, float scale, float angle) {

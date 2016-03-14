@@ -183,8 +183,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             if (cameraId >= 0) {
                 try {
                     Loger.d("open camera");
-//                    camera = Camera.open(cameraId);
-                    camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    camera = Camera.open(cameraId);
                     if (getActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                         onOrientationChange.enable();
                     }
