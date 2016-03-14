@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -81,7 +82,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list;
-    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar;
+    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
+    private ImageButton btn_close_ar_list;
     private RedPointBaseButton show_sticker_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
@@ -1132,11 +1134,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             ARImageView arImageView = new ARImageView(mActivity);
 
             String imagePath = FileUtils.getARStickersPath() + iconInfo + "_icon.png";
-            //Log.i(TAG, "imagePath is:"+imagePath);
             arImageView.setData(imagePath);
             arImageView.setTag(iconInfo);
             arImageView.setOnClickListener(arStickerOnclickListener);
             layout_sticker_list.addView(arImageView);
+
         }
     }
 
