@@ -343,7 +343,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 pictureParams.setPictureSize(pictureSize.width, pictureSize.height);
                 pictureParams.setPictureFormat(ImageFormat.JPEG);
                 pictureParams.setPreviewFormat(ImageFormat.NV21);
-                setOptimalPreviewSize(pictureParams, 640, 640);
+                setOptimalPreviewSize(pictureParams, 960, 960);
                 if (xact.flashMode != null) {
                     pictureParams.setFlashMode(xact.flashMode);
                 }
