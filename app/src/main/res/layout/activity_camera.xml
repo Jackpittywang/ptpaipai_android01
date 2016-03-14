@@ -214,33 +214,36 @@
                 android:id="@+id/layout_sticker_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#252525"
                 android:orientation="horizontal"></LinearLayout>
 
         </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:orientation="horizontal">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_close_ar_list"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#000000"
-                android:text="V"
+                android:src="@drawable/btn_spread_down"
                 android:textColor="#dddddd" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:layout_marginTop="@dimen/dimens_10dp"
                 android:background="#333333" />
 
             <Button
                 android:id="@+id/btn_clear_ar"
                 android:layout_width="100dp"
-                android:layout_height="30dp"
+                android:layout_height="match_parent"
                 android:background="#000000"
                 android:text="清除"
                 android:textColor="#dddddd" />
