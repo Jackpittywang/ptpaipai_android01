@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -43,7 +42,6 @@ public class AnimationImageView extends ImageView {
 
     private float imageAngle = 0f;
     private float imageScale = 0f;
-    // private PointF centerLocation;
     private float centerX;
     private float centerY;
 
@@ -348,8 +346,10 @@ public class AnimationImageView extends ImageView {
         float leftEyeY = (points[19 * 2 + 1] + points[22 * 2 + 1]) / 2;
         float rightEyeX = (points[25 * 2] + points[28 * 2]) / 2;
         float rightEyeY = (points[25 * 2 + 1] + points[28 * 2 + 1]) / 2;
-        float mouthX = (points[31 * 2] + points[37 * 2]) / 2;
-        float mouthY = (points[31 * 2 + 1] + points[37 * 2 + 1]) / 2;
+
+        //这个版本的动态贴纸中的mouth其实是nouse，所以此利用nouse的坐标
+        float mouthX = (points[10 * 2] + points[10 * 2]) / 2;
+        float mouthY = (points[10 * 2 + 1] + points[10 * 2 + 1]) / 2;
 
         float cx = (leftEyeX + rightEyeX) / 2;
         float cy = (leftEyeY + rightEyeY) / 2;

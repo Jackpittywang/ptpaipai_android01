@@ -413,6 +413,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 container.setLayoutParams(params);
                 break;
             case R.id.switch_camera_btn:
+
                 if (hasTwoCameras) {
                     switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
@@ -503,7 +504,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             current.stopFaceDetect();
             current = (current == std) ? ffc : std;
             flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
-            if(current  == ffc) isMirror = true;
+            if (current == ffc) isMirror = true;
         }
         // current.setAnimationView(animation_view);
         animation_view.setIsMirror(isMirror);
