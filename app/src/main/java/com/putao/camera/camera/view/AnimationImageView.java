@@ -190,7 +190,7 @@ public class AnimationImageView extends ImageView {
                 if (model.getMouth() != null) {
                     for (int i = 0; i < model.getMouth().getImageList().size(); i++) {
                         Bitmap bitmap = BitmapHelper.getBitmapFromPath(imageFolder + animationName + File.separator + model.getMouth().getImageList().get(i), option);
-                        if (bitmap != null) eyesBitmapArr.add(bitmap);
+                        if (bitmap != null) mouthBitmapArr.add(bitmap);
                     }
                 }
                 if (model.getBottom() != null) {
@@ -339,53 +339,37 @@ public class AnimationImageView extends ImageView {
      * @param points
      */
 
-    // 0: face x, 1 face y, 2 face w, 3 face h
-    // 4,5 face middel x,y
-    // 6,7 left eye center side;
-    // 8,9 right eye center side;
-    // 10, 11 mouth left side;
-    // 12, 13 mouth right side;
-    // 14, 15 left eye out side;
-    // 16, 17 right eye out side;
     public void setPositionAndStartAnimation(float[] points) {
         if (animationModel == null) return;
         float scale = 0f;
         float angle = 0f;
-//        int leftEyeX = (points[6]+points[14])/2;
-//        int leftEyeY = (points[7]+points[15])/2;
-//        int rightEyeX = (points[8]+points[16])/2;
-//        int rightEyeY = (points[9]+points[17])/2;
         //hezhiyun修改
         float leftEyeX = (points[19 * 2] + points[22 * 2]) / 2;
         float leftEyeY = (points[19 * 2 + 1] + points[22 * 2 + 1]) / 2;
         float rightEyeX = (points[25 * 2] + points[28 * 2]) / 2;
         float rightEyeY = (points[25 * 2 + 1] + points[28 * 2 + 1]) / 2;
-
-        Log.d(TAG, "leftEyeX: "+leftEyeX);
-        Log.d(TAG, "rightEyeX: "+leftEyeX);
+        float mouthX = (points[31 * 2] + points[37 * 2]) / 2;
+        float mouthY = (points[31 * 2 + 1] + points[37 * 2 + 1]) / 2;
 
         float cx = (leftEyeX + rightEyeX) / 2;
         float cy = (leftEyeY + rightEyeY) / 2;
-
 
         float eyeDistance = calDistance(leftEyeX, leftEyeY, rightEyeX, rightEyeY);
         // 计算旋转角度
         if (leftEyeX == leftEyeY) angle = (float) Math.PI / 2;
         else {
             angle = (float) Math.atan((rightEyeY - leftEyeY) / (rightEyeX - leftEyeX));
-            Log.d(TAG, (angle * 180f / Math.PI) + "");
         }
         scale = eyeDistance / animationModel.getDistance();
-
-        setPositionAndStartAnimation((int) cx, (int) cy, scale, angle);
+        setPositionAndStartAnimation((int) cx, (int) cy, scale, angle, (int) mouthX, (int) mouthY);
     }
 
-    public void setPositionAndStartAnimation(int centerX, int centerY, float scale, float angle) {
+    public void setPositionAndStartAnimation(int centerX, int centerY, float scale, float angle, int mouthX, int mouthY) {
         if (animationModel == null) return;
         if (isAnimationRunning == false) {
             startAnimation();
         }
-        setPosition(centerX, centerY, scale, angle, 0, 0);
+        setPosition(centerX, centerY, scale, angle, mouthX, mouthY);
 
     }
 
@@ -520,7 +504,6 @@ public class AnimationImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.save();
-        // Log.i(TAG, "on draw called ...");
         if (isAnimationReady == true && animationModel != null) {
 
             if (animationModel.getEye() != null && animationPosition < eyesBitmapArr.size()) {
@@ -533,9 +516,9 @@ public class AnimationImageView extends ImageView {
                 canvas.drawBitmap(eyesBitmapArr.get(animationPosition), matrix, null);
             }
             if (animationModel.getMouth() != null && animationPosition < mouthBitmapArr.size()) {
-                // Log.i(TAG, "mouth scale:"+imageScale+"  mousex y "+mouthX+":"+mouthY+"  angle:"+ imageAngle+" centerx y :"+centerX+":"+centerY);
+                Log.d(TAG, "Mouth: " + mouthX + "-" + mouthY);
                 // 此处获取数据可能会跟上门不一样
-                mouthMatrixTranslate.setTranslate(centerX - imageScale * Float.valueOf(animationModel.getCenterX()), centerY - imageScale * Float.valueOf(animationModel.getCenterY()));
+                mouthMatrixTranslate.setTranslate(mouthX - imageScale * Float.valueOf(animationModel.getCenterX()), mouthY - imageScale * Float.valueOf(animationModel.getCenterY()));
                 mouthMatrixScale.setScale(imageScale, imageScale);
                 // 此处旋转用的是角度 不是弧度
                 mouthMatrixRotation.setRotate((float) (imageAngle * 180f / Math.PI), centerX, centerY);
