@@ -106,7 +106,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             // 图片居中显示后，图片的位置会发生变化
             faceCenterX = bgImageOffsetX + (int) (imageScale * faceCenterX);
             faceCenterY = bgImageOffsetY + (int) (imageScale * faceCenterY);
-            animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle);
+            animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle,0,0);
             bgImageBitmap.recycle();
             resizedBgImage.recycle();
 

@@ -148,6 +148,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         }
         YMFace face = mDetector.onDetector(data, iw, ih);
         if (face != null) {
+            animationImageView.setVisibility(View.VISIBLE);
             float[] landmarks = face.getLandmarks();
             float[] emotions = face.getEmotions();
             float[] rect = face.getRect();
@@ -157,7 +158,6 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                 if (i == 3 || i == 2) continue;
                 resuil += emo[i] + "--" + (int) (emotions[i] * 100) + "  \n";
             }
-
             float[] points = new float[landmarks.length];
             for (int i = 0; i < landmarks.length / 2; i++) {
                 float x = landmarks[i * 2] * mainRadio;
@@ -168,11 +168,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                 points[i * 2] = x;
                 points[i * 2 + 1] = y;
             }
-
-
             animationImageView.setPositionAndStartAnimation(points);
         }else{
-//            cameraView.clearAnmationView();
+            animationImageView.setVisibility(View.GONE);
         }
 
 
