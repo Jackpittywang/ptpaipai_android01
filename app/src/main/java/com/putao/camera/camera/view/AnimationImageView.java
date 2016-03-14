@@ -505,7 +505,6 @@ public class AnimationImageView extends ImageView {
     protected void onDraw(Canvas canvas) {
         canvas.save();
         if (isAnimationReady == true && animationModel != null) {
-
             if (animationModel.getEye() != null && animationPosition < eyesBitmapArr.size()) {
                 matrixTranslate.setTranslate(centerX - imageScale * Float.valueOf(animationModel.getCenterX()), centerY - imageScale * Float.valueOf(animationModel.getCenterY()));
                 matrixScale.setScale(imageScale, imageScale);
@@ -516,7 +515,6 @@ public class AnimationImageView extends ImageView {
                 canvas.drawBitmap(eyesBitmapArr.get(animationPosition), matrix, null);
             }
             if (animationModel.getMouth() != null && animationPosition < mouthBitmapArr.size()) {
-                Log.d(TAG, "Mouth: " + mouthX + "-" + mouthY);
                 // 此处获取数据可能会跟上门不一样
                 mouthMatrixTranslate.setTranslate(mouthX - imageScale * Float.valueOf(animationModel.getCenterX()), mouthY - imageScale * Float.valueOf(animationModel.getCenterY()));
                 mouthMatrixScale.setScale(imageScale, imageScale);

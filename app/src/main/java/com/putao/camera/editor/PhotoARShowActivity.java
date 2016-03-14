@@ -41,6 +41,8 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private int faceCenterY = 0;
     private float faceScale = 1;
     private float faceAngle = 0;
+    private int mouthX = 0;
+    private int mouthY = 0;
     private String animationName = "";
     private String videoImagePath = "";
     // 保存视频时候图片的张数
@@ -74,8 +76,11 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         imagePath = intent.getStringExtra("imagePath");
         faceCenterX = intent.getIntExtra("faceCenterX", 0);
         faceCenterY = intent.getIntExtra("faceCenterY", 0);
+        mouthX = intent.getIntExtra("mouthX", 0);
+        mouthY = intent.getIntExtra("mouthY", 0);
         faceScale = intent.getFloatExtra("faceScale", 1);
         faceAngle = intent.getFloatExtra("faceAngle", 0);
+
         animationName = intent.getStringExtra("animationName");
 
         if (StringHelper.isEmpty(imagePath)) return;
@@ -106,7 +111,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             // 图片居中显示后，图片的位置会发生变化
             faceCenterX = bgImageOffsetX + (int) (imageScale * faceCenterX);
             faceCenterY = bgImageOffsetY + (int) (imageScale * faceCenterY);
-            animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle,0,0);
+            animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle, mouthX, mouthY);
             bgImageBitmap.recycle();
             resizedBgImage.recycle();
 

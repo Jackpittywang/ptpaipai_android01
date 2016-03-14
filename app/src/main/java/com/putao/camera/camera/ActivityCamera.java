@@ -113,6 +113,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private float screenDensity = 1.0f;
     private int saveFaceCenterX = 0;
     private int saveFaceCenterY = 0;
+    private int saveMouthX = 0;
+    private int saveMouthY = 0;
     private float saveFaceScale = 0;
     private float saveFaceAngle = 0;
 
@@ -490,6 +492,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         saveFaceCenterY = (int) animation_view.centerYFilter.getData();
         saveFaceScale = animation_view.scaleFilter.getData();
         saveFaceAngle = animation_view.angleFilter.getData();
+        saveMouthX = (int) animation_view.mouthXFilter.getData();
+        saveMouthY = (int) animation_view.mouthYFilter.getData();
     }
 
     /**
@@ -807,6 +811,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 intent.putExtra("faceCenterY", saveFaceCenterY);
                 intent.putExtra("faceScale", saveFaceScale);
                 intent.putExtra("faceAngle", saveFaceAngle);
+                intent.putExtra("mouthX", saveMouthX);
+                intent.putExtra("mouthY", saveMouthY);
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);
                 break;
