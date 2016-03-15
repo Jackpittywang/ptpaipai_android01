@@ -1232,5 +1232,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+        this.finish();
+    }
 }
