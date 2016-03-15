@@ -68,26 +68,6 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
 
-        try {
-            File folder = new File(FileUtils.getARStickersPath());
-            if (folder.exists() == false) folder.mkdir();
-
-            // FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
-            String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
-            FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "icon.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "kq.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "mhl.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "xhx.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "xm.zip", folderName, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        copyDataFile2LocalDir();
 
     }
 
@@ -219,20 +199,4 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 
 
 
-    // 把opencv需要用到的文件从raw里面的文件复制到data文件夹下
-    private void copyDataFile2LocalDir() {
-        try {
-            File dataDir = this.getDir("data", this.MODE_PRIVATE);
-            File f_frontalface = new File(dataDir,
-                    "Readface/haarcascade_frontalface_alt2.xml");
-            File f_fmodel = new File(dataDir, "flandmark_model.dat");
-
-//            FileUtils.putDataFileInLocalDir(this,
-//                    R.raw.haarcascade_frontalface_alt2, f_frontalface);
-
-
-        } catch (IOError e) {
-            e.printStackTrace();
-        }
-    }
 }

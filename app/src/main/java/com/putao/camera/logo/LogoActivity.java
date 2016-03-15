@@ -15,6 +15,10 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
+import com.putao.camera.util.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 public class LogoActivity extends BaseActivity {
 
@@ -44,6 +48,24 @@ public class LogoActivity extends BaseActivity {
 //            e.printStackTrace();
 //        }
         EventBus.getEventBus().register(this);
+
+        try {
+            File folder = new File(FileUtils.getARStickersPath());
+            if (folder.exists() == false) folder.mkdir();
+            // FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
+            String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
+            FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "icon.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "kq.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "mhl.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "xhx.zip", folderName, false);
+            FileUtils.unZipInAsset(mContext, "xm.zip", folderName, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
