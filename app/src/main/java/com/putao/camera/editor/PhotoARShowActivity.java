@@ -3,17 +3,20 @@ package com.putao.camera.editor;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.media.FaceDetector;
+import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
-import android.util.DisplayMetrics;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.camera.view.AnimationImageView;
@@ -49,6 +52,12 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private AnimationImageView animation_view;
 
     private ProgressDialog progressDialog;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    private float[] landmarks;
 
     @Override
     public int doGetContentViewId() {
@@ -97,13 +106,21 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             show_image.setImageBitmap(originImageBitmap);
 
             //检测人脸
-            YMDetector YMDetector = new YMDetector(this);
-            List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
-            if (faces != null && faces.size() > 0) {
-                YMFace face = faces.get(0);
-                float[] landmarks = face.getLandmarks();
-                animation_view.setPositionAndStartAnimation(landmarks);
-            }
+            final YMDetector YMDetector = new YMDetector(this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
+                    if (faces != null && faces.size() > 0) {
+                        YMFace face = faces.get(0);
+                        landmarks = face.getLandmarks();
+                        if (landmarks != null && landmarks.length > 0) {
+                            mHandle.sendEmptyMessage(123);
+                        }
+                    }
+                }
+            }).start();
+
             bgImageBitmap.recycle();
             resizedBgImage.recycle();
 
@@ -112,6 +129,16 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
+
+    private Handler mHandle = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 123) {
+                animation_view.setPositionAndStartAnimation(landmarks);
+            }
+        }
+    };
 
 //    // 此方法因为获取不到脸的角度，未使用
 //    private void getFaceFromBitmap(Bitmap bitmap) {
@@ -317,4 +344,61 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "PhotoARShow Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.putao.camera.editor/http/host/path")
+        );
+        try {
+            AppIndex.AppIndexApi.start(client, viewAction);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "PhotoARShow Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.putao.camera.editor/http/host/path")
+        );
+        try {
+            AppIndex.AppIndexApi.end(client, viewAction);
+            client.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
