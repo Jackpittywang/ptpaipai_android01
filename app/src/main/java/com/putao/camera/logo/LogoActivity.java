@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
@@ -58,7 +59,7 @@ public class LogoActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ActivityHelper.startActivity(mActivity, MenuActivity.class);
+                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
                 mActivity.finish();
             }
         }, 2000);

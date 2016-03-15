@@ -235,6 +235,7 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dimens_20dp"
         android:paddingLeft="@dimen/dimens_20dp"
+        android:visibility="gone"
         android:gravity="center_vertical">
 
         <ImageView

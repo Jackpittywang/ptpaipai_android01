@@ -63,6 +63,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
+import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DateUtil;
@@ -452,6 +453,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class);
                 break;
             case R.id.back_home_btn:
+                ActivityHelper.startActivity(mActivity, MenuActivity.class);
                 finish();
                 break;
             case R.id.show_sticker_btn:
