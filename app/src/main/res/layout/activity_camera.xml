@@ -64,7 +64,7 @@
                 android:id="@+id/camera_scale_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_05" />
+                android:background="@drawable/icon_capture_20_07" />
         </LinearLayout>
 
         <LinearLayout
@@ -147,6 +147,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -162,7 +163,8 @@
                     android:id="@+id/album_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/photo_button_album" />
+                    android:background="@drawable/photo_button_album"
+                    />
             </LinearLayout>
 
             <LinearLayout
