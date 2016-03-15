@@ -1,6 +1,6 @@
 /**
  * 7  Copyright (c) 2013 CommonsWare, LLC
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
  * a copy of the License at
@@ -43,7 +43,6 @@ import com.putao.camera.camera.enhance.PtHdrMergeTask;
 import com.putao.camera.camera.utils.CameraFragment;
 import com.putao.camera.camera.utils.CameraView;
 import com.putao.camera.camera.utils.CameraView.onCameraFocusChangeListener;
-import com.putao.camera.camera.utils.GoogleFaceDetect;
 import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.utils.PictureTransaction;
 import com.putao.camera.camera.utils.SimpleCameraHost;
@@ -122,10 +121,8 @@ public class PCameraFragment extends CameraFragment {
 
 
     public AnimationImageView animationView;
-    private GoogleFaceDetect googleFaceDetect;
     // 没检测到脸的次数。累计到一定个数才会清除屏幕上门的动画
     private int noDetectFaceCount = 0;
-
 
 
     /**
@@ -135,7 +132,7 @@ public class PCameraFragment extends CameraFragment {
      */
     public void setAnimationView(AnimationImageView view) {
         this.animationView = view;
-        if(cameraView!=null) cameraView.setAnmationView(view);
+        if (cameraView != null) cameraView.setAnmationView(view);
     }
 
     /**
@@ -144,7 +141,7 @@ public class PCameraFragment extends CameraFragment {
     public void clearAnimationView() {
 
         this.animationView = null;
-        if(cameraView!=null) cameraView.clearAnmationView();
+        if (cameraView != null) cameraView.clearAnmationView();
     }
 
 
@@ -188,9 +185,6 @@ public class PCameraFragment extends CameraFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        googleFaceDetect = new GoogleFaceDetect(getActivity(), mHandler);
-
     }
 
     @Override
@@ -602,80 +596,5 @@ public class PCameraFragment extends CameraFragment {
         return bitmap;
     }
 
-
-    private void startGoogleFaceDetect() {
-        Log.i(TAG, "start face detect called ... ");
-        if (cameraView == null || cameraView.getCameraInstance() == null) return;
-        Parameters params = cameraView.getCameraInstance().getParameters();
-        if (params.getMaxNumDetectedFaces() > 0) {
-            if (animationView != null) {
-                // faceView.clearFaces();
-                animationView.setVisibility(View.VISIBLE);
-            }
-            // 测试暂时去掉google人脸检测
-            // cameraView.getCameraInstance().setFaceDetectionListener(googleFaceDetect);
-            // cameraView.getCameraInstance().startFaceDetection();
-        }
-    }
-
-    public void stopFaceDetect() {
-        Log.i(TAG, "stop face detect called ... !!!");
-        if (isFaceDetecting == false) return;
-        isFaceDetecting = false;
-        if (cameraView == null || cameraView.getCameraInstance() == null) return;
-        Camera.Parameters params = cameraView.getCameraInstance().getParameters();
-        if (params.getMaxNumDetectedFaces() > 0) {
-            cameraView.getCameraInstance().setFaceDetectionListener(null);
-            cameraView.getCameraInstance().stopFaceDetection();
-        }
-    }
-
-    public void startFaceDetect() {
-        if (isFaceDetecting == true) return;
-        isFaceDetecting = true;
-        // mHandler.sendEmptyMessageDelayed(googleFaceDetect.CAMERA_HAS_STARTED_PREVIEW, 1500);
-    }
-
-    public Point getCameraSize() {
-        Point size = new Point();
-        size.x = cameraView.getWidth();
-        size.y = cameraView.getHeight();
-        return size;
-
-    }
-
-
-    /**
-     * 人脸识别handler
-     */
-    private Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            switch (msg.what) {
-                case GoogleFaceDetect.UPDATE_FACE_RECT:
-                    Camera.Face[] faces = (Camera.Face[]) msg.obj;
-                    if (animationView == null) return;
-                    // Log.i(TAG, "face number is:" + faces.length);
-                    if (faces.length > 0) {
-                        noDetectFaceCount = 0;
-                        // Log.i(TAG, "x y is:" + faces[0].leftEye.x + ":" + faces[0].leftEye.y);
-
-                        animationView.setPositionAndStartAnimation(faces[0]);
-
-                    } else {
-                        noDetectFaceCount = noDetectFaceCount + 1;
-                        if (noDetectFaceCount > 5) animationView.stopAnimation();
-                    }
-
-                    // Log.i("YanZi", "onFaceDetection...update");
-                    break;
-                case GoogleFaceDetect.CAMERA_HAS_STARTED_PREVIEW:
-                    startGoogleFaceDetect();
-                    break;
-            }
-        }
-    };
 
 }

@@ -351,7 +351,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             // 这里启动脸检测
             if (current != null) {
                 current.setAnimationView(animation_view);
-                current.startFaceDetect();
             }
         }
 
@@ -365,8 +364,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         if (animation_view != null) {
             animation_view.clearData();
         }
-        // 这里需要停止脸检测
-        if (current != null) current.stopFaceDetect();
     }
 
 
@@ -507,14 +504,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             current = std;
             isMirror = false;
         } else {
-            current.stopFaceDetect();
             current = (current == std) ? ffc : std;
             flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
             if (current == ffc) isMirror = true;
         }
         // current.setAnimationView(animation_view);
         animation_view.setIsMirror(isMirror);
-        current.startFaceDetect();
     }
 
     private void setEnhanceButton() {
@@ -643,7 +638,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         pw.setOutsideTouchable(false);
         pw.setAnimationStyle(R.style.popuStyle);
-        pw.setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+        pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         pw.setFocusable(true);
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
@@ -741,7 +736,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         pw.setAnimationStyle(R.style.popuStyle);
         pw.setOutsideTouchable(false);
-        pw.setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+        pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         pw.setFocusable(true); // 如果把焦点设置为false，则其他部份是可以点击的，也就是说传递事件时，不会先走PopupWindow
         int[] location = new int[2];
         parent.getLocationOnScreen(location);

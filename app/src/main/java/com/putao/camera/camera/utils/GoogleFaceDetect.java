@@ -11,6 +11,8 @@ import android.os.Message;
 /**
  * 脸部识别实现类
  */
+
+@Deprecated
 public class GoogleFaceDetect implements FaceDetectionListener {
 
     private static final String TAG = "GoogleFaceDetect";
