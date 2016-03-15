@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.media.FaceDetector;
 import android.os.Environment;
 import android.util.Log;
@@ -29,6 +30,9 @@ import com.putao.video.VideoHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import mobile.ReadFace.YMDetector;
+import mobile.ReadFace.YMFace;
 
 public class PhotoARShowActivity extends BaseActivity implements View.OnClickListener {
 
@@ -111,6 +115,15 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             // 图片居中显示后，图片的位置会发生变化
             faceCenterX = bgImageOffsetX + (int) (imageScale * faceCenterX);
             faceCenterY = bgImageOffsetY + (int) (imageScale * faceCenterY);
+
+//            YMDetector
+//                    mDetector = new YMDetector(this, YMDetector.Config.FACE_270, YMDetector.Config.RESIZE_WIDTH_640);
+//            YMFace face = mDetector.onDetector(originImageBitmap);
+//            if (face != null) {
+//                float[] landmarks = face.getLandmarks();
+//                mouthX = (int) ((landmarks[10 * 2] + landmarks[10 * 2]) / 2);
+//                mouthY = (int) (landmarks[10 * 2 + 1] + landmarks[10 * 2 + 1]) / 2;
+//            }
             animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle, mouthX, mouthY);
             bgImageBitmap.recycle();
             resizedBgImage.recycle();
