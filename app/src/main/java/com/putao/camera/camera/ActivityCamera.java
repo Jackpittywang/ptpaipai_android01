@@ -1234,7 +1234,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
     @Override
     public void onBackPressed() {
-        ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+        ActivityHelper.startActivity(mActivity, MenuActivity.class);
         this.finish();
     }
 }
