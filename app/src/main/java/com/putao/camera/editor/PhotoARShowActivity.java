@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.FaceDetector;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,18 +36,11 @@ import mobile.ReadFace.YMDetector;
 import mobile.ReadFace.YMFace;
 
 public class PhotoARShowActivity extends BaseActivity implements View.OnClickListener {
-
     private String TAG = PhotoARShowActivity.class.getName();
     private Button backBtn, saveBtn;
     private ImageView show_image;
     private Bitmap originImageBitmap;
     private String imagePath = "";
-    private int faceCenterX = 0;
-    private int faceCenterY = 0;
-    private float faceScale = 1;
-    private float faceAngle = 0;
-    private int mouthX = 0;
-    private int mouthY = 0;
     private String animationName = "";
     private String videoImagePath = "";
     // 保存视频时候图片的张数
@@ -55,7 +49,6 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private AnimationImageView animation_view;
 
     private ProgressDialog progressDialog;
-
 
     @Override
     public int doGetContentViewId() {
@@ -78,12 +71,6 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         Intent intent = this.getIntent();
         if (intent == null) return;
         imagePath = intent.getStringExtra("imagePath");
-        faceCenterX = intent.getIntExtra("faceCenterX", 0);
-        faceCenterY = intent.getIntExtra("faceCenterY", 0);
-        mouthX = intent.getIntExtra("mouthX", 0);
-        mouthY = intent.getIntExtra("mouthY", 0);
-        faceScale = intent.getFloatExtra("faceScale", 1);
-        faceAngle = intent.getFloatExtra("faceAngle", 0);
 
         animationName = intent.getStringExtra("animationName");
 
@@ -106,30 +93,22 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             originImageBitmap = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
             Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
             originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
-
             animation_view.setData(animationName, false);
-
             show_image.setImageBitmap(originImageBitmap);
 
-            float animationScale = imageScale * faceScale;
-            // 图片居中显示后，图片的位置会发生变化
-            faceCenterX = bgImageOffsetX + (int) (imageScale * faceCenterX);
-            faceCenterY = bgImageOffsetY + (int) (imageScale * faceCenterY);
-
-//            YMDetector
-//                    mDetector = new YMDetector(this, YMDetector.Config.FACE_270, YMDetector.Config.RESIZE_WIDTH_640);
-//            YMFace face = mDetector.onDetector(originImageBitmap);
-//            if (face != null) {
-//                float[] landmarks = face.getLandmarks();
-//                mouthX = (int) ((landmarks[10 * 2] + landmarks[10 * 2]) / 2);
-//                mouthY = (int) (landmarks[10 * 2 + 1] + landmarks[10 * 2 + 1]) / 2;
-//            }
-            animation_view.setPositionAndStartAnimation(faceCenterX, faceCenterY, animationScale, faceAngle, mouthX, mouthY);
+            //检测人脸
+            YMDetector YMDetector = new YMDetector(this);
+            List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
+            if (faces != null && faces.size() > 0) {
+                YMFace face = faces.get(0);
+                float[] landmarks = face.getLandmarks();
+                animation_view.setPositionAndStartAnimation(landmarks);
+            }
             bgImageBitmap.recycle();
             resizedBgImage.recycle();
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }

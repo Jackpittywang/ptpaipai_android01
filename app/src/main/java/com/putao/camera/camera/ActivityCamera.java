@@ -804,12 +804,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
                 Intent intent = new Intent(mContext, PhotoARShowActivity.class);
                 intent.putExtra("imagePath", event.bundle.getString("imagePath"));
-                intent.putExtra("faceCenterX", saveFaceCenterX);
-                intent.putExtra("faceCenterY", saveFaceCenterY);
-                intent.putExtra("faceScale", saveFaceScale);
-                intent.putExtra("faceAngle", saveFaceAngle);
-                intent.putExtra("mouthX", saveMouthX);
-                intent.putExtra("mouthY", saveMouthY);
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);
                 break;

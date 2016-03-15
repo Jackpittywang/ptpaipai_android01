@@ -196,7 +196,7 @@ public class AnimationImageView extends ImageView {
                         File file = new File(imageFolder + animationName + File.separator + model.getBottom().getImageList().get(i));
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
                         Matrix matrix = new Matrix();
-                        if (bitmap != null) {
+                        if (bitmap != null && bitmap.getWidth()>0 && bitmap.getHeight()>0) {
                             float scale = (float) getWidth() / (float) bitmap.getWidth();
                             // Log.i(TAG, "screen width is:"+getWidth()+"  image width is:"+bitmap.getWidth()+" scale is:"+scale);
                             bottomImageY = getHeight() - (int) (bitmap.getHeight() * scale) - buttomGap;
