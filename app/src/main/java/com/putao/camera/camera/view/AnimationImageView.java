@@ -543,37 +543,29 @@ public class AnimationImageView extends ImageView {
                 canvas.drawBitmap(mouthBitmapArr.get(animationPosition), mouthMatrix, null);
             }
             if (animationModel.getBottom() != null && animationPosition < bottomBitmapArr.size()) {
-                isMatrixComplete=false;
-                if (!isMatrixComplete) {
-                    float scale = (float) getWidth() / (float) bottomBitmapArr.get(animationPosition).getWidth();
-                    int scaleH = (int) (bottomBitmapArr.get(animationPosition).getHeight() * scale);
-                    bottomMatrixScale.setScale(scale, scale);
-                    bottomMatrixTranslate.setTranslate(0, buttomGap);
-                    bottomMatrix.setConcat(bottomMatrixScale, bottomMatrixTranslate);
+                float scale = (float) getWidth() / (float) bottomBitmapArr.get(animationPosition).getWidth();
+                int scaleH = (int) (bottomBitmapArr.get(animationPosition).getHeight() * scale);
+                bottomMatrixScale.setScale(scale, scale);
+                bottomMatrixTranslate.setTranslate(0, buttomGap);
+                bottomMatrix.setConcat(bottomMatrixScale, bottomMatrixTranslate);
 //              canvas.drawBitmap(bottomBitmapArr.get(animationPosition), 0, bottomImageY, null);
-                    canvas.drawBitmap(bottomBitmapArr.get(animationPosition), bottomMatrix, null);
+                canvas.drawBitmap(bottomBitmapArr.get(animationPosition), bottomMatrix, null);
 
 
-                    singleThreadExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Bitmap bitmap = bottomBitmapArr.get(animationPosition);
-                            if (bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
-                                Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bottomMatrix, true);
-                                bottomScaleBitmapArr.add(resizeBmp);
-                            }
-                            if (animationPosition == bottomBitmapArr.size() - 1) {
-                                isMatrixComplete = true;
-                                Log.d(TAG, "onDraw: cache" + animationPosition + "" + bottomBitmapArr.size());
-                            }
-                        }
-                    });
-                } else {
-                    if(animationPosition<bottomScaleBitmapArr.size()){
-                        canvas.drawBitmap(bottomScaleBitmapArr.get(animationPosition), 0, buttomGap, null);
-                    }
-                    Log.d(TAG, "onDraw: cache");
-                }
+//                    singleThreadExecutor.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Bitmap bitmap = bottomBitmapArr.get(animationPosition);
+//                            if (bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
+//                                Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bottomMatrix, true);
+//                                bottomScaleBitmapArr.add(resizeBmp);
+//                            }
+//                            if (animationPosition == bottomBitmapArr.size() - 1) {
+//                                isMatrixComplete = true;
+//                                Log.d(TAG, "onDraw: cache" + animationPosition + "" + bottomBitmapArr.size());
+//                            }
+//                        }
+//                    });
 
             }
         }
