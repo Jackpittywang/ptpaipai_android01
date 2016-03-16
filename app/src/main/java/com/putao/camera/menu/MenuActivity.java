@@ -1,6 +1,8 @@
 
 package com.putao.camera.menu;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 
@@ -10,10 +12,10 @@ import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.WaterMarkRequestInfo;
 import com.putao.camera.camera.ActivityCamera;
-import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.movie.MovieCameraActivity;
+import com.putao.camera.setting.AboutActivity;
 import com.putao.camera.setting.watermark.MaterialCenterActivity;
 import com.putao.camera.umengfb.UmengFeedbackActivity;
 import com.putao.camera.util.ActivityHelper;
@@ -22,12 +24,9 @@ import com.putao.camera.util.NetType;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.putao.camera.util.FileUtils;
 
 import org.json.JSONObject;
-import java.io.File;
-import java.io.IOError;
-import java.io.IOException;
+
 import java.util.HashMap;
 
 /**
@@ -110,12 +109,14 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
-            case R.id.menu_home_camera_btn://葡萄时光--原美宝相机
-                ActivityHelper.startActivity(this, ActivityCamera.class);
+            case R.id.menu_home_camera_btn://葡萄纬度官网
+                Uri uri = Uri.parse(PuTaoConstants.ORG_WEBSITE_URL);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
                 break;
             case R.id.menu_home_jigsaw_btn://关于我们--原萌萌拼图
-                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
-//                ActivityHelper.startActivity(this, AboutActivity.class);
+               // ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+                ActivityHelper.startActivity(this, AboutActivity.class);
                 break;
             case R.id.menu_home_movie_btn:
                 ActivityHelper.startActivity(this, MovieCameraActivity.class);

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
+    android:clipChildren="false"
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame">
 
@@ -64,7 +65,7 @@
                 android:id="@+id/camera_scale_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_07" />
+                android:background="@drawable/icon_capture_20_05" />
         </LinearLayout>
 
         <LinearLayout
@@ -143,8 +144,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/black"
+        android:clipChildren="false"
         android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimens_20dp"
+        android:paddingRight="@dimen/dimens_20dp">
 
         <LinearLayout
 
@@ -163,8 +167,19 @@
                     android:id="@+id/album_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/photo_button_album"
-                    />
+                    android:background="@drawable/photo_button_album" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <com.putao.camera.camera.view.AlbumButton
+                    android:id="@+id/meiyou"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -172,12 +187,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center">
-
                 <Button
                     android:id="@+id/take_photo_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/film_camera_btn"
+                    android:layout_width="53dp"
+                    android:layout_height="53dp"
+                    android:background="@drawable/btn_capture_nor"
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimens_24sp" />
             </LinearLayout>
@@ -186,18 +200,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:id="@+id/show_sticker_btn"
                 android:gravity="center">
 
                 <com.putao.camera.camera.view.RedPointBaseButton
-                    android:id="@+id/show_sticker_btn"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/film_favorite" />
+                    android:background="@drawable/icon_capture_20_15" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/show_material_btn"
+                android:gravity="center">
+
+                <com.putao.camera.camera.view.RedPointBaseButton
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_17" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <!--下方横向滚动的sticker列表-->
+
     <LinearLayout
         android:id="@+id/layout_sticker"
         android:layout_width="match_parent"

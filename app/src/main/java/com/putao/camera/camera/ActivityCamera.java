@@ -48,7 +48,7 @@ import com.putao.camera.camera.utils.RoundUtil;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
 import com.putao.camera.camera.view.AnimationImageView;
-import com.putao.camera.camera.view.RedPointBaseButton;
+import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.CitySelectActivity;
@@ -68,13 +68,13 @@ import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DateUtil;
 import com.putao.camera.util.DisplayHelper;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
-import com.putao.camera.util.WaterMarkHelper;
-import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.TimerAdapter;
+import com.putao.camera.util.WaterMarkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +82,10 @@ import java.util.List;
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list,show_sticker_btn,show_material_btn;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
     private ImageButton btn_close_ar_list;
-    private RedPointBaseButton show_sticker_btn;
+//    private RedPointBaseButton show_material_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
@@ -138,11 +138,17 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         RATIO_DEFAULT, RATIO_THREE_TO_FOUR, RATIO_ONE_TO_ONE
     }
 
+    private static final String DELAY_NONE = "off";
+    private static final String DELAY_THREE = "3s";
+    private static final String DELAY_FIVE = "5s";
+    private static final String DELAY_TEN = "10s";
+
+    private String timeType = DELAY_NONE;//拍照预览界面比例标志
     /**
      * 延时拍摄
      */
     public enum TakeDelayTime {
-        DELAY_NONE, DELAY_THREE, DELAY_FIVE
+        DELAY_NONE, DELAY_THREE, DELAY_FIVE,DELAY_TEN
     }
 
     /**
@@ -169,6 +175,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
+        show_material_btn = queryViewById(R.id.show_material_btn);
         container = queryViewById(R.id.container);
         camera_top_rl = queryViewById(R.id.camera_top_rl);
         flash_light_btn = queryViewById(R.id.flash_light_btn);
@@ -195,7 +202,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, take_photo_btn,
+        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn,take_photo_btn,
                 back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
@@ -273,7 +280,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 if (mOrientationCompensation != orientationCompensation) {
                     mOrientationCompensation = orientationCompensation;
                     OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
-                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn,
+                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn,show_material_btn,
                             take_photo_btn, back_home_btn, camera_set_btn);
                 }
             }
@@ -387,7 +394,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 switch (scaleType) {
                     case SCALETYPE_ONE:
                         camera_activy.getBackground().setAlpha(0);
-                        camera_top_rl.getBackground().setAlpha(0);
+                        camera_top_rl.getBackground().setAlpha(60);
                         bar.getBackground().setAlpha(0);
                         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
@@ -472,6 +479,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.btn_close_ar_list:
                 showSticker(false);
+                break;
+            case R.id.show_material_btn:
+                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+
                 break;
             default:
                 break;
@@ -1229,6 +1240,38 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.setAnchorView(camera_timer_btn);
         popupWindow.show();
     }
+
+    /*RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+    switch (scaleType) {
+        case SCALETYPE_ONE:
+            camera_activy.getBackground().setAlpha(0);
+            camera_top_rl.getBackground().setAlpha(60);
+            bar.getBackground().setAlpha(0);
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
+            scaleType = SCALETYPE_FULL;
+            break;
+        case SCALETYPE_THREE:
+            camera_activy.getBackground().setAlpha(255);
+            camera_top_rl.getBackground().setAlpha(255);
+            bar.getBackground().setAlpha(255);
+            params.height = getResources().getDisplayMetrics().widthPixels;
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
+            scaleType = SCALETYPE_ONE;
+            break;
+        case SCALETYPE_FULL:
+            camera_activy.getBackground().setAlpha(255);
+            camera_top_rl.getBackground().setAlpha(255);
+            bar.getBackground().setAlpha(255);
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
+            scaleType = SCALETYPE_THREE;
+            break;
+    }
+    container.setLayoutParams(params);*/
+
+
+
 
     @Override
     public void onBackPressed() {
