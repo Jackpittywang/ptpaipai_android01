@@ -28,6 +28,8 @@ import com.putao.camera.util.BitmapHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class AnimationImageView extends ImageView {
     private String TAG = AnimationImageView.class.getName();
@@ -36,7 +38,7 @@ public class AnimationImageView extends ImageView {
     private Handler refreshHandler;
     private AnimationModel animationModel;
     private boolean isAnimationRunning = false;
-
+    private Context context;
     private boolean isAnimtionLoading = false;
     private boolean isAnimationReady = false;
 
@@ -61,6 +63,10 @@ public class AnimationImageView extends ImageView {
     private Matrix mouthMatrixRotation = new Matrix();
     private Matrix mouthMatrixTranslate = new Matrix();
     private Matrix mouthMatrixScale = new Matrix();
+
+    private Matrix bottomMatrix = new Matrix();
+    private Matrix bottomMatrixScale = new Matrix();
+    private Matrix bottomMatrixTranslate = new Matrix();
 
     // bottom放在屏幕上的Y
     private int bottomImageY = 0;
@@ -97,6 +103,7 @@ public class AnimationImageView extends ImageView {
     private Bitmap backgroundBitmap = null;
 
     private boolean isMirror = false;
+    private int screenH;
 
     public AnimationImageView(Context c) {
         super(c);
@@ -109,7 +116,8 @@ public class AnimationImageView extends ImageView {
     }
 
     private void init(Context context) {
-
+        this.context = context;
+        screenH = context.getResources().getDisplayMetrics().heightPixels;
     }
 
     public void setSave(Bitmap backgroundBitmap, String savePath, int saveCount) {
@@ -159,6 +167,7 @@ public class AnimationImageView extends ImageView {
     }
 
     public void setData(String animName, final boolean startAnim) {
+        screenH = context.getResources().getDisplayMetrics().heightPixels;
         final AnimationModel model = AnimationUtils.getModelFromXML(animName);
         if (model == null) return;
         if (isAnimtionLoading == true) return;
@@ -179,6 +188,7 @@ public class AnimationImageView extends ImageView {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 if (model.getEye() != null) {
                     for (int i = 0; i < model.getEye().getImageList().size(); i++) {
                         Bitmap bitmap = BitmapHelper.getBitmapFromPath(imageFolder + animationName + File.separator + model.getEye().getImageList().get(i), option);
@@ -192,19 +202,21 @@ public class AnimationImageView extends ImageView {
                     }
                 }
                 if (model.getBottom() != null) {
+                    isMatrixComplete = false;
                     for (int i = 0; i < model.getBottom().getImageList().size(); i++) {
                         File file = new File(imageFolder + animationName + File.separator + model.getBottom().getImageList().get(i));
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), option);
-                        Matrix matrix = new Matrix();
-                        if (bitmap != null && bitmap.getWidth()>0 && bitmap.getHeight()>0) {
-                            float scale = (float) getWidth() / (float) bitmap.getWidth();
-                            // Log.i(TAG, "screen width is:"+getWidth()+"  image width is:"+bitmap.getWidth()+" scale is:"+scale);
-                            bottomImageY = getHeight() - (int) (bitmap.getHeight() * scale) - buttomGap;
-                            matrix.postScale(scale, scale); //长和宽放大缩小的比例
-                            Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                            bottomBitmapArr.add(resizeBmp);
-                            bitmap.recycle();
-                        }
+                        if (bitmap != null) bottomBitmapArr.add(bitmap);
+//                        Matrix matrix = new Matrix();
+//                        if (bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
+//                            float scale = (float) getWidth() / (float) bitmap.getWidth();
+//                            // Log.i(TAG, "screen width is:"+getWidth()+"  image width is:"+bitmap.getWidth()+" scale is:"+scale);
+//                            bottomImageY = getHeight() - (int) (bitmap.getHeight() * scale) - buttomGap;
+//                            matrix.postScale(scale, scale); //长和宽放大缩小的比例
+//                            Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+//                            bottomBitmapArr.add(resizeBmp);
+//                            bitmap.recycle();
+//                        }
                     }
                 }
                 isAnimtionLoading = false;
@@ -269,6 +281,12 @@ public class AnimationImageView extends ImageView {
             bottomBitmapArr.get(i).recycle();
         }
         bottomBitmapArr.clear();
+
+        for (int i = 0; i < bottomScaleBitmapArr.size(); i++) {
+            bottomScaleBitmapArr.get(i).recycle();
+        }
+        bottomScaleBitmapArr.clear();
+
         animationModel = null;
         animationName = "";
         isAnimationReady = false;
@@ -342,10 +360,10 @@ public class AnimationImageView extends ImageView {
         float scale = 0f;
         float angle = 0f;
         //hezhiyun修改
-        float leftEyeX = (points[19 * 2] + points[22 * 2]) / 2;
-        float leftEyeY = (points[19 * 2 + 1] + points[22 * 2 + 1]) / 2;
-        float rightEyeX = (points[25 * 2] + points[28 * 2]) / 2;
-        float rightEyeY = (points[25 * 2 + 1] + points[28 * 2 + 1]) / 2;
+        float leftEyeX = (points[19 * 2] + points[20 * 2] + points[21 * 2] + points[22 * 2] + points[23 * 2] + points[24 * 2]) / 6;
+        float leftEyeY = (points[19 * 2 + 1] + points[20 * 2 + 1] + points[21 * 2 + 1] + points[22 * 2 + 1] + points[23 * 2 + 1] + points[24 * 2 + 1]) / 6;
+        float rightEyeX = (points[25 * 2] + points[26 * 2] + points[27 * 2] + points[28 * 2] + points[29 * 2] + points[30 * 2]) / 6;
+        float rightEyeY = (points[25 * 2 + 1] + points[26 * 2 + 1] + points[27 * 2 + 1] + points[28 * 2 + 1] + points[29 * 2 + 1] + points[30 * 2 + 1]) / 6;
 
         //这个版本的动态贴纸中的mouth其实是nouse，所以此利用nouse的坐标
         float mouthX = (points[10 * 2] + points[10 * 2]) / 2;
@@ -525,12 +543,46 @@ public class AnimationImageView extends ImageView {
                 canvas.drawBitmap(mouthBitmapArr.get(animationPosition), mouthMatrix, null);
             }
             if (animationModel.getBottom() != null && animationPosition < bottomBitmapArr.size()) {
-                canvas.drawBitmap(bottomBitmapArr.get(animationPosition), 0, bottomImageY, null);
+                isMatrixComplete=false;
+                if (!isMatrixComplete) {
+                    float scale = (float) getWidth() / (float) bottomBitmapArr.get(animationPosition).getWidth();
+                    int scaleH = (int) (bottomBitmapArr.get(animationPosition).getHeight() * scale);
+                    bottomMatrixScale.setScale(scale, scale);
+                    bottomMatrixTranslate.setTranslate(0, buttomGap);
+                    bottomMatrix.setConcat(bottomMatrixScale, bottomMatrixTranslate);
+//              canvas.drawBitmap(bottomBitmapArr.get(animationPosition), 0, bottomImageY, null);
+                    canvas.drawBitmap(bottomBitmapArr.get(animationPosition), bottomMatrix, null);
+
+
+                    singleThreadExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bitmap bitmap = bottomBitmapArr.get(animationPosition);
+                            if (bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
+                                Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bottomMatrix, true);
+                                bottomScaleBitmapArr.add(resizeBmp);
+                                bitmap.recycle();
+                            }
+                            if (animationPosition == bottomBitmapArr.size() - 1) {
+                                isMatrixComplete = true;
+                                Log.d(TAG, "onDraw: cache" + animationPosition + "" + bottomBitmapArr.size());
+                            }
+                        }
+                    });
+                } else {
+                    if(animationPosition<bottomScaleBitmapArr.size()){
+                        canvas.drawBitmap(bottomScaleBitmapArr.get(animationPosition), 0, buttomGap, null);
+                    }
+                    Log.d(TAG, "onDraw: cache");
+                }
+
             }
         }
-
         canvas.restore();
         super.onDraw(canvas);
     }
 
+    private boolean isMatrixComplete = false;
+    ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private List<Bitmap> bottomScaleBitmapArr = new ArrayList<Bitmap>();
 }

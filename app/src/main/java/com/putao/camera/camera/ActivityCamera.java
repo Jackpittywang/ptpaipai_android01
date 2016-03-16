@@ -354,8 +354,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 current.setAnimationView(animation_view);
             }
         }
-
-
     }
 
     @Override
