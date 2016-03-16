@@ -13,9 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.ListPopupWindow;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -24,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -73,7 +70,6 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
-import com.putao.camera.util.TimerAdapter;
 import com.putao.camera.util.WaterMarkHelper;
 
 import java.util.ArrayList;
@@ -81,6 +77,7 @@ import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
+    private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list,show_sticker_btn,show_material_btn;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
@@ -102,7 +99,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PictureRatio mPictureRatio = PictureRatio.RATIO_DEFAULT;
     private boolean mShowSticker = false;
     private WaterMarkView last_mark_view;
-    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
+//    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
 
     // 上一次选中的图标
     private ARImageView lastSelectArImageView = null;
@@ -144,12 +141,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String DELAY_TEN = "10s";
 
     private String timeType = DELAY_NONE;//拍照预览界面比例标志
-    /**
+   /* *//**
      * 延时拍摄
-     */
+     *//*
     public enum TakeDelayTime {
         DELAY_NONE, DELAY_THREE, DELAY_FIVE,DELAY_TEN
-    }
+    }*/
 
     /**
      * HDR
@@ -175,6 +172,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
+
+        tv_takephoto = queryViewById(R.id.tv_takephoto);
         show_material_btn = queryViewById(R.id.show_material_btn);
         container = queryViewById(R.id.container);
         camera_top_rl = queryViewById(R.id.camera_top_rl);
@@ -203,7 +202,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setScreenDensity(screenDensity);
 
         addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn,take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar);
+                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar,tv_takephoto);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -282,6 +281,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
                     setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn,show_material_btn,
                             take_photo_btn, back_home_btn, camera_set_btn);
+
                 }
             }
         };
@@ -459,6 +459,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.back_home_btn:
                 ActivityHelper.startActivity(mActivity, MenuActivity.class);
+
+               // 退出动画和进入动画
+                overridePendingTransition(R.anim.activity_to_in,R.anim.activity_to_out);
                 finish();
                 break;
             case R.id.show_sticker_btn:
@@ -482,6 +485,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.show_material_btn:
                 ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+
+                break;
+            case R.id.tv_takephoto:
+                if(flag)
+                    takePhoto();
 
                 break;
             default:
@@ -529,10 +537,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
     private void takePhoto() {
         final int delay;
-        if (mTakedelaytime == TakeDelayTime.DELAY_THREE) {
+        if (timeType ==DELAY_THREE) {
             delay = 3 * 1000;
-        } else if (mTakedelaytime == TakeDelayTime.DELAY_FIVE) {
+        } else if (timeType ==DELAY_FIVE) {
             delay = 5 * 1000;
+        }else if (timeType ==DELAY_TEN) {
+            delay = 10 * 1000;
         } else {
             delay = 0;
         }
@@ -640,8 +650,23 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
     }
 
+
+
+    //设置点屏拍照默认为关闭
+    private boolean flag=false;
     public void showSetWindow(final Context context, View parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        flag=!flag;
+        if(flag){
+            camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_13);
+        }else{
+            camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_12);
+        }
+
+
+
+
+
+        /*LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View menuView = inflater.inflate(R.layout.layout_camera_set_popupwindow, null);
         final PopupWindow pw = new PopupWindow(mContext);
         pw.setContentView(menuView);
@@ -651,6 +676,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         pw.setAnimationStyle(R.style.popuStyle);
         pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
         pw.setFocusable(true);
+
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
         pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0] - 320, location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
@@ -666,12 +692,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_delay_take_pic:
-                        if (mTakedelaytime == TakeDelayTime.DELAY_NONE) {
-                            mTakedelaytime = TakeDelayTime.DELAY_THREE;
-                        } else if (mTakedelaytime == TakeDelayTime.DELAY_THREE) {
-                            mTakedelaytime = TakeDelayTime.DELAY_FIVE;
+                        if (timeType == DELAY_NONE) {
+                            timeType = DELAY_THREE;
+                        } else if (timeType == DELAY_THREE) {
+                            timeType = DELAY_FIVE;
+                        }else if (timeType == DELAY_FIVE) {
+                            timeType = DELAY_TEN;
                         } else {
-                            mTakedelaytime = TakeDelayTime.DELAY_NONE;
+                            timeType = DELAY_NONE;
                         }
                         setButtonText(btn_delay_take_pic);
                         dismisPw(pw);
@@ -706,7 +734,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         };
         btn_camrea_ratio.setOnClickListener(listener);
         btn_delay_take_pic.setOnClickListener(listener);
-        btn_camera_hdr.setOnClickListener(listener);
+        btn_camera_hdr.setOnClickListener(listener);*/
     }
 
     private void dismisPw(final PopupWindow pw) {
@@ -729,7 +757,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 btn.setText((mPictureRatio == PictureRatio.RATIO_DEFAULT) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
                 break;
             case R.id.btn_delay_take_pic:
-                btn.setText(mTakedelaytime == TakeDelayTime.DELAY_THREE ? "3″" : mTakedelaytime == TakeDelayTime.DELAY_FIVE ? "5″" : "默认");
+                btn.setText(timeType == DELAY_THREE ? "3″": timeType == DELAY_FIVE ? "5″" : timeType == DELAY_FIVE ? "10″" :"默认");
                 break;
             case R.id.btn_camera_hdr:
                 btn.setText(mHdrState == HDRSTATE.OFF ? "关闭" : mHdrState == HDRSTATE.ON ? "开启" : "自动");
@@ -1223,10 +1251,104 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     };
 
 
+   /* LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    View menuView = inflater.inflate(R.layout.layout_camera_set_popupwindow, null);
+    final PopupWindow pw = new PopupWindow(mContext);
+    pw.setContentView(menuView);
+    pw.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+    pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+    pw.setOutsideTouchable(false);
+    pw.setAnimationStyle(R.style.popuStyle);
+    pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+    pw.setFocusable(true);
+    int[] location = new int[2];
+    parent.getLocationOnScreen(location);
+    pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0] - 320, location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
+    final Button btn_camrea_ratio = (Button) menuView.findViewById(R.id.btn_camrea_ratio);
+    final Button btn_delay_take_pic = (Button) menuView.findViewById(R.id.btn_delay_take_pic);
+    //TODO:本版本隐藏HDR功能 5/25/2015
+    final Button btn_camera_hdr = (Button) menuView.findViewById(R.id.btn_camera_hdr);
+    setButtonText(btn_camrea_ratio);
+    setButtonText(btn_delay_take_pic);
+    setButtonText(btn_camera_hdr);
+    OnClickListener listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_delay_take_pic:
+                    if (mTakedelaytime == TakeDelayTime.DELAY_NONE) {
+                        mTakedelaytime = TakeDelayTime.DELAY_THREE;
+                    } else if (mTakedelaytime == TakeDelayTime.DELAY_THREE) {
+                        mTakedelaytime = TakeDelayTime.DELAY_FIVE;
+                    } else {
+                        mTakedelaytime = TakeDelayTime.DELAY_NONE;
+                    }
+                    setButtonText(btn_delay_take_pic);
+                    dismisPw(pw);
+                    break;
+                case R.id.btn_camrea_ratio:
+                    if (mPictureRatio == PictureRatio.RATIO_DEFAULT) {
+                        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
+                        setCameraRatioOneToOne();
+                    } else if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
+                        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
+                        setCameraRatioThreeToFour();
+                    } else {
+                        mPictureRatio = PictureRatio.RATIO_DEFAULT;
+                        setCameraRatioThreeToFour();
+                    }
+                    setButtonText(btn_camrea_ratio);
+                    dismisPw(pw);
+                    break;
+                case R.id.btn_camera_hdr:
+                    if (mHdrState == HDRSTATE.OFF) {
+                        mHdrState = HDRSTATE.ON;
+                    } else if (mHdrState == HDRSTATE.ON) {
+                        mHdrState = HDRSTATE.AUTO;
+                    } else {
+                        mHdrState = HDRSTATE.OFF;
+                    }
+                    setButtonText(btn_camera_hdr);
+                    dismisPw(pw);
+                    break;
+            }
+        }
+    };
+    btn_camrea_ratio.setOnClickListener(listener);
+    btn_delay_take_pic.setOnClickListener(listener);
+    btn_camera_hdr.setOnClickListener(listener);*/
+
     /**
      * 设置拍照延时
      */
     private void setTakeDelay() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+        switch (timeType) {
+            case DELAY_NONE:
+//                mTakedelaytime == TakeDelayTime.DELAY_THREE;
+
+                camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_09);
+                timeType = DELAY_THREE;
+                break;
+            case DELAY_THREE:
+
+                camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_10);
+                timeType = DELAY_FIVE;
+                break;
+            case DELAY_FIVE:
+
+                camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_11);
+                timeType = DELAY_TEN;
+                break;
+            case DELAY_TEN:
+
+                camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_08);
+                timeType = DELAY_NONE;
+                break;
+        }
+        container.setLayoutParams(params);
+
+        /*//图片
         final Integer datas[] = {R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11};
         final ListPopupWindow popupWindow = new ListPopupWindow(mContext);
         popupWindow.setAdapter(new TimerAdapter(mContext, R.layout.popup_timer_item, datas));
@@ -1238,37 +1360,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         });
         popupWindow.setAnchorView(camera_timer_btn);
-        popupWindow.show();
+        popupWindow.show();*/
     }
 
-    /*RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
-    switch (scaleType) {
-        case SCALETYPE_ONE:
-            camera_activy.getBackground().setAlpha(0);
-            camera_top_rl.getBackground().setAlpha(60);
-            bar.getBackground().setAlpha(0);
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
-            scaleType = SCALETYPE_FULL;
-            break;
-        case SCALETYPE_THREE:
-            camera_activy.getBackground().setAlpha(255);
-            camera_top_rl.getBackground().setAlpha(255);
-            bar.getBackground().setAlpha(255);
-            params.height = getResources().getDisplayMetrics().widthPixels;
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
-            scaleType = SCALETYPE_ONE;
-            break;
-        case SCALETYPE_FULL:
-            camera_activy.getBackground().setAlpha(255);
-            camera_top_rl.getBackground().setAlpha(255);
-            bar.getBackground().setAlpha(255);
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
-            scaleType = SCALETYPE_THREE;
-            break;
-    }
-    container.setLayoutParams(params);*/
+
 
 
 

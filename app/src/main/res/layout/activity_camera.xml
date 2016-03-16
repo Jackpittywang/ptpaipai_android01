@@ -107,6 +107,12 @@
                 android:background="@drawable/icon_capture_20_14" />
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_takephoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/camera_top_rl"
+        android:layout_above="@+id/bar"/>
 
     <View
         android:id="@+id/fill_blank_top"
