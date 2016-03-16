@@ -561,7 +561,6 @@ public class AnimationImageView extends ImageView {
                             if (bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
                                 Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), bottomMatrix, true);
                                 bottomScaleBitmapArr.add(resizeBmp);
-                                bitmap.recycle();
                             }
                             if (animationPosition == bottomBitmapArr.size() - 1) {
                                 isMatrixComplete = true;
