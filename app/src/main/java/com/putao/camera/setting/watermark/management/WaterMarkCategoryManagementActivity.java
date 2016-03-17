@@ -130,7 +130,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
             }
         }
     }
-
+//请求水印列表
     public void queryWaterMarkList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
@@ -170,7 +170,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
                 break;
         }
     }
-
+    //开启开始下载服务
     private void startDownloadService(final String url, final String floderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
         if (isExistRunning) {
@@ -186,7 +186,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
         this.startService(bindIntent);
     }
-
+    //下载贴图包
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.DOWNLOAD_FILE_FINISH: {

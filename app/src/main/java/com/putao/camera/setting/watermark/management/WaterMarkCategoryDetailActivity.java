@@ -180,7 +180,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(nophoto)
                             .showImageOnFail(nophoto).cacheInMemory(true).cacheOnDisc(true)
                             .bitmapConfig(Bitmap.Config.RGB_565).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
-                    sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    sample_iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     ImageLoader.getInstance().displayImage(mWaterMarkPackageDetailInfo.detail_image, sample_iv, options);
                 } catch (Exception e) {
                     e.printStackTrace();

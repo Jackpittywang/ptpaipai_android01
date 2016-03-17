@@ -147,8 +147,8 @@ public class CameraFragment extends Fragment {
      * @param xact PictureTransaction with configuration data for
      *             the picture to be taken
      */
-    public void takePicture(PictureTransaction xact) {
-        cameraView.takePicture(xact, isShowAR);
+    public void takePicture(PictureTransaction xact,int i) {
+        cameraView.takePicture(xact, isShowAR,i);
     }
 
     public void setShowAR(boolean flag){

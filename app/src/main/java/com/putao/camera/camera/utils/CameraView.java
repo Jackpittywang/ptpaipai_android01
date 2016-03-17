@@ -21,8 +21,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -31,7 +29,6 @@ import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -43,7 +40,6 @@ import com.putao.camera.camera.utils.CameraHost.FailureReason;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.DrawingFocusView;
 import com.putao.camera.constants.PuTaoConstants;
-import com.putao.camera.editor.PhotoARShowActivity;
 import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
@@ -72,6 +68,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     private boolean isDetectingFaces = false;
     private boolean isAutoFocusing = false;
     private Context mContext;
+    private int mI;
     // 是否需要显示AR贴纸
     private boolean isShowAR = false;
 
@@ -332,7 +329,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         return inPreview;
     }
 
-    public void takePicture(final PictureTransaction xact) {
+    public void takePicture(final PictureTransaction xact ) {
         if (inPreview) {
             if (isAutoFocusing) {
                 throw new IllegalStateException("Camera cannot take a picture while auto-focusing");
@@ -370,6 +367,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         }
     }
 
+
     private void setOptimalPreviewSize(Camera.Parameters cameraParams,
                                        int targetWidth, int targetHeight) {
         List<Camera.Size> supportedPreviewSizes = cameraParams
@@ -396,8 +394,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     }
 
 
-    public void takePicture(final PictureTransaction xact, boolean flag) {
+    public void takePicture(final PictureTransaction xact, boolean flag,int i) {
         this.isShowAR =  flag;
+        mI = i;
         takePicture(xact);
     }
 
@@ -661,7 +660,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
     private class PictureTransactionCallback implements Camera.PictureCallback {
         PictureTransaction xact = null;
-
         PictureTransactionCallback(PictureTransaction xact) {
             this.xact = xact;
         }
@@ -701,6 +699,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             else{
                 Intent intent = new Intent(mContext, PhotoEditorActivity.class);
                 intent.putExtra("photo_data", imagePath);
+                intent.putExtra("photo_ratio",mI);
                 mContext.startActivity(intent);
 
             }

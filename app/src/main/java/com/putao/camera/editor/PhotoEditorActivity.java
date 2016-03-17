@@ -63,6 +63,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.widget.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -87,7 +88,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private int text_index = -1;
     private TextWaterMarkView waterView;
     private ImageView show_image;
-    private Bitmap originImageBitmap, corpOriginImageBitmap, filter_origin;
+    private Bitmap originImageBitmap, corpOriginImageBitmap, filter_origin, corpImage;
     private EditAction mEditAction = EditAction.NONE;
     private boolean mFlagMarkShow = true;
     private String mCurrentFilter = GLEffectRender.DEFAULT_EFFECT_ID;
@@ -96,9 +97,14 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
     private ArrayList<WaterMarkCategoryInfo> content = new ArrayList<WaterMarkCategoryInfo>();
     private String photo_data;
+    private int i;
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
+
+
+    public static final int CROP_11 = 1;
+    public static final int CROP_43 = 2;
 
     private enum EditAction {
         NONE, ACTION_CUT, ACTION_Mark, ACTION_FILTER
@@ -140,18 +146,50 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     }
 
+    private CropImageView crop_image_view;
+
+    /**
+     * 裁剪图片
+     */
+    public static Bitmap ImageCrop(Bitmap bitmap, int cropYype) {
+        int startWidth = bitmap.getWidth(); // 得到图片的宽，高
+        int startHeight = bitmap.getHeight();
+        int retY = 0;
+        int endHeight = 0;
+        switch (cropYype) {
+            case CROP_11:
+                retY = (startHeight - startWidth) / 2;
+                endHeight = startWidth;
+                break;
+            case CROP_43:
+                endHeight = startWidth * 4 / 3;
+                retY = (startHeight - endHeight) / 2;
+                break;
+            default:
+                return bitmap;
+        }
+        //下面这句是关键
+        return Bitmap.createBitmap(bitmap, 0, retY, startWidth, endHeight, null, false);
+    }
+
     @Override
     public void doInitData() {
+        crop_image_view = new CropImageView(this);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
+        i = intent.getIntExtra("photo_ratio", 2);
+        Loger.w("kkkkkkkkkkkkkkk++" + i);
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
+//            crop_image_view.setImageBitmap(originImageBitmap);
+            show_image.setImageBitmap(ImageCrop(originImageBitmap, i));
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
         loadFilters();
-        show_image.setImageBitmap(originImageBitmap);
+
+//        corpImage = crop_image_view.getCroppedImage();
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
         mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mWaterMarkCategoryInfo);
@@ -926,7 +964,6 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             }
         }
     };
-
 
 
 }

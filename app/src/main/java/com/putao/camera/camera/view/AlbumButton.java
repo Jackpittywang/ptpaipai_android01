@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.animation.AlphaAnimation;
@@ -15,7 +16,6 @@ import android.widget.RelativeLayout;
 
 import com.putao.camera.R;
 import com.putao.camera.util.DisplayHelper;
-import com.putao.camera.util.Loger;
 
 public class AlbumButton extends RelativeLayout {
     private Context mContext;
@@ -71,8 +71,15 @@ public class AlbumButton extends RelativeLayout {
         Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(targetBitmap);
         Path path = new Path();
-        path.addCircle(((float) targetWidth - 1) / 2, ((float) targetHeight - 1) / 2, (Math.min(((float) targetWidth), ((float) targetHeight)) / 2),
-                Path.Direction.CCW);
+        //圆角矩形
+        RectF outerRect = new RectF(2, 2, targetWidth,targetHeight);
+        path.addRoundRect(outerRect,10,10,Path.Direction.CCW);
+
+
+        //path.addRect(0,0,targetWidth,targetHeight,Path.Direction.CCW);
+
+        /*path.addCircle(((float) targetWidth - 1) / 2, ((float) targetHeight - 1) / 2, (Math.min(((float) targetWidth), ((float) targetHeight)) / 2),
+                Path.Direction.CCW);*/
         canvas.clipPath(path);
         Matrix matrix = new Matrix();
 

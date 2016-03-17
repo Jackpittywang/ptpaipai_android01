@@ -14,6 +14,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -51,6 +52,7 @@ import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.CitySelectActivity;
 import com.putao.camera.editor.FestivalSelectActivity;
 import com.putao.camera.editor.PhotoARShowActivity;
+import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.editor.dialog.WaterTextDialog;
 import com.putao.camera.editor.view.NormalWaterMarkView;
 import com.putao.camera.editor.view.TextWaterMarkView;
@@ -79,10 +81,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list,show_sticker_btn,show_material_btn;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
     private ImageButton btn_close_ar_list;
-//    private RedPointBaseButton show_material_btn;
+    //    private RedPointBaseButton show_material_btn;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
@@ -201,8 +203,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn,take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar,tv_takephoto);
+        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn, take_photo_btn,
+                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -279,7 +281,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 if (mOrientationCompensation != orientationCompensation) {
                     mOrientationCompensation = orientationCompensation;
                     OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
-                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn,show_material_btn,
+                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn, show_material_btn,
                             take_photo_btn, back_home_btn, camera_set_btn);
 
                 }
@@ -353,6 +355,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         super.onResume();
         mOrientationEvent.enable();
         resetAlbumPhoto();
+        std = PCameraFragment.newInstance(false);
+        ffc = PCameraFragment.newInstance(true);
         if (lastSelectArImageView != null) {
             String animationName = (String) lastSelectArImageView.getTag();
             animation_view.setData(animationName, false);
@@ -380,6 +384,23 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         EventBus.getEventBus().unregister(this);
     }
 
+   /* case R.id.btn_camrea_ratio:
+            if (mPictureRatio == PictureRatio.RATIO_DEFAULT) {
+        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
+        setCameraRatioOneToOne();
+    } else if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
+        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
+        setCameraRatioThreeToFour();
+    } else {
+        mPictureRatio = PictureRatio.RATIO_DEFAULT;
+        setCameraRatioThreeToFour();
+    }
+    setButtonText(btn_camrea_ratio);
+    dismisPw(pw);
+    break;*/
+
+    public int i = PhotoEditorActivity.CROP_43;//0为全屏,1为1比1,2为4比3
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -393,20 +414,29 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
                 switch (scaleType) {
                     case SCALETYPE_ONE:
+
                         camera_activy.getBackground().setAlpha(0);
                         camera_top_rl.getBackground().setAlpha(60);
                         bar.getBackground().setAlpha(0);
                         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
                         scaleType = SCALETYPE_FULL;
+                        mPictureRatio = PictureRatio.RATIO_DEFAULT;
+                        setCameraRatioThreeToFour();
+                        i = 0;
+
                         break;
                     case SCALETYPE_THREE:
                         camera_activy.getBackground().setAlpha(255);
                         camera_top_rl.getBackground().setAlpha(255);
                         bar.getBackground().setAlpha(255);
-                        params.height = getResources().getDisplayMetrics().widthPixels;
+//                        params.height = getResources().getDisplayMetrics().widthPixels;
+                        Log.w("hight+++", params.height + "");
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
                         scaleType = SCALETYPE_ONE;
+                        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
+                        setCameraRatioOneToOne();
+                        i =  PhotoEditorActivity.CROP_11;
                         break;
                     case SCALETYPE_FULL:
                         camera_activy.getBackground().setAlpha(255);
@@ -415,6 +445,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
                         scaleType = SCALETYPE_THREE;
+                        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
+                        setCameraRatioThreeToFour();
+                        i = PhotoEditorActivity.CROP_43;
                         break;
                 }
                 container.setLayoutParams(params);
@@ -449,7 +482,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 }
                 saveAnimationImageData();
                 //
-                takePhoto();
+                takePhoto(i);
                 take_photo_btn.setEnabled(true);
 //                current.sendMessage();
                 break;
@@ -460,8 +493,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.back_home_btn:
                 ActivityHelper.startActivity(mActivity, MenuActivity.class);
 
-               // 退出动画和进入动画
-                overridePendingTransition(R.anim.activity_to_in,R.anim.activity_to_out);
+                // 退出动画和进入动画
+                overridePendingTransition(R.anim.activity_to_in, R.anim.activity_to_out);
                 finish();
                 break;
             case R.id.show_sticker_btn:
@@ -488,8 +521,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
                 break;
             case R.id.tv_takephoto:
-                if(flag)
-                    takePhoto();
+                if (flag)
+                    takePhoto(i);
 
                 break;
             default:
@@ -535,13 +568,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         btn_enhance_switch.setBackgroundResource(current.isEnableEnhance() ? R.drawable.button_enhance_on : R.drawable.button_enhance_off);
     }
 
-    private void takePhoto() {
+    private void takePhoto(final int i) {
         final int delay;
-        if (timeType ==DELAY_THREE) {
+        if (timeType == DELAY_THREE) {
             delay = 3 * 1000;
-        } else if (timeType ==DELAY_FIVE) {
+        } else if (timeType == DELAY_FIVE) {
             delay = 5 * 1000;
-        }else if (timeType ==DELAY_TEN) {
+        } else if (timeType == DELAY_TEN) {
             delay = 10 * 1000;
         } else {
             delay = 0;
@@ -570,7 +603,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            execTakePhoto();
+                            execTakePhoto(i);
                             take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.film_camera_btn));
                             take_photo_btn.setText("");
                         }
@@ -579,11 +612,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             });
             finalTime_thread.start();
         } else {
-            execTakePhoto();
+            execTakePhoto(i);
         }
     }
 
-    void execTakePhoto() {
+    void execTakePhoto(int i) {
         if (OrientationUtil.getOrientation() == 90 || OrientationUtil.getOrientation() == 180) {
             current.setPictureRatio(mPictureRatio, bar.getHeight() + fill_blank_bottom.getHeight());
         } else {
@@ -594,11 +627,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         current.setShowAR(animation_view.isAnimationRunning());
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true);
+            current.takeSimplePicture(mMarkViewList, true, i);
         } else if (mHdrState == HDRSTATE.AUTO) {
-            current.takeSimplePicture(mMarkViewList, true, true);
+            current.takeSimplePicture(mMarkViewList, true, true, i);
         } else {
-            current.takeSimplePicture(mMarkViewList);
+            current.takeSimplePicture(mMarkViewList, i);
         }
 
     }
@@ -646,27 +679,27 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 }
             });
         }
-
-
     }
 
 
-
     //设置点屏拍照默认为关闭
-    private boolean flag=false;
+    private boolean flag = false;
+
     public void showSetWindow(final Context context, View parent) {
-        flag=!flag;
-        if(flag){
+        flag = !flag;
+        if (flag) {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_13);
-        }else{
+            tv_takephoto.setVisibility(View.VISIBLE);
+        } else {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_12);
+
         }
 
 
 
 
 
-        /*LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+       /* LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View menuView = inflater.inflate(R.layout.layout_camera_set_popupwindow, null);
         final PopupWindow pw = new PopupWindow(mContext);
         pw.setContentView(menuView);
@@ -757,7 +790,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 btn.setText((mPictureRatio == PictureRatio.RATIO_DEFAULT) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
                 break;
             case R.id.btn_delay_take_pic:
-                btn.setText(timeType == DELAY_THREE ? "3″": timeType == DELAY_FIVE ? "5″" : timeType == DELAY_FIVE ? "10″" :"默认");
+                btn.setText(timeType == DELAY_THREE ? "3″" : timeType == DELAY_FIVE ? "5″" : timeType == DELAY_FIVE ? "10″" : "默认");
                 break;
             case R.id.btn_camera_hdr:
                 btn.setText(mHdrState == HDRSTATE.OFF ? "关闭" : mHdrState == HDRSTATE.ON ? "开启" : "自动");
@@ -1251,73 +1284,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     };
 
 
-   /* LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View menuView = inflater.inflate(R.layout.layout_camera_set_popupwindow, null);
-    final PopupWindow pw = new PopupWindow(mContext);
-    pw.setContentView(menuView);
-    pw.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-    pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-    pw.setOutsideTouchable(false);
-    pw.setAnimationStyle(R.style.popuStyle);
-    pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-    pw.setFocusable(true);
-    int[] location = new int[2];
-    parent.getLocationOnScreen(location);
-    pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0] - 320, location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
-    final Button btn_camrea_ratio = (Button) menuView.findViewById(R.id.btn_camrea_ratio);
-    final Button btn_delay_take_pic = (Button) menuView.findViewById(R.id.btn_delay_take_pic);
-    //TODO:本版本隐藏HDR功能 5/25/2015
-    final Button btn_camera_hdr = (Button) menuView.findViewById(R.id.btn_camera_hdr);
-    setButtonText(btn_camrea_ratio);
-    setButtonText(btn_delay_take_pic);
-    setButtonText(btn_camera_hdr);
-    OnClickListener listener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btn_delay_take_pic:
-                    if (mTakedelaytime == TakeDelayTime.DELAY_NONE) {
-                        mTakedelaytime = TakeDelayTime.DELAY_THREE;
-                    } else if (mTakedelaytime == TakeDelayTime.DELAY_THREE) {
-                        mTakedelaytime = TakeDelayTime.DELAY_FIVE;
-                    } else {
-                        mTakedelaytime = TakeDelayTime.DELAY_NONE;
-                    }
-                    setButtonText(btn_delay_take_pic);
-                    dismisPw(pw);
-                    break;
-                case R.id.btn_camrea_ratio:
-                    if (mPictureRatio == PictureRatio.RATIO_DEFAULT) {
-                        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
-                        setCameraRatioOneToOne();
-                    } else if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
-                        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
-                        setCameraRatioThreeToFour();
-                    } else {
-                        mPictureRatio = PictureRatio.RATIO_DEFAULT;
-                        setCameraRatioThreeToFour();
-                    }
-                    setButtonText(btn_camrea_ratio);
-                    dismisPw(pw);
-                    break;
-                case R.id.btn_camera_hdr:
-                    if (mHdrState == HDRSTATE.OFF) {
-                        mHdrState = HDRSTATE.ON;
-                    } else if (mHdrState == HDRSTATE.ON) {
-                        mHdrState = HDRSTATE.AUTO;
-                    } else {
-                        mHdrState = HDRSTATE.OFF;
-                    }
-                    setButtonText(btn_camera_hdr);
-                    dismisPw(pw);
-                    break;
-            }
-        }
-    };
-    btn_camrea_ratio.setOnClickListener(listener);
-    btn_delay_take_pic.setOnClickListener(listener);
-    btn_camera_hdr.setOnClickListener(listener);*/
-
     /**
      * 设置拍照延时
      */
@@ -1362,10 +1328,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         popupWindow.setAnchorView(camera_timer_btn);
         popupWindow.show();*/
     }
-
-
-
-
 
 
     @Override

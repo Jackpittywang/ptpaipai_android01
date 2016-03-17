@@ -21,13 +21,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -268,17 +263,27 @@ public class PCameraFragment extends CameraFragment {
         mExposureLevel = level;
     }
 
-
     public void takeSimplePicture() {
         if (!cameraView.isInPreview()) {
             Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
             return;
         }
         flashScreen();
-        takeSimplePicture(new PictureTransaction(getHost()));
+        takeSimplePicture(new PictureTransaction(getHost()),2);
     }
 
-    public void takeSimplePicture(PictureTransaction xact) {
+    public void takeSimplePicture(int i) {
+        if (!cameraView.isInPreview()) {
+            Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
+            return;
+        }
+        flashScreen();
+        takeSimplePicture(new PictureTransaction(getHost()),i);
+    }
+
+
+
+    public void takeSimplePicture(PictureTransaction xact, int i) {
         if (flashMode != null) {
             xact.flashMode(flashMode);
         }
@@ -294,13 +299,13 @@ public class PCameraFragment extends CameraFragment {
             setExposureLevel(ExposureLevel.NORMAL);
         }
         Loger.d("exposure level:" + mExposureLevel);
-        takePicture(xact);
+        takePicture(xact,i);
     }
 
 
-    public void takeSimplePicture(List<WaterMarkView> wmList) {
+    public void takeSimplePicture(List<WaterMarkView> wmList ,int i) {
         mWaterMarkImageViewsList = wmList;
-        takeSimplePicture();
+        takeSimplePicture(i);
     }
 
 
@@ -310,13 +315,13 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable,int i) {
         mHdrEnable = hdrenable;
         if (mHdrEnable) {
             mHdrBitmaps.clear();
             mCountHdr = 0;
         }
-        takeSimplePicture(wmList);
+        takeSimplePicture(wmList,i);
     }
 
     /**
@@ -325,9 +330,9 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto,int i) {
         mHdrAuto = isAuto;
-        takeSimplePicture(wmList, hdrenable);
+        takeSimplePicture(wmList, hdrenable,i);
     }
 
     /**
@@ -451,7 +456,8 @@ public class PCameraFragment extends CameraFragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            takeSimplePicture();
+            //takeSimplePicture();
+            takeSimplePicture(2);
         }
 
         /**
