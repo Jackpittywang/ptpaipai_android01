@@ -35,6 +35,8 @@
             android:layout_weight="1"
             android:gravity="center">
 
+            w
+
             <Button
                 android:id="@+id/back_home_btn"
                 android:layout_width="wrap_content"
@@ -107,13 +109,14 @@
                 android:background="@drawable/icon_capture_20_14" />
         </LinearLayout>
     </LinearLayout>
+
     <TextView
         android:id="@+id/tv_takephoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:layout_above="@+id/bar"
         android:layout_below="@+id/camera_top_rl"
-        android:layout_above="@+id/bar"/>
+        android:visibility="gone" />
 
     <View
         android:id="@+id/fill_blank_top"
@@ -173,9 +176,9 @@
                 <com.putao.camera.camera.view.AlbumButton
                     android:id="@+id/album_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                     />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -185,8 +188,7 @@
                 <com.putao.camera.camera.view.AlbumButton
                     android:id="@+id/meiyou"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                     />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -194,6 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center">
+
                 <Button
                     android:id="@+id/take_photo_btn"
                     android:layout_width="50dp"
@@ -204,10 +207,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/show_sticker_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/show_sticker_btn"
                 android:gravity="center">
 
                 <com.putao.camera.camera.view.RedPointBaseButton
@@ -218,10 +221,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/show_material_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/show_material_btn"
                 android:gravity="center">
 
                 <com.putao.camera.camera.view.RedPointBaseButton
@@ -288,8 +291,197 @@
                 android:textColor="#dddddd" />
         </LinearLayout>
     </LinearLayout>
-   <!-- <View
+
+    <RelativeLayout
+        android:id="@+id/Tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />-->
+        android:background="#dd000000"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_back_index" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/img_tips_01" />
+
+        <LinearLayout
+            android:id="@+id/page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:clipChildren="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingRight="@dimen/dimens_20dp">
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+                    <!--android:background="@drawable/photo_button_album"-->
+                    <com.putao.camera.camera.view.AlbumButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <com.putao.camera.camera.view.AlbumButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <Button
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="#00000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/page_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <com.putao.camera.camera.view.RedPointBaseButton
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/iknow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="320dp"
+            android:background="@drawable/img_tips_iknow" />
+
+        <ImageView
+            android:id="@+id/iv_inter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_bottom"
+            android:layout_marginBottom="@dimen/dimens_5dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/img_tips_02"
+            android:visibility="visible" />
+
+        <com.putao.camera.camera.view.RedPointBaseButton
+            android:id="@+id/btn_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/page"
+            android:layout_marginLeft="132dp"
+            android:layout_marginBottom="-10dp"
+            android:src="@drawable/icon_capture_20_15" />
+
+    </RelativeLayout>
 </RelativeLayout>

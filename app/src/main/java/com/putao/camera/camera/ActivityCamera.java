@@ -76,6 +76,7 @@ import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
+   private ImageView iknow;
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn;
@@ -85,7 +86,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
-    private RelativeLayout camera_activy;
+    private RelativeLayout camera_activy,Tips;
     private List<WaterMarkView> mMarkViewList;
     private int text_index = -1;
     private int mOrientation = 0;
@@ -178,7 +179,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
-
+        Tips=queryViewById(R.id.Tips);
+        iknow=queryViewById(R.id.iknow);
         tv_takephoto = queryViewById(R.id.tv_takephoto);
         show_material_btn = queryViewById(R.id.show_material_btn);
         container = queryViewById(R.id.container);
@@ -208,7 +210,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setScreenDensity(screenDensity);
 
         addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn, take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto);
+                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,iknow);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -530,6 +532,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.tv_takephoto:
                 if (flag)
                     takePhoto(i);
+
+                break;
+            case R.id.iknow:
+                Tips.setVisibility(View.GONE);
 
                 break;
             default:
