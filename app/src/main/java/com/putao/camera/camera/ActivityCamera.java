@@ -9,17 +9,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
@@ -72,6 +68,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.PhotoLoaderHelper;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 
 import java.util.ArrayList;
@@ -98,7 +95,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private OrientationEventListener mOrientationEvent;
     private boolean hasTwoCameras = (Camera.getNumberOfCameras() > 1);
     private List<View> mSceneWaterMarkViewList;
-    private PictureRatio mPictureRatio = PictureRatio.RATIO_DEFAULT;
+    private PictureRatio mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
     private boolean mShowSticker = false;
     private WaterMarkView last_mark_view;
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -110,6 +107,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String SCALETYPE_ONE = "1;1";
     private static final String SCALETYPE_THREE = "3:4";
     private String scaleType = SCALETYPE_THREE;//拍照预览界面比例标志
+
+    private static final String FLASHMODECODE_ON = "ON";
+    private static final String FLASHMODECODE_OFF = "OFF";
+    private static final String FLASHMODECODE_LIGHT = "LIGHT";
+    private static final String FLASHMODECODE_AUTO = "AUTO";
+    private String flashType = FLASHMODECODE_AUTO;
+
 
     private AnimationImageView animation_view;
     private float screenDensity = 1.0f;
@@ -143,12 +147,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String DELAY_TEN = "10s";
 
     private String timeType = DELAY_NONE;//拍照预览界面比例标志
-   /* *//**
+   /**
      * 延时拍摄
-     *//*
+     */
     public enum TakeDelayTime {
         DELAY_NONE, DELAY_THREE, DELAY_FIVE,DELAY_TEN
-    }*/
+    }
 
     /**
      * HDR
@@ -210,6 +214,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             ffc = PCameraFragment.newInstance(true);
             std.setPhotoSaveListener(photoListener);
             ffc.setPhotoSaveListener(photoListener);
+
         } else {
             std = PCameraFragment.newInstance(false);
             switch_camera_btn.setVisibility(View.GONE);
@@ -306,8 +311,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     void setCameraRatio() {
         if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
             setCameraRatioOneToOne();
-        } else if (mPictureRatio == PictureRatio.RATIO_THREE_TO_FOUR || mPictureRatio == PictureRatio.RATIO_DEFAULT) {
+        } else if (mPictureRatio == PictureRatio.RATIO_THREE_TO_FOUR  ){
             setCameraRatioThreeToFour();
+        }else{
+            setCameraRatioFull();
         }
     }
 
@@ -324,6 +331,27 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_top.setVisibility(View.GONE);
         fill_blank_bottom.setVisibility(View.GONE);
         bar_height_diff = btm_bar_height_new - btm_bar_height_old;
+        camera_top_rl.getBackground().setAlpha(255);
+        bar.getBackground().setAlpha(255);
+        setStickerStatus();
+    }
+
+    void setCameraRatioFull() {
+
+        int camera_width = DisplayHelper.getScreenWidth();//宽
+        int btm_bar_height_old = bar.getHeight();//下面高度
+        int btm_bar_height_new;//新的高度
+        int top_bar_height = camera_top_rl.getHeight();//上面条目高度
+        int camera_height = (int) ((float) camera_width * 16 / 9);
+        btm_bar_height_new = DisplayHelper.getScreenHeight() - top_bar_height - camera_height;
+        RelativeLayout.LayoutParams btm_params = (RelativeLayout.LayoutParams) bar.getLayoutParams();
+        btm_params.height = btm_bar_height_new;
+        bar.setLayoutParams(btm_params);
+        fill_blank_top.setVisibility(View.GONE);
+        fill_blank_bottom.setVisibility(View.GONE);
+        bar_height_diff = btm_bar_height_new - btm_bar_height_old;
+        camera_top_rl.getBackground().setAlpha(100);
+        bar.getBackground().setAlpha(0);
         setStickerStatus();
     }
 
@@ -347,6 +375,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_btm_params.height = fill_blank_height / 2;
         fill_blank_bottom.setLayoutParams(fill_blank_btm_params);
         bar_height_diff = btm_bar_height_new - btm_bar_height_old;
+        camera_top_rl.getBackground().setAlpha(255);
+        bar.getBackground().setAlpha(255);
         setStickerStatus();
     }
 
@@ -355,8 +385,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         super.onResume();
         mOrientationEvent.enable();
         resetAlbumPhoto();
-        std = PCameraFragment.newInstance(false);
-        ffc = PCameraFragment.newInstance(true);
+//        std = PCameraFragment.newInstance(false);
+//        ffc = PCameraFragment.newInstance(true);
         if (lastSelectArImageView != null) {
             String animationName = (String) lastSelectArImageView.getTag();
             animation_view.setData(animationName, false);
@@ -384,20 +414,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         EventBus.getEventBus().unregister(this);
     }
 
-   /* case R.id.btn_camrea_ratio:
-            if (mPictureRatio == PictureRatio.RATIO_DEFAULT) {
-        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
-        setCameraRatioOneToOne();
-    } else if (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) {
-        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
-        setCameraRatioThreeToFour();
-    } else {
-        mPictureRatio = PictureRatio.RATIO_DEFAULT;
-        setCameraRatioThreeToFour();
-    }
-    setButtonText(btn_camrea_ratio);
-    dismisPw(pw);
-    break;*/
 
     public int i = PhotoEditorActivity.CROP_43;//0为全屏,1为1比1,2为4比3
 
@@ -415,45 +431,34 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 switch (scaleType) {
                     case SCALETYPE_ONE:
 
-                        camera_activy.getBackground().setAlpha(0);
-                        camera_top_rl.getBackground().setAlpha(60);
-                        bar.getBackground().setAlpha(0);
-                        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
                         scaleType = SCALETYPE_FULL;
                         mPictureRatio = PictureRatio.RATIO_DEFAULT;
-                        setCameraRatioThreeToFour();
+                        setCameraRatioFull();
                         i = 0;
-
+                        ToasterHelper.show(this,"FULL");
                         break;
                     case SCALETYPE_THREE:
-                        camera_activy.getBackground().setAlpha(255);
-                        camera_top_rl.getBackground().setAlpha(255);
-                        bar.getBackground().setAlpha(255);
-//                        params.height = getResources().getDisplayMetrics().widthPixels;
-                        Log.w("hight+++", params.height + "");
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
                         scaleType = SCALETYPE_ONE;
                         mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
                         setCameraRatioOneToOne();
                         i =  PhotoEditorActivity.CROP_11;
+                        ToasterHelper.show(this,"1:1");
                         break;
                     case SCALETYPE_FULL:
-                        camera_activy.getBackground().setAlpha(255);
-                        camera_top_rl.getBackground().setAlpha(255);
-                        bar.getBackground().setAlpha(255);
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
                         scaleType = SCALETYPE_THREE;
                         mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                         setCameraRatioThreeToFour();
                         i = PhotoEditorActivity.CROP_43;
+                        ToasterHelper.show(this,"3:4");
                         break;
                 }
                 container.setLayoutParams(params);
                 break;
             case R.id.switch_camera_btn:
-
+                clearAnimationData();
                 if (hasTwoCameras) {
                     switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
@@ -483,6 +488,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 saveAnimationImageData();
                 //
                 takePhoto(i);
+
+//                clearAnimationData();
                 take_photo_btn.setEnabled(true);
 //                current.sendMessage();
                 break;
@@ -546,21 +553,21 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         saveMouthX = (int) animation_view.mouthXFilter.getData();
         saveMouthY = (int) animation_view.mouthYFilter.getData();
     }
-
+   private  boolean isMirror = false;
     /**
      * 切换前后camera
      */
     private void switchCamera() {
-        boolean isMirror = false;
+//        boolean isMirror = false;
         if (current == null) {
             current = std;
-            isMirror = false;
+//            isMirror = false;
         } else {
-            current = (current == std) ? ffc : std;
+            current = ((current == std) ? ffc : std);
             flash_light_btn.setVisibility((current == std) ? View.VISIBLE : View.GONE);
             if (current == ffc) isMirror = true;
         }
-        // current.setAnimationView(animation_view);
+//         current.setAnimationView(animation_view);
         animation_view.setIsMirror(isMirror);
     }
 
@@ -690,8 +697,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         if (flag) {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_13);
             tv_takephoto.setVisibility(View.VISIBLE);
+            ToasterHelper.show(this,"打开");
         } else {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_12);
+            ToasterHelper.show(this,"关闭");
 
         }
 
@@ -799,8 +808,47 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     }
 
 
+
+
     public void showFlashMenu(Context context, View parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        switch (flashType) {
+            case FLASHMODECODE_AUTO:
+
+                current.setflashMode(flashModeCode.off);
+                setFlashResource(current.getCurrentModeCode());
+                flashType=FLASHMODECODE_OFF;
+                ToasterHelper.show(this,"闪光关");
+
+                break;
+            case FLASHMODECODE_OFF:
+
+                current.setflashMode(flashModeCode.on);
+                setFlashResource(current.getCurrentModeCode());
+                flashType=FLASHMODECODE_ON;
+                ToasterHelper.show(this,"闪光开");
+                break;
+            case FLASHMODECODE_ON:
+
+                current.setflashMode(flashModeCode.light);
+                setFlashResource(current.getCurrentModeCode());
+                flashType=FLASHMODECODE_LIGHT;
+                ToasterHelper.show(this,"手电");
+                break;
+            case FLASHMODECODE_LIGHT:
+
+                current.setflashMode(flashModeCode.auto);
+                setFlashResource(current.getCurrentModeCode());
+                flashType=FLASHMODECODE_AUTO;
+                ToasterHelper.show(this,"自动");
+                break;
+        }
+
+
+
+
+
+
+       /* LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View menuView = inflater.inflate(R.layout.layout_flash_mode_selector, null);
         final PopupWindow pw = new PopupWindow(mContext);
         pw.setContentView(menuView);
@@ -844,20 +892,20 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                         break;
                 }
             }
-        };
+        };*/
         if (current.getCurrentModeCode() == flashModeCode.auto) {
-            flash_auto_btn.setBackgroundResource(R.drawable.icon_capture_20_01);
+            flash_light_btn.setBackgroundResource(R.drawable.icon_capture_20_01);
         } else if (current.getCurrentModeCode() == flashModeCode.on) {
-            flash_on_btn.setBackgroundResource(R.drawable.icon_capture_20_03);
+            flash_light_btn.setBackgroundResource(R.drawable.icon_capture_20_03);
         } else if (current.getCurrentModeCode() == flashModeCode.off) {
-            flash_off_btn.setBackgroundResource(R.drawable.icon_capture_20_02);
+            flash_light_btn.setBackgroundResource(R.drawable.icon_capture_20_02);
         } else if (current.getCurrentModeCode() == flashModeCode.light) {
-            flash_off_btn.setBackgroundResource(R.drawable.icon_capture_20_04);
+            flash_light_btn.setBackgroundResource(R.drawable.icon_capture_20_04);
         }
-        flash_auto_btn.setOnClickListener(listener);
+        /*flash_auto_btn.setOnClickListener(listener);
         flash_on_btn.setOnClickListener(listener);
         flash_off_btn.setOnClickListener(listener);
-        flash_light_btn.setOnClickListener(listener);
+        flash_light_btn.setOnClickListener(listener);*/
     }
 
     public void onEvent(BasePostEvent event) {
@@ -1207,6 +1255,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     OnClickListener arStickerOnclickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            ToasterHelper.show(getApplicationContext(),"请将正脸置于取景器内");
             if (current == null) return;
             if (animation_view.isAnimationLoading()) {
                 showToast("动画加载中请稍后");
@@ -1288,31 +1337,35 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
      * 设置拍照延时
      */
     private void setTakeDelay() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
         switch (timeType) {
             case DELAY_NONE:
 //                mTakedelaytime == TakeDelayTime.DELAY_THREE;
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_09);
                 timeType = DELAY_THREE;
+                ToasterHelper.show(this,"延时3秒");
                 break;
             case DELAY_THREE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_10);
                 timeType = DELAY_FIVE;
+                ToasterHelper.show(this,"延时5秒");
                 break;
             case DELAY_FIVE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_11);
                 timeType = DELAY_TEN;
+                ToasterHelper.show(this,"延时10秒");
                 break;
             case DELAY_TEN:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_08);
                 timeType = DELAY_NONE;
+                ToasterHelper.show(this,"延时关闭");
                 break;
         }
-        container.setLayoutParams(params);
+//        container.setLayoutParams(params);
 
         /*//图片
         final Integer datas[] = {R.drawable.icon_capture_20_08, R.drawable.icon_capture_20_09, R.drawable.icon_capture_20_10, R.drawable.icon_capture_20_11};

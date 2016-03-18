@@ -3,6 +3,7 @@ package com.putao.camera.camera.utils;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +16,6 @@ import android.widget.FrameLayout;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.util.Loger;
 
-import android.hardware.Camera.Size;
-
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
@@ -28,7 +26,7 @@ import mobile.ReadFace.YMFace;
  * Created by jidongdong on 15/5/25.
  */
 public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture.OnFrameAvailableListener, Camera.PreviewCallback {
-    private String TAG = GlSurfacePreviewStrategy.class.getName();
+    private String TAG = GlSurfacePreviewStrategy.class.getSimpleName();
     private Context context;
     private CameraView cameraView;
     private GLSurfaceView mGLView;
@@ -164,6 +162,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                 points[i * 2 + 1] = y;
             }
             animationImageView.setPositionAndStartAnimation(points);
+            Log.d(TAG, "onPreviewFrame: has face");
         }else{
             animationImageView.setVisibility(View.GONE);
         }

@@ -24,7 +24,7 @@
         android:id="@+id/camera_top_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
+        android:background="#000000"
         android:orientation="horizontal"
         android:paddingBottom="20dp"
         android:paddingTop="20dp">
@@ -240,7 +240,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#000000"
+        android:background="#252525"
         android:orientation="vertical">
 
         <HorizontalScrollView
@@ -268,7 +268,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#000000"
+                android:background="#252525"
                 android:src="@drawable/btn_spread_down"
                 android:textColor="#dddddd" />
 
@@ -283,9 +283,13 @@
                 android:id="@+id/btn_clear_ar"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:background="#000000"
+                android:background="#252525"
                 android:text="清除"
                 android:textColor="#dddddd" />
         </LinearLayout>
     </LinearLayout>
+   <!-- <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />-->
 </RelativeLayout>

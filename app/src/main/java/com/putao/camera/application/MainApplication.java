@@ -27,7 +27,7 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.umeng.analytics.MobclickAgent;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
 
@@ -44,6 +44,10 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         globalContext = this;
+        //bugly
+        CrashReport.initCrashReport(getApplicationContext(), "900022345", false);
+
+
         DisplayHelper.init(globalContext);
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
         // Umeng统计参数设置
