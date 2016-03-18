@@ -7,14 +7,16 @@
 
     <include layout="@layout/layout_title_bar" />
 
-    <ImageView
-        android:id="@+id/sample_iv"
 
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:scaleType="centerInside"
+        android:id="@+id/sample_iv"
+         />
 
     <TextView
         android:id="@+id/description_tv"

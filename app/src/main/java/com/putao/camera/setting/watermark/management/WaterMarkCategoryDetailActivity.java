@@ -3,7 +3,6 @@ package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -176,12 +175,15 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     mGridViewAdapter.notifyDataSetChanged();
                     title_tv.setText(mWaterMarkPackageDetailInfo.category);
                     description_tv.setText(mWaterMarkPackageDetailInfo.description);
-                    Drawable nophoto = BitmapHelper.getLoadingDrawable(sample_iv.getWidth(), sample_iv.getHeight());
-                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(nophoto)
-                            .showImageOnFail(nophoto).cacheInMemory(true).cacheOnDisc(true)
-                            .bitmapConfig(Bitmap.Config.RGB_565).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
-                    sample_iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//                    Drawable nophoto = BitmapHelper.getLoadingDrawable(sample_iv.getWidth(), sample_iv.getHeight());
+//                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(nophoto)
+//                            .showImageOnFail(nophoto).cacheInMemory(true).cacheOnDisc(true)
+//                            .bitmapConfig(Bitmap.Config.RGB_565).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
+                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+//                    sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ImageLoader.getInstance().displayImage(mWaterMarkPackageDetailInfo.detail_image, sample_iv, options);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

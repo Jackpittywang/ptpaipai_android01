@@ -133,7 +133,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         holder.water_mark_category_size_tv.setText(info.attachment_size + "k");
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-        holder.water_mark_photo_download_iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//        holder.water_mark_photo_download_iv.setScaleType(ImageView.ScaleType.CENTER);
         ImageLoader.getInstance().displayImage(info.sample_image, holder.water_mark_photo_download_iv, options);
         return convertView;
     }

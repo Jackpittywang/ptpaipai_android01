@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.http.CacheRequest;
@@ -99,10 +98,11 @@ public class MaterialCenterActivity extends BaseActivity implements View.OnClick
 //                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
 //                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).displayer(new RoundedBitmapDisplayer(20) ).build();
 
+//                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+//                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).bitmapConfig(Bitmap.Config.RGB_565)
+//                            .displayer(new RoundedBitmapDisplayer(20)).build();
                     DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
-
-                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).bitmapConfig(Bitmap.Config.RGB_565)
-                            .displayer(new RoundedBitmapDisplayer(20)).build();
+                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 
                     water_mark_icon_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     collage_icon_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);

@@ -10,11 +10,18 @@
         android:layout_width="165dp"
         android:layout_height="165dp">
 
-        <com.putao.camera.editor.view.FilterEffectThumbnailView
+        <!--<com.putao.camera.editor.view.FilterEffectThumbnailView
             android:id="@+id/water_mark_photo_download_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-             />
+            android:background="@drawable/test000"
+             />-->
+        <ImageView
+            android:id="@+id/water_mark_photo_download_iv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+           />
 
         <ProgressBar
             android:id="@+id/download_status_pb"

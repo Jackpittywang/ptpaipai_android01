@@ -30,7 +30,8 @@
                     android:id="@+id/water_mark_icon_iv"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:scaleType="centerCrop" />
+                    />
+
 
                 <ImageView
 
@@ -103,7 +104,7 @@
                     android:id="@+id/collage_icon_iv"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:scaleType="centerCrop" />
+                     />
 
 
                 <ImageView
