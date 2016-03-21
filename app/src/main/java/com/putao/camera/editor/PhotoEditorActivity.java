@@ -183,13 +183,10 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     public void doInitData() {
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
-
-//        i = intent.getIntExtra("photo_ratio", 2);
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
             ImageCropBitmap=ImageCrop(originImageBitmap, i);
-//            show_image.setImageBitmap(ImageCrop(originImageBitmap, i));
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
@@ -732,8 +729,8 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 bundle.putString("savefile", pictureFile.toString());
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_CONTENT_PROVIDER_REFRESH, bundle));
                 progressDialog.dismiss();
-                finish();
                 ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
+                finish();
             }
         });
     }

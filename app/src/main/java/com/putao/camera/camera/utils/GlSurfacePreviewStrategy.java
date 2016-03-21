@@ -145,8 +145,8 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             float hh = ih;
             mainRadio = screenW / hh;
         }
-        YMFace face;
 
+        YMFace face;
           face = mDetector.onDetector(data, iw, ih);
 
 //        YMFace face = mDetector.onDetector(data, iw, ih);
