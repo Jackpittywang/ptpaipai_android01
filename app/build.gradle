@@ -7,9 +7,13 @@ android {
     defaultConfig {
         applicationId "com.putao.camera"
         minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 12
-        versionName "1.2.3"
+        targetSdkVersion 23
+        versionCode 13
+        versionName "1.2.4"
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
     lintOptions {
         checkReleaseBuilds false
@@ -43,75 +47,57 @@ android {
     }
     //产品渠道配置
     productFlavors {
-//        local_release {
-//            versionName = "V" + defaultConfig.versionName
-//        }
-//        local_debug {
-//            versionName = "D" + defaultConfig.versionName
-//        }
+        //        local_release { versionName = "V" + defaultConfig.versionName }
+//        local_debug { versionName = "D" + defaultConfig.versionName }
         channel_putao {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
         }
-        channel_yingyonghui {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyonghui"]
-        }
-        channel_360 {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
-        }
-        channel_yingyongbao {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyongbao"]
-        }
-        channel_anzhi {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhi"]
-        }
-        channel_baidu {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baidu"]
-        }
-        channel_wandoujia {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_wandoujia"]
-        }
-        channel_91 {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
-        }
-        channel_xiaomi {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
-        }
-        channel_meizu {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_meizu"]
-        }
-        channel_oppo {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
-        }
-        channel_lenovo {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_lenovo"]
-        }
-        channel_woshangdian {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_woshangdian"]
-        }
-        channel_huawei {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_huawei"]
-        }
-        channel_coolpad {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_coolpad"]
-        }
-        channel_ppzhushou {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
-        }
-        channel_sougoushoujizhushou {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_sougoushoujizhushou"]
-        }
-        channel_jinli {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_jinli"]
-        }
-        channel_mmpintai {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mmpintai"]
-        }
-//        all {
-//            flavorDimension "abi"
-//            ndk {
-//                abiFilter "armeabi"
-//            }
-//        }
+//        channel_baiduzhushou { versionName = "V" + defaultConfig.versionName }
+//        channel_360{ versionName = "V" + defaultConfig.versionName }
+//        channel_wandoujia{ versionName = "V" + defaultConfig.versionName }
+//        channel_xiaomi{ versionName = "V" + defaultConfig.versionName }
+//        channel_yingyongbao{ versionName = "V" + defaultConfig.versionName }
+//        channel_uc{ versionName = "V" + defaultConfig.versionName }
+//        channel_91{ versionName = "V" + defaultConfig.versionName }
+//        channel_ppzhushou { versionName = "V" + defaultConfig.versionName }
+//        channel_liqu { versionName = "V" + defaultConfig.versionName }
+//        channel_oppo{ versionName = "V" + defaultConfig.versionName }
+//        channel_huawei{ versionName = "V" + defaultConfig.versionName }
+//        channel_lenovo{ versionName = "V" + defaultConfig.versionName }
+//        channel_jifeng{ versionName = "V" + defaultConfig.versionName }
+//        channel_anzhi{ versionName = "V" + defaultConfig.versionName }
+//        channel_dangle{ versionName = "V" + defaultConfig.versionName }
+//        channel_mumayi{ versionName = "V" + defaultConfig.versionName }
+//        channel_nduo{ versionName = "V" + defaultConfig.versionName }
+//        channel_anzhuozaixian{ versionName = "V" + defaultConfig.versionName }
+//        channel_dianwanbashi{ versionName = "V" + defaultConfig.versionName }
+//        channel_vivo{ versionName = "V" + defaultConfig.versionName }
+//        channel_yingyonghui{ versionName = "V" + defaultConfig.versionName }
+//        channel_tengxun{ versionName = "V" + defaultConfig.versionName }
+//        channel_wangyi{ versionName = "V" + defaultConfig.versionName }
+//        channel_leshi{ versionName = "V" + defaultConfig.versionName }
+//        channel_suning{ versionName = "V" + defaultConfig.versionName }
+//        channel_jinli{ versionName = "V" + defaultConfig.versionName }
+//        channel_coolpad{ versionName = "V" + defaultConfig.versionName }
+//        channel_vivo{ versionName = "V" + defaultConfig.versionName }
+//        channel_360{ versionName = "V" + defaultConfig.versionName }
+//        channel_xiaomi{ versionName = "V" + defaultConfig.versionName }
+//        channel_meizu{ versionName = "V" + defaultConfig.versionName }
+//        channel_oppo{ versionName = "V" + defaultConfig.versionName }
+//        channel_lenovo{ versionName = "V" + defaultConfig.versionName }
+//        channel_huawei{ versionName = "V" + defaultConfig.versionName }
+//        channel_coolpad{ versionName = "V" + defaultConfig.versionName }
+//        channel_anzhi{ versionName = "V" + defaultConfig.versionName }
+//        channel_baidu{ versionName = "V" + defaultConfig.versionName }
+//        channel_wandoujia{ versionName = "V" + defaultConfig.versionName }
+//        channel_yingyongbao{ versionName = "V" + defaultConfig.versionName }
+//        channel_yidongmm{ versionName = "V" + defaultConfig.versionName }
+//        channel_liantongwoo{ versionName = "V" + defaultConfig.versionName }
+//        channel_samsung{ versionName = "V" + defaultConfig.versionName }
+//        channel_anzhuo{ versionName = "V" + defaultConfig.versionName }
+//        channel_jinli{ versionName = "V" + defaultConfig.versionName }
+//        channel_sougouzhushou{ versionName = "V" + defaultConfig.versionName }
+
     }
 }
 
@@ -124,4 +110,5 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.tencent.bugly:crashreport:1.2.9'  // 后续更新SDK，请直接更新版本号
 }
