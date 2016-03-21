@@ -654,6 +654,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     }
 
     void execTakePhoto() {
+        current.clearAnimationView();
+
         if (OrientationUtil.getOrientation() == 90 || OrientationUtil.getOrientation() == 180) {
             current.setPictureRatio(mPictureRatio, bar.getHeight() + fill_blank_bottom.getHeight());
         } else {

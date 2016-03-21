@@ -140,8 +140,7 @@ public class PhotoEditorCutActivity extends BaseActivity implements View.OnClick
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("corpImage", corpImage);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_EDIT_CUT_FINISH, bundle));
-
-                this.finish();
+                finish();
                 break;
 
 

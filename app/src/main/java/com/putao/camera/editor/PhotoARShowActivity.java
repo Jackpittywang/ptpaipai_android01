@@ -32,7 +32,6 @@ import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import mobile.ReadFace.YMDetector;
@@ -185,6 +184,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         progressDialog.show();
 
         animation_view.setSave(originImageBitmap, videoImagePath, imageCount);
+//        imagesToVideo();
 
 //        // 先处理成图片存到sd卡
 //        AnimationModel animationModel = animation_view.getAnimationModel();
