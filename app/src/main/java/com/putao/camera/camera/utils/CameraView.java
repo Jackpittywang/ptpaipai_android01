@@ -68,7 +68,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     private boolean isDetectingFaces = false;
     private boolean isAutoFocusing = false;
     private Context mContext;
-    private int mI;
     // 是否需要显示AR贴纸
     private boolean isShowAR = false;
 
@@ -394,9 +393,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     }
 
 
-    public void takePicture(final PictureTransaction xact, boolean flag,int i) {
+    public void takePicture(final PictureTransaction xact, boolean flag) {
         this.isShowAR =  flag;
-        mI = i;
         takePicture(xact);
     }
 
@@ -699,7 +697,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             else{
                 Intent intent = new Intent(mContext, PhotoEditorActivity.class);
                 intent.putExtra("photo_data", imagePath);
-                intent.putExtra("photo_ratio",mI);
                 mContext.startActivity(intent);
 
             }

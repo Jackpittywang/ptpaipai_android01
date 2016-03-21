@@ -75,7 +75,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
             from = bundle.getString("from");
             tv_filepath.setText("图片保存在" + filepath);
         }
-        mShareTools = new ShareTools(mActivity, filepath);
+//        mShareTools = new ShareTools(mActivity, filepath);
         //loadShareImage();
         //showPathToast();
     }
@@ -102,7 +102,8 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.share_btn_friend:
-                mShareTools.sendBitmapToWeixin(true);
+                Toast.makeText(mContext, "未安装朋友圈", Toast.LENGTH_SHORT).show();
+//                mShareTools.sendBitmapToWeixin(true);
                 break;
             case R.id.share_btn_qq:
                 if (isAppInstalled(mContext, "com.tencent.mobileqq"))

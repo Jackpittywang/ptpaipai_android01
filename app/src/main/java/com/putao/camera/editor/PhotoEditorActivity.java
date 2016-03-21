@@ -88,7 +88,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private int text_index = -1;
     private TextWaterMarkView waterView;
     private ImageView show_image;
-    private Bitmap originImageBitmap, corpOriginImageBitmap, filter_origin, corpImage;
+    private Bitmap originImageBitmap, corpOriginImageBitmap, filter_origin, ImageCropBitmap;
     private EditAction mEditAction = EditAction.NONE;
     private boolean mFlagMarkShow = true;
     private String mCurrentFilter = GLEffectRender.DEFAULT_EFFECT_ID;
@@ -108,6 +108,13 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     private enum EditAction {
         NONE, ACTION_CUT, ACTION_Mark, ACTION_FILTER
+    }
+
+    @Override
+    public void doBefore() {
+        super.doBefore();
+       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,0);
+
     }
 
     @Override
@@ -155,7 +162,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         int startWidth = bitmap.getWidth(); // 得到图片的宽，高
         int startHeight = bitmap.getHeight();
         int retY = 0;
-        int endHeight = 0;
+        int endHeight = startHeight;
         switch (cropYype) {
             case CROP_11:
                 retY = (startHeight - startWidth) / 2;
@@ -163,7 +170,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 break;
             case CROP_43:
                 endHeight = startWidth * 4 / 3;
-                retY = (startHeight - endHeight) / 2;
+                retY = (startHeight - startWidth) / 2;
                 break;
             default:
                 return bitmap;
@@ -174,22 +181,20 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void doInitData() {
-        crop_image_view = new CropImageView(this);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
-        i = intent.getIntExtra("photo_ratio", 2);
-        Loger.w("kkkkkkkkkkkkkkk++" + i);
+
+//        i = intent.getIntExtra("photo_ratio", 2);
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
-//            crop_image_view.setImageBitmap(originImageBitmap);
-            show_image.setImageBitmap(ImageCrop(originImageBitmap, i));
+            ImageCropBitmap=ImageCrop(originImageBitmap, i);
+//            show_image.setImageBitmap(ImageCrop(originImageBitmap, i));
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
         loadFilters();
-
-//        corpImage = crop_image_view.getCroppedImage();
+        show_image.setImageBitmap(ImageCropBitmap);
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
         mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mWaterMarkCategoryInfo);
@@ -658,7 +663,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 HashMap<String, String> filterMap = new HashMap<String, String>();
                 filterMap.put((String) view.getTag(), (String) view.getTag());
                 mTempFilter = (String) view.getTag();
-                new EffectImageTask(corpOriginImageBitmap != null ? corpOriginImageBitmap : originImageBitmap, mTempFilter,
+                new EffectImageTask(corpOriginImageBitmap != null ? corpOriginImageBitmap : ImageCropBitmap, mTempFilter,
                         new EffectImageTask.FilterEffectListener() {
                             @Override
                             public void rendered(Bitmap bitmap) {
@@ -750,20 +755,20 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         int area_height = photo_area_rl.getHeight();
         int actual_width = 0, actual_height = 0;
         if (corpOriginImageBitmap != null) {
-            originImageBitmap = corpOriginImageBitmap;
+            ImageCropBitmap = corpOriginImageBitmap;
         }
-        if (originImageBitmap.getHeight() < area_height && originImageBitmap.getWidth() < area_width) {
-            actual_width = originImageBitmap.getWidth();
-            actual_height = originImageBitmap.getHeight();
+        if (ImageCropBitmap.getHeight() < area_height && ImageCropBitmap.getWidth() < area_width) {
+            actual_width = ImageCropBitmap.getWidth();
+            actual_height = ImageCropBitmap.getHeight();
         } else {
-            float origin_ratio = (float) originImageBitmap.getWidth() / originImageBitmap.getHeight();
+            float origin_ratio = (float) ImageCropBitmap.getWidth() / ImageCropBitmap.getHeight();
             float current_ratio = (float) area_width / area_height;
             if (origin_ratio >= current_ratio) {
                 actual_width = area_width;
-                actual_height = (int) (originImageBitmap.getHeight() * ((float) actual_width / originImageBitmap.getWidth()));
+                actual_height = (int) (ImageCropBitmap.getHeight() * ((float) actual_width / ImageCropBitmap.getWidth()));
             } else {
                 actual_height = area_height;
-                actual_width = (int) (originImageBitmap.getWidth() * ((float) actual_height) / originImageBitmap.getHeight());
+                actual_width = (int) (ImageCropBitmap.getWidth() * ((float) actual_height) / ImageCropBitmap.getHeight());
             }
         }
         int cut_x = (area_width - actual_width) / 2;
@@ -907,7 +912,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             }
             mMarkViewTempList.clear();
         } else if (mEditAction == EditAction.ACTION_FILTER) {
-            new EffectImageTask(originImageBitmap, mCurrentFilter, mFilterEffectListener).execute();
+            new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }
         if (mEditAction == EditAction.ACTION_Mark) {
             doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_BACKOUT);

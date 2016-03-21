@@ -44,6 +44,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
 //    private Mat previewMat;
 
     private AnimationImageView animationImageView;
+    private boolean isstop;
 
     public GlSurfacePreviewStrategy(Context context, CameraView cameraView) {
         this.cameraView = cameraView;
@@ -82,7 +83,6 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                 mCamera.setPreviewCallback(this);
                 st.setOnFrameAvailableListener(this);
                 mCamera.setPreviewTexture(st);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,6 +100,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         // Loger.d("onFrameAvailable" + surfaceTexture);
         this.mGLView.requestRender();
     }
+
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
@@ -144,7 +145,11 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             float hh = ih;
             mainRadio = screenW / hh;
         }
-        YMFace face = mDetector.onDetector(data, iw, ih);
+        YMFace face;
+
+          face = mDetector.onDetector(data, iw, ih);
+
+//        YMFace face = mDetector.onDetector(data, iw, ih);
         if (face != null) {
             animationImageView.setVisibility(View.VISIBLE);
             float[] landmarks = face.getLandmarks();

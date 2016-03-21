@@ -1,6 +1,6 @@
 @echo off
 
-SET FILE=PutaoWeidu
+SET FILE=PutaoCamera
 
 SET APK_FOLDER=app\build\outputs\apk
 SET HTTP_FOLDER=app\build\outputs\apk

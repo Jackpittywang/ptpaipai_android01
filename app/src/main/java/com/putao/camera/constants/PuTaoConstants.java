@@ -52,6 +52,8 @@ public class PuTaoConstants {
     // 保存AR动态视频的时候，整组图片保存结束事件
     public static final int SAVE_AR_SHOW_IMAGE_COMPELTE = 0x21;
 
+    public static final String CUT_TYPE = "CUT_TYPE";
+
     public static final String WEIBO_APP_KEY = "2876121208";
     //微信葡萄拍拍
     //	public static final String WEIXIN_APP_KEY = "wx1bcb58803cd0a297";
@@ -134,4 +136,7 @@ public class PuTaoConstants {
     public static final String MOVIE_DEFAULT_CAPTION_URL = "http://ftp.putao.im/pub/camera/movelines.json";
     //百度翻译URL,使用示例:BAI_DU_TRANSLATE_URL+"你好"
     public static final String BAI_DU_TRANSLATE_URL = "http://openapi.baidu.com/public/2.0/bmt/translate?client_id=4FZ0ZGPf4xpRhGC3SlA266gQ&from=zh&to=en&q=";
+
+
+
 }

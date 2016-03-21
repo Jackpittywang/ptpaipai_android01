@@ -263,27 +263,18 @@ public class PCameraFragment extends CameraFragment {
         mExposureLevel = level;
     }
 
+
+
     public void takeSimplePicture() {
         if (!cameraView.isInPreview()) {
             Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
             return;
         }
         flashScreen();
-        takeSimplePicture(new PictureTransaction(getHost()),2);
+        takeSimplePicture(new PictureTransaction(getHost()));
     }
 
-    public void takeSimplePicture(int i) {
-        if (!cameraView.isInPreview()) {
-            Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
-            return;
-        }
-        flashScreen();
-        takeSimplePicture(new PictureTransaction(getHost()),i);
-    }
-
-
-
-    public void takeSimplePicture(PictureTransaction xact, int i) {
+    public void takeSimplePicture(PictureTransaction xact) {
         if (flashMode != null) {
             xact.flashMode(flashMode);
         }
@@ -299,13 +290,13 @@ public class PCameraFragment extends CameraFragment {
             setExposureLevel(ExposureLevel.NORMAL);
         }
         Loger.d("exposure level:" + mExposureLevel);
-        takePicture(xact,i);
+        takePicture(xact);
     }
 
 
-    public void takeSimplePicture(List<WaterMarkView> wmList ,int i) {
+    public void takeSimplePicture(List<WaterMarkView> wmList ) {
         mWaterMarkImageViewsList = wmList;
-        takeSimplePicture(i);
+        takeSimplePicture();
     }
 
 
@@ -315,13 +306,13 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable,int i) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable) {
         mHdrEnable = hdrenable;
         if (mHdrEnable) {
             mHdrBitmaps.clear();
             mCountHdr = 0;
         }
-        takeSimplePicture(wmList,i);
+        takeSimplePicture(wmList);
     }
 
     /**
@@ -330,9 +321,9 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto,int i) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto) {
         mHdrAuto = isAuto;
-        takeSimplePicture(wmList, hdrenable,i);
+        takeSimplePicture(wmList, hdrenable);
     }
 
     /**
@@ -456,8 +447,7 @@ public class PCameraFragment extends CameraFragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //takeSimplePicture();
-            takeSimplePicture(2);
+            takeSimplePicture();
         }
 
         /**
