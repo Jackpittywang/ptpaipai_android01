@@ -337,6 +337,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
                 //手机型号判断
                String MODEL= SharedPreferencesHelper.readStringValue(getContext(),"MODEL","deful");
+
                 previewParams = camera.getParameters();
                 Parameters pictureParams = camera.getParameters();
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);

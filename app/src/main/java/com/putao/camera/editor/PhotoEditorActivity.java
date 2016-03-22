@@ -112,7 +112,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doBefore() {
         super.doBefore();
-       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,2);
+       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,0);
 
     }
 
@@ -152,7 +152,6 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-
     /**
      * 裁剪图片
      */
@@ -184,11 +183,11 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
-            ImageCropBitmap=ImageCrop(originImageBitmap, i);
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
         loadFilters();
+        ImageCropBitmap=ImageCrop(originImageBitmap, i);
         show_image.setImageBitmap(ImageCropBitmap);
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();

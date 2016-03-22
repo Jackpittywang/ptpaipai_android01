@@ -29,8 +29,7 @@
                 <ImageView
                     android:id="@+id/water_mark_icon_iv"
                     android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    />
+                    android:layout_height="110dp" />
 
 
                 <ImageView
@@ -38,44 +37,44 @@
                     android:id="@+id/water_mark_new_icon_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/photo_new_icon"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/photo_new_icon"
                     android:visibility="invisible" />
                 />
             </RelativeLayout>
 
             <TextView
 
-                android:text="贴纸"
-                android:layout_toRightOf="@+id/water_mark_icon_rl"
-                android:layout_centerVertical="true"
+                android:id="@+id/water_mark_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/water_mark_icon_rl"
+                android:text="贴纸"
                 android:textColor="@color/text_color_dark_626262"
-                android:textSize="@dimen/dimens_20dp"
-                android:id="@+id/water_mark_name_tv"></TextView>
+                android:textSize="@dimen/dimens_20dp"></TextView>
 
             <TextView
-                android:text="0"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:id="@+id/water_mark_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color_white"
-                android:textSize="@dimen/dimens_10dp"
-                android:id="@+id/water_mark_count_tv"
-                android:background="@drawable/red_num_btn_bg"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
-                android:gravity="center" />
+                android:background="@drawable/red_num_btn_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/text_color_white"
+                android:textSize="@dimen/dimens_10dp" />
 
             <ImageView
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/go_btn_bg"
-                android:layout_marginRight="10dp" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/go_btn_bg" />
 
         </RelativeLayout>
 
@@ -103,54 +102,53 @@
                 <ImageView
                     android:id="@+id/collage_icon_iv"
                     android:layout_width="110dp"
-                    android:layout_height="110dp"
-                     />
+                    android:layout_height="110dp" />
 
 
                 <ImageView
                     android:id="@+id/collage_new_icon_iv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/photo_new_icon"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/photo_new_icon"
                     android:visibility="invisible" />
             </RelativeLayout>
 
             <TextView
 
-                android:text="拼图"
-                android:layout_toRightOf="@+id/collage_icon_rl"
+                android:id="@+id/collage_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color_dark_626262"
-                android:textSize="@dimen/dimens_20dp"
                 android:layout_centerVertical="true"
-                android:id="@+id/collage_name_tv"></TextView>
+                android:layout_toRightOf="@+id/collage_icon_rl"
+                android:text="拼图"
+                android:textColor="@color/text_color_dark_626262"
+                android:textSize="@dimen/dimens_20dp"></TextView>
 
             <TextView
-                android:text="0"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:id="@+id/collage_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color_white"
-                android:textSize="@dimen/dimens_10dp"
-                android:id="@+id/collage_count_tv"
-                android:background="@drawable/red_num_btn_bg"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
-                android:gravity="center">
+                android:background="@drawable/red_num_btn_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/text_color_white"
+                android:textSize="@dimen/dimens_10dp">
 
             </TextView>
 
 
             <ImageView
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/go_btn_bg"
-                android:layout_marginRight="10dp" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/go_btn_bg" />
 
         </RelativeLayout>
 
@@ -158,6 +156,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/divider_gary_line_bg"></ImageView>
+
+
     </LinearLayout>
 
 </LinearLayout>

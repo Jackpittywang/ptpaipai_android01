@@ -342,6 +342,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             setCameraRatio();
+
         }
     }
 
@@ -420,7 +421,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-//        SharedPreferencesHelper.saveBooleanValue(this,"ispause",false);
+
+        SharedPreferencesHelper.saveBooleanValue(this,"ispause",false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
         if (lastSelectArImageView != null) {
@@ -436,7 +438,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-//        SharedPreferencesHelper.saveBooleanValue(this,"ispause",true);
+        SharedPreferencesHelper.saveBooleanValue(this,"ispause",true);
         mOrientationEvent.disable();
         if (animation_view != null) {
             animation_view.clearData();
@@ -452,7 +454,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     }
 
 
-    public int i = PhotoEditorActivity.CROP_43;//0为全屏,1为1比1,2为4比3
+    public int i = 0;//0为全屏,1为1比1,2为4比3
 
     @Override
     public void onClick(View v) {
@@ -476,9 +478,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 showScaleType();
                 break;
             case R.id.switch_camera_ll:
+                switch_camera_btn.setEnabled(false);
+                switch_camera_ll.setEnabled(false);
                 clearAnimationData();
                 if (hasTwoCameras) {
-                    switchCamera();
+                        switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
                     /*
                      * Umeng事件统计
@@ -496,8 +500,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 ClearWaterMark();
                 break;
             case R.id.switch_camera_btn:
+                switch_camera_btn.setEnabled(false);
+                switch_camera_ll.setEnabled(false);
                 clearAnimationData();
                 if (hasTwoCameras) {
+
                     switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
                     /*
@@ -532,6 +539,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 //                current.sendMessage();
                 break;
             case R.id.album_btn:
+                i=0;
+                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class);
                 break;
@@ -613,6 +622,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
      * 切换前后camera
      */
     private void switchCamera() {
+
         if (current == null) {
             current = std;
         } else {
@@ -622,6 +632,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         }
 //         current.setAnimationView(animation_view);
         animation_view.setIsMirror(isMirror);
+        switch_camera_btn.setEnabled(true);
+        switch_camera_ll.setEnabled(true);
+
     }
 
     private void setEnhanceButton() {
@@ -629,6 +642,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     }
 
     private void takePhoto() {
+        SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
+        camera_set_ll.setEnabled(false);
+        camera_set_btn.setEnabled(false);
         take_photo_btn.setEnabled(false);
         final int delay;
         if (timeType == DELAY_THREE) {
@@ -675,6 +691,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         } else {
             execTakePhoto();
             take_photo_btn.setEnabled(true);
+            camera_set_btn.setEnabled(true);
+            camera_set_ll.setEnabled(true);
         }
     }
 
@@ -890,7 +908,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_LIGHT;
                 mHdrState = HDRSTATE.ON;
-                ToasterHelper.show(this, "手电");
+                ToasterHelper.show(this, "长亮");
                 break;
             case FLASHMODECODE_LIGHT:
 
@@ -1420,7 +1438,7 @@ private void showScaleType(){
             break;
     }
 
-    SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
+
     container.setLayoutParams(params);
 
 }

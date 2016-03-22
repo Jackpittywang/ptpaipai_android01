@@ -80,6 +80,9 @@ public class MaterialCenterActivity extends BaseActivity implements View.OnClick
             case R.id.collage_management_rl:
                 ActivityHelper.startActivity(this, CollageManagementActivity.class);
                 break;
+            /*case R.id.puzzle_management_rl:
+               ActivityHelper.startActivity(this, CollageManagementActivity.class);
+                break;*/
         }
     }
 
