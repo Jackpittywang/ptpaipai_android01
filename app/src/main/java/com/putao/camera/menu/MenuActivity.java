@@ -52,7 +52,6 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
     public int doGetContentViewId() {
         return R.layout.activity_menu;
     }
-
     @Override
     public void doInitSubViews(View view) {
         Loger.i("current time:" + System.currentTimeMillis());
@@ -66,6 +65,7 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                 menu_home_setting_btn);
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
+
 
     }
 

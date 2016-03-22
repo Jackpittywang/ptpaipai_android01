@@ -18,6 +18,7 @@ import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
+import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.movie.MovieCameraActivity;
 import com.putao.camera.thirdshare.ShareTools;
 import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
@@ -96,9 +97,9 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
 //                ActivityHelper.startActivity(mActivity, MenuActivity.class);
 //                BasePostEvent
 //                EventBus.getEventBus().post();
-
                 Bundle bundle = new Bundle();
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.FINISH_TO_MENU_PAGE, bundle));
+                ActivityHelper.startActivity(mActivity, MenuActivity.class);
                 finish();
                 break;
             case R.id.share_btn_friend:
@@ -135,6 +136,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.btn_go_camera:
                 ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+//                ActivityHelper.startActivity(mActivity, MenuActivity.class);
 //                finish();
                 break;
             case R.id.btn_go_chartlet:
@@ -153,6 +155,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 ActivityHelper.startActivity(mActivity, MovieCameraActivity.class);
 //                finish();
                 break;
+
             default:
                 break;
         }
