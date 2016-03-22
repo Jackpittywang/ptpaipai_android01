@@ -80,7 +80,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
     private ImageButton btn_close_ar_list;
     //    private RedPointBaseButton show_material_btn;
@@ -114,7 +114,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private static final String FLASHMODECODE_OFF = "OFF";
     private static final String FLASHMODECODE_LIGHT = "LIGHT";
     private static final String FLASHMODECODE_AUTO = "AUTO";
-    private String flashType = FLASHMODECODE_AUTO;
+    private String flashType = FLASHMODECODE_OFF;
 
 
     private AnimationImageView animation_view;
@@ -134,7 +134,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     /**
      * hdr
      */
-    private HDRSTATE mHdrState = HDRSTATE.AUTO;
+    private HDRSTATE mHdrState = HDRSTATE.OFF;
 
     /**
      * 照片比例
@@ -194,6 +194,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
+        flash_light_ll = queryViewById(R.id.flash_light_ll);
+        camera_timer_ll = queryViewById(R.id.camera_timer_ll);
+        camera_scale_ll = queryViewById(R.id.camera_scale_ll);
+        switch_camera_ll = queryViewById(R.id.switch_camera_ll);
+        back_home_ll = queryViewById(R.id.back_home_ll);
+        camera_set_ll = queryViewById(R.id.camera_set_ll);
+
         Tips = queryViewById(R.id.Tips);
         tv_takephoto = queryViewById(R.id.tv_takephoto);
         show_material_btn = queryViewById(R.id.show_material_btn);
@@ -223,8 +230,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn, take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto, Tips);
+        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_ll,album_btn, show_sticker_btn, show_material_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
+                Tips, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -251,7 +258,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         String imsi = mTm.getSubscriberId();
         String mtype = android.os.Build.MODEL; // 手机型号
         String numer = mTm.getLine1Number(); // 手机号码，有的可得，有的不可得
-        SharedPreferencesHelper.saveStringValue(this,"MODEL",mtype);
+        SharedPreferencesHelper.saveStringValue(this, "MODEL", mtype);
 
     }
 
@@ -413,7 +420,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferencesHelper.saveBooleanValue(this,"ispause",false);
+//        SharedPreferencesHelper.saveBooleanValue(this,"ispause",false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
         if (lastSelectArImageView != null) {
@@ -429,7 +436,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferencesHelper.saveBooleanValue(this,"ispause",true);
+//        SharedPreferencesHelper.saveBooleanValue(this,"ispause",true);
         mOrientationEvent.disable();
         if (animation_view != null) {
             animation_view.clearData();
@@ -450,44 +457,43 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.flash_light_ll:
+                showFlashMenu(this, flash_light_btn);
+                break;
             case R.id.flash_light_btn:
                 showFlashMenu(this, flash_light_btn);
+                break;
+            case R.id.camera_timer_ll:
+                setTakeDelay();
                 break;
             case R.id.camera_timer_btn:
                 setTakeDelay();
                 break;
+            case R.id.camera_scale_ll:
+                showScaleType();
+                break;
             case R.id.camera_scale_btn:
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
-                switch (scaleType) {
-                    case SCALETYPE_ONE:
-
-                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
-                        scaleType = SCALETYPE_FULL;
-                        mPictureRatio = PictureRatio.RATIO_DEFAULT;
-                        setCameraRatioFull();
-                        i = 0;
-                        ToasterHelper.show(this, "FULL");
-                        break;
-                    case SCALETYPE_THREE:
-                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
-                        scaleType = SCALETYPE_ONE;
-                        mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
-                        setCameraRatioOneToOne();
-                        i = PhotoEditorActivity.CROP_11;
-                        ToasterHelper.show(this, "1:1");
-                        break;
-                    case SCALETYPE_FULL:
-                        camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
-                        scaleType = SCALETYPE_THREE;
-                        mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
-                        setCameraRatioThreeToFour();
-                        i = PhotoEditorActivity.CROP_43;
-                        ToasterHelper.show(this, "3:4");
-                        break;
+                showScaleType();
+                break;
+            case R.id.switch_camera_ll:
+                clearAnimationData();
+                if (hasTwoCameras) {
+                    switchCamera();
+                    getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
+                    /*
+                     * Umeng事件统计
+                     */
+                    if (current == std) {
+                        doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_OUT_CAMERA);
+//                        current.stopAnimation();
+//                        current.stopGoogleFaceDetect();
+                    } else {
+                        doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_SELF_CAMERA);
+//                        current.sendMessage();
+//                        current.startAnimation();
+                    }
                 }
-
-                SharedPreferencesHelper.saveIntValue(this,PuTaoConstants.CUT_TYPE,i);
-                container.setLayoutParams(params);
+                ClearWaterMark();
                 break;
             case R.id.switch_camera_btn:
                 clearAnimationData();
@@ -522,7 +528,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 takePhoto();
 
 //                clearAnimationData();
-                take_photo_btn.setEnabled(true);
+//                take_photo_btn.setEnabled(true);
 //                current.sendMessage();
                 break;
             case R.id.album_btn:
@@ -536,11 +542,21 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 overridePendingTransition(R.anim.activity_to_in, R.anim.activity_to_out);
                 finish();
                 break;
+            case R.id.back_home_ll:
+                ActivityHelper.startActivity(mActivity, MenuActivity.class);
+
+                // 退出动画和进入动画
+                overridePendingTransition(R.anim.activity_to_in, R.anim.activity_to_out);
+                finish();
+                break;
             case R.id.show_sticker_btn:
                 showSticker(true);
                 if (!camera_watermark_setting) {
                     mShowSticker = !mShowSticker;
                 }
+                break;
+            case R.id.camera_set_ll:
+                showSetWindow(this, v);
                 break;
             case R.id.camera_set_btn:
                 showSetWindow(this, v);
@@ -560,9 +576,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
                 break;
             case R.id.tv_takephoto:
-                if (flag)
+                if (flag){
+                    take_photo_btn.setEnabled(false);
                     takePhoto();
-
+                }
                 break;
             case R.id.Tips:
                 Tips.setVisibility(View.GONE);
@@ -612,6 +629,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     }
 
     private void takePhoto() {
+        take_photo_btn.setEnabled(false);
         final int delay;
         if (timeType == DELAY_THREE) {
             delay = 3 * 1000;
@@ -656,6 +674,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             finalTime_thread.start();
         } else {
             execTakePhoto();
+            take_photo_btn.setEnabled(true);
         }
     }
 
@@ -1371,6 +1390,43 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         }
     };
+private void showScaleType(){
+    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+    switch (scaleType) {
+        case SCALETYPE_ONE:
+
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
+            scaleType = SCALETYPE_FULL;
+            mPictureRatio = PictureRatio.RATIO_DEFAULT;
+            setCameraRatioFull();
+            i = 0;
+            ToasterHelper.show(this, "FULL");
+            break;
+        case SCALETYPE_THREE:
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
+            scaleType = SCALETYPE_ONE;
+            mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
+            setCameraRatioOneToOne();
+            i = PhotoEditorActivity.CROP_11;
+            ToasterHelper.show(this, "1:1");
+            break;
+        case SCALETYPE_FULL:
+            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
+            scaleType = SCALETYPE_THREE;
+            mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
+            setCameraRatioThreeToFour();
+            i = PhotoEditorActivity.CROP_43;
+            ToasterHelper.show(this, "3:4");
+            break;
+    }
+
+    SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
+    container.setLayoutParams(params);
+
+}
+
+
+
 
 
     /**

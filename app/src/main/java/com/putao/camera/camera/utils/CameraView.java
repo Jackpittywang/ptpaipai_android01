@@ -351,7 +351,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                     setCameraPictureOrientation(pictureParams);
                 }
                 //判断机型选择性执行
-                if(!MODEL.contains("CL00")&&!MODEL.contains("L09")){
+                if(!MODEL.contains("CL00")){
                     camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
                 }
                 /*try {

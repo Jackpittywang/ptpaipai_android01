@@ -267,7 +267,7 @@ public class PCameraFragment extends CameraFragment {
 
     public void takeSimplePicture() {
         if (!cameraView.isInPreview()) {
-            Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
             return;
         }
         flashScreen();

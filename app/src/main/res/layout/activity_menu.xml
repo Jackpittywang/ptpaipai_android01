@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/menu_home_camera_btn"
                     android:layout_centerHorizontal="true"
-                    android:text="葡萄时光"
+                    android:text="葡萄官网"
                     android:textColor="@color/text_color_dark_626262"
                     android:textSize="@dimen/dimens_16dp"
 

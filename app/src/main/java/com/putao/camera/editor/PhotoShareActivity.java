@@ -51,7 +51,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
     public void doInitSubViews(View view) {
         btn_back = (Button) findViewById(R.id.back_btn);
         title_tv = (TextView) findViewById(R.id.title_tv);
-        title_tv.setText("保存与分享");
+        title_tv.setText("保存");
         btn_home = (Button) findViewById(R.id.right_btn);
         btn_home.setBackgroundResource(R.drawable.share_button_home);
         share_btn_sina = (Button) findViewById(R.id.share_btn_sina);

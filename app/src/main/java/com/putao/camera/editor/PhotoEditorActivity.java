@@ -63,7 +63,6 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.putao.widget.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -113,7 +112,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doBefore() {
         super.doBefore();
-       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,0);
+       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,2);
 
     }
 
@@ -153,7 +152,6 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    private CropImageView crop_image_view;
 
     /**
      * 裁剪图片

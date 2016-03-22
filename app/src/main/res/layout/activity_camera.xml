@@ -30,12 +30,11 @@
         android:paddingTop="20dp">
 
         <LinearLayout
+            android:id="@+id/back_home_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
-
-            w
 
             <Button
                 android:id="@+id/back_home_btn"
@@ -45,6 +44,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/flash_light_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -54,10 +54,11 @@
                 android:id="@+id/flash_light_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_01" />
+                android:background="@drawable/icon_capture_20_02" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/camera_scale_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -71,6 +72,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/camera_timer_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -84,6 +86,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/camera_set_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -97,6 +100,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/switch_camera_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -466,7 +470,7 @@
 
         <ImageView
             android:id="@+id/iv_inter"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_bottom"
             android:layout_marginBottom="@dimen/dimens_5dp"
