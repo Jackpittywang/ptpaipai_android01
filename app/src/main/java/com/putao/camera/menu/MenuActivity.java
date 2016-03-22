@@ -67,7 +67,6 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
 
-
     }
 
     @Override

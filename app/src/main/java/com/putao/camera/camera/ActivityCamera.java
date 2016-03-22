@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -77,7 +78,6 @@ import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
-    private ImageView iknow;
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
     private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn;
@@ -195,7 +195,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
         EventBus.getEventBus().register(this);
         Tips = queryViewById(R.id.Tips);
-        iknow = queryViewById(R.id.iknow);
         tv_takephoto = queryViewById(R.id.tv_takephoto);
         show_material_btn = queryViewById(R.id.show_material_btn);
         container = queryViewById(R.id.container);
@@ -225,7 +224,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setScreenDensity(screenDensity);
 
         addOnClickListener(camera_scale_btn, camera_timer_btn, switch_camera_btn, flash_light_btn, album_btn, show_sticker_btn, show_material_btn, take_photo_btn,
-                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto, iknow);
+                back_home_btn, camera_set_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto, Tips);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
             ffc = PCameraFragment.newInstance(true);
@@ -246,6 +245,13 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             SharedPreferencesHelper.saveBooleanValue(this, PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, false);
             Tips.setVisibility(View.VISIBLE);
         }
+        //获取手机型号
+        TelephonyManager mTm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        String imei = mTm.getDeviceId();
+        String imsi = mTm.getSubscriberId();
+        String mtype = android.os.Build.MODEL; // 手机型号
+        String numer = mTm.getLine1Number(); // 手机号码，有的可得，有的不可得
+        SharedPreferencesHelper.saveStringValue(this,"MODEL",mtype);
 
     }
 
@@ -558,7 +564,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     takePhoto();
 
                 break;
-            case R.id.iknow:
+            case R.id.Tips:
                 Tips.setVisibility(View.GONE);
 
                 break;

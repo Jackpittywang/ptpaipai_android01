@@ -44,6 +44,7 @@ import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -333,6 +334,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             if (isAutoFocusing) {
                 throw new IllegalStateException("Camera cannot take a picture while auto-focusing");
             } else {
+
+                //手机型号判断
+               String MODEL= SharedPreferencesHelper.readStringValue(getContext(),"MODEL","deful");
                 previewParams = camera.getParameters();
                 Parameters pictureParams = camera.getParameters();
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);
@@ -346,7 +350,16 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 if (onOrientationChange.isEnabled()) {
                     setCameraPictureOrientation(pictureParams);
                 }
-                camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
+                //判断机型选择性执行
+                if(!MODEL.contains("CL00")&&!MODEL.contains("L09")){
+                    camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
+                }
+                /*try {
+                    camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
+                } catch (Exception e) {
+                    android.util.Log.e(getClass().getSimpleName(), "Exception taking a picture", e);
+                }*/
+
                 xact.cameraView = this;
                 postDelayed(new Runnable() {
                     @Override

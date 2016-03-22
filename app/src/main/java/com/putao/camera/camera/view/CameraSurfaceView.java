@@ -37,9 +37,10 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         mContext = context;
         mCamera = camera;
         mHolder = getHolder();
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+//        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
     @Override
