@@ -71,7 +71,7 @@
                     android:layout_below="@id/save_tips"
                     android:layout_margin="10dp"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"

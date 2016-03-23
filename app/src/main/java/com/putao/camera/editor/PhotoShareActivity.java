@@ -74,10 +74,11 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             filepath = bundle.getString("savefile");
+
             from = bundle.getString("from");
             tv_filepath.setText("图片保存在" + filepath);
         }
-//        mShareTools = new ShareTools(mActivity, filepath);
+        mShareTools = new ShareTools(mActivity, filepath);
         //loadShareImage();
         //showPathToast();
     }
@@ -92,6 +93,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_btn:
+                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
                 finish();
                 break;
             case R.id.right_btn:
@@ -104,8 +106,8 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.share_btn_friend:
-                Toast.makeText(mContext, "未安装朋友圈", Toast.LENGTH_SHORT).show();
-//                mShareTools.sendBitmapToWeixin(true);
+//                Toast.makeText(mContext, "未安装朋友圈", Toast.LENGTH_SHORT).show();
+                mShareTools.sendBitmapToWeixin(true);
                 break;
             case R.id.share_btn_qq:
                 if (isAppInstalled(mContext, "com.tencent.mobileqq"))
@@ -141,7 +143,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
 //                finish();
                 break;
             case R.id.btn_go_chartlet:
-                if ("collage".equals(from)) {
+                if ("collage".equals(from)||"connect".equals(from)) {
                     ActivityHelper.startActivity(mActivity, CollageSampleSelectActivity.class);
                 } else {
                     ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class);

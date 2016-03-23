@@ -285,7 +285,8 @@ public class ConnectPhotoActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("savefile", path);
+                        bundle.putString("from", "connect");
+                        bundle.putString("savefile",path);
                         ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
                     }
                 });
