@@ -334,7 +334,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             setCameraRatio();
-
         }
     }
 

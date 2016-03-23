@@ -112,7 +112,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doBefore() {
         super.doBefore();
-       i= SharedPreferencesHelper.readIntValue(this,PuTaoConstants.CUT_TYPE,0);
+        i = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
 
     }
 
@@ -155,25 +155,27 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     /**
      * 裁剪图片
      */
-    public static Bitmap ImageCrop(Bitmap bitmap, int cropYype) {
+    private Bitmap ImageCrop(Bitmap bitmap, int cropYype) {
+
         int startWidth = bitmap.getWidth(); // 得到图片的宽，高
         int startHeight = bitmap.getHeight();
-        int retY = 0;
-        int endHeight = startHeight;
+
+        int retX = 0;
+        int endWidth = startWidth;
+        boolean b = startWidth > startHeight;
         switch (cropYype) {
             case CROP_11:
-                retY = (startHeight - startWidth) / 2;
-                endHeight = startWidth;
+                retX = Math.abs(startWidth - startHeight) / 2;
+                endWidth = b ? startHeight : startWidth;
                 break;
             case CROP_43:
-                endHeight = startWidth * 4 / 3;
-                retY = (startHeight - startWidth) / 2;
+                endWidth = (b ? startHeight : startWidth) * 4 / 3;
+                retX = Math.abs(startWidth - endWidth) / 2;
                 break;
             default:
                 return bitmap;
         }
-        //下面这句是关键
-        return Bitmap.createBitmap(bitmap, 0, retY, startWidth, endHeight, null, false);
+        return b ? Bitmap.createBitmap(bitmap, retX, 0, endWidth, startHeight, null, false) : Bitmap.createBitmap(bitmap, 0, retX, startWidth, endWidth, null, false);
     }
 
     @Override
@@ -183,11 +185,12 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
+
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
         loadFilters();
-        ImageCropBitmap=ImageCrop(originImageBitmap, i);
+        ImageCropBitmap = ImageCrop(originImageBitmap, i);
         show_image.setImageBitmap(ImageCropBitmap);
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
