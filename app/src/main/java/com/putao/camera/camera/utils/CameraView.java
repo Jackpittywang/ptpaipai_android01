@@ -44,7 +44,6 @@ import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.Loger;
-import com.putao.camera.util.SharedPreferencesHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -335,8 +334,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 throw new IllegalStateException("Camera cannot take a picture while auto-focusing");
             } else {
 
-                //手机型号判断
-               String MODEL= SharedPreferencesHelper.readStringValue(getContext(),"MODEL","deful");
 
                 previewParams = camera.getParameters();
                 Parameters pictureParams = camera.getParameters();
@@ -351,10 +348,14 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 if (onOrientationChange.isEnabled()) {
                     setCameraPictureOrientation(pictureParams);
                 }
-                //判断机型选择性执行
-                if(!MODEL.contains("CL00")&&!MODEL.contains("L09")){
+                String model =  android.os.Build.MODEL.toLowerCase();
+                String brand= Build.BRAND.toLowerCase();
+                // 所有华为的机器不要做set处理,
+                if(model.contains("huawei") || brand.contains("huawei") || model.contains("cl00")||model.contains("honor")) {
+                }else{
                     camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
                 }
+
                 /*try {
                     camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
                 } catch (Exception e) {

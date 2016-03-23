@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -253,15 +252,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             SharedPreferencesHelper.saveBooleanValue(this, PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, false);
             Tips.setVisibility(View.VISIBLE);
         }
-        //获取手机型号
-        TelephonyManager mTm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        String imei = mTm.getDeviceId();
-        String imsi = mTm.getSubscriberId();
-        String product= android.os.Build.PRODUCT;
-        String mtype = android.os.Build.MODEL; // 手机型号
-        String numer = mTm.getLine1Number(); // 手机号码，有的可得，有的不可得
-        SharedPreferencesHelper.saveStringValue(this, "MODEL", mtype);
-
     }
 
     TakePictureListener photoListener = new TakePictureListener() {

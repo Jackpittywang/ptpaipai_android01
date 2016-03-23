@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
@@ -53,22 +52,22 @@ public class CollagePhotoUtil {
                 PhotoGridItem item = new PhotoGridItem(path, time, id);
 
                 //在下一天之前添加相机
-                if (time.compareTo(curdate) < 0 && !isAddCamera) {
+               /* if (time.compareTo(curdate) < 0 && !isAddCamera) {
                     PhotoGridItem cameraItem = new PhotoGridItem(IS_CAMERA_ICON, curdate, null);
                     result.add(cameraItem);
                     isAddCamera = true;
-                }
+                }*/
                 result.add(item);
             }
             cursor.close();
         }
 
         //只有今天的
-        if (!isAddCamera) {
+        /*if (!isAddCamera) {
             PhotoGridItem cameraItem = new PhotoGridItem(IS_CAMERA_ICON, curdate, null);
             result.add(cameraItem);
             isAddCamera = true;
-        }
+        }*/
 
         for (ListIterator<PhotoGridItem> it = result.listIterator(); it.hasNext(); ) {
             PhotoGridItem mGridItem = it.next();
@@ -113,22 +112,22 @@ public class CollagePhotoUtil {
                 PhotoGridItem item = new PhotoGridItem(path, time, id);
 
                 //在下一天之前添加相机
-                if (time.compareTo(curdate) < 0 && !isAddCamera) {
+                /*if (time.compareTo(curdate) < 0 && !isAddCamera) {
                     PhotoGridItem cameraItem = new PhotoGridItem(IS_CAMERA_ICON, curdate, null);
                     result.add(cameraItem);
                     isAddCamera = true;
-                }
+                }*/
                 result.add(item);
             }
             cursor.close();
         }
 
         //只有今天的
-        if (!isAddCamera) {
+        /*if (!isAddCamera) {
             PhotoGridItem cameraItem = new PhotoGridItem(IS_CAMERA_ICON, curdate, null);
             result.add(cameraItem);
             isAddCamera = true;
-        }
+        }*/
 
         for (ListIterator<PhotoGridItem> it = result.listIterator(); it.hasNext(); ) {
             PhotoGridItem mGridItem = it.next();
