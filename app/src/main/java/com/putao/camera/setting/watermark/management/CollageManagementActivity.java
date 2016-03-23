@@ -96,10 +96,10 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //        Bundle bundle = new Bundle();
-        //        WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-        //        bundle.putSerializable("info", info);
-        //        ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
+//                Bundle bundle = new Bundle();
+//                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
+//                bundle.putSerializable("info", info);
+//                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
     }
 
     int progress = 0;

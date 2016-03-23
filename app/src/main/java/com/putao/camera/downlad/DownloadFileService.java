@@ -259,9 +259,18 @@ public class DownloadFileService extends Service {
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
             String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
+
+            String a = "textElements";
+            String b = "imageElements";
+            int start = watermark_config.indexOf(a);
+            int stop = watermark_config.indexOf(b);
+            String result = watermark_config.substring(0, start + a.length()) + watermark_config.substring(stop, watermark_config.length());
+            watermark_config = result.replace("textElementsimageElements", "textElements\":[],\"imageElements");
+
+//            watermark_config = watermark_config.replace("{\"text\":\"\",\"textColor\":\"\",\"textSize\":\"\",\"textAlign\":\"\",\"left\":\"\",\"top\":\"\",\"right\":\"\",\"bottom\":\"\",\"textType\":\"\"}", "");
             Gson gson = new Gson();
-            CollageConfigInfo info = gson.fromJson(watermark_config, CollageConfigInfo.class);
-            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), info, "0");
+            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
+            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
 
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();

@@ -23,10 +23,25 @@ public class CollageDBHelper {
         }
         return mInstance;
     }
-
-    ;
-
+   /* String sql;
+    sql = new Insert(entity).toStatementString();
+    Log.d(TAG, "insert sql:" + sql);
+    SQLiteStatement stmt = null;
+    try {
+        stmt = db.compileStatement(sql);
+        long rowId = stmt.executeInsert();
+        return 1;
+    } catch (android.database.SQLException e) {
+        Log.e(TAG, "inserting to database failed: " + sql, e);
+        return -1;
+    } finally {
+        if (stmt != null) {
+            stmt.close();
+        }
+    }*/
+//   private SQLiteDatabase db;
     public synchronized int insert(CollageItemInfo info) {
+
         if (StringHelper.isEmpty(info.sample_image)) {
             throw new RuntimeException("sample_image的值不能为空");
         }

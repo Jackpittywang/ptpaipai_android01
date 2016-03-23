@@ -111,6 +111,7 @@ public class CollageHelper {
         // 存储 collage_image的信息
         ArrayList<CollageCategoryInfo> collages = info.content.collage_image;
         Gson gson = new Gson();
+        int g=collages.size();
         for (int i = 0; i < collages.size(); i++) {
             CollageCategoryInfo collage = collages.get(i);
             for (int j = 0; j < collage.elements.size(); j++) {

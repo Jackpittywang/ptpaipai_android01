@@ -70,6 +70,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void doInitData() {
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             filepath = bundle.getString("savefile");

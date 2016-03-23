@@ -38,12 +38,28 @@ public final class DownloadFinishCollageFragment extends BaseFragment {
 
     @Override
     public void doInitDataes() {
-        mGridView = mPullRefreshGridView.getRefreshableView();
+       /* mGridView = mPullRefreshGridView.getRefreshableView();
         mManagementAdapter = new DownloadFinishCollageAdapter(mActivity);
         mGridView.setAdapter(mManagementAdapter);
         Map<String, String> map = new HashMap<String, String>();
         map.put("isInner", "0");
         list = (ArrayList<CollageItemInfo>) CollageDBHelper.getInstance().queryList(map, "_id");
+        mManagementAdapter.setDatas(list);*/
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGridView = mPullRefreshGridView.getRefreshableView();
+        mManagementAdapter = new DownloadFinishCollageAdapter(mActivity);
+        mGridView.setAdapter(mManagementAdapter);
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("isInner", "0");
+        list = (ArrayList<CollageItemInfo>) CollageDBHelper.getInstance().queryList(map, "_id");
+//        int i=list.size();
         mManagementAdapter.setDatas(list);
     }
+
+
+
 }
