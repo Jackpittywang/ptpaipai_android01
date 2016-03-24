@@ -11,13 +11,13 @@
 
     <Button
         android:id="@+id/bt_go"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="460dp"
+        android:layout_marginTop="480dp"
         android:gravity="center"
-        android:background="@drawable/introduction_button_wall"
+        android:background="#00ff0000"
 
         />
 

@@ -39,7 +39,6 @@ import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.camera.PCameraFragment.TakePictureListener;
 import com.putao.camera.camera.PCameraFragment.flashModeCode;
 import com.putao.camera.camera.utils.OrientationUtil;
-import com.putao.camera.camera.utils.RoundUtil;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
 import com.putao.camera.camera.view.AnimationImageView;
@@ -307,18 +306,20 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         mOrientationEvent = new OrientationEventListener(this) {
             @Override
             public void onOrientationChanged(int orientation) {
-                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
-                    return;
-                }
-                mOrientation = RoundUtil.roundOrientation(orientation, mOrientation);
-                int orientationCompensation = (mOrientation + RoundUtil.getDisplayRotation(ActivityCamera.this)) % 360;
-                if (mOrientationCompensation != orientationCompensation) {
-                    mOrientationCompensation = orientationCompensation;
-                    OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
-                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn, show_material_btn,
-                            take_photo_btn, back_home_btn, camera_set_btn);
-
-                }
+                return;
+                //
+//                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
+//                    return;
+//                }
+//                mOrientation = RoundUtil.roundOrientation(orientation, mOrientation);
+//                int orientationCompensation = (mOrientation + RoundUtil.getDisplayRotation(ActivityCamera.this)) % 360;
+//                if (mOrientationCompensation != orientationCompensation) {
+//                    mOrientationCompensation = orientationCompensation;
+//                    OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
+//                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_btn, show_material_btn,
+//                            take_photo_btn, back_home_btn, camera_set_btn);
+//
+//                }
             }
         };
         mMarkViewList = new ArrayList<WaterMarkView>();

@@ -28,9 +28,11 @@ import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -339,6 +341,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 Parameters pictureParams = camera.getParameters();
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);
                 pictureParams.setPictureSize(pictureSize.width, pictureSize.height);
+                Log.i(TAG, "width :"+pictureSize.width+" height:"+pictureSize.height);
                 pictureParams.setPictureFormat(ImageFormat.JPEG);
                 pictureParams.setPreviewFormat(ImageFormat.NV21);
                 setOptimalPreviewSize(pictureParams, 960, 960);
@@ -690,7 +693,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 //            }
             // 动态贴纸之后，如果有动态贴纸就出动态贴纸的保存，否则出图像编辑的页面
             // 先保存临时文件
-            String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
+           // String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
+            String imagePath = Environment.getExternalStorageDirectory()+ File.separator+"temp.jpg";
+
             FileOutputStream fos;
             try {
                 File file = new File(imagePath);

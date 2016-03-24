@@ -11,10 +11,10 @@ import android.view.View;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
@@ -28,8 +28,11 @@ public class CircleSwitchActivity extends BaseActivity {
     private boolean fromAbout = false;
     private ViewPager mPager;
     private AutoScrollViewPagerCirclePageIndicator mIndicator;
-    public static int[] logos = new int[]{R.drawable.introduction_picture_wall01, R.drawable.introduction_picture_wall02,
-            R.drawable.introduction_picture_wall03, R.drawable.introduction_picture_wall04};
+   /* public static int[] logos = new int[]{R.drawable.introduction_picture_wall01, R.drawable.introduction_picture_wall02,
+            R.drawable.introduction_picture_wall03, R.drawable.introduction_picture_wall04};*/
+
+    public static int[] logos = new int[]{R.drawable.img_wt_01, R.drawable.img_wt_02,
+            R.drawable.img_wt_03, R.drawable.img_wt_04};
     private boolean isFristUse;
 
     @Override
@@ -52,7 +55,7 @@ public class CircleSwitchActivity extends BaseActivity {
             //                    ActivityHelper.startActivity(this, ActivityCamera.class);
             //                } else
             //            {
-            ActivityHelper.startActivity(this, MenuActivity.class);
+            ActivityHelper.startActivity(this, ActivityCamera.class);
             //            }
             finish();
         }
@@ -82,7 +85,7 @@ public class CircleSwitchActivity extends BaseActivity {
         switch (event.eventCode) {
             case PuTaoConstants.WELCOME_FINISH_EVENT:
                 if (!fromAbout) {
-                    ActivityHelper.startActivity(mActivity, MenuActivity.class);
+                    ActivityHelper.startActivity(mActivity, ActivityCamera.class);
                 }
                 finish();
                 break;

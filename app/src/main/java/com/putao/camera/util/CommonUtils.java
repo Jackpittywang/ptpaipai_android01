@@ -1,34 +1,21 @@
 package com.putao.camera.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
-import android.content.res.AssetManager;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 import com.putao.camera.constants.PuTaoConstants;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CommonUtils {
 
@@ -55,9 +42,9 @@ public class CommonUtils {
 
     public static File getOutputVideoFile() {
         File mediaStorageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
 
-                PuTaoConstants.PAIAPI_PHOTOS_FOLDER);
+                PuTaoConstants.PAIAPI_PHOTOS_CAMERA);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("PAIAPI_PHOTOS_FOLDER", "failed to create directory");
@@ -68,8 +55,10 @@ public class CommonUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(new Date());
         File mediaFile;
+        /*mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + "IMG_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");*/
         mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");
+                + "VID_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");
 
         return mediaFile;
     }

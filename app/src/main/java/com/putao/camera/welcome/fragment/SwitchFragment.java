@@ -10,8 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.putao.camera.R;
-import com.putao.camera.event.EventBus;
-import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.welcome.CircleSwitchActivity;
 
@@ -84,7 +83,7 @@ public class SwitchFragment extends Fragment {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Bundle bundle = new Bundle();
-                ActivityHelper.startActivity(getActivity(), MenuActivity.class, bundle);
+                ActivityHelper.startActivity(getActivity(), ActivityCamera.class, bundle);
                 getActivity().finish();
             }
         });

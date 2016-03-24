@@ -13,12 +13,14 @@ import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.FileUtils;
+import com.putao.camera.welcome.CircleSwitchActivity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class LogoActivity extends BaseActivity {
 
@@ -71,20 +73,20 @@ public class LogoActivity extends BaseActivity {
     @Override
     public void doInitData() {
 //        Loger.i("current time:" + System.currentTimeMillis());
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                // ActivityHelper.startActivity(mActivity, CircleSwitchActivity.class);
-//
-//            }
-//        }, 2000);
-        new Handler().postDelayed(new Runnable() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
-                mActivity.finish();
+                 ActivityHelper.startActivity(mActivity, CircleSwitchActivity.class);
+                finish();
             }
         }, 2000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+//                mActivity.finish();
+//            }
+//        }, 2000);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.putao.camera.editor;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,12 +20,10 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
@@ -47,6 +46,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private String imagePath = "";
     private String animationName = "";
     private String videoImagePath = "";
+    private  String PATH="Android/data/com.putao.camera/files/";
     // 保存视频时候图片的张数
     private int imageCount = 36;
 
@@ -88,8 +88,11 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         try {
 
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
-            Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(),
-                    DisplayHelper.getScreenHeight());
+            Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+            Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
+            tempBitmap.recycle();
+           // Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getBitmapFromPath(imagePath, null);
+            Log.i(TAG, "image path is:"+imagePath);
             // 背景脸图片在屏幕上的缩放
             int screenW = DisplayHelper.getScreenWidth();
             int screenH = DisplayHelper.getScreenHeight();
@@ -136,6 +139,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 123) {
+                if(animation_view == null) return;
                 animation_view.setPositionAndStartAnimation(landmarks);
             }
         }
@@ -217,15 +221,19 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
     private void imagesToVideo() {
         // 保存视频
-        String sizeStr = "480x360";
+        String sizeStr = "360x480";
 //         String videoFileName = "VID_" + System.currentTimeMillis() / 1000 + ".mp4";
-        String videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath(); //getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+      final  String   videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath(); //getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+        System.out.print(videoPath);
 //        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+//        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+//        String videoPath="/storage/emulated/0/DCIM/Camera"+File.separator + videoFileName;
 
+//        videoPath= videoPath.replace(PATH,"");
         File videoFile = new File(videoPath);
         if (videoFile.exists()) videoFile.delete();
         final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
-                + " -vcodec mpeg4 -r " + imageCount + " -b 200k -s " + sizeStr + " " + videoPath;
+                + " -vcodec mpeg4 -r " + 24 + " -b 200k -s " + sizeStr + " " + videoPath;
         Log.i(TAG, "videPath is:" + videoPath);
         VideoHelper.getInstance(this).exectueFFmpegCommand(command.split(" "), new ExecuteBinaryResponseHandler() {
             @Override
@@ -237,6 +245,16 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onSuccess(String s) {
                 ToasterHelper.show(PhotoARShowActivity.this, "视频成功保存到相册");
+                MediaScannerConnection.scanFile(PhotoARShowActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+
+                        finish();
+
+//                        ActivityHelper.startActivity(PhotoARShowActivity.this, ActivityCamera.class);
+
+                    }
+                });
                 // ToasterHelper.show(PhotoARShowActivity.this, "处理成功:" + s);
             }
 
@@ -257,7 +275,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                 clearImageList();
             }
         });
-        ActivityHelper.startActivity(this, ActivityCamera.class);
+
     }
 
 
