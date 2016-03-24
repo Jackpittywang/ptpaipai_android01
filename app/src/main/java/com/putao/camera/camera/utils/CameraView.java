@@ -21,15 +21,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,7 +48,9 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
+import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.Loger;
+import com.putao.widget.cropper.cropwindow.handle.Handle;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -130,18 +135,18 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         return (host);
     }
 
-    public void setAnmationView(AnimationImageView view){
-        if(glSurfacePreviewStrategy!=null) glSurfacePreviewStrategy.setAnimationView(view);
+    public void setAnmationView(AnimationImageView view) {
+        if (glSurfacePreviewStrategy != null) glSurfacePreviewStrategy.setAnimationView(view);
     }
 
-    public void clearAnmationView(){
-        if(glSurfacePreviewStrategy!=null) glSurfacePreviewStrategy.clearAnimationView();
+    public void clearAnmationView() {
+        if (glSurfacePreviewStrategy != null) glSurfacePreviewStrategy.clearAnimationView();
     }
 
     // must call this after constructor, before onResume()
     public void setHost(CameraHost host) {
         this.host = host;
-        glSurfacePreviewStrategy = new GlSurfacePreviewStrategy(mContext,this);
+        glSurfacePreviewStrategy = new GlSurfacePreviewStrategy(mContext, this);
         previewStrategy = glSurfacePreviewStrategy;
     }
 
@@ -330,7 +335,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         return inPreview;
     }
 
-    public void takePicture(final PictureTransaction xact ) {
+    public void takePicture(final PictureTransaction xact) {
         if (inPreview) {
             if (isAutoFocusing) {
                 throw new IllegalStateException("Camera cannot take a picture while auto-focusing");
@@ -341,7 +346,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 Parameters pictureParams = camera.getParameters();
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);
                 pictureParams.setPictureSize(pictureSize.width, pictureSize.height);
-                Log.i(TAG, "width :"+pictureSize.width+" height:"+pictureSize.height);
+                Log.i(TAG, "width :" + pictureSize.width + " height:" + pictureSize.height);
                 pictureParams.setPictureFormat(ImageFormat.JPEG);
                 pictureParams.setPreviewFormat(ImageFormat.NV21);
                 setOptimalPreviewSize(pictureParams, 960, 960);
@@ -351,11 +356,11 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 if (onOrientationChange.isEnabled()) {
                     setCameraPictureOrientation(pictureParams);
                 }
-                String model =  android.os.Build.MODEL.toLowerCase();
-                String brand= Build.BRAND.toLowerCase();
+                String model = android.os.Build.MODEL.toLowerCase();
+                String brand = Build.BRAND.toLowerCase();
                 // 所有华为的机器不要做set处理,
-                if(model.contains("huawei") || brand.contains("huawei") || model.contains("cl00")||model.contains("honor")) {
-                }else{
+                if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+                } else {
                     camera.setParameters(xact.host.adjustPictureParameters(xact, pictureParams));
                 }
 
@@ -412,7 +417,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
 
     public void takePicture(final PictureTransaction xact, boolean flag) {
-        this.isShowAR =  flag;
+        this.isShowAR = flag;
         takePicture(xact);
     }
 
@@ -676,6 +681,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
     private class PictureTransactionCallback implements Camera.PictureCallback {
         PictureTransaction xact = null;
+
         PictureTransactionCallback(PictureTransaction xact) {
             this.xact = xact;
         }
@@ -693,36 +699,53 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 //            }
             // 动态贴纸之后，如果有动态贴纸就出动态贴纸的保存，否则出图像编辑的页面
             // 先保存临时文件
-           // String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
-            String imagePath = Environment.getExternalStorageDirectory()+ File.separator+"temp.jpg";
+            // String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
+            imagePath = Environment.getExternalStorageDirectory() + File.separator + "temp.jpg";
+            Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
+            Bitmap saveBitmap = null;
+            if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
+                Log.e("onPictureTaken", "onPictureTaken: ");
+                saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
+            } else saveBitmap = tempBitmap;
 
-            FileOutputStream fos;
-            try {
-                File file = new File(imagePath);
-                if(!file.exists())
-                    file.createNewFile();
-                fos = new FileOutputStream(file);
-                fos.write(data);
-                fos.close();
-
-            } catch (Exception e) {
-                return;
+            BitmapHelper.saveBitmap(saveBitmap, imagePath);
+            saveBitmap.recycle();
+            tempBitmap.recycle();
+//            FileOutputStream fos;
+//            try {
+//                File file = new File(imagePath);
+//                if (!file.exists())
+//                    file.createNewFile();
+//                fos = new FileOutputStream(file);
+//                fos.write(data);
+//                fos.close();
+//
+//            } catch (Exception e) {
+//                return;
+//            }
+            if (isShowAR == true) {
+                handler.sendEmptyMessageDelayed(0x001, 500);
+            } else {
+                handler.sendEmptyMessageDelayed(0x002, 0);
             }
-            if(isShowAR == true) {
+        }
+    }
+
+    private String imagePath = "";
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0x001) {
                 Bundle bundle = new Bundle();
                 bundle.putString("imagePath", imagePath);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.OPEN_AR_SHOW_ACTIVITY, bundle));
-
-            }
-            else{
+            } else if (msg.what == 0x002) {
                 Intent intent = new Intent(mContext, PhotoEditorActivity.class);
                 intent.putExtra("photo_data", imagePath);
                 mContext.startActivity(intent);
-
             }
-
         }
-    }
+    };
 
     /**
      * 获取照相机实例
