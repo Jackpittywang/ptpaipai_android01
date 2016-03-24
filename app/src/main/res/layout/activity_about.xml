@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="\@2015 putao.com"
+                android:text="\@2016 putao.com"
                 android:textColor="@color/text_color_dark_898989" />
         </LinearLayout>
     </RelativeLayout>
