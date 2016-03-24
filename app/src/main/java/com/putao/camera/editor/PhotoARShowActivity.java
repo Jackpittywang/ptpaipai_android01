@@ -218,9 +218,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private void imagesToVideo() {
         // 保存视频
         String sizeStr = "480x360";
-//         String videoFileName = "putao_" + System.currentTimeMillis() / 1000 + ".mp4";
+//         String videoFileName = "VID_" + System.currentTimeMillis() / 1000 + ".mp4";
         String videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath(); //getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
 //        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+
         File videoFile = new File(videoPath);
         if (videoFile.exists()) videoFile.delete();
         final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
