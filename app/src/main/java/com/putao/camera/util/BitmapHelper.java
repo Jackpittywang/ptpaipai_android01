@@ -2,6 +2,7 @@ package com.putao.camera.util;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,12 +15,10 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.util.LruCache;
 
-import com.putao.ahibernate.sql.Operate;
 import com.putao.camera.application.MainApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -90,18 +89,19 @@ public class BitmapHelper {
         return instance;
     }
 
-    //    // 从Resources中加载图片
-    //    public static Bitmap decodeSampledBitmapFromResource(Resources res,
-    //                                                         int resId, int reqWidth, int reqHeight) {
-    //        final BitmapFactory.Options options = new BitmapFactory.Options();
-    //        options.inJustDecodeBounds = true;
-    //        BitmapFactory.decodeResource(res, resId, options); // 读取图片长款
-    //        options.inSampleSize = calculateInSampleSize(options, reqWidth,
-    //                reqHeight); // 计算inSampleSize
-    //        options.inJustDecodeBounds = false;
-    //        Bitmap src = BitmapFactory.decodeResource(res, resId, options); // 载入一个稍大的缩略图
-    //        return createScaleBitmap(src, reqWidth, reqHeight); // 进一步得到目标大小的缩略图
-    //    }
+        // 从Resources中加载图片
+        public static Bitmap decodeSampledBitmapFromResource(Resources res,
+                                                             int resId, int reqWidth, int reqHeight) {
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(res, resId, options); // 读取图片长款
+            options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                    reqHeight); // 计算inSampleSize
+            options.inJustDecodeBounds = false;
+            Bitmap src = BitmapFactory.decodeResource(res, resId, options); // 载入一个稍大的缩略图
+//            return Bitmap(src, reqWidth, reqHeight); // 进一步得到目标大小的缩略图
+            return src;
+        }
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;

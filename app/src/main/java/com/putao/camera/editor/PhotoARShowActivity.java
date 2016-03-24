@@ -184,6 +184,8 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在保存视频请稍后...");
         progressDialog.show();
+        Bitmap tip=BitmapHelper.decodeSampledBitmapFromResource(getResources(),R.drawable.tips,220,60);
+        originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, tip,originImageBitmap.getWidth()-tip.getWidth()-5,originImageBitmap.getHeight()-tip.getHeight()-2);
 
         animation_view.setSave(originImageBitmap, videoImagePath, imageCount);
 //        imagesToVideo();

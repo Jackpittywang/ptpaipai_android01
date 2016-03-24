@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="fitCenter" />
 
+
     <com.putao.camera.camera.view.AnimationImageView
         android:id="@+id/animation_view"
         android:layout_width="match_parent"

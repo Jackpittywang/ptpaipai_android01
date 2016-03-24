@@ -508,7 +508,7 @@ public class PCameraFragment extends CameraFragment {
         @Override
         public void onCameraFail(FailureReason reason) {
             super.onCameraFail(reason);
-            Toast.makeText(getActivity(), "摄像头连接失败，请尝试重启手机!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "摄像头连接失败，请开启摄像头权限!", Toast.LENGTH_LONG).show();
         }
 
     }

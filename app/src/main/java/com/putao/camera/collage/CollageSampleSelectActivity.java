@@ -23,7 +23,6 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.setting.watermark.management.CollageManagementActivity;
 import com.putao.camera.util.ActivityHelper;
-import com.putao.camera.util.Loger;
 
 import java.util.ArrayList;
 
@@ -39,8 +38,8 @@ public class CollageSampleSelectActivity extends BaseActivity implements View.On
     private ArrayList<String> selectImages = new ArrayList<String>();
     private CollageSampleAdapter mCollageSampleAdapter;
     private ConnectSampleAdapter mConnectSampleAdapter;
-    private LinearLayout btn_photo_collage, btn_photo_join;
-    private TextView connect_tv, collage_tv;
+    private LinearLayout btn_photo_collage;
+    private TextView  collage_tv;
     private boolean mIsconnect = false;
 
     @Override
@@ -52,12 +51,12 @@ public class CollageSampleSelectActivity extends BaseActivity implements View.On
     public void doInitSubViews(View view) {
         back_btn = queryViewById(R.id.back_btn);
         grid_col_sample = queryViewById(R.id.grid_col_sample);
-        btn_photo_join = queryViewById(R.id.btn_photo_join);
+//        btn_photo_join = queryViewById(R.id.btn_photo_join);
         btn_photo_collage = queryViewById(R.id.btn_photo_collage);
-        connect_tv = queryViewById(R.id.connect_tv);
+//        connect_tv = queryViewById(R.id.connect_tv);
         collage_tv = queryViewById(R.id.collage_tv);
         right_btn = queryViewById(R.id.right_btn);
-        addOnClickListener(back_btn, btn_photo_collage, btn_photo_join, right_btn);
+        addOnClickListener(back_btn, btn_photo_collage,  right_btn);
         setCollageButtonSelected();
         EventBus.getEventBus().register(this);
     }
@@ -82,7 +81,7 @@ public class CollageSampleSelectActivity extends BaseActivity implements View.On
         mCollageList = getCollageSampleList();
         mConnectImageList = getConnectImageList();
         mCollageSampleAdapter = new CollageSampleAdapter(mContext, mCollageList);
-        mConnectSampleAdapter = new ConnectSampleAdapter(mContext, mConnectImageList);
+//        mConnectSampleAdapter = new ConnectSampleAdapter(mContext, mConnectImageList);
         grid_col_sample.setAdapter(mCollageSampleAdapter);
         grid_col_sample.setOnItemClickListener(this);
         mCollageSampleAdapter.notifyDataSetChanged();
@@ -146,13 +145,13 @@ public class CollageSampleSelectActivity extends BaseActivity implements View.On
                 grid_col_sample.setAdapter(mCollageSampleAdapter);
                 mCollageSampleAdapter.notifyDataSetChanged();
                 break;
-            case R.id.btn_photo_join:
+            /*case R.id.btn_photo_join:
                 right_btn.setVisibility(View.INVISIBLE);
                 mIsconnect = true;
                 setCollageButtonSelected();
                 grid_col_sample.setAdapter(mConnectSampleAdapter);
                 mConnectSampleAdapter.notifyDataSetChanged();
-                break;
+                break;*/
             case R.id.right_btn:
                 ActivityHelper.startActivity(mActivity, CollageManagementActivity.class);
                 break;
@@ -163,10 +162,10 @@ public class CollageSampleSelectActivity extends BaseActivity implements View.On
 
     void setCollageButtonSelected() {
         if (mIsconnect) {
-            connect_tv.setTextColor(getResources().getColor(R.color.text_color_red));
+//            connect_tv.setTextColor(getResources().getColor(R.color.text_color_red));
             collage_tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
         } else {
-            connect_tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+//            connect_tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
             collage_tv.setTextColor(getResources().getColor(R.color.text_color_red));
         }
     }

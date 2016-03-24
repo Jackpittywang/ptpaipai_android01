@@ -50,12 +50,12 @@
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
                     android:gravity="center"
-                    android:text="模 版"
+                    android:text="拼 图"
                     android:textColor="@color/text_color_red"
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <LinearLayout
+          <!--  <LinearLayout
                 android:id="@+id/btn_photo_join"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -75,7 +75,7 @@
                     android:text="拼 接"
                     android:textColor="@color/text_color_dark_898989"
                     android:textSize="18sp" />
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
 
         <LinearLayout
