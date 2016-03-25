@@ -30,7 +30,6 @@ import android.hardware.Camera.Parameters;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -50,10 +49,8 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.Loger;
-import com.putao.widget.cropper.cropwindow.handle.Handle;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -699,8 +696,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 //            }
             // 动态贴纸之后，如果有动态贴纸就出动态贴纸的保存，否则出图像编辑的页面
             // 先保存临时文件
-            // String imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
-            imagePath = Environment.getExternalStorageDirectory() + File.separator + "temp.jpg";
+            imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
+//            imagePath = Environment.getExternalStorageDirectory() + File.separator + "temp.jpg";
             Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
             Bitmap saveBitmap = null;
             if (tempBitmap.getHeight() < tempBitmap.getWidth()) {

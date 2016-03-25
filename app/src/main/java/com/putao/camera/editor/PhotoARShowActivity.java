@@ -233,7 +233,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         File videoFile = new File(videoPath);
         if (videoFile.exists()) videoFile.delete();
         final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
-                + " -vcodec mpeg4 -r " + 24 + " -b 200k -s " + sizeStr + " " + videoPath;
+                + " -vcodec mpeg4 -r " + 12 + " -b 200k -s " + sizeStr + " " + videoPath;
         Log.i(TAG, "videPath is:" + videoPath);
         VideoHelper.getInstance(this).exectueFFmpegCommand(command.split(" "), new ExecuteBinaryResponseHandler() {
             @Override
