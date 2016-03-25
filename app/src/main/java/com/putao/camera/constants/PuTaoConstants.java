@@ -109,6 +109,7 @@ public class PuTaoConstants {
     public static final String PREFERENCE_CURRENT_CITY = "PREFERENCE_CURRENT_CITY";
     public static final String PAIAPI_PHOTOS_FOLDER = "PutaoCamera";
     public static final String PAIAPI_PHOTOS_CAMERA = "Camera";
+    public static final String PAIAPI_PHOTOS_VIDEO = "Video";
     // 水印文件夹
     public static final String PAIPAI_WATERMARK_FLODER_NAME = "watermark";
     // 有声贺卡文件夹

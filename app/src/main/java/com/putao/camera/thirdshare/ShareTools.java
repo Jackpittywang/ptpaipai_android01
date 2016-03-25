@@ -4,6 +4,7 @@ package com.putao.camera.thirdshare;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.BitmapHelper;

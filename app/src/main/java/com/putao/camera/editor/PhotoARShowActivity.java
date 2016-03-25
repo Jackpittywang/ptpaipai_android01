@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -223,13 +224,17 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         // 保存视频
         String sizeStr = "360x480";
 //         String videoFileName = "VID_" + System.currentTimeMillis() / 1000 + ".mp4";
-      final  String   videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath(); //getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
+        String model = android.os.Build.MODEL.toLowerCase();
+        String brand = Build.BRAND.toLowerCase();
+        final  String   videoPath;
+        if (model.contains("meizu") || brand.contains("meizu") || model.contains("mx5")||model.contains("mx4") ) {
+            videoPath = CommonUtils.getOutputVideoFileMX().getAbsolutePath();
+        } else {
+            videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath();
+        }
+//      final  String   videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath(); //getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
         System.out.print(videoPath);
 //        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
-//        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
-//        String videoPath="/storage/emulated/0/DCIM/Camera"+File.separator + videoFileName;
-
-//        videoPath= videoPath.replace(PATH,"");
         File videoFile = new File(videoPath);
         if (videoFile.exists()) videoFile.delete();
         final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
@@ -249,12 +254,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
 
-                        finish();
-
 //                        ActivityHelper.startActivity(PhotoARShowActivity.this, ActivityCamera.class);
-
                     }
                 });
+                finish();
                 // ToasterHelper.show(PhotoARShowActivity.this, "处理成功:" + s);
             }
 

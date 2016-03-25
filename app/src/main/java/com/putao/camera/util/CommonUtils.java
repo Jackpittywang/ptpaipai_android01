@@ -64,6 +64,31 @@ public class CommonUtils {
     }
 
 
+    public static File getOutputVideoFileMX() {
+        File   mediaStorageDir = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+
+                    PuTaoConstants.PAIAPI_PHOTOS_VIDEO);
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("PAIAPI_PHOTOS_FOLDER", "failed to create directory");
+                return null;
+            }
+        }
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+        File mediaFile;
+        /*mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + "IMG_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");*/
+        mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + "VID_" + timeStamp + "_" + (int) (Math.random() * 10) + (int) (Math.random() * 10) + ".mp4");
+
+        return mediaFile;
+    }
+
+
+
     public static Dialog dialog(Context context, String message, String b1text,
                                 String b2text, OnClickListener... listeners) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

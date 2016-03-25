@@ -764,10 +764,12 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         if (flag) {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_13);
             tv_takephoto.setVisibility(View.VISIBLE);
-            ToasterHelper.show(this, "打开");
+//            ToasterHelper.show(this, "打开");
+            ToasterHelper.showShort(this,"打开",R.drawable.img_blur_bg);
         } else {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_12);
-            ToasterHelper.show(this, "关闭");
+//            ToasterHelper.show(this, "关闭");
+            ToasterHelper.showShort(this,"关闭",R.drawable.img_blur_bg);
 
         }
 
@@ -883,7 +885,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_OFF;
                 mHdrState = HDRSTATE.OFF;
-                ToasterHelper.show(this, "闪光关");
+                ToasterHelper.showShort(this,"闪光关",R.drawable.img_blur_bg);
 
                 break;
             case FLASHMODECODE_OFF:
@@ -892,7 +894,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_ON;
                 mHdrState = HDRSTATE.ON;
-                ToasterHelper.show(this, "闪光开");
+                ToasterHelper.showShort(this,"闪光开",R.drawable.img_blur_bg);
                 break;
             case FLASHMODECODE_ON:
 
@@ -900,7 +902,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_LIGHT;
                 mHdrState = HDRSTATE.ON;
-                ToasterHelper.show(this, "长亮");
+                ToasterHelper.showShort(this,"长亮",R.drawable.img_blur_bg);
                 break;
             case FLASHMODECODE_LIGHT:
 
@@ -908,7 +910,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_AUTO;
                 mHdrState = HDRSTATE.AUTO;
-                ToasterHelper.show(this, "自动");
+                ToasterHelper.showShort(this,"自动",R.drawable.img_blur_bg);
                 break;
         }
 
@@ -1410,7 +1412,7 @@ private void showScaleType(){
             mPictureRatio = PictureRatio.RATIO_DEFAULT;
             setCameraRatioFull();
             i = 0;
-            ToasterHelper.show(this, "FULL");
+            ToasterHelper.showShort(this,"FULL",R.drawable.img_blur_bg);
             break;
         case SCALETYPE_THREE:
             camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
@@ -1418,7 +1420,7 @@ private void showScaleType(){
             mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
             setCameraRatioOneToOne();
             i = PhotoEditorActivity.CROP_11;
-            ToasterHelper.show(this, "1:1");
+            ToasterHelper.showShort(this,"1:1",R.drawable.img_blur_bg);
             break;
         case SCALETYPE_FULL:
             camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
@@ -1426,7 +1428,7 @@ private void showScaleType(){
             mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
             setCameraRatioThreeToFour();
             i = PhotoEditorActivity.CROP_43;
-            ToasterHelper.show(this, "3:4");
+            ToasterHelper.showShort(this,"3:4",R.drawable.img_blur_bg);
             break;
     }
 
@@ -1450,25 +1452,25 @@ private void showScaleType(){
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_09);
                 timeType = DELAY_THREE;
-                ToasterHelper.show(this, "延时3秒");
+                ToasterHelper.showShort(this,"延时3秒",R.drawable.img_blur_bg);
                 break;
             case DELAY_THREE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_10);
                 timeType = DELAY_FIVE;
-                ToasterHelper.show(this, "延时5秒");
+                ToasterHelper.showShort(this,"延时5秒",R.drawable.img_blur_bg);
                 break;
             case DELAY_FIVE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_11);
                 timeType = DELAY_TEN;
-                ToasterHelper.show(this, "延时10秒");
+                ToasterHelper.showShort(this,"延时10秒",R.drawable.img_blur_bg);
                 break;
             case DELAY_TEN:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_08);
                 timeType = DELAY_NONE;
-                ToasterHelper.show(this, "延时关闭");
+                ToasterHelper.showShort(this,"延时关闭",R.drawable.img_blur_bg);
                 break;
         }
 //        container.setLayoutParams(params);

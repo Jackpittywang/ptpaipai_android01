@@ -1,8 +1,6 @@
 
 package com.putao.camera.util;
 
-import java.text.MessageFormat;
-
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -15,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.putao.camera.R;
+
+import java.text.MessageFormat;
 
 public class ToasterHelper {
     public static final boolean NO_IMG = true;
@@ -197,4 +197,5 @@ public class ToasterHelper {
     public static void show(Context context, String msg){
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
+
 }
