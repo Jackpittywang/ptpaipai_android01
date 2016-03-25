@@ -721,7 +721,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 //                return;
 //            }
             if (isShowAR == true) {
-                handler.sendEmptyMessageDelayed(0x001, 500);
+                handler.sendEmptyMessageDelayed(0x001, 100);
             } else {
                 handler.sendEmptyMessageDelayed(0x002, 0);
             }

@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -511,11 +512,16 @@ public class AnimationImageView extends ImageView {
         BitmapHelper.saveBitmap(saveBitmap, savePath + "image" + countString + ".jpg");
         setDrawingCacheEnabled(false);
         curSaveCount = curSaveCount + 1;
+       int width= backgroundBitmap.getWidth();
+        int height=backgroundBitmap.getHeight();
+       Bundle bundle=new Bundle();
+        bundle.putInt("backgroundWith",width);
+        bundle.putInt("backgroundHight",height);
         if (curSaveCount > saveCount - 1) {
             // 保存文件结束
             isNeedSave = false;
             curSaveCount = 0;
-            EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE, null));
+            EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE, bundle));
         }
     }
 

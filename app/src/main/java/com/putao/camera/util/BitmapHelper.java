@@ -27,6 +27,9 @@ import java.util.Random;
 public class BitmapHelper {
 //    Canvas mCanvas;
 
+    public static final int CROP_11 = 1;
+    public static final int CROP_43 = 2;
+
     public BitmapHelper() {
 //        mCanvas = new Canvas();
     }
@@ -473,4 +476,31 @@ public class BitmapHelper {
         }
 
     }
+
+    /**
+     * 裁剪图片
+     */
+    public static Bitmap imageCrop(Bitmap bitmap, int cropType) {
+
+        int startWidth = bitmap.getWidth(); // 得到图片的宽，高
+        int startHeight = bitmap.getHeight();
+
+        int retX = 0;
+        int endWidth = startWidth;
+        boolean b = startWidth > startHeight;
+        switch (cropType) {
+            case CROP_11:
+                retX = Math.abs(startWidth - startHeight) / 2;
+                endWidth = b ? startHeight : startWidth;
+                break;
+            case CROP_43:
+                endWidth = (b ? startHeight : startWidth) * 4 / 3;
+                retX = Math.abs(startWidth - endWidth) / 2;
+                break;
+            default:
+                return bitmap;
+        }
+        return b ? Bitmap.createBitmap(bitmap, retX, 0, endWidth, startHeight, null, false) : Bitmap.createBitmap(bitmap, 0, retX, startWidth, endWidth, null, false);
+    }
+
 }

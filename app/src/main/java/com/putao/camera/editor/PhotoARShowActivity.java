@@ -29,6 +29,7 @@ import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
+import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
@@ -52,8 +53,9 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private int imageCount = 36;
 
     private AnimationImageView animation_view;
+    private int photoType;
 
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -75,6 +77,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         addOnClickListener(saveBtn, backBtn);
         EventBus.getEventBus().register(this);
+        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
     }
 
     @Override
@@ -90,7 +93,9 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
             Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+
             Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
+//            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);
             tempBitmap.recycle();
            // Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getBitmapFromPath(imagePath, null);
             Log.i(TAG, "image path is:"+imagePath);
@@ -172,9 +177,13 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         EventBus.getEventBus().unregister(this);
     }
 
+    private int Viedheight;
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE:
+              int with= event.bundle.getInt("backgroundWith");
+              int height = event.bundle.getInt("backgroundHight");
+                Viedheight = height*480/with;
                 imagesToVideo();
                 break;
         }
@@ -188,6 +197,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         if (file.exists() == false) file.mkdir();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在保存视频请稍后...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         Bitmap tip=BitmapHelper.decodeSampledBitmapFromResource(getResources(),R.drawable.tips,220,60);
         originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, tip,originImageBitmap.getWidth()-tip.getWidth()-5,originImageBitmap.getHeight()-tip.getHeight()-2);
@@ -222,7 +232,8 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
     private void imagesToVideo() {
         // 保存视频
-        String sizeStr = "360x480";
+        String sizeStr ="480x"+Viedheight;
+
 //         String videoFileName = "VID_" + System.currentTimeMillis() / 1000 + ".mp4";
         String model = android.os.Build.MODEL.toLowerCase();
         String brand = Build.BRAND.toLowerCase();
@@ -275,6 +286,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             public void onFinish() {
                 // ToasterHelper.show(PhotoARShowActivity.this, "处理完成");
                 progressDialog.hide();
+                progressDialog = null;
                 clearImageList();
             }
         });
@@ -342,7 +354,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
     void showQuitTip() {
-
+        if(progressDialog!=null){
+            progressDialog.hide();
+            progressDialog = null;
+        }
         finish();
 //        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
 //            @Override

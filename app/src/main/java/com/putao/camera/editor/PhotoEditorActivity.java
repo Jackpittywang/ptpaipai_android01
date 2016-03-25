@@ -96,14 +96,15 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
     private ArrayList<WaterMarkCategoryInfo> content = new ArrayList<WaterMarkCategoryInfo>();
     private String photo_data;
-    private int i;
+    private int photoType;
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
-
-
     public static final int CROP_11 = 1;
     public static final int CROP_43 = 2;
+
+
+
 
     private enum EditAction {
         NONE, ACTION_CUT, ACTION_Mark, ACTION_FILTER
@@ -112,7 +113,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doBefore() {
         super.doBefore();
-        i = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
 
     }
 
@@ -152,31 +153,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    /**
-     * 裁剪图片
-     */
-    private Bitmap ImageCrop(Bitmap bitmap, int cropYype) {
 
-        int startWidth = bitmap.getWidth(); // 得到图片的宽，高
-        int startHeight = bitmap.getHeight();
-
-        int retX = 0;
-        int endWidth = startWidth;
-        boolean b = startWidth > startHeight;
-        switch (cropYype) {
-            case CROP_11:
-                retX = Math.abs(startWidth - startHeight) / 2;
-                endWidth = b ? startHeight : startWidth;
-                break;
-            case CROP_43:
-                endWidth = (b ? startHeight : startWidth) * 4 / 3;
-                retX = Math.abs(startWidth - endWidth) / 2;
-                break;
-            default:
-                return bitmap;
-        }
-        return b ? Bitmap.createBitmap(bitmap, retX, 0, endWidth, startHeight, null, false) : Bitmap.createBitmap(bitmap, 0, retX, startWidth, endWidth, null, false);
-    }
 
     @Override
     public void doInitData() {
@@ -190,7 +167,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
         loadFilters();
-        ImageCropBitmap = ImageCrop(originImageBitmap, i);
+        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap,photoType);
         show_image.setImageBitmap(ImageCropBitmap);
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
@@ -217,6 +194,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             btn_new_res.setShowRedPoint(false);
             btn_new_res.setVisibility(View.VISIBLE);
         }
+
     }
 
     void setGridView() {

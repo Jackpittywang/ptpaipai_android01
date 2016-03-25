@@ -99,6 +99,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private PictureRatio mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
     private boolean mShowSticker = false;
     private WaterMarkView last_mark_view;
+
+
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
 
     // 上一次选中的图标
@@ -1326,7 +1328,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     OnClickListener arStickerOnclickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            ToasterHelper.show(getApplicationContext(), "请将正脸置于取景器内");
+//            ToasterHelper.show(getApplicationContext(), "请将正脸置于取景器内");
+            ToasterHelper.showShort(ActivityCamera.this,"请将正脸置于取景器内",R.drawable.img_blur_bg);
             if (current == null) return;
             if (animation_view.isAnimationLoading()) {
                 showToast("动画加载中请稍后");
