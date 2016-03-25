@@ -171,7 +171,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         }
     }
     //开启开始下载服务
-    private void startDownloadService(final String url, final String floderPath, final int position) {
+    private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
         if (isExistRunning) {
             Loger.i("startDownloadService:exist");
@@ -179,10 +179,11 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         } else {
             Loger.i("startDownloadService:run");
         }
+        if(null == url || null == folderPath) return;
         Intent bindIntent = new Intent(this, DownloadFileService.class);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", floderPath);
+        bindIntent.putExtra("floderPath", folderPath);
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
         this.startService(bindIntent);
     }

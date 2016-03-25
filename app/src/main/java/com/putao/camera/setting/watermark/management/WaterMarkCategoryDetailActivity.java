@@ -149,10 +149,11 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     Bundle bundle = new Bundle();
                     EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
                 } else {
+                    String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
+                    if(mWaterMarkPackageDetailInfo == null || path == null || mWaterMarkPackageDetailInfo.attachment_url ==null) return;
+                    startDownloadService(mWaterMarkPackageDetailInfo.attachment_url, path, position);
                     download_btn.setVisibility(View.INVISIBLE);
                     download_status_pb.setVisibility(View.VISIBLE);
-                    String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
-                    startDownloadService(mWaterMarkPackageDetailInfo.attachment_url, path, position);
                 }
                 break;
             case R.id.back_btn:
@@ -201,7 +202,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         mCacheRequest.startGetRequest();
     }
 
-    private void startDownloadService(final String url, final String floderPath, final int position) {
+    private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
         if (isExistRunning) {
             Loger.i("startDownloadService:exist");
@@ -209,10 +210,11 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         } else {
             Loger.i("startDownloadService:run");
         }
+        if(null == url || null == folderPath) return;
         Intent bindIntent = new Intent(this, DownloadFileService.class);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", floderPath);
+        bindIntent.putExtra("floderPath", folderPath);
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
         this.startService(bindIntent);
     }

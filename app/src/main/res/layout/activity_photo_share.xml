@@ -218,10 +218,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginBottom="25dp"
+                    android:layout_marginBottom="50dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                   <!-- <LinearLayout
                         android:id="@+id/btn_go_chartlet"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                             android:text="再来一张"
                             android:textColor="@color/white"
                             android:textSize="20dp" />
-                    </LinearLayout>
+                    </LinearLayout>-->
 
                     <LinearLayout
                         android:id="@+id/btn_go_camera"

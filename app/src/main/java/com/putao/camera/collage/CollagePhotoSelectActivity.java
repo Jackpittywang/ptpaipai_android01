@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -42,6 +41,7 @@ import com.putao.camera.movie.MovieCameraActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.widget.stickygridheaders.StickyGridHeadersGridView;
 
 import java.util.ArrayList;
@@ -436,7 +436,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     private void addSelectImage(String path) {
 
         if (selectImages.size() >= maxnum) {
-            showToast("最多只能选择" + maxnum + "张照片");
+            ToasterHelper.showShort(this,"最多只能选择" + maxnum + "张照片",R.drawable.img_blur_bg);
+//            showToast("最多只能选择" + maxnum + "张照片");
             return;
         }
         final RelativeLayout viewItem = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.activity_photo_selected_item, null);

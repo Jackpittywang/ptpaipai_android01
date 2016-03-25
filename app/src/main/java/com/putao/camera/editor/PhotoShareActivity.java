@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.putao.camera.R;
-import com.putao.camera.album.AlbumPhotoSelectActivity;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.collage.CollageSampleSelectActivity;
@@ -36,7 +35,7 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
     private Button btn_back, btn_home, share_btn_sina, share_btn_wechat, share_btn_friend, share_btn_qq, share_btn_qzone;
     private String filepath;
     private TextView tv_filepath;
-    private LinearLayout btn_go_chartlet, btn_go_camera, btn_go_collage, btn_go_movie;
+    private LinearLayout  btn_go_camera, btn_go_collage, btn_go_movie;
     private TextView title_tv;
     public static ShareTools mShareTools;
     private String from;
@@ -61,11 +60,11 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
         share_btn_qq = (Button) findViewById(R.id.share_btn_qq);
         share_btn_qzone = (Button) findViewById(R.id.share_btn_qzone);
         tv_filepath = (TextView) findViewById(R.id.tv_filepath);
-        btn_go_chartlet = (LinearLayout) findViewById(R.id.btn_go_chartlet);
+//        btn_go_chartlet = (LinearLayout) findViewById(R.id.btn_go_chartlet);
         btn_go_camera = (LinearLayout) findViewById(R.id.btn_go_camera);
         btn_go_collage = (LinearLayout) findViewById(R.id.btn_go_collage);
         btn_go_movie = (LinearLayout) findViewById(R.id.btn_go_movie);
-        addOnClickListener(btn_back, btn_home, share_btn_friend, share_btn_sina, share_btn_qq, share_btn_qzone, share_btn_wechat, btn_go_camera, btn_go_chartlet, btn_go_collage, btn_go_movie);
+        addOnClickListener(btn_back, btn_home, share_btn_friend, share_btn_sina, share_btn_qq, share_btn_qzone, share_btn_wechat, btn_go_camera,  btn_go_collage, btn_go_movie);
     }
 
     @Override
@@ -147,14 +146,14 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
 //                ActivityHelper.startActivity(mActivity, MenuActivity.class);
 //                finish();
                 break;
-            case R.id.btn_go_chartlet:
+            /*case R.id.btn_go_chartlet:
                 if ("collage".equals(from)||"connect".equals(from)) {
                     ActivityHelper.startActivity(mActivity, CollageSampleSelectActivity.class);
                 } else {
                     ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class);
                 }
 //                finish();
-                break;
+                break;*/
             case R.id.btn_go_collage:
                 ActivityHelper.startActivity(mActivity, CollageSampleSelectActivity.class);
 //                finish();

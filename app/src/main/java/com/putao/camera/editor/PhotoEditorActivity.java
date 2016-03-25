@@ -298,6 +298,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 Bitmap icon = BitmapHelper.getInstance().loadBitmap(image_path);
 //                Bitmap more_icon = ((BitmapDrawable) getResources().getDrawable(R.drawable.res_download_icon)).getBitmap();
                 Bitmap more_icon = BitmapFactory.decodeResource(getResources(), R.drawable.res_download_icon);
+                if(icon == null || more_icon == null) return;
                 float scale = (float) more_icon.getWidth() / icon.getWidth();
                 bm_icon = new BitmapDrawable(icon);
                 bm_icon.setBounds(0, 0, (int) (bm_icon.getIntrinsicWidth() * scale * DisplayHelper.getDensity()), (int) (bm_icon.getIntrinsicHeight() * scale * DisplayHelper.getDensity()));
@@ -869,6 +870,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.btn_new_res:
                 ActivityHelper.startActivity(mActivity, WaterMarkCategoryManagementActivity.class);
+                finish();
                 break;
             default:
                 break;

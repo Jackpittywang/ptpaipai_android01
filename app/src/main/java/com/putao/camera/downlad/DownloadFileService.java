@@ -71,6 +71,7 @@ public class DownloadFileService extends Service {
         saveFile = new File(filePath.replace(".zip", ".tmp"));
         if (!saveFile.getParentFile().exists()) {
             saveFile.getParentFile().mkdirs();
+
         }
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
