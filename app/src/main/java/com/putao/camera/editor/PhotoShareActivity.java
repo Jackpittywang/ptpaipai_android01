@@ -106,8 +106,13 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.share_btn_friend:
-                mShareTools.sendBitmapToWeixin(true);
-//                Toast.makeText(mContext, "分享成功", Toast.LENGTH_SHORT).show();
+                if (isAppInstalled(mContext, "com.tencent.mm")){
+                    mShareTools.sendBitmapToWeixin(true);
+                    }
+                else {
+                    Toast.makeText(mContext, "未安装微信", Toast.LENGTH_SHORT).show();
+                }
+//
                 break;
             case R.id.share_btn_qq:
                 if (isAppInstalled(mContext, "com.tencent.mobileqq"))
