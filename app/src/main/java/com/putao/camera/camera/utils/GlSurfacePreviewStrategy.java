@@ -18,6 +18,8 @@ import com.putao.camera.util.Loger;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import mobile.ReadFace.YMDetector;
 import mobile.ReadFace.YMFace;
@@ -101,9 +103,13 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         this.mGLView.requestRender();
     }
 
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private YMFace face;
+    private boolean detecting = false;
+    float[] points;
 
     @Override
-    public void onPreviewFrame(byte[] data, Camera camera) {
+    public void onPreviewFrame(final byte[] data, Camera camera) {
 
         // Loger.d("onPreviewFrame  ....   .... .. animationImageView is:"+animationImageView);
 
@@ -146,35 +152,39 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             mainRadio = screenW / hh;
         }
 
-        YMFace face;
-          face = mDetector.onDetector(data, iw, ih);
+        if (detecting) return;
+        singleThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                detecting = true;
+                face = mDetector.onDetector(data, iw, ih);
+                //        YMFace face = mDetector.onDetector(data, iw, ih);
+                if (face != null) {
+                    float[] landmarks = face.getLandmarks();
+                    float[] emotions = face.getEmotions();
+                    float[] rect = face.getRect();
 
-//        YMFace face = mDetector.onDetector(data, iw, ih);
+                    points = new float[landmarks.length];
+                    for (int i = 0; i < landmarks.length / 2; i++) {
+                        float x = landmarks[i * 2] * mainRadio;
+                        if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                            x = screenW - x;
+                        }
+                        float y = landmarks[i * 2 + 1] * mainRadio;
+                        points[i * 2] = x;
+                        points[i * 2 + 1] = y;
+                    }
+                }
+                detecting = false;
+            }
+        });
         if (face != null) {
             animationImageView.setVisibility(View.VISIBLE);
-            float[] landmarks = face.getLandmarks();
-            float[] emotions = face.getEmotions();
-            float[] rect = face.getRect();
-
-            float[] points = new float[landmarks.length];
-            for (int i = 0; i < landmarks.length / 2; i++) {
-                float x = landmarks[i * 2] * mainRadio;
-                if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    x = screenW - x;
-                }
-                float y = landmarks[i * 2 + 1] * mainRadio;
-                points[i * 2] = x;
-                points[i * 2 + 1] = y;
-            }
             animationImageView.setPositionAndStartAnimation(points);
-            Log.d(TAG, "onPreviewFrame: has face");
-        }else{
+        } else {
             animationImageView.setVisibility(View.GONE);
         }
-
-
     }
-
 
     public static class PtTextureSize {
         public int width;
