@@ -2,15 +2,19 @@
 package com.putao.camera.menu;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.bean.MenuIconInfo;
 import com.putao.camera.bean.WaterMarkRequestInfo;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
@@ -28,17 +32,19 @@ import com.putao.camera.util.WaterMarkHelper;
 
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.HashMap;
 
 /**
  * Created by yanglun on 15/3/2.
  */
 public class MenuActivity extends BaseActivity implements View.OnClickListener {
-    Button menu_home_material_btn, menu_home_stickers_btn, menu_home_camera_btn, menu_home_jigsaw_btn, menu_home_movie_btn, menu_home_setting_btn;
+    Button menu_home_material_btn, menu_home_stickers_btn,  menu_home_jigsaw_btn, menu_home_movie_btn, menu_home_setting_btn;
     TextView name_tv;
+    ImageView menu_home_camera_btn;
     //    private int remote_waterMark_version_code;
     //    private ServiceConnection mDownloadFileServiceCon;
-
+    private MenuIconInfo aMenuIconInfo;
     private boolean openCVLibraryLoaded = false;
 
     @Override
@@ -55,11 +61,12 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
     }
     @Override
     public void doInitSubViews(View view) {
+
         Loger.i("current time:" + System.currentTimeMillis());
         menu_home_setting_btn = (Button) findViewById(R.id.menu_home_setting_btn);
         menu_home_material_btn = (Button) findViewById(R.id.menu_home_material_btn);
         menu_home_stickers_btn = (Button) findViewById(R.id.menu_home_stickers_btn);
-        menu_home_camera_btn = (Button) findViewById(R.id.menu_home_camera_btn);
+        menu_home_camera_btn = queryViewById(R.id.menu_home_camera_btn);
         menu_home_jigsaw_btn = (Button) findViewById(R.id.menu_home_jigsaw_btn);
         menu_home_movie_btn = (Button) findViewById(R.id.menu_home_movie_btn);
         name_tv=queryViewById(R.id.name_tv);
@@ -67,6 +74,7 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                 menu_home_setting_btn);
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
+        initIconInfo();
 
 
     }
@@ -80,7 +88,7 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void doInitData() {
-        initIconInfo();
+//        initIconInfo();
 
 //        name_tv.setText();
 //        menu_home_camera_btn.setBackground();
@@ -118,7 +126,8 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
-                Uri uri = Uri.parse(PuTaoConstants.ORG_WEBSITE_URL);
+                Uri uri = Uri.parse(url);
+//                Uri uri = Uri.parse(url);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
                 break;
@@ -160,13 +169,29 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
             //                break;
         }
     }
-
+    private String url;
     public void initIconInfo(){
         CacheRequest.ICacheRequestCallBack mIconInfoCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
-                String iconInfo=json.toString();
+//                final MenuIconInfo aMenuIconInfo;
+                try {
+                    Thread.currentThread().getName();
+                    Gson gson = new Gson();
+                    aMenuIconInfo = (MenuIconInfo) gson.fromJson(json.toString(), MenuIconInfo.class);
+
+                    name_tv.setText(aMenuIconInfo.data.app_name);
+//                    menu_home_camera_btn.setImageURI(Uri.parse(aMenuIconInfo.data.app_icon));
+                    URL picUrl = new URL(aMenuIconInfo.data.app_icon);
+                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
+                    menu_home_camera_btn.setImageBitmap(pngBM);
+//                    url=aMenuIconInfo.data.android_link_url;
+                    url= aMenuIconInfo.data.ios_link_url;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

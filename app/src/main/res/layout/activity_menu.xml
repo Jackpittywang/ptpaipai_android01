@@ -98,11 +98,12 @@
                 android:layout_marginLeft="30dp"
                 android:padding="10dp">
 
-                <Button
+                <ImageView
                     android:id="@+id/menu_home_camera_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/img_index_05_176" />
+                    android:src="@drawable/img_index_05_176"
+                     />
 
                 <TextView
                     android:id="@+id/name_tv"
