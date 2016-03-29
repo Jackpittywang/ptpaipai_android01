@@ -251,4 +251,8 @@ public class MainApplication extends Application {
         }
     }
 
+    public static boolean isDebug(){
+        return true;
+    }
+
 }

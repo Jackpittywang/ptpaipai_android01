@@ -8,6 +8,7 @@ import com.putao.camera.R;
 import com.putao.camera.base.BaseFragment;
 import com.putao.camera.bean.CollageConfigInfo.CollageItemInfo;
 import com.putao.camera.db.CollageDBHelper;
+import com.putao.camera.event.BasePostEvent;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import java.util.ArrayList;
@@ -56,10 +57,14 @@ public final class DownloadFinishCollageFragment extends BaseFragment {
         Map<String, String> map = new HashMap<String, String>();
         map.put("isInner", "0");
         list = (ArrayList<CollageItemInfo>) CollageDBHelper.getInstance().queryList(map, "_id");
+
 //        int i=list.size();
         mManagementAdapter.setDatas(list);
     }
 
+    public void onEvent(BasePostEvent event) {
+
+    }
 
 
 }

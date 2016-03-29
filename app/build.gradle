@@ -49,54 +49,90 @@ android {
     productFlavors {
         //        local_release { versionName = "V" + defaultConfig.versionName }
 //        local_debug { versionName = "D" + defaultConfig.versionName }
-        channel_putao {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
+
+//        channel_putao {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
+//        }
+//        channel_baiduzhushou {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
+//        }
+//        channel_360 {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
+//        }
+//        channel_wandoujia {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_wandoujia"]
+//        }
+//        channel_xiaomi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
+//        }
+
+//        channel_yingyongbao {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyongbao"]
+//        }
+//        channel_uc {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_uc"]
+//        }
+//        channel_91 {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
+//        }
+        channel_ppzhushou {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
         }
-//        channel_baiduzhushou { versionName = "V" + defaultConfig.versionName }
-//        channel_360{ versionName = "V" + defaultConfig.versionName }
-//        channel_wandoujia{ versionName = "V" + defaultConfig.versionName }
-//        channel_xiaomi{ versionName = "V" + defaultConfig.versionName }
-//        channel_yingyongbao{ versionName = "V" + defaultConfig.versionName }
-//        channel_uc{ versionName = "V" + defaultConfig.versionName }
-//        channel_91{ versionName = "V" + defaultConfig.versionName }
-//        channel_ppzhushou { versionName = "V" + defaultConfig.versionName }
-//        channel_liqu { versionName = "V" + defaultConfig.versionName }
-//        channel_oppo{ versionName = "V" + defaultConfig.versionName }
-//        channel_huawei{ versionName = "V" + defaultConfig.versionName }
-//        channel_lenovo{ versionName = "V" + defaultConfig.versionName }
-//        channel_jifeng{ versionName = "V" + defaultConfig.versionName }
-//        channel_anzhi{ versionName = "V" + defaultConfig.versionName }
-//        channel_dangle{ versionName = "V" + defaultConfig.versionName }
-//        channel_mumayi{ versionName = "V" + defaultConfig.versionName }
-//        channel_nduo{ versionName = "V" + defaultConfig.versionName }
-//        channel_anzhuozaixian{ versionName = "V" + defaultConfig.versionName }
-//        channel_dianwanbashi{ versionName = "V" + defaultConfig.versionName }
-//        channel_vivo{ versionName = "V" + defaultConfig.versionName }
-//        channel_yingyonghui{ versionName = "V" + defaultConfig.versionName }
-//        channel_tengxun{ versionName = "V" + defaultConfig.versionName }
-//        channel_wangyi{ versionName = "V" + defaultConfig.versionName }
-//        channel_leshi{ versionName = "V" + defaultConfig.versionName }
-//        channel_suning{ versionName = "V" + defaultConfig.versionName }
-//        channel_jinli{ versionName = "V" + defaultConfig.versionName }
-//        channel_coolpad{ versionName = "V" + defaultConfig.versionName }
-//        channel_vivo{ versionName = "V" + defaultConfig.versionName }
-//        channel_360{ versionName = "V" + defaultConfig.versionName }
-//        channel_xiaomi{ versionName = "V" + defaultConfig.versionName }
-//        channel_meizu{ versionName = "V" + defaultConfig.versionName }
-//        channel_oppo{ versionName = "V" + defaultConfig.versionName }
-//        channel_lenovo{ versionName = "V" + defaultConfig.versionName }
-//        channel_huawei{ versionName = "V" + defaultConfig.versionName }
-//        channel_coolpad{ versionName = "V" + defaultConfig.versionName }
-//        channel_anzhi{ versionName = "V" + defaultConfig.versionName }
-//        channel_baidu{ versionName = "V" + defaultConfig.versionName }
-//        channel_wandoujia{ versionName = "V" + defaultConfig.versionName }
-//        channel_yingyongbao{ versionName = "V" + defaultConfig.versionName }
-//        channel_yidongmm{ versionName = "V" + defaultConfig.versionName }
-//        channel_liantongwoo{ versionName = "V" + defaultConfig.versionName }
-//        channel_samsung{ versionName = "V" + defaultConfig.versionName }
-//        channel_anzhuo{ versionName = "V" + defaultConfig.versionName }
-//        channel_jinli{ versionName = "V" + defaultConfig.versionName }
-//        channel_sougouzhushou{ versionName = "V" + defaultConfig.versionName }
+        channel_liqu {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_liqu"]
+        }
+        channel_oppo {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
+        }
+
+
+
+
+
+
+//        channel_anzhi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhi"]
+//        }
+//        channel_baidu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baidu"]
+//        }
+//
+//        channel_91 {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
+//        }
+//        channel_xiaomi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
+//        }
+//        channel_meizu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_meizu"]
+//        }
+//        channel_oppo {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
+//        }
+//        channel_lenovo {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_lenovo"]
+//        }
+//        channel_woshangdian {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_woshangdian"]
+//        }
+//        channel_huawei {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_huawei"]
+//        }
+//        channel_coolpad {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_coolpad"]
+//        }
+//        channel_ppzhushou {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
+//        }
+//        channel_sougoushoujizhushou {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_sougoushoujizhushou"]
+//        }
+//        channel_jinli {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_jinli"]
+//        }
+//        channel_mmpintai {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mmpintai"]
+//        }
 
     }
 }

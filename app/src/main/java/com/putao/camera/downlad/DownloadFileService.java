@@ -261,12 +261,12 @@ public class DownloadFileService extends Service {
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
             String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
 
-            String a = "textElements";
-            String b = "imageElements";
-            int start = watermark_config.indexOf(a);
-            int stop = watermark_config.indexOf(b);
-            String result = watermark_config.substring(0, start + a.length()) + watermark_config.substring(stop, watermark_config.length());
-            watermark_config = result.replace("textElementsimageElements", "textElements\":[],\"imageElements");
+//            String a = "textElements";
+//            String b = "imageElements";
+//            int start = watermark_config.indexOf(a);
+//            int stop = watermark_config.indexOf(b);
+//            String result = watermark_config.substring(0, start + a.length()) + watermark_config.substring(stop, watermark_config.length());
+//            watermark_config = result.replace("textElementsimageElements", "textElements\":[],\"imageElements");
 
 //            watermark_config = watermark_config.replace("{\"text\":\"\",\"textColor\":\"\",\"textSize\":\"\",\"textAlign\":\"\",\"left\":\"\",\"top\":\"\",\"right\":\"\",\"bottom\":\"\",\"textType\":\"\"}", "");
             Gson gson = new Gson();

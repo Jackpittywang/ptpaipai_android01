@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context="com.putao.camera.setting.SettingActivity">
+
+    <include layout="@layout/layout_title_bar" />
+
+    <RadioGroup
+        android:id="@+id/rg_matter"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <RadioButton
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingRight="@dimen/dimens_20dp"
+            android:id="@+id/matter_paster_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:button="@null"
+            android:text="贴纸"
+            android:textColor="#ff0000"
+            />
+
+        <RadioButton
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingRight="@dimen/dimens_20dp"
+            android:textColor="#ff0000"
+            android:id="@+id/matter_dynamic_pasting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="动态贴图"
+            />
+
+        <RadioButton
+            android:paddingLeft="@dimen/dimens_20dp"
+            android:paddingRight="@dimen/dimens_20dp"
+            android:textColor="#ff0000"
+            android:id="@+id/matter_jigsaw_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:button="@null"
+            android:gravity="right"
+            android:text="拼图模板"
+           />
+
+    </RadioGroup>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        >
+
+    </View>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
+
+
+</LinearLayout>

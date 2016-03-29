@@ -1,14 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/water_mark_download_grid_item_bg"
     android:descendantFocusability="blocksDescendants"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="165dp"
-        android:layout_height="165dp">
+        android:layout_height="165dp"
+        >
 
         <!--<com.putao.camera.editor.view.FilterEffectThumbnailView
             android:id="@+id/water_mark_photo_download_iv"
@@ -55,7 +56,9 @@
             android:src="@drawable/photo_new_icon" />
     </RelativeLayout>
 
+
     <TextView
+        android:paddingLeft="@dimen/dimens_10dp"
         android:id="@+id/water_mark_category_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,15 +68,18 @@
         android:textSize="16dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:paddingLeft="@dimen/dimens_10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+
             android:id="@+id/water_mark_category_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
             android:text="0枚"
+
             android:textColor="@color/text_color_dark_898989" />
 
         <TextView
@@ -83,8 +89,23 @@
             android:layout_margin="1dp"
             android:text="0k"
             android:textColor="@color/text_color_dark_898989" />
-    </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+             />
 
+        <Button
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/water_mark_category_download_btn"
+            android:background="@drawable/btn_22_01"
+            android:focusable="false"
+
+            ></Button>
+    </LinearLayout>
+    <!--style="@style/button.red"-->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -96,12 +117,7 @@
         android:gravity="center"
         android:padding="4dp">
 
-        <Button
-            android:id="@+id/water_mark_category_download_btn"
-            style="@style/button.red"
-            android:focusable="false"
-            android:text="下载"
-            android:textSize="18dp"></Button>
+
     </LinearLayout>
 
 </LinearLayout>

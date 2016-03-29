@@ -7,11 +7,11 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseFragment;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
+import com.putao.camera.event.BasePostEvent;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class DownloadFinishWaterMarkFragment extends BaseFragment {
@@ -53,6 +53,9 @@ public final class DownloadFinishWaterMarkFragment extends BaseFragment {
         map.put("isInner", "0");
         list = (ArrayList<WaterMarkCategoryInfo>) MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
         mManagementAdapter.setDatas(list);
+    }
+    public void onEvent(BasePostEvent event) {
+
     }
 
 }

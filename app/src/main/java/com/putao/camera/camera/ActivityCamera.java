@@ -72,13 +72,14 @@ import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn, show_material_btn, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_btn,show_filter_btn, show_material_btn, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
     private ImageButton btn_close_ar_list;
     //    private RedPointBaseButton show_material_btn;
@@ -189,7 +190,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void doInitSubViews(View view) {
         fullScreen(true);
-
         DisplayMetrics metric = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metric);
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
@@ -211,6 +211,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_timer_btn = queryViewById(R.id.camera_timer_btn);
         camera_scale_btn = queryViewById(R.id.camera_scale_btn);
         switch_camera_btn = queryViewById(R.id.switch_camera_btn);
+        show_filter_btn=queryViewById(R.id.show_filter_btn);
         show_sticker_btn = queryViewById(R.id.show_sticker_btn);
         take_photo_btn = queryViewById(R.id.take_photo_btn);
         back_home_btn = queryViewById(R.id.back_home_btn);
@@ -231,7 +232,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn,album_btn, show_sticker_btn, show_material_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
+        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn,album_btn, show_sticker_btn, show_filter_btn,show_material_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
                 Tips, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
@@ -328,6 +329,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         mSceneWaterMarkViewList = new ArrayList<View>();
         // 加载静态贴图
         // doInitWaterMarkScene(0);
+        //加载滤镜效果
+        doInitARFilter();
         // 加载动态贴图
         doInitARStick();
     }
@@ -558,6 +561,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     mShowSticker = !mShowSticker;
                 }
                 break;
+            case R.id.show_filter_btn:
+                //显示滤镜
+                showSticker(true);
+                if (!camera_watermark_setting) {
+                    mShowSticker = !mShowSticker;
+                }
+                break;
+
             case R.id.camera_set_ll:
                 showSetWindow(this, v);
                 break;
@@ -1269,6 +1280,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private void doInitARStick() {
         loadARThumbnail();
     }
+    //加载滤镜效果
+    private void doInitARFilter() {
+//        loadFilters();
+//        loadARThumbnail();
+    }
 
     // 加载静态贴图
     private void doInitWaterMarkScene(int index) {
@@ -1323,6 +1339,26 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
         }
     }
+    //加载滤镜效果
+    private void loadFilters() {
+        List<String> filterEffectNameList = new ArrayList<String>();
+        filterEffectNameList.addAll(Arrays.asList(getResources().getStringArray(R.array.filter_effect)));
+        /*if (filter_origin == null) {
+            filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
+        }
+        for (final String item : filterEffectNameList) {
+            new EffectImageTask(filter_origin, item, new EffectImageTask.FilterEffectListener() {
+                @Override
+                public void rendered(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        AddFilterView(item, bitmap);
+                    }
+                }
+            }).execute();
+        }*/
+    }
+
+
 
     // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
     OnClickListener arStickerOnclickListener = new OnClickListener() {

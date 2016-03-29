@@ -324,6 +324,7 @@ public class CacheRequest implements IBaseRequest {
         // return "http://7u2jvu.com1.z0.glb.clouddn.com/";
         if (mHostName == null) {
             return PuTaoConstants.PAIPAI_SERVER_HOST;
+//            return   PuTaoConstants.DEBUG_PAIPAI_SERVER_HOST;
         } else {
             return mHostName;
         }

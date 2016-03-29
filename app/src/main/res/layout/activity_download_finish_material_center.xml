@@ -82,6 +82,75 @@
             android:layout_height="wrap_content"
             android:background="@drawable/divider_gary_line_bg"></ImageView>
 
+        <RelativeLayout
+            android:id="@+id/dynamic_pasting_management_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/dynamic_pasting_icon_rl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:id="@+id/dynamic_pasting_icon_iv"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp" />
+
+
+                <ImageView
+
+                    android:id="@+id/dynamic_pasting_new_icon_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/photo_new_icon"
+                    android:visibility="invisible" />
+                />
+            </RelativeLayout>
+
+            <TextView
+
+                android:id="@+id/dynamic_pasting_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/dynamic_pasting_icon_rl"
+                android:text="动态贴图"
+                android:textColor="@color/text_color_dark_626262"
+                android:textSize="@dimen/dimens_20dp"></TextView>
+
+            <TextView
+                android:id="@+id/dynamic_pasting_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="40dp"
+                android:background="@drawable/red_num_btn_bg"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/text_color_white"
+                android:textSize="@dimen/dimens_10dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/go_btn_bg" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/divider_gary_line_bg"></ImageView>
 
         <RelativeLayout
             android:id="@+id/collage_management_rl"
@@ -155,6 +224,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/divider_gary_line_bg"></ImageView>
+
+
 
 
     </LinearLayout>

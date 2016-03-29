@@ -337,8 +337,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             if (isAutoFocusing) {
                 throw new IllegalStateException("Camera cannot take a picture while auto-focusing");
             } else {
-
-
                 previewParams = camera.getParameters();
                 Parameters pictureParams = camera.getParameters();
                 Camera.Size pictureSize = xact.host.getPictureSize(xact, pictureParams);

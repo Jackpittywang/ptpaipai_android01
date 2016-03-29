@@ -7,115 +7,97 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
-import com.putao.camera.base.BaseActivity;
-import com.putao.camera.collage.util.CollageHelper;
+import com.putao.camera.application.MainApplication;
+import com.putao.camera.base.BaseFragment;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
-import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
-import com.putao.camera.setting.watermark.download.DownloadFinishActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.WaterMarkHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public final class CollageManagementActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        UpdateCallback<TemplateListInfo.PackageInfo>, View.OnClickListener {
+public final class WaterMarkCategoryManagementFragment extends BaseFragment implements AdapterView.OnItemClickListener,
+        UpdateCallback<StickerListInfo.PackageInfo>, View.OnClickListener {
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
-    private CollageManagementAdapter mManagementAdapter;
-    private TextView title_tv;
+    private WaterMarkManagementAdapter mManagementAdapter;
 
     @Override
     public int doGetContentViewId() {
-        return R.layout.activity_collage_management;
+        return R.layout.fragment_water_mark_category_management;
     }
 
     @Override
     public void doInitSubViews(View view) {
-        title_tv = (TextView) view.findViewById(R.id.title_tv);
-        title_tv.setText("拼图列表");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
-        right_btn = (Button) view.findViewById(R.id.right_btn);
+        /*right_btn = (Button) view.findViewById(R.id.right_btn);
         right_btn.setText("已下载");
-        back_btn = (Button) view.findViewById(R.id.back_btn);
-
-        EventBus.getEventBus().register(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mManagementAdapter.notifyDataSetChanged();
+        back_btn = (Button) view.findViewById(R.id.back_btn);*/
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getEventBus().unregister(this);
     }
 
     @Override
-    public void doInitData() {
+    public void doInitDataes() {
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                Toast.makeText(CollageManagementActivity.this, "Pull Down!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(WaterMarkCategoryManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
                 //                new GetDataTask().execute();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
                 //                new GetDataTask().execute();
             }
         });
-        //        TextView tv = new TextView(this);
-        //        tv.setGravity(Gravity.CENTER);
-        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-        //        mPullRefreshGridView.setEmptyView(tv);
-        mManagementAdapter = new CollageManagementAdapter(this);
+        mManagementAdapter = new WaterMarkManagementAdapter(mActivity);
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
-       /* right_btn = (Button) this.findViewById(R.id.right_btn);
-        right_btn.setText("已下载");
-        back_btn = (Button) this.findViewById(R.id.back_btn);*/
-        addOnClickListener(right_btn, back_btn);
-        queryCollageList();
+
+        queryWaterMarkList();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Bundle bundle = new Bundle();
-//                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//                bundle.putSerializable("info", info);
-//                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
+        Bundle bundle = new Bundle();
+        StickerListInfo.PackageInfo info = mManagementAdapter.getItem(position);
+        bundle.putInt("id", info.id);
+        bundle.putInt("position", position);
+        ActivityHelper.startActivity(mActivity, WaterMarkCategoryDetailActivity.class, bundle);
     }
 
-    int progress = 0;
-
     @Override
-    public void startProgress(TemplateListInfo.PackageInfo info, final int position) {
-        String path = CollageHelper.getCollageUnzipFilePath();
+    public void startProgress(StickerListInfo.PackageInfo info, final int position) {
+        String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
         startDownloadService(info.download_url, path, position);
     }
 
     @Override
-    public void delete(TemplateListInfo.PackageInfo info, final int position) {
+    public void delete(StickerListInfo.PackageInfo info, final int position) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", info.id+"");
+        MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
+        mManagementAdapter.notifyDataSetChanged();
     }
 
     private void updateProgressPartly(int progress, int position) {
@@ -123,34 +105,33 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
         int lastVisiblePosition = mGridView.getLastVisiblePosition();
         if (position >= firstVisiblePosition && position <= lastVisiblePosition) {
             View view = mGridView.getChildAt(position - firstVisiblePosition);
-            if (view.getTag() instanceof CollageManagementAdapter.ViewHolder) {
-                CollageManagementAdapter.ViewHolder vh = (CollageManagementAdapter.ViewHolder) view.getTag();
+            if (view.getTag() instanceof WaterMarkManagementAdapter.ViewHolder) {
+                WaterMarkManagementAdapter.ViewHolder vh = (WaterMarkManagementAdapter.ViewHolder) view.getTag();
                 vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
+                    vh.water_mark_category_download_btn.setOnClickListener(null);
+                    vh.water_mark_category_download_btn.setText("下载中");
                     vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
-                    vh.download_status_pb.setVisibility(View.INVISIBLE);
-                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
+                    //                    vh.water_mark_category_download_btn.setText("删除");
+                    //                    vh.download_status_pb.setVisibility(View.INVISIBLE);
+                    //                    vh.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
+                    //                    mManagementAdapter.notifyDataSetChanged();
                 }
             }
         }
     }
-
-    private void updateFinish() {
-        //        vh.download_status_pb.setVisibility(View.INVISIBLE);
-        //        vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-    }
-
-    public void queryCollageList() {
+//请求水印列表
+    public void queryWaterMarkList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
-                final TemplateListInfo aCollageInfo;
+                final StickerListInfo aWaterMarkRequestInfo;
                 try {
                     Gson gson = new Gson();
-                    aCollageInfo = (TemplateListInfo) gson.fromJson(json.toString(), TemplateListInfo.class);
-                    mManagementAdapter.setDatas(aCollageInfo.data);
+                    aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
+                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -163,26 +144,27 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest("collage/collage/list", map, mWaterMarkUpdateCallback);
+//        CacheRequest mCacheRequest = new CacheRequest("watermark/watermark/list", map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=sticker_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.right_btn:
-                Bundle bundle = new Bundle();
-                bundle.putString("source", this.getClass().getName());
-                ActivityHelper.startActivity(this, DownloadFinishActivity.class, bundle);
-                break;
-            case R.id.back_btn:
-                finish();
-                break;
+//            case R.id.right_btn:
+//                Bundle bundle = new Bundle();
+//                bundle.putString("source", this.getClass().getName());
+//                ActivityHelper.startActivity(mActivity, DownloadFinishActivity.class, bundle);
+//                break;
+//            case R.id.back_btn:
+////                finish();
+//                break;
         }
     }
-
+    //开启开始下载服务
     private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
+        boolean isExistRunning = CommonUtils.isServiceRunning(mActivity, DownloadFileService.class.getName());
         if (isExistRunning) {
             Loger.i("startDownloadService:exist");
             return;
@@ -190,21 +172,21 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
             Loger.i("startDownloadService:run");
         }
         if(null == url || null == folderPath) return;
-        Intent bindIntent = new Intent(this, DownloadFileService.class);
+        Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_COLLAGE);
-        this.startService(bindIntent);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
+        mActivity.startService(bindIntent);
     }
-
+    //下载贴图包
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -213,10 +195,9 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
                 break;
             }
             case PuTaoConstants.DOWNLOAD_FILE_DOWNLOADING: {
-                //                String filePath = event.bundle.getString("percent");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -225,20 +206,15 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                runOnUiThread(new Runnable() {
+                mActivity. runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();
                     }
                 });
                 break;
-            case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mManagementAdapter.notifyDataSetChanged();
-                    }
-                });
+            case PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY:
+                mManagementAdapter.notifyDataSetChanged();
                 break;
         }
     }

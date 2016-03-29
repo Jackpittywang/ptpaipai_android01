@@ -1,6 +1,8 @@
 
 package com.putao.camera.constants;
 
+import com.putao.camera.application.MainApplication;
+
 public class PuTaoConstants {
     public static final boolean isDebug = true;
     public static final int PHOTO_CONTENT_PROVIDER_REFRESH = 0x001;
@@ -123,7 +125,14 @@ public class PuTaoConstants {
     // 拼图资源增量包路径
     public static final String PAIPAI_COLLAGE_UPDATE_PACKAGE_PATH = "/collage_unzip/";
     // 资源更新服务器Host
-    public static final String PAIPAI_SERVER_HOST = "http://api.camera.putao.com/";
+    public static final String PAIPAI_SERVER_HOST = MainApplication.isDebug() ? "http://api-paipai.ptdev.cn" : "http://api.camera.putao.com/";
+    //素材中心
+    public static final String PAIPAI_MATTER_CENTER_PATH = "/material/type";
+    //素材列表
+    public static final String PAIPAI_MATTER_LIST_PATH = "/material/list";
+
+
+
     // 有声贺卡资源上传host
     public static final String PAIPAI_SERVER_HOST_VOICE_UPLOAD = "http://api.camera.putao.im";
 
@@ -138,6 +147,8 @@ public class PuTaoConstants {
     public static final String MOVIE_DEFAULT_CAPTION_URL = "http://ftp.putao.im/pub/camera/movelines.json";
     //百度翻译URL,使用示例:BAI_DU_TRANSLATE_URL+"你好"
     public static final String BAI_DU_TRANSLATE_URL = "http://openapi.baidu.com/public/2.0/bmt/translate?client_id=4FZ0ZGPf4xpRhGC3SlA266gQ&from=zh&to=en&q=";
+//    public static final String MENU_ICON_LINK = "/core/config";
+
 
 
 

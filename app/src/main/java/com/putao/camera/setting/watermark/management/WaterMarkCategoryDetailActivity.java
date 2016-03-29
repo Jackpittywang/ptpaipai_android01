@@ -27,7 +27,7 @@ import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
-import com.putao.camera.setting.watermark.bean.WaterMarkPackageDetailInfo;
+import com.putao.camera.setting.watermark.bean.StickerPackageDetailInfo;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
@@ -48,14 +48,14 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private TextView title_tv;
     private ImageView sample_iv;
     private GridView mGridView;
-    private WaterMarkPackageDetailInfo mWaterMarkPackageDetailInfo;
+    private StickerPackageDetailInfo mStickerPackageDetailInfo;
     //    private WaterMarkPackageListInfo.PackageInfo mInfo;
     private ImageAdapter mGridViewAdapter;
     private Button right_btn;
     private TextView description_tv;
     private Button back_btn;
     private int position;
-    private String wid;
+    private int id;
 
     @Override
     public int doGetContentViewId() {
@@ -88,8 +88,8 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     public void doInitData() {
         Intent intent = this.getIntent();
         position = intent.getIntExtra("position", 0);
-        wid = intent.getStringExtra("wid");
-        title_tv.setText("");
+        id = intent.getIntExtra("id",0);
+        title_tv.setText("贴纸详情");
         mGridViewAdapter = new ImageAdapter();
         mGridView.setAdapter(mGridViewAdapter);
 
@@ -101,7 +101,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private boolean isDownloaded() {
         List<WaterMarkCategoryInfo> list = null;
         Map<String, String> map = new HashMap<String, String>();
-        map.put("id", wid);
+        map.put("id",id+"");
         try {
             list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
         } catch (Exception e) {
@@ -139,7 +139,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                 }
                 if (isDownloaded()) {
                     Map<String, String> map = new HashMap<String, String>();
-                    map.put("id", wid);
+                    map.put("id", id+"");
                     try {
                         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
                     } catch (Exception e) {
@@ -150,8 +150,8 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
                 } else {
                     String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
-                    if(mWaterMarkPackageDetailInfo == null || path == null || mWaterMarkPackageDetailInfo.attachment_url ==null) return;
-                    startDownloadService(mWaterMarkPackageDetailInfo.attachment_url, path, position);
+                    if(mStickerPackageDetailInfo == null || path == null || mStickerPackageDetailInfo.data.download_url ==null) return;
+                    startDownloadService(mStickerPackageDetailInfo.data.download_url, path, position);
                     download_btn.setVisibility(View.INVISIBLE);
                     download_status_pb.setVisibility(View.VISIBLE);
                 }
@@ -171,11 +171,11 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                 super.onSuccess(whatCode, json);
                 try {
                     Gson gson = new Gson();
-                    mWaterMarkPackageDetailInfo = (WaterMarkPackageDetailInfo) gson.fromJson(json.toString(), WaterMarkPackageDetailInfo.class);
+                    mStickerPackageDetailInfo = gson.fromJson(json.toString(), StickerPackageDetailInfo.class);
                     download_btn.setClickable(true);
                     mGridViewAdapter.notifyDataSetChanged();
-                    title_tv.setText(mWaterMarkPackageDetailInfo.category);
-                    description_tv.setText(mWaterMarkPackageDetailInfo.description);
+                    title_tv.setText(mStickerPackageDetailInfo.data.name);
+                    description_tv.setText(mStickerPackageDetailInfo.data.description);
 //                    Drawable nophoto = BitmapHelper.getLoadingDrawable(sample_iv.getWidth(), sample_iv.getHeight());
 //                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(nophoto)
 //                            .showImageOnFail(nophoto).cacheInMemory(true).cacheOnDisc(true)
@@ -183,7 +183,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                             .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 //                    sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    ImageLoader.getInstance().displayImage(mWaterMarkPackageDetailInfo.detail_image, sample_iv, options);
+                    ImageLoader.getInstance().displayImage(mStickerPackageDetailInfo.data.banner_pic, sample_iv, options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -197,7 +197,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest("watermark/watermark/detail/?wid=" + wid, map,
+        CacheRequest mCacheRequest = new CacheRequest("/material/details?type=sticker_pic&material_id=" + id, map,
                 mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
@@ -228,12 +228,13 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
         @Override
         public int getCount() {
-            if (mWaterMarkPackageDetailInfo == null) {
+            if (mStickerPackageDetailInfo == null) {
                 return 0;
             } else {
-                return mWaterMarkPackageDetailInfo.image_list.size();
+                return mStickerPackageDetailInfo.data.thumbnail_list.size();
             }
         }
+
 
         @Override
         public Object getItem(int position) {
@@ -254,7 +255,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
             DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                     .showImageForEmptyUri(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true)
                     .cacheOnDisc(true).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
-            ImageLoader.getInstance().displayImage(mWaterMarkPackageDetailInfo.image_list.get(position), imageView, options);
+            ImageLoader.getInstance().displayImage(mStickerPackageDetailInfo.data.thumbnail_list.get(position), imageView, options);
             return imageView;
         }
     }

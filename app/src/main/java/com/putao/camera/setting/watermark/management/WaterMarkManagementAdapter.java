@@ -29,14 +29,14 @@ import java.util.Map;
  */
 public class WaterMarkManagementAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<WaterMarkPackageListInfo.PackageInfo> mDatas;
+    private ArrayList<StickerListInfo.PackageInfo> mDatas;
     private UpdateCallback updateCallback;
 
     public void setUpdateCallback(UpdateCallback updateCallback) {
         this.updateCallback = updateCallback;
     }
 
-    public void setDatas(ArrayList<WaterMarkPackageListInfo.PackageInfo> datas) {
+    public void setDatas(ArrayList<StickerListInfo.PackageInfo> datas) {
         mDatas = datas;
     }
 
@@ -55,7 +55,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
     }
 
     @Override
-    public WaterMarkPackageListInfo.PackageInfo getItem(int position) {
+    public StickerListInfo.PackageInfo getItem(int position) {
         if (mDatas == null) {
             return null;
         }
@@ -84,10 +84,10 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final WaterMarkPackageListInfo.PackageInfo info = getItem(position);
-        holder.water_mark_category_name_tv.setText(info.category);
+        final StickerListInfo.PackageInfo info = getItem(position);
+        holder.water_mark_category_name_tv.setText(info.name);
         Map<String, String> map = new HashMap<String, String>();
-        map.put("id", String.valueOf(info.wid));
+        map.put("id", String.valueOf(info.id));
         List<WaterMarkCategoryInfo> list = null;
         try {
             list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
@@ -128,13 +128,13 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
             }
         }
         holder.download_status_pb.setVisibility(View.INVISIBLE);
-        holder.water_mark_category_count_tv.setText(info.totals + "枚");
+        holder.water_mark_category_count_tv.setText(info.num + "枚");
 
-        holder.water_mark_category_size_tv.setText(info.attachment_size + "k");
+        holder.water_mark_category_size_tv.setText(info.size);
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
 //        holder.water_mark_photo_download_iv.setScaleType(ImageView.ScaleType.CENTER);
-        ImageLoader.getInstance().displayImage(info.sample_image, holder.water_mark_photo_download_iv, options);
+        ImageLoader.getInstance().displayImage(info.cover_pic, holder.water_mark_photo_download_iv, options);
         return convertView;
     }
 

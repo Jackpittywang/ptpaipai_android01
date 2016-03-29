@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
@@ -16,7 +17,7 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.movie.MovieCameraActivity;
 import com.putao.camera.setting.AboutActivity;
-import com.putao.camera.setting.watermark.MaterialCenterActivity;
+import com.putao.camera.setting.watermark.management.MatterCenterActivity;
 import com.putao.camera.umengfb.UmengFeedbackActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.Loger;
@@ -34,7 +35,7 @@ import java.util.HashMap;
  */
 public class MenuActivity extends BaseActivity implements View.OnClickListener {
     Button menu_home_material_btn, menu_home_stickers_btn, menu_home_camera_btn, menu_home_jigsaw_btn, menu_home_movie_btn, menu_home_setting_btn;
-
+    TextView name_tv;
     //    private int remote_waterMark_version_code;
     //    private ServiceConnection mDownloadFileServiceCon;
 
@@ -61,6 +62,7 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         menu_home_camera_btn = (Button) findViewById(R.id.menu_home_camera_btn);
         menu_home_jigsaw_btn = (Button) findViewById(R.id.menu_home_jigsaw_btn);
         menu_home_movie_btn = (Button) findViewById(R.id.menu_home_movie_btn);
+        name_tv=queryViewById(R.id.name_tv);
         addOnClickListener(menu_home_material_btn, menu_home_stickers_btn, menu_home_camera_btn, menu_home_jigsaw_btn, menu_home_movie_btn,
                 menu_home_setting_btn);
         // Umeng更新
@@ -78,6 +80,10 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void doInitData() {
+        initIconInfo();
+
+//        name_tv.setText();
+//        menu_home_camera_btn.setBackground();
         //        initWaterMarkInfo();
 
 //        GifView kid_gif = (GifView) findViewById(R.id.kid_gif);
@@ -102,7 +108,10 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.menu_home_material_btn://素材中心--原最新素材
-                ActivityHelper.startActivity(this, MaterialCenterActivity.class);
+//                ActivityHelper.startActivity(this, MaterialCenterActivity.class);
+
+                ActivityHelper.startActivity(this, MatterCenterActivity.class);
+
                 break;
             case R.id.menu_home_stickers_btn://意见反馈--童趣美化
 //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
@@ -151,6 +160,27 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
             //                break;
         }
     }
+
+    public void initIconInfo(){
+        CacheRequest.ICacheRequestCallBack mIconInfoCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+                String iconInfo=json.toString();
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest("/core/config", map,
+                mIconInfoCallback);
+        mCacheRequest.startGetRequest();
+    }
+
+
 
     public void initWaterMarkInfo() {
         WaterMarkHelper.setWaterMarkConfigInfoFromSahrePreferences(this);

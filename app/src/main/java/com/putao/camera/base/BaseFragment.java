@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.putao.camera.event.EventBus;
+
 
 public abstract class BaseFragment extends Fragment {
     protected View containerView;
@@ -21,6 +23,7 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getEventBus().register(this);
         if (containerView == null) {
             if (doGetContentView() != null) {
                 containerView = doGetContentView();
@@ -37,6 +40,12 @@ public abstract class BaseFragment extends Fragment {
             parent.removeView(containerView);
         }
         return containerView;
+    }
+    protected void addOnClickListener(View... views) {
+        View.OnClickListener listener = (View.OnClickListener) mActivity;
+        if (listener != null)
+            for (int i = 0; i < views.length; i++)
+                views[i].setOnClickListener(listener);
     }
 
     public int doGetContentViewId() {
@@ -74,5 +83,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        EventBus.getEventBus().unregister(this);
+
     }
 }

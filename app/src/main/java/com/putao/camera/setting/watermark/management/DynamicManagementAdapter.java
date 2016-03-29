@@ -25,20 +25,20 @@ import java.util.Map;
 /**
  * Created by yanglun on 15/4/5.
  */
-public class CollageManagementAdapter extends BaseAdapter {
+public class DynamicManagementAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<TemplateListInfo.PackageInfo> mDatas;
+    private ArrayList<DynamicListInfo.PackageInfo> mDatas;
     private UpdateCallback updateCallback;
 
     public void setUpdateCallback(UpdateCallback updateCallback) {
         this.updateCallback = updateCallback;
     }
 
-    public void setDatas(ArrayList<TemplateListInfo.PackageInfo> datas) {
+    public void setDatas(ArrayList<DynamicListInfo.PackageInfo> datas) {
         mDatas = datas;
     }
 
-    public CollageManagementAdapter(Context context) {
+    public DynamicManagementAdapter(Context context) {
         this.mContext = context;
     }
 
@@ -53,7 +53,7 @@ public class CollageManagementAdapter extends BaseAdapter {
     }
 
     @Override
-    public TemplateListInfo.PackageInfo getItem(int position) {
+    public DynamicListInfo.PackageInfo getItem(int position) {
         if (mDatas == null) {
             return null;
         }
@@ -77,7 +77,7 @@ public class CollageManagementAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final TemplateListInfo.PackageInfo info = getItem(position);
+        final DynamicListInfo.PackageInfo info = getItem(position);
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
         List<CollageConfigInfo.CollageItemInfo> list = null;

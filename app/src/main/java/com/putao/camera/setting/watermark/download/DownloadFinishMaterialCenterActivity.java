@@ -1,5 +1,5 @@
 
-package com.putao.camera.setting.watermark;
+package com.putao.camera.setting.watermark.download;
 
 import android.graphics.Bitmap;
 import android.view.View;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 /**
  * Created by yanglun on 15/4/10.
  */
-public class MaterialCenterActivity extends BaseActivity implements View.OnClickListener {
+public class DownloadFinishMaterialCenterActivity extends BaseActivity implements View.OnClickListener {
     private Button back_btn, right_btn;
     private TextView title_tv;
     private RelativeLayout water_mark_management_rl;
@@ -39,7 +39,7 @@ public class MaterialCenterActivity extends BaseActivity implements View.OnClick
 
     @Override
     public int doGetContentViewId() {
-        return R.layout.activity_material_center;
+        return R.layout.activity_download_finish_material_center;
     }
 
     @Override

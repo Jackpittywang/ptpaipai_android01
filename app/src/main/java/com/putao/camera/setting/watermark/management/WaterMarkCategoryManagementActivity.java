@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class WaterMarkCategoryManagementActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        UpdateCallback<WaterMarkPackageListInfo.PackageInfo>, View.OnClickListener {
+        UpdateCallback<StickerListInfo.PackageInfo>, View.OnClickListener {
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
@@ -89,22 +89,23 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Bundle bundle = new Bundle();
-        WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-        bundle.putString("wid", info.wid);
+//        WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
+        StickerListInfo.PackageInfo info = mManagementAdapter.getItem(position);
+        bundle.putString("wid", info.id+"");
         bundle.putInt("position", position);
         ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
     }
 
     @Override
-    public void startProgress(WaterMarkPackageListInfo.PackageInfo info, final int position) {
+    public void startProgress(StickerListInfo.PackageInfo info, final int position) {
         String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
-        startDownloadService(info.attachment_url, path, position);
+        startDownloadService(info.download_url, path, position);
     }
 
     @Override
-    public void delete(WaterMarkPackageListInfo.PackageInfo info, final int position) {
+    public void delete(StickerListInfo.PackageInfo info, final int position) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("id", info.wid);
+        map.put("id", info.id+"");
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
         mManagementAdapter.notifyDataSetChanged();
     }
@@ -136,11 +137,11 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
-                final WaterMarkPackageListInfo aWaterMarkRequestInfo;
+                final StickerListInfo aWaterMarkRequestInfo;
                 try {
                     Gson gson = new Gson();
-                    aWaterMarkRequestInfo = (WaterMarkPackageListInfo) gson.fromJson(json.toString(), WaterMarkPackageListInfo.class);
-                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.list);
+                    aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
+                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

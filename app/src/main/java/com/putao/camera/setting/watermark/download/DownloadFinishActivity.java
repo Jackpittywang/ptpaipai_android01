@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.setting.MyFragmentPagerAdapter;
-import com.putao.camera.setting.watermark.management.WaterMarkCategoryManagementActivity;
 
 import java.util.ArrayList;
 
@@ -44,12 +43,13 @@ public class DownloadFinishActivity extends BaseActivity implements View.OnClick
     public void doInitSubViews(View view) {
         initTextView();
         initViewPager();
-        String source = this.getIntent().getStringExtra("source");
-        if (source.equals(WaterMarkCategoryManagementActivity.class.getName())) {
-            mPager.setCurrentItem(0);
-        } else {
-            mPager.setCurrentItem(1);
-        }
+        mPager.setCurrentItem(0);
+//        String source = this.getIntent().getStringExtra("source");
+//        if (source.equals(MatterCenterActivity.class.getName())) {
+//            mPager.setCurrentItem(0);
+//        } else {
+//            mPager.setCurrentItem(1);
+//        }
     }
 
     @Override

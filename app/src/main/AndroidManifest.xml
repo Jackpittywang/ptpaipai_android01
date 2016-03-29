@@ -214,6 +214,14 @@
             android:name=".setting.watermark.MaterialCenterActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity
+            android:name=".setting.watermark.management.MatterCenterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity
+            android:name=".setting.watermark.download.DownloadFinishMaterialCenterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"/>
 
         <!-- 微博分享配置 -->
         <activity

@@ -96,12 +96,12 @@
     </RelativeLayout>
 
     <GridView
-        android:id="@+id/grid_col_sample"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:listSelector="@drawable/selector_collage_grid"
-        android:numColumns="2"
-        android:scrollbars="none"></GridView>
+    android:id="@+id/grid_col_sample"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:listSelector="@drawable/selector_collage_grid"
+    android:numColumns="2"
+    android:scrollbars="none"></GridView>
 
 </LinearLayout>

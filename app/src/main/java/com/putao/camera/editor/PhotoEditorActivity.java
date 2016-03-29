@@ -234,6 +234,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         map.put("type", WaterMarkCategoryInfo.photo);
         map.put("isInner", "0");
         camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, true);
+        if(camera_water_list.size()==0)return;
         content.addAll(1, camera_water_list);
 
         //Loger.d("chen+++++content.size()="+content.size());
