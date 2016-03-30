@@ -8,55 +8,67 @@
 
     <include layout="@layout/layout_title_bar" />
 
-
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/rg_matter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
-        android:background="@color/white"
+        android:layout_height="40dp"
+        android:background="#ffffff"
         android:gravity="center"
-        android:paddingTop="@dimen/dimens_5dp">
-        <TextView
-            android:id="@+id/tv_paster"
-            android:paddingBottom="5dp"
-            android:gravity="center"
-            android:text="贴 纸"
-            android:textColor="#ff5859"
-            android:layout_width="0dp"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <RadioButton
+            android:id="@+id/matter_paster_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/tv_dynamic"
-            android:paddingBottom="5dp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableBottom="@drawable/label_matter_selector"
+            android:drawablePadding="4dp"
             android:gravity="center"
-            android:textColor="#ff5859"
+            android:text="贴纸"
+            android:textColor="#ff5859" />
+
+        <RadioButton
+            android:id="@+id/matter_dynamic_pasting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:button="@null"
+            android:checked="true"
+            android:drawableBottom="@drawable/label_matter_selector"
+            android:drawablePadding="4dp"
+            android:gravity="center"
             android:text="动态贴图"
-            android:layout_width="0dp"
+            android:textColor="#ff5859" />
+
+        <RadioButton
+            android:id="@+id/matter_jigsaw_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/tv_template"
-            android:paddingBottom="5dp"
+            android:background="@null"
+            android:button="@null"
+            android:drawableBottom="@drawable/label_matter_selector"
+            android:drawablePadding="4dp"
             android:gravity="center"
-            android:textColor="#ff5859"
             android:text="拼图模板"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:textColor="#ff5859" />
+
+    </RadioGroup>
 
     <View
         android:layout_width="wrap_content"
-        android:layout_height="1px"
-        >
+        android:layout_height="1px">
 
     </View>
-    <android.support.v4.view.ViewPager
+
+    <com.putao.widget.view.UnScrollableViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v4.view.ViewPager>
-
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
