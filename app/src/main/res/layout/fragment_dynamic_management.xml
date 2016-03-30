@@ -10,6 +10,7 @@
 
     <com.putao.widget.pulltorefresh.PullToRefreshGridView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:background="@color/background"
         android:id="@+id/pull_refresh_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -191,11 +191,10 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                     aMenuIconInfo = (MenuIconInfo) gson.fromJson(json.toString(), MenuIconInfo.class);
 
                     name_tv.setText(aMenuIconInfo.data.app_name);
+
                     DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                             .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-
                     menu_home_camera_btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
                     ImageLoader.getInstance().displayImage(aMenuIconInfo.data.app_icon, menu_home_camera_btn, options);
 //                    URL picUrl = new URL(aMenuIconInfo.data.app_icon);
 //                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());

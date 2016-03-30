@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
+        android:background="@color/white"
         android:gravity="center"
         android:paddingTop="@dimen/dimens_5dp">
         <TextView
@@ -20,6 +21,7 @@
             android:paddingBottom="5dp"
             android:gravity="center"
             android:text="贴 纸"
+            android:textColor="#ff5859"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
@@ -27,6 +29,7 @@
             android:id="@+id/tv_dynamic"
             android:paddingBottom="5dp"
             android:gravity="center"
+            android:textColor="#ff5859"
             android:text="动态贴图"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -35,6 +38,7 @@
             android:id="@+id/tv_template"
             android:paddingBottom="5dp"
             android:gravity="center"
+            android:textColor="#ff5859"
             android:text="拼图模板"
             android:layout_width="0dp"
             android:layout_weight="1"

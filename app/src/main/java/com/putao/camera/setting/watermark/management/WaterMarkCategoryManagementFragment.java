@@ -110,7 +110,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
                     vh.water_mark_category_download_btn.setOnClickListener(null);
-                    vh.water_mark_category_download_btn.setText("下载中");
+//                    vh.water_mark_category_download_btn.setText("下载中");
                     vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     //                    vh.water_mark_category_download_btn.setText("删除");

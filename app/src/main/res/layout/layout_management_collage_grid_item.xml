@@ -44,6 +44,16 @@
             android:layout_alignParentTop="true"
             android:src="@drawable/photo_new_icon"
             android:visibility="invisible" />
+        <ImageView
+            android:id="@+id/collage_photo_download_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/btn_22_01"
+            android:visibility="visible" />
     </RelativeLayout>
 
 </LinearLayout>

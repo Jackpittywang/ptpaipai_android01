@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -74,7 +73,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.water_mark_photo_download_iv = (ImageView) convertView.findViewById(R.id.water_mark_photo_download_iv);
             holder.water_mark_category_name_tv = (TextView) convertView.findViewById(R.id.water_mark_category_name_tv);
-            holder.water_mark_category_download_btn = (Button) convertView.findViewById(R.id.water_mark_category_download_btn);
+            holder.water_mark_category_download_btn = (ImageView) convertView.findViewById(R.id.water_mark_category_download_btn);
             holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
             holder.water_mark_category_count_tv = (TextView) convertView.findViewById(R.id.water_mark_category_count_tv);
             holder.water_mark_category_size_tv = (TextView) convertView.findViewById(R.id.water_mark_category_size_tv);
@@ -96,8 +95,8 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         }
         if (list.size() > 0) {
             holder.water_mark_photo_ok_iv.setVisibility(View.VISIBLE);
-            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.gray_btn_bg);
-            holder.water_mark_category_download_btn.setText("删除");
+//            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.gray_btn_bg);
+//            holder.water_mark_category_download_btn.setText("删除");
             holder.water_mark_category_download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -108,9 +107,9 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
             });
             holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
         } else {
-            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.red_btn_bg);
+//            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.red_btn_bg);
             holder.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
-            holder.water_mark_category_download_btn.setText("下载");
+//            holder.water_mark_category_download_btn.setText("下载");
             holder.water_mark_category_download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -142,8 +141,8 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         public TextView water_mark_category_name_tv;
         public TextView water_mark_category_count_tv;
         public TextView water_mark_category_size_tv;
-        public ImageView water_mark_photo_download_iv;
-        public Button water_mark_category_download_btn;
+        public ImageView water_mark_photo_download_iv,water_mark_category_download_btn;
+//        public Button water_mark_category_download_btn;
         public ProgressBar download_status_pb;
         public ImageView water_mark_photo_ok_iv;
         public ImageView water_mark_photo_new_iv;

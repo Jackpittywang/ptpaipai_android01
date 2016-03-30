@@ -70,6 +70,7 @@ public class DynamicManagementAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_dynamic_grid_item, null);
             holder = new ViewHolder();
+            holder.collage_photo_new_iv= (ImageView) convertView.findViewById(R.id.collage_photo_new_iv);
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);
             holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
             holder.collage_photo_ok_iv = (ImageView) convertView.findViewById(R.id.collage_photo_ok_iv);
@@ -105,6 +106,12 @@ public class DynamicManagementAdapter extends BaseAdapter {
                 }
             });
         }
+
+        if (info.is_new == 1) {
+            holder.collage_photo_new_iv.setVisibility(View.VISIBLE);
+        } else {
+            holder.collage_photo_new_iv.setVisibility(View.INVISIBLE);
+        }
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.collage_download_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -114,7 +121,7 @@ public class DynamicManagementAdapter extends BaseAdapter {
 
     class ViewHolder {
         public ImageView collage_download_iv;
-        public ImageView collage_photo_ok_iv;
+        public ImageView collage_photo_ok_iv,collage_photo_new_iv;
         public ProgressBar download_status_pb;
     }
 }

@@ -71,39 +71,43 @@
         android:paddingLeft="@dimen/dimens_10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
 
-        <TextView
+                android:id="@+id/water_mark_category_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="0枚"
 
-            android:id="@+id/water_mark_category_count_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:text="0枚"
+                android:textColor="@color/text_color_dark_898989" />
 
-            android:textColor="@color/text_color_dark_898989" />
+            <TextView
+                android:layout_toRightOf="@+id/water_mark_category_count_tv"
+                android:id="@+id/water_mark_category_size_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="0k"
+                android:textColor="@color/text_color_dark_898989" />
 
-        <TextView
-            android:id="@+id/water_mark_category_size_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1dp"
-            android:text="0k"
-            android:textColor="@color/text_color_dark_898989" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-             />
+            <ImageView
+                android:id="@+id/water_mark_category_download_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/btn_22_01"
+                android:visibility="visible" />
 
-        <Button
+        </RelativeLayout>
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/water_mark_category_download_btn"
-            android:background="@drawable/btn_22_01"
-            android:focusable="false"
 
-            ></Button>
+
+
     </LinearLayout>
     <!--style="@style/button.red"-->
     <View
