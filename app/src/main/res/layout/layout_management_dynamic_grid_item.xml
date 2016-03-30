@@ -6,8 +6,8 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="165dp"
-        android:layout_height="220dp">
+        android:layout_width="110dp"
+        android:layout_height="110dp">
 
         <com.putao.camera.editor.view.FilterEffectThumbnailView
             android:id="@+id/collage_download_iv"

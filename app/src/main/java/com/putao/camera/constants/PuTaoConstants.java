@@ -124,6 +124,15 @@ public class PuTaoConstants {
     public static final String PAIPAI_COLLAGE_CONFIG_NAME = "collage_config.json";
     // 拼图资源增量包路径
     public static final String PAIPAI_COLLAGE_UPDATE_PACKAGE_PATH = "/collage_unzip/";
+
+
+    // 贴纸资源增量包路径
+    public static final String PAIPAI_STICKER_UPDATE_PACKAGE_PATH = "/Sticker_unzip/";
+    //拼图模板
+    public static final String PAIPAI_TEMPLATE_UPDATE_PACKAGE_PATH = "/Template_unzip/";
+    //动态贴图
+    public static final String PAIPAI_DYNAMIC_UPDATE_PACKAGE_PATH = "/Dynamic_unzip/";
+
     // 资源更新服务器Host
     public static final String PAIPAI_SERVER_HOST = MainApplication.isDebug() ? "http://api-paipai.ptdev.cn" : "http://api.camera.putao.com/";
     //素材中心

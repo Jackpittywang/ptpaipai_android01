@@ -68,7 +68,7 @@ public class DynamicManagementAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_collage_grid_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_dynamic_grid_item, null);
             holder = new ViewHolder();
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);
             holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);

@@ -8,7 +8,8 @@
     <!--<include layout="@layout/layout_title_bar"></include>-->
     <!-- The PullToRefreshGridView replaces a standard GridView widget. -->
 
-    <com.putao.widget.pulltorefresh.PullToRefreshGridView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+    <com.putao.widget.pulltorefresh.PullToRefreshGridView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pull_refresh_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +19,7 @@
         android:gravity="fill"
         android:horizontalSpacing="10dp"
         android:listSelector="@android:color/transparent"
-        android:numColumns="2"
+        android:numColumns="3"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp"
         ptr:ptrDrawable="@drawable/default_ptr_rotate"

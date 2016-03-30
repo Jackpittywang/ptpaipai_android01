@@ -103,7 +103,10 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void startProgress(TemplateListInfo.PackageInfo info, final int position) {
+        //保存路径
         String path = CollageHelper.getCollageUnzipFilePath();
+        //拼图模板路径
+//        String path = CollageHelper.getTemplateUnzipFilePath();
         startDownloadService(info.download_url, path, position);
     }
 
@@ -188,6 +191,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_COLLAGE);
+//        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_TEMPLATE);
         mActivity.startService(bindIntent);
     }
 

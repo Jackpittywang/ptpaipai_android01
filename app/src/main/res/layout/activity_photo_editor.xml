@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/white">
+        android:background="@color/black">
 
         <LinearLayout
             android:id="@+id/left_btn_ll"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
 
-        android:background="@color/white">
+        android:background="@color/black">
 
         <LinearLayout
             android:id="@+id/opt_button_bar"
@@ -72,6 +72,76 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="@dimen/dimens_10dp"
             android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/choice_water_mark_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_37" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="贴纸"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimens_14sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/btn_picture_filter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_16" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="滤镜"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimens_14sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/btn_dynamic_filter"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="#cc880000"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_15" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="动态贴图"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimens_14sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/btn_cut_image"
@@ -84,7 +154,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/edit_button_cut" />
+                    android:background="@drawable/icon_capture_20_19" />
 
                 <TextView
 
@@ -93,12 +163,11 @@
                     android:background="@color/transparent"
                     android:gravity="center"
                     android:text="剪切"
-                    android:textColor="@color/text_color_dark_898989"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
-
             <LinearLayout
-                android:id="@+id/choice_water_mark_btn"
+                android:id="@+id/rotate_image_ll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -108,7 +177,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/edit_button_stickers" />
+                    android:background="@drawable/icon_capture_20_31" />
 
                 <TextView
 
@@ -116,34 +185,14 @@
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
                     android:gravity="center"
-                    android:text="贴纸"
-                    android:textColor="@color/text_color_dark_898989"
+                    android:text="旋转"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/btn_picture_filter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edit_button_filter" />
 
-                <TextView
 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:gravity="center"
-                    android:text="滤镜"
-                    android:textColor="@color/text_color_dark_898989"
-                    android:textSize="@dimen/dimens_14sp" />
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -204,7 +253,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/option_bars"
         android:layout_below="@id/title_bar_rl"
-        android:background="@color/background">
+        android:background="@color/black">
 
         <RelativeLayout
             android:layout_width="match_parent"

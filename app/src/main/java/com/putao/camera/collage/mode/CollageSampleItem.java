@@ -11,6 +11,9 @@ import java.util.ArrayList;
 public class CollageSampleItem implements Serializable {
 
     private static final long serialVersionUID = -7971488953798453288L;
+
+
+
     public String sample_image;
     public String mask_image;
     public String id;
@@ -25,5 +28,6 @@ public class CollageSampleItem implements Serializable {
         textElements = iteminfo.textElements;
         imageElements = iteminfo.imageElements;
         category = cate;
+
     }
 }

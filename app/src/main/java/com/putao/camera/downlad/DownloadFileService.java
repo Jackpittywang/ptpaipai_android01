@@ -45,6 +45,7 @@ public class DownloadFileService extends Service {
     private int mPosition;
     public static int DOWNLOAD_TYPE_WATER_MARK = 0;
     public static int DOWNLOAD_TYPE_COLLAGE = 1;
+    public static int DOWNLOAD_TYPE_TEMPLATE = 2;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -215,7 +216,10 @@ public class DownloadFileService extends Service {
                     downloadFile(url, floderPath);
                     if (type == DOWNLOAD_TYPE_WATER_MARK) {
                         unZipWaterMarkFile(saveFile, "watermark_config.json");
-                    } else {
+                    } else if(type ==DOWNLOAD_TYPE_TEMPLATE){
+                        unZipCollageFile(saveFile, "collage_config.json");
+                    }
+                    else {
                         unZipCollageFile(saveFile, "collage_config.json");
                     }
                     sendMsg(TYPE_UNZIP_FINISH);
@@ -259,6 +263,7 @@ public class DownloadFileService extends Service {
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
+//            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
             String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
 
 //            String a = "textElements";
@@ -272,6 +277,7 @@ public class DownloadFileService extends Service {
             Gson gson = new Gson();
             CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
             CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
+//            CollageHelper.saveNewCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "1");
 
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();

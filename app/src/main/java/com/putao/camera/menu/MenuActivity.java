@@ -3,14 +3,16 @@ package com.putao.camera.menu;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
@@ -19,11 +21,13 @@ import com.putao.camera.bean.WaterMarkRequestInfo;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
+import com.putao.camera.load.LoadingActivity;
 import com.putao.camera.movie.MovieCameraActivity;
 import com.putao.camera.setting.AboutActivity;
 import com.putao.camera.setting.watermark.management.MatterCenterActivity;
 import com.putao.camera.umengfb.UmengFeedbackActivity;
 import com.putao.camera.util.ActivityHelper;
+import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.NetType;
 import com.putao.camera.util.SharedPreferencesHelper;
@@ -32,7 +36,6 @@ import com.putao.camera.util.WaterMarkHelper;
 
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -42,6 +45,8 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
     Button menu_home_material_btn, menu_home_stickers_btn,  menu_home_jigsaw_btn, menu_home_movie_btn, menu_home_setting_btn;
     TextView name_tv;
     ImageView menu_home_camera_btn;
+    LinearLayout loading;
+
     //    private int remote_waterMark_version_code;
     //    private ServiceConnection mDownloadFileServiceCon;
     private MenuIconInfo aMenuIconInfo;
@@ -69,9 +74,10 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
         menu_home_camera_btn = queryViewById(R.id.menu_home_camera_btn);
         menu_home_jigsaw_btn = (Button) findViewById(R.id.menu_home_jigsaw_btn);
         menu_home_movie_btn = (Button) findViewById(R.id.menu_home_movie_btn);
+        loading=queryViewById(R.id.loading);
         name_tv=queryViewById(R.id.name_tv);
         addOnClickListener(menu_home_material_btn, menu_home_stickers_btn, menu_home_camera_btn, menu_home_jigsaw_btn, menu_home_movie_btn,
-                menu_home_setting_btn);
+                menu_home_setting_btn,loading);
         // Umeng更新
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
         initIconInfo();
@@ -143,6 +149,9 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                 ActivityHelper.startActivity(this, ActivityCamera.class);
 //                ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
+            case R.id.loading:
+                ActivityHelper.startActivity(this, LoadingActivity.class);
+                break;
             //            case R.id.water_mark_btn:
             //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
             //                break;
@@ -182,10 +191,15 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
                     aMenuIconInfo = (MenuIconInfo) gson.fromJson(json.toString(), MenuIconInfo.class);
 
                     name_tv.setText(aMenuIconInfo.data.app_name);
-//                    menu_home_camera_btn.setImageURI(Uri.parse(aMenuIconInfo.data.app_icon));
-                    URL picUrl = new URL(aMenuIconInfo.data.app_icon);
-                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
-                    menu_home_camera_btn.setImageBitmap(pngBM);
+                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+
+                    menu_home_camera_btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                    ImageLoader.getInstance().displayImage(aMenuIconInfo.data.app_icon, menu_home_camera_btn, options);
+//                    URL picUrl = new URL(aMenuIconInfo.data.app_icon);
+//                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
+//                    menu_home_camera_btn.setImageBitmap(pngBM);
 //                    url=aMenuIconInfo.data.android_link_url;
                     url= aMenuIconInfo.data.ios_link_url;
 

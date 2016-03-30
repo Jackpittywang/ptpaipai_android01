@@ -105,7 +105,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     @Override
     public void delete(StickerListInfo.PackageInfo info, final int position) {
         Map<String, String> map = new HashMap<String, String>();
-        map.put("id", info.id+"");
+        map.put("id", String.valueOf(info.id));
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
         mManagementAdapter.notifyDataSetChanged();
     }

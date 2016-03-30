@@ -100,8 +100,8 @@
 
                 <ImageView
                     android:id="@+id/menu_home_camera_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
                     android:src="@drawable/img_index_05_176"
                      />
 
@@ -232,12 +232,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dimens_20dp"
         android:paddingLeft="@dimen/dimens_20dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:gravity="center_vertical">
 
         <ImageView

@@ -563,10 +563,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 break;
             case R.id.show_filter_btn:
                 //显示滤镜
-                showSticker(true);
+                /*showSticker(true);
                 if (!camera_watermark_setting) {
                     mShowSticker = !mShowSticker;
-                }
+                }*/
                 break;
 
             case R.id.camera_set_ll:

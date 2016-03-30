@@ -8,24 +8,20 @@ import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.setting.watermark.download.DownloadFinishMaterialCenterActivity;
+import com.putao.camera.setting.watermark.download.DownloadFinishActivity;
 import com.putao.camera.util.ActivityHelper;
 
 /**
  * Created by yanglun on 15/4/10.
  */
-public class MatterCenterActivity extends BaseActivity  implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class MatterCenterActivity extends BaseActivity  implements View.OnClickListener{
     private Button back_btn, right_btn;
-    private TextView title_tv;
-    private RadioButton matter_paster_btn,matter_dynamic_pasting_btn,matter_jigsaw_btn;
+    private TextView title_tv,tv_paster,tv_dynamic,tv_template;
     private ViewPager vp_content;
-    private RadioGroup rg_matter;
     private SparseArray<Fragment> mFragments;
 
     private boolean mIspaster = false;
@@ -38,22 +34,21 @@ public class MatterCenterActivity extends BaseActivity  implements View.OnClickL
 
     @Override
     public void doInitSubViews(View view) {
+        tv_template=queryViewById(R.id.tv_template);
+        tv_paster=queryViewById(R.id.tv_paster);
+        tv_dynamic=queryViewById(R.id.tv_dynamic);
+
         back_btn = queryViewById(R.id.back_btn);
         title_tv =  queryViewById(R.id.title_tv);
         right_btn =  queryViewById(R.id.right_btn);
         right_btn.setText("素材管理");
         title_tv.setText("素材中心");
-        matter_paster_btn= queryViewById(R.id.matter_paster_btn);
-        matter_dynamic_pasting_btn= queryViewById(R.id.matter_dynamic_pasting_btn);
-        matter_jigsaw_btn= queryViewById(R.id.matter_jigsaw_btn);
         vp_content=queryViewById(R.id.vp_content);
-        rg_matter=queryViewById(R.id.rg_matter);
 
         addFragments();
-        rg_matter.check(R.id.matter_paster_btn);
+
 //        vp_content.setOverScrollMode();
         vp_content.setCurrentItem(0, false);
-        rg_matter.setOnCheckedChangeListener(this);
         vp_content.setOffscreenPageLimit(3);
     }
 
@@ -89,30 +84,27 @@ public class MatterCenterActivity extends BaseActivity  implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.right_btn:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("source", this.getClass().getName());
-//                ActivityHelper.startActivity(mActivity, DownloadFinishActivity.class, bundle);
                 Bundle bundle = new Bundle();
-                ActivityHelper.startActivity(mActivity, DownloadFinishMaterialCenterActivity.class,bundle);
-
+                bundle.putString("source", this.getClass().getName());
+                ActivityHelper.startActivity(mActivity, DownloadFinishActivity.class, bundle);
+//                Bundle bundle = new Bundle();
+//                ActivityHelper.startActivity(mActivity, DownloadFinishMaterialCenterActivity.class,bundle);
                 break;
+            case R.id.tv_paster:
+                vp_content.setCurrentItem(0, false);
+                tv_paster.setBackgroundResource(R.drawable.shippment_tab_title);
+                break;
+            case R.id.tv_dynamic:
+                vp_content.setCurrentItem(1, false);
+                tv_dynamic.setBackgroundResource(R.drawable.shippment_tab_title);
+                break;
+            case R.id.tv_template:
+                vp_content.setCurrentItem(2, false);
+                tv_template.setBackgroundResource(R.drawable.shippment_tab_title);
+                break;
+
             case R.id.back_btn:
                 finish();
-                break;
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.matter_paster_btn:
-                vp_content.setCurrentItem(0, false);
-                break;
-            case R.id.matter_dynamic_pasting_btn:
-                vp_content.setCurrentItem(1, false);
-                break;
-            case R.id.matter_jigsaw_btn:
-                vp_content.setCurrentItem(2, false);
                 break;
         }
     }
@@ -121,7 +113,7 @@ public class MatterCenterActivity extends BaseActivity  implements View.OnClickL
 
     @Override
     public void doInitData() {
-        addOnClickListener(right_btn, back_btn);
+        addOnClickListener(right_btn, back_btn,tv_paster,tv_dynamic,tv_template);
 
     }
 

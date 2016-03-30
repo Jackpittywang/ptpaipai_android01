@@ -79,7 +79,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
     private LinearLayout btn_picture_filter, choice_water_mark_btn, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
-            mark_cate_contanier, btn_cut_image;
+            mark_cate_contanier, btn_cut_image,rotate_image_ll;
     private ViewGroup title_bar_rl, option_bars;
     // 相片编辑状态
     private HorizontalScrollView filter_scrollview;
@@ -124,6 +124,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void doInitSubViews(View view) {
+        rotate_image_ll=queryViewById(R.id.rotate_image_ll);
         photo_area_rl = queryViewById(R.id.photo_area_rl);
         opt_button_bar2 = queryViewById(R.id.opt_button_bar2);
         opt_button_bar = queryViewById(R.id.opt_button_bar);
@@ -148,7 +149,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         tv_action = queryViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
         addOnClickListener(btn_picture_filter, choice_water_mark_btn, saveBtn, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
-                btn_new_res, btn_cut_image);
+                btn_new_res, btn_cut_image,rotate_image_ll);
         EventBus.getEventBus().register(this);
 
     }
@@ -872,6 +873,13 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             case R.id.btn_new_res:
                 ActivityHelper.startActivity(mActivity, WaterMarkCategoryManagementActivity.class);
                 finish();
+                break;
+            case R.id.rotate_image_ll:
+                //旋转
+//                filter_scrollview.setVisibility(View.VISIBLE);
+//                hideTitleAni();
+//                tv_action.setText("滤镜");
+//                mEditAction = EditAction.ACTION_FILTER;
                 break;
             default:
                 break;
