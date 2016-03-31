@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
@@ -87,13 +87,13 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         holder.water_mark_category_name_tv.setText(info.name);
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
-        List<WaterMarkCategoryInfo> list = null;
+        List<StickerIconInfo> list = null;
         try {
-            list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
+            list = MainApplication.getDBServer().getStickerIconInfoByWhere(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (list.size() > 0) {
+        if (null!=list &&list.size() > 0) {
             holder.water_mark_photo_ok_iv.setVisibility(View.VISIBLE);
 //            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.gray_btn_bg);
 //            holder.water_mark_category_download_btn.setText("删除");

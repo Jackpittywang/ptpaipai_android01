@@ -5,10 +5,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.db.DatabaseServer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,4 +186,22 @@ public class WaterMarkHelper {
             MainApplication.getDBServer().addWaterMarkIconInfo(info);
         }
     }
+
+    public static void saveCategoryInfoToDb(StickerIconInfo mStickerIconInfo) {
+        DatabaseServer dbServer = MainApplication.getDBServer();
+        dbServer.addStickerIconInfo(mStickerIconInfo);
+        ArrayList<StickerCategoryInfo> data = mStickerIconInfo.data;
+        for (int j = 0; j < data.size(); j++) {
+            StickerCategoryInfo info = data.get(j);
+            info.categoryId = mStickerIconInfo.id;
+            //            if (info.textElements != null && info.textElements.size() > 0) {
+            //chen 存储 WaterText
+            //info.textElement = info.textElements.toString()
+            //            }
+            MainApplication.getDBServer().addStickerCategoryInfo(info);
+        }
+    }
+
+
+
 }

@@ -151,14 +151,12 @@ public class MainApplication extends Application {
     public static DatabaseServer getDBServer() {
         try {
             if (dbServer == null) {
-                return new DatabaseServer(globalContext);
-            } else {
-                return dbServer;
+                dbServer =  new DatabaseServer(globalContext);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return dbServer;
     }
 
     public static SQLiteDatabase getSQLiteDatabase() {

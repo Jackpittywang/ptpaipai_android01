@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.putao.ahibernate.dao.AhibernateDao;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
@@ -20,6 +22,8 @@ public class DatabaseServer {
     private SQLiteDatabase mSQLiteDatabase;
     private AhibernateDao<WaterMarkIconInfo> mWaterMarkIconInfo;
     private AhibernateDao<WaterMarkCategoryInfo> mWaterMarkCategoryInfo;
+    private AhibernateDao<StickerCategoryInfo> mStickerCategoryInfo;
+    private AhibernateDao<StickerIconInfo> mStickerIconInfo;
 
     public DatabaseServer(Context context) {
         this.mContext = context;
@@ -27,6 +31,8 @@ public class DatabaseServer {
         this.mSQLiteDatabase = mDatabaseHelper.getWritableDatabase();
         this.mWaterMarkIconInfo = new AhibernateDao<WaterMarkIconInfo>(this.mSQLiteDatabase);
         this.mWaterMarkCategoryInfo = new AhibernateDao<WaterMarkCategoryInfo>(this.mSQLiteDatabase);
+        this.mStickerCategoryInfo = new AhibernateDao<StickerCategoryInfo>(this.mSQLiteDatabase);
+        this.mStickerIconInfo = new AhibernateDao<StickerIconInfo>(this.mSQLiteDatabase);
     }
 
     public SQLiteDatabase getSQLiteDatabase() {
@@ -51,6 +57,11 @@ public class DatabaseServer {
         return list;
     }
 
+    public List<StickerCategoryInfo> getStickerCategoryInfos(StickerCategoryInfo iconInfo) {
+        List<StickerCategoryInfo> list = mStickerCategoryInfo.queryList(iconInfo);
+        return list;
+    }
+
     public int addWaterMarkIconInfo(WaterMarkIconInfo iconInfo) {
         List<WaterMarkIconInfo> list = getWaterMarkIconInfos(iconInfo);
         if (list.size() > 0) {
@@ -59,6 +70,16 @@ public class DatabaseServer {
         }
         return mWaterMarkIconInfo.insert(iconInfo);
     }
+
+    public int addStickerCategoryInfo(StickerCategoryInfo iconInfo) {
+        List<StickerCategoryInfo> list = getStickerCategoryInfos(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mStickerCategoryInfo.insert(iconInfo);
+    }
+
 
     public void updateWaterMarkIconInfo(WaterMarkIconInfo iconInfo, Map<String, String> where) {
         mWaterMarkIconInfo.update(iconInfo, where);
@@ -99,6 +120,10 @@ public class DatabaseServer {
         List<WaterMarkCategoryInfo> list = mWaterMarkCategoryInfo.queryList(WaterMarkCategoryInfo.class, where, "_id", true);
         return list;
     }
+    public List<StickerIconInfo> getStickerIconInfoByWhere(Map<String, String> where) {
+        List<StickerIconInfo> list = mStickerIconInfo.queryList(StickerIconInfo.class, where, "_id", true);
+        return list;
+    }
 
     public List<WaterMarkCategoryInfo> getAllWaterMarkCategoryInfo() {
         List<WaterMarkCategoryInfo> list = mWaterMarkCategoryInfo.queryList(WaterMarkCategoryInfo.class, null, "_id");
@@ -110,6 +135,11 @@ public class DatabaseServer {
         return list;
     }
 
+    public List<StickerIconInfo> getStickerIconInfos(StickerIconInfo iconInfo) {
+        List<StickerIconInfo> list = mStickerIconInfo.queryList(iconInfo);
+        return list;
+    }
+
     public int addWaterMarkCategoryInfo(WaterMarkCategoryInfo iconInfo) {
         List<WaterMarkCategoryInfo> list = getWaterMarkCategoryInfos(iconInfo);
         if (list.size() > 0) {
@@ -117,6 +147,15 @@ public class DatabaseServer {
             return -1;
         }
         return mWaterMarkCategoryInfo.insert(iconInfo);
+    }
+
+    public int addStickerIconInfo(StickerIconInfo iconInfo) {
+        List<StickerIconInfo> list = getStickerIconInfos(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mStickerIconInfo.insert(iconInfo);
     }
 
     public void updateWaterMarkCategoryInfo(WaterMarkCategoryInfo iconInfo, Map<String, String> where) {

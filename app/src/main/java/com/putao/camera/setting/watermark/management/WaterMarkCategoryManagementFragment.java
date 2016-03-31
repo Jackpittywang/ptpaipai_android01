@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseFragment;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
@@ -128,10 +129,16 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
                 final StickerListInfo aWaterMarkRequestInfo;
+
                 try {
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
                     mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
+
+                    Gson gson1 = new Gson();
+                    StickerIconInfo mStickerIconInfo = gson1.fromJson(json.toString(), StickerIconInfo.class);
+                    WaterMarkHelper.saveCategoryInfoToDb(mStickerIconInfo);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
