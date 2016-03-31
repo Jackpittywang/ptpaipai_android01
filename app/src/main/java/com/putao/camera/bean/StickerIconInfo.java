@@ -10,7 +10,6 @@ import java.util.ArrayList;
 @Table(name = "StickerIconInfo")
 public class StickerIconInfo implements Serializable {
     private static final long serialVersionUID = -7971488953798453286L;
-
     @Id
     private Long _id;
 

@@ -3,13 +3,11 @@ package com.putao.camera.logo;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;

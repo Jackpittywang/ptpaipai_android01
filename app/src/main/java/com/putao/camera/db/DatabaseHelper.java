@@ -8,6 +8,8 @@ import com.putao.ahibernate.table.TableUtils;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.CollageConfigInfo.CollageItemInfo;
 import com.putao.camera.bean.CollageConfigInfo.ConnectImageInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 
@@ -36,6 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             TableUtils.createTable(db, true, WaterMarkCategoryInfo.class);
             TableUtils.createTable(db, true, CollageItemInfo.class);
             TableUtils.createTable(db, true, ConnectImageInfo.class);
+            TableUtils.createTable(db, true, StickerCategoryInfo.class);
+            TableUtils.createTable(db, true, StickerIconInfo.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -50,6 +54,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TableUtils.dropTable(db, WaterMarkCategoryInfo.class);
                 TableUtils.dropTable(db, CollageItemInfo.class);
                 TableUtils.dropTable(db, ConnectImageInfo.class);
+                TableUtils.dropTable(db, StickerCategoryInfo.class);
+                TableUtils.dropTable(db, StickerIconInfo.class);
                 onCreate(db);
                 // 不需要 break
             case 7:
