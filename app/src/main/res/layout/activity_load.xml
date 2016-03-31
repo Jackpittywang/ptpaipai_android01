@@ -5,8 +5,82 @@
     android:background="@drawable/img_wt_bg"
     android:orientation="vertical"
     >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title_bar_rl"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
 
-    <include layout="@layout/layout_title_bar" />
+        android:background="#ff5859">
+
+        <LinearLayout
+            android:id="@+id/left_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:text="取消"
+                android:id="@+id/back_btn"
+                android:background="#ff5859"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:paddingLeft="6dp"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/camera_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@drawable/film_camera"
+                android:textColor="@color/title_text_color"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="贴纸列表"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimens_20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:background="#ff5859"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/right_btn"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/activity_title_size" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

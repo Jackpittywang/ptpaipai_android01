@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
-import com.putao.camera.bean.CollageConfigInfo;
-import com.putao.camera.db.CollageDBHelper;
+import com.putao.camera.bean.TemplateIconInfo;
+import com.putao.camera.db.TemplateDBHelper;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
@@ -83,14 +83,14 @@ public class CollageManagementAdapter extends BaseAdapter {
         map.put("id", String.valueOf(info.id));
         //
 //        List<CollageConfigInfo.CollageItemInfoNew> list = null;
-        List<CollageConfigInfo.CollageItemInfo> list = null;
+        List<TemplateIconInfo> list = null;
         try {
-            list = CollageDBHelper.getInstance().queryList(map);
-//            list = CollageNewDBHelper.getInstance().queryList(map);
+            list = TemplateDBHelper.getInstance().queryList(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (list.size() > 0) {
+//        if (list.size() > 0) {
+        if (null!=list &&list.size() > 0) {
             holder.collage_photo_ok_iv.setVisibility(View.VISIBLE);
             holder.collage_download_iv.setOnClickListener(null);
         } else {

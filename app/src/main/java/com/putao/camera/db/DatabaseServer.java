@@ -62,6 +62,7 @@ public class DatabaseServer {
         return list;
     }
 
+
     public int addWaterMarkIconInfo(WaterMarkIconInfo iconInfo) {
         List<WaterMarkIconInfo> list = getWaterMarkIconInfos(iconInfo);
         if (list.size() > 0) {
@@ -122,6 +123,10 @@ public class DatabaseServer {
     }
     public List<StickerIconInfo> getStickerIconInfoByWhere(Map<String, String> where) {
         List<StickerIconInfo> list = mStickerIconInfo.queryList(StickerIconInfo.class, where, "_id", true);
+        return list;
+    }
+    public List<StickerCategoryInfo> getStickerCategoryInfoByWhere(Map<String, String> where) {
+        List<StickerCategoryInfo> list = mStickerCategoryInfo.queryList(StickerCategoryInfo.class, where, "_id", true);
         return list;
     }
 

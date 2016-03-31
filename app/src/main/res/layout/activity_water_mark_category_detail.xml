@@ -17,17 +17,42 @@
         android:scaleType="centerInside"
         android:id="@+id/sample_iv"
          />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="名字"
+            android:textColor="@color/grey_light" />
+
+        <Button
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/download_btn"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/red_btn_bg"
+            android:text="下载"
+            android:textColor="@color/white"></Button>
+
+
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/description_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:lines="3"
+        android:lines="2"
         android:text="描述文字"
         android:textColor="@color/grey_light" />
 
-    <FrameLayout
+   <!-- <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -55,7 +80,7 @@
             android:background="@drawable/red_btn_bg"
             android:text="下载"
             android:textColor="@color/white"></Button>
-    </FrameLayout>
+    </FrameLayout>-->
 
     <GridView
         android:id="@+id/grid_view"

@@ -11,13 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
@@ -44,7 +42,7 @@ import java.util.Map;
  */
 public class WaterMarkCategoryDetailActivity extends BaseActivity implements View.OnClickListener {
     private Button download_btn;
-    private ProgressBar download_status_pb;
+//    private ProgressBar download_status_pb;
     private TextView title_tv;
     private ImageView sample_iv;
     private GridView mGridView;
@@ -52,7 +50,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     //    private WaterMarkPackageListInfo.PackageInfo mInfo;
     private ImageAdapter mGridViewAdapter;
     private Button right_btn;
-    private TextView description_tv;
+    private TextView description_tv,name_tv;
     private Button back_btn;
     private int position;
     private int id;
@@ -64,6 +62,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     @Override
     public void doInitSubViews(View view) {
+        name_tv = (TextView) this.findViewById(R.id.name_tv);
         back_btn = (Button) this.findViewById(R.id.back_btn);
         title_tv = (TextView) this.findViewById(R.id.title_tv);
         right_btn = (Button) this.findViewById(R.id.right_btn);
@@ -72,7 +71,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         description_tv = (TextView) this.findViewById(R.id.description_tv);
         download_btn = (Button) this.findViewById(R.id.download_btn);
         download_btn.setClickable(false);
-        download_status_pb = (ProgressBar) this.findViewById(R.id.download_status_pb);
+//        download_status_pb = (ProgressBar) this.findViewById(R.id.download_status_pb);
         mGridView = (GridView) this.findViewById(R.id.grid_view);
         addOnClickListener(download_btn, back_btn);
         EventBus.getEventBus().register(this);
@@ -115,7 +114,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     private void updateDownloadBtn() {
         if (isDownloaded()) {
-            download_status_pb.setVisibility(View.INVISIBLE);
+//            download_status_pb.setVisibility(View.INVISIBLE);
 
             download_btn.setVisibility(View.VISIBLE);
             download_btn.setText("删除");
@@ -153,7 +152,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     if(mStickerPackageDetailInfo == null || path == null || mStickerPackageDetailInfo.data.download_url ==null) return;
                     startDownloadService(mStickerPackageDetailInfo.data.download_url, path, position);
                     download_btn.setVisibility(View.INVISIBLE);
-                    download_status_pb.setVisibility(View.VISIBLE);
+//                    download_status_pb.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.back_btn:
@@ -174,7 +173,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     mStickerPackageDetailInfo = gson.fromJson(json.toString(), StickerPackageDetailInfo.class);
                     download_btn.setClickable(true);
                     mGridViewAdapter.notifyDataSetChanged();
-                    title_tv.setText(mStickerPackageDetailInfo.data.name);
+                    name_tv.setText(mStickerPackageDetailInfo.data.name);
                     description_tv.setText(mStickerPackageDetailInfo.data.description);
 //                    Drawable nophoto = BitmapHelper.getLoadingDrawable(sample_iv.getWidth(), sample_iv.getHeight());
 //                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(nophoto)
@@ -182,7 +181,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 //                            .bitmapConfig(Bitmap.Config.RGB_565).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
                     DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                             .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-//                    sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ImageLoader.getInstance().displayImage(mStickerPackageDetailInfo.data.banner_pic, sample_iv, options);
 
                 } catch (Exception e) {
@@ -215,7 +214,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_STICKER);
         this.startService(bindIntent);
     }
 
@@ -252,9 +251,13 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
             if (imageView == null) {
                 imageView = (ImageView) inflater.inflate(R.layout.layout_download_detail_grid_item, parent, false);
             }
+//            DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+//                    .showImageForEmptyUri(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true)
+//                    .cacheOnDisc(true).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
+
             DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
-                    .showImageForEmptyUri(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true)
-                    .cacheOnDisc(true).considerExifParams(true).displayer(new RoundedBitmapDisplayer(20)).build();
+                    .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             ImageLoader.getInstance().displayImage(mStickerPackageDetailInfo.data.thumbnail_list.get(position), imageView, options);
             return imageView;
         }
@@ -299,7 +302,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     private void updateProgressPartly(int progress, int position) {
         if (progress >= 0 && progress <= 100) {
-            download_status_pb.setProgress(progress);
+//            download_status_pb.setProgress(progress);
         }
     }
 }

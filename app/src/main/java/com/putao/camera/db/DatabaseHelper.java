@@ -8,8 +8,12 @@ import com.putao.ahibernate.table.TableUtils;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.CollageConfigInfo.CollageItemInfo;
 import com.putao.camera.bean.CollageConfigInfo.ConnectImageInfo;
+import com.putao.camera.bean.DynamicCategoryInfo;
+import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.TemplateCategoryInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 
@@ -40,6 +44,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             TableUtils.createTable(db, true, ConnectImageInfo.class);
             TableUtils.createTable(db, true, StickerCategoryInfo.class);
             TableUtils.createTable(db, true, StickerIconInfo.class);
+            TableUtils.createTable(db, true, DynamicIconInfo.class);
+            TableUtils.createTable(db, true, DynamicCategoryInfo.class);
+            TableUtils.createTable(db, true, TemplateCategoryInfo.class);
+            TableUtils.createTable(db, true, TemplateIconInfo.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,6 +64,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TableUtils.dropTable(db, ConnectImageInfo.class);
                 TableUtils.dropTable(db, StickerCategoryInfo.class);
                 TableUtils.dropTable(db, StickerIconInfo.class);
+                TableUtils.dropTable(db, DynamicIconInfo.class);
+                TableUtils.dropTable(db, DynamicCategoryInfo.class);
+                TableUtils.dropTable(db, TemplateCategoryInfo.class);
+                TableUtils.dropTable(db, TemplateIconInfo.class);
                 onCreate(db);
                 // 不需要 break
             case 7:

@@ -9,12 +9,10 @@ import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.CollageConfigInfo.CollageCategoryInfo;
 import com.putao.camera.bean.CollageConfigInfo.CollageImageInfo;
 import com.putao.camera.bean.CollageConfigInfo.CollageItemInfo;
-import com.putao.camera.bean.CollageConfigInfo.CollageItemInfoNew;
 import com.putao.camera.bean.CollageConfigInfo.CollageText;
 import com.putao.camera.bean.CollageConfigInfo.ConnectImageInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.CollageDBHelper;
-import com.putao.camera.db.CollageNewDBHelper;
 import com.putao.camera.db.ConnectDBHelper;
 import com.putao.camera.util.FileOperationHelper;
 import com.putao.camera.util.Loger;
@@ -146,38 +144,6 @@ public class CollageHelper {
         return result;
     }
 
-    public static int saveNewCollageConfigInfoToDB(Context context, CollageConfigInfo info, String isInner) {
-        Loger.d("save collage to db............");
-        int result = -1;
-        SharedPreferencesHelper.saveStringValue(context, PuTaoConstants.PREFERENC_COLLAGE_SRC_VERSION_CODE, info.version);
-        // 存储 collage_image的信息
-//        ArrayList<CollageCategoryInfo> collages = info.content.collage_image;
-        ArrayList<CollageCategoryInfo> collages = info.content.collage_image;
-        Gson gson = new Gson();
-        int g=collages.size();
-        for (int i = 0; i < collages.size(); i++) {
-            CollageCategoryInfo collage = collages.get(i);
-            for (int j = 0; j < collage.datas.size(); j++) {
-                CollageItemInfoNew mItemInfo = collage.datas.get(j);
-//                mItemInfo.textElementsGson = gson.toJson(collage.datas.get(j).textElements);
-//                mItemInfo.imageElementsGson = gson.toJson(collage.datas.get(j).imageElements);
-                mItemInfo.parentId = collage.id;
-                mItemInfo.parentCategory = collage.category;
-                mItemInfo.isInner = isInner;
-//                result = CollageDBHelper.getInstance().insert(mItemInfo);
-                result = CollageNewDBHelper.getInstance().insert(mItemInfo);
-                if (result == -1) {
-                    return result;
-                }
-            }
-        }
-        // 存储 collage_image的信息
-        ArrayList<ConnectImageInfo> connects = info.content.connect_image;
-        for (int i = 0; i < connects.size(); i++) {
-            ConnectDBHelper.getInstance().insert(connects.get(i));
-        }
-        return result;
-    }
 
     private static String getConfigStringFromPreference(Context context, String PreferenceKey) {
         String config_str = SharedPreferencesHelper.readStringValue(context, PreferenceKey);

@@ -231,6 +231,9 @@
         <activity android:name=".load.ForgetPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name=".setting.watermark.management.DynamicManagementActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar"/>
 
 
 

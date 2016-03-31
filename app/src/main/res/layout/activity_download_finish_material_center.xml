@@ -10,62 +10,39 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:paddingLeft="@dimen/dimens_10dp"
+       >
+
 
         <RelativeLayout
-            android:id="@+id/water_mark_management_rl"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/sticker_management_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
-
-            <RelativeLayout
-                android:id="@+id/water_mark_icon_rl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-
-                <ImageView
-                    android:id="@+id/water_mark_icon_iv"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp" />
-
-
-                <ImageView
-
-                    android:id="@+id/water_mark_new_icon_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/photo_new_icon"
-                    android:visibility="invisible" />
-                />
-            </RelativeLayout>
-
+           >
             <TextView
-
-                android:id="@+id/water_mark_name_tv"
+                android:id="@+id/sticker_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/water_mark_icon_rl"
                 android:text="贴纸"
                 android:textColor="@color/text_color_dark_626262"
                 android:textSize="@dimen/dimens_20dp"></TextView>
 
             <TextView
-                android:id="@+id/water_mark_count_tv"
+                android:id="@+id/sticker_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
-                android:background="@drawable/red_num_btn_bg"
+                android:layout_below="@+id/sticker_name_tv"
                 android:gravity="center"
-                android:text="0"
-                android:textColor="@color/text_color_white"
-                android:textSize="@dimen/dimens_10dp" />
+                android:text="4套(共3.2MB)"
+                android:textColor="#ff5859"
+                android:textSize="14dp" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -83,59 +60,36 @@
             android:background="@drawable/divider_gary_line_bg"></ImageView>
 
         <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:id="@+id/dynamic_pasting_management_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/dynamic_pasting_icon_rl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
 
-                <ImageView
-                    android:id="@+id/dynamic_pasting_icon_iv"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp" />
-
-
-                <ImageView
-
-                    android:id="@+id/dynamic_pasting_new_icon_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/photo_new_icon"
-                    android:visibility="invisible" />
-                />
-            </RelativeLayout>
 
             <TextView
 
                 android:id="@+id/dynamic_pasting_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/dynamic_pasting_icon_rl"
                 android:text="动态贴图"
                 android:textColor="@color/text_color_dark_626262"
                 android:textSize="@dimen/dimens_20dp"></TextView>
 
             <TextView
-                android:id="@+id/dynamic_pasting_count_tv"
+                android:id="@+id/dynamic_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
-                android:background="@drawable/red_num_btn_bg"
+                android:layout_below="@+id/dynamic_pasting_name_tv"
                 android:gravity="center"
-                android:text="0"
-                android:textColor="@color/text_color_white"
-                android:textSize="@dimen/dimens_10dp" />
+                android:text="4套(共3.2MB)"
+                android:textColor="#ff5859"
+                android:textSize="14dp" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -153,61 +107,37 @@
             android:background="@drawable/divider_gary_line_bg"></ImageView>
 
         <RelativeLayout
-            android:id="@+id/collage_management_rl"
-
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/template_management_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
 
 
-            <RelativeLayout
-                android:id="@+id/collage_icon_rl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-
-                <ImageView
-                    android:id="@+id/collage_icon_iv"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp" />
-
-
-                <ImageView
-                    android:id="@+id/collage_new_icon_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/photo_new_icon"
-                    android:visibility="invisible" />
-            </RelativeLayout>
-
             <TextView
 
-                android:id="@+id/collage_name_tv"
+                android:id="@+id/template_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/collage_icon_rl"
                 android:text="拼图"
                 android:textColor="@color/text_color_dark_626262"
                 android:textSize="@dimen/dimens_20dp"></TextView>
 
             <TextView
-                android:id="@+id/collage_count_tv"
+                android:id="@+id/template_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="40dp"
-                android:background="@drawable/red_num_btn_bg"
+                android:layout_below="@+id/template_name_tv"
                 android:gravity="center"
-                android:text="0"
-                android:textColor="@color/text_color_white"
-                android:textSize="@dimen/dimens_10dp">
+                android:text="4套(共3.2MB)"
+                android:textColor="#ff5859"
+                android:textSize="14dp" />
 
-            </TextView>
+
 
 
             <ImageView
@@ -224,9 +154,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/divider_gary_line_bg"></ImageView>
-
-
-
 
     </LinearLayout>
 

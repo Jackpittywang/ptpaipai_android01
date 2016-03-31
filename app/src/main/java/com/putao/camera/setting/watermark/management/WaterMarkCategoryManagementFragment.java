@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseFragment;
-import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
@@ -35,6 +34,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
     private WaterMarkManagementAdapter mManagementAdapter;
+    private StickerListInfo aWaterMarkRequestInfo;
 
     @Override
     public int doGetContentViewId() {
@@ -128,16 +128,15 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
-                final StickerListInfo aWaterMarkRequestInfo;
+//                final StickerListInfo aWaterMarkRequestInfo;
 
                 try {
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
                     mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
-
-                    Gson gson1 = new Gson();
-                    StickerIconInfo mStickerIconInfo = gson1.fromJson(json.toString(), StickerIconInfo.class);
-                    WaterMarkHelper.saveCategoryInfoToDb(mStickerIconInfo);
+//                    Gson gson1 = new Gson();
+//                    StickerIconInfo mStickerIconInfo = gson1.fromJson(json.toString(), StickerIconInfo.class);
+//                    WaterMarkHelper.saveCategoryInfoToDb(mStickerIconInfo);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -183,7 +182,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_WATER_MARK);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_STICKER);
         mActivity.startService(bindIntent);
     }
     //下载贴图包

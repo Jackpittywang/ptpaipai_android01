@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
-import com.putao.camera.bean.CollageConfigInfo;
-import com.putao.camera.db.CollageDBHelper;
+import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.db.DynamicDBHelper;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
@@ -81,13 +81,14 @@ public class DynamicManagementAdapter extends BaseAdapter {
         final DynamicListInfo.PackageInfo info = getItem(position);
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
-        List<CollageConfigInfo.CollageItemInfo> list = null;
+        List<DynamicIconInfo> list = null;
         try {
-            list = CollageDBHelper.getInstance().queryList(map);
+            list = DynamicDBHelper.getInstance().queryList(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (list.size() > 0) {
+//        if (list.size() > 0) {
+            if (null!=list &&list.size() > 0) {
             holder.collage_photo_ok_iv.setVisibility(View.VISIBLE);
             holder.collage_download_iv.setOnClickListener(null);
         } else {

@@ -2,7 +2,6 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,8 +18,6 @@ import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
-import com.putao.camera.setting.watermark.download.DownloadFinishActivity;
-import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
@@ -46,10 +43,10 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
     @Override
     public void doInitSubViews(View view) {
         title_tv = (TextView) view.findViewById(R.id.title_tv);
-        title_tv.setText("拼图列表");
+        title_tv.setText("拼图模板");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
-        right_btn = (Button) view.findViewById(R.id.right_btn);
-        right_btn.setText("已下载");
+//        right_btn = (Button) view.findViewById(R.id.right_btn);
+//        right_btn.setText("已下载");
         back_btn = (Button) view.findViewById(R.id.back_btn);
 
         EventBus.getEventBus().register(this);
@@ -91,10 +88,8 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
-       /* right_btn = (Button) this.findViewById(R.id.right_btn);
-        right_btn.setText("已下载");
-        back_btn = (Button) this.findViewById(R.id.back_btn);*/
-        addOnClickListener(right_btn, back_btn);
+
+        addOnClickListener( back_btn);
         queryCollageList();
     }
 
@@ -163,18 +158,19 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest("collage/collage/list", map, mWaterMarkUpdateCallback);
+//        CacheRequest mCacheRequest = new CacheRequest("collage/collage/list", map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=template_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.right_btn:
-                Bundle bundle = new Bundle();
-                bundle.putString("source", this.getClass().getName());
-                ActivityHelper.startActivity(this, DownloadFinishActivity.class, bundle);
-                break;
+//            case R.id.right_btn:
+//                Bundle bundle = new Bundle();
+//                bundle.putString("source", this.getClass().getName());
+//                ActivityHelper.startActivity(this, DownloadFinishActivity.class, bundle);
+//                break;
             case R.id.back_btn:
                 finish();
                 break;
@@ -194,7 +190,7 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_COLLAGE);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_TEMPLATE);
         this.startService(bindIntent);
     }
 

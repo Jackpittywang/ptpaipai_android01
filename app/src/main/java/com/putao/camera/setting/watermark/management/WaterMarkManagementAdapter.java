@@ -90,6 +90,8 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         List<StickerIconInfo> list = null;
         try {
             list = MainApplication.getDBServer().getStickerIconInfoByWhere(map);
+//            list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

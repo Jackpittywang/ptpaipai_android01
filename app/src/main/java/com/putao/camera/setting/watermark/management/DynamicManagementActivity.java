@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
-import com.putao.camera.base.BaseFragment;
+import com.putao.camera.base.BaseActivity;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public final class DynamicManagementFragment extends BaseFragment implements AdapterView.OnItemClickListener,
+public final class DynamicManagementActivity extends BaseActivity implements AdapterView.OnItemClickListener,
         UpdateCallback<DynamicListInfo.PackageInfo>, View.OnClickListener {
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
@@ -35,19 +35,21 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 
     @Override
     public int doGetContentViewId() {
-        return R.layout.fragment_dynamic_management;
+        return R.layout.activity_dynamic_management;
     }
 
     @Override
     public void doInitSubViews(View view) {
-//        title_tv = (TextView) view.findViewById(R.id.title_tv);
-//        title_tv.setText("拼图列表");
+        title_tv = (TextView) view.findViewById(R.id.title_tv);
+        title_tv.setText("动态贴图");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
 //        right_btn = (Button) view.findViewById(R.id.right_btn);
 //        right_btn.setText("已下载");
-//        back_btn = (Button) view.findViewById(R.id.back_btn);
+        back_btn = (Button) view.findViewById(R.id.back_btn);
 
     }
+
+
 
     @Override
     public void onResume() {
@@ -61,7 +63,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     }
 
     @Override
-    public void doInitDataes() {
+    public void doInitData() {
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
@@ -76,18 +78,12 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 //                new GetDataTask().execute();
             }
         });
-        //        TextView tv = new TextView(this);
-        //        tv.setGravity(Gravity.CENTER);
-        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-        //        mPullRefreshGridView.setEmptyView(tv);
+
         mManagementAdapter = new DynamicManagementAdapter(mActivity);
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
-       /* right_btn = (Button) this.findViewById(R.id.right_btn);
-        right_btn.setText("已下载");
-        back_btn = (Button) this.findViewById(R.id.back_btn);*/
-//        addOnClickListener(right_btn, back_btn);
+        addOnClickListener(back_btn);
         queryCollageList();
     }
 
@@ -162,16 +158,11 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.right_btn:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("source", this.getClass().getName());
-//                ActivityHelper.startActivity(mActivity, DownloadFinishActivity.class, bundle);
-//                break;
-//            case R.id.back_btn:
-////                finish();
-//                break;
-//        }
+        switch (v.getId()) {
+            case R.id.back_btn:
+                finish();
+                break;
+        }
     }
 
     private void startDownloadService(final String url, final String folderPath, final int position) {
