@@ -285,6 +285,117 @@
             android:orientation="horizontal"></LinearLayout>
     </HorizontalScrollView>
 
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_above="@id/option_bars"
+            android:background="@color/black"
+            android:id="@+id/rotate_contanier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/anti_clockwise"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:paddingTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_30" />
+
+                <TextView
+                    android:paddingTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="逆时钟"
+
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimens_14sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/clockwise_spin"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_31" />
+
+                <TextView
+                    android:paddingTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="center"
+                    android:text="顺时钟"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimens_14sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/horizontal_flip"
+                android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_capture_20_32" />
+
+            <TextView
+                android:paddingTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="水平翻转"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimens_14sp" />
+        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/vertical_flip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_capture_20_33" />
+
+            <TextView
+                android:paddingTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="垂直翻转"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimens_14sp" />
+        </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/mark_content"

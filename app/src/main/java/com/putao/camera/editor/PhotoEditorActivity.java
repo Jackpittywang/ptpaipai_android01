@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,7 +80,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
     private LinearLayout btn_picture_filter, choice_water_mark_btn, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
-            mark_cate_contanier, btn_cut_image,rotate_image_ll;
+            mark_cate_contanier, btn_cut_image,rotate_image_ll,rotate_contanier,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip;
     private ViewGroup title_bar_rl, option_bars;
     // 相片编辑状态
     private HorizontalScrollView filter_scrollview;
@@ -107,7 +108,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
 
     private enum EditAction {
-        NONE, ACTION_CUT, ACTION_Mark, ACTION_FILTER
+        NONE, ACTION_CUT, ACTION_Mark, ACTION_FILTER,ACTION_ROTATE,
     }
 
     @Override
@@ -124,6 +125,12 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void doInitSubViews(View view) {
+        anti_clockwise=queryViewById(R.id.anti_clockwise);
+        clockwise_spin=queryViewById(R.id.clockwise_spin);
+        horizontal_flip=queryViewById(R.id.horizontal_flip);
+        vertical_flip=queryViewById(R.id.vertical_flip);
+
+        rotate_contanier=queryViewById(R.id.rotate_contanier);
         rotate_image_ll=queryViewById(R.id.rotate_image_ll);
         photo_area_rl = queryViewById(R.id.photo_area_rl);
         opt_button_bar2 = queryViewById(R.id.opt_button_bar2);
@@ -149,7 +156,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         tv_action = queryViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
         addOnClickListener(btn_picture_filter, choice_water_mark_btn, saveBtn, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
-                btn_new_res, btn_cut_image,rotate_image_ll);
+                btn_new_res, btn_cut_image,rotate_image_ll,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip);
         EventBus.getEventBus().register(this);
 
     }
@@ -876,18 +883,46 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.rotate_image_ll:
                 //旋转
-//                filter_scrollview.setVisibility(View.VISIBLE);
-//                hideTitleAni();
-//                tv_action.setText("滤镜");
-//                mEditAction = EditAction.ACTION_FILTER;
+                rotate_contanier.setVisibility(View.VISIBLE);
+                hideTitleAni();
+                tv_action.setText("旋转");
+                mEditAction = EditAction.ACTION_ROTATE;
+                break;
+            case R.id.anti_clockwise:
+                ImageCropBitmap = BitmapHelper.orientBitmap(ImageCropBitmap,ExifInterface.ORIENTATION_ROTATE_270);
+                show_image.setImageBitmap(ImageCropBitmap);
+                break;
+            case R.id.clockwise_spin:
+                ImageCropBitmap = BitmapHelper.orientBitmap(ImageCropBitmap, ExifInterface.ORIENTATION_ROTATE_90);
+                show_image.setImageBitmap(ImageCropBitmap);
+                break;
+            case R.id.horizontal_flip:
+                matrix = new Matrix();
+                matrix.postScale(-1, 1);      /*水平翻转180度*/
+                width = ImageCropBitmap.getWidth();
+                height = ImageCropBitmap.getHeight();
+                ImageCropBitmap = Bitmap.createBitmap(ImageCropBitmap, 0, 0, width, height, matrix, true);
+                show_image.setImageBitmap(ImageCropBitmap);
+                break;
+            case R.id.vertical_flip:
+                matrix = new Matrix();
+                matrix.postScale(1, -1);/*垂直翻转180度*/
+                width = ImageCropBitmap.getWidth();
+                height = ImageCropBitmap.getHeight();
+                ImageCropBitmap = Bitmap.createBitmap(ImageCropBitmap, 0, 0, width, height, matrix, true);
+                show_image.setImageBitmap(ImageCropBitmap);
+
                 break;
             default:
                 break;
         }
     }
-
+    private int width;
+    private  int height;
+    private Matrix matrix;
     private void cancelEditing() {
         showTitleAni();
+        rotate_contanier.setVisibility(View.GONE);
         filter_scrollview.setVisibility(View.GONE);
         mark_content.setVisibility(View.GONE);
         if (mEditAction == EditAction.ACTION_Mark) {
@@ -910,6 +945,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     private void saveEditing() {
         showTitleAni();
+        rotate_contanier.setVisibility(View.GONE);
         filter_scrollview.setVisibility(View.GONE);
         mark_content.setVisibility(View.GONE);
         mMarkViewTempList.clear();
