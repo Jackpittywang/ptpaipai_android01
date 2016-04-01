@@ -1,5 +1,5 @@
 
-package com.putao.camera.setting.watermark.management;
+package com.putao.camera.setting.watermark.download;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,32 +13,23 @@ import android.widget.ProgressBar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
-import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by yanglun on 15/4/5.
  */
-public class CollageManagementAdapter extends BaseAdapter {
+public class DownloadFinishedTemplateAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<TemplateListInfo.PackageInfo> mDatas;
-    private UpdateCallback updateCallback;
+    private ArrayList<TemplateIconInfo> mDatas;
 
-    public void setUpdateCallback(UpdateCallback updateCallback) {
-        this.updateCallback = updateCallback;
-    }
-
-    public void setDatas(ArrayList<TemplateListInfo.PackageInfo> datas) {
+    public void setDatas(ArrayList<TemplateIconInfo> datas) {
         mDatas = datas;
     }
 
-    public CollageManagementAdapter(Context context) {
+    public DownloadFinishedTemplateAdapter(Context context) {
         this.mContext = context;
     }
 
@@ -53,7 +44,7 @@ public class CollageManagementAdapter extends BaseAdapter {
     }
 
     @Override
-    public TemplateListInfo.PackageInfo getItem(int position) {
+    public TemplateIconInfo getItem(int position) {
         if (mDatas == null) {
             return null;
         }
@@ -70,7 +61,6 @@ public class CollageManagementAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_collage_grid_item, null);
             holder = new ViewHolder();
-            holder.collage_photo_download_iv= (ImageView) convertView.findViewById(R.id.collage_photo_download_iv);
             holder.collage_photo_new_iv= (ImageView) convertView.findViewById(R.id.collage_photo_new_iv);
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);
             holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
@@ -79,43 +69,7 @@ public class CollageManagementAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final TemplateListInfo.PackageInfo info = getItem(position);
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("id", String.valueOf(info.id));
-        List<TemplateIconInfo> list = null;
-        try {
-            list = MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
-//            list = TemplateDBHelper.getInstance().queryList(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (null!=list &&list.size() > 0) {
-            holder.collage_photo_download_iv.setImageResource(R.drawable.btn_22_03);
-//            holder.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-            holder.collage_download_iv.setOnClickListener(null);
-//            holder.collage_photo_new_iv.setVisibility(View.INVISIBLE);
-        } else {
-            holder.collage_photo_ok_iv.setVisibility(View.INVISIBLE);
-            holder.collage_download_iv.setOnClickListener(new View.OnClickListener() {
-                private boolean isClick = false;
-
-                @Override
-                public void onClick(View v) {
-                    if (null != updateCallback) {
-                        if (isClick == false) {
-                            isClick = true;
-                            updateCallback.startProgress(info, position);
-                        }
-                    }
-                }
-            });
-        }
-        if (info.is_new == 1) {
-            holder.collage_photo_new_iv.setVisibility(View.VISIBLE);
-        } else {
-            holder.collage_photo_new_iv.setVisibility(View.INVISIBLE);
-        }
-
+        final TemplateIconInfo info = getItem(position);
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.collage_download_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -125,7 +79,7 @@ public class CollageManagementAdapter extends BaseAdapter {
 
     class ViewHolder {
         public ImageView collage_download_iv;
-        public ImageView collage_photo_ok_iv,collage_photo_new_iv,collage_photo_download_iv;
+        public ImageView collage_photo_ok_iv,collage_photo_new_iv;
         public ProgressBar download_status_pb;
     }
 }

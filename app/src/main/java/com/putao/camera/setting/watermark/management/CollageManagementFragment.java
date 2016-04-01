@@ -4,13 +4,13 @@ package com.putao.camera.setting.watermark.management;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseFragment;
+import com.putao.camera.bean.TemplateCategoryInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
@@ -23,15 +23,15 @@ import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public final class CollageManagementFragment extends BaseFragment implements AdapterView.OnItemClickListener,
         UpdateCallback<TemplateListInfo.PackageInfo>, View.OnClickListener {
-    private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
     private CollageManagementAdapter mManagementAdapter;
-    private TextView title_tv;
+    ArrayList<TemplateIconInfo> mTemplateIconInfo;
 
     @Override
     public int doGetContentViewId() {
@@ -40,13 +40,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void doInitSubViews(View view) {
-//        title_tv = (TextView) view.findViewById(R.id.title_tv);
-//        title_tv.setText("拼图列表");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
-//        right_btn = (Button) view.findViewById(R.id.right_btn);
-//        right_btn.setText("已下载");
-//        back_btn = (Button) view.findViewById(R.id.back_btn);
-
     }
 
     @Override
@@ -76,18 +70,11 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                 //                new GetDataTask().execute();
             }
         });
-        //        TextView tv = new TextView(this);
-        //        tv.setGravity(Gravity.CENTER);
-        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-        //        mPullRefreshGridView.setEmptyView(tv);
         mManagementAdapter = new CollageManagementAdapter(mActivity);
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
-       /* right_btn = (Button) this.findViewById(R.id.right_btn);
-        right_btn.setText("已下载");
-        back_btn = (Button) this.findViewById(R.id.back_btn);*/
-//        addOnClickListener(right_btn, back_btn);
+
         queryCollageList();
     }
 
@@ -126,7 +113,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                     vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     vh.download_status_pb.setVisibility(View.INVISIBLE);
-                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
+//                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -147,6 +134,10 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                     Gson gson = new Gson();
                     aCollageInfo = (TemplateListInfo) gson.fromJson(json.toString(), TemplateListInfo.class);
                     mManagementAdapter.setDatas(aCollageInfo.data);
+
+                    Gson gson1 = new Gson();
+                    mTemplateIconInfo = gson1.fromJson(json.toString(), TemplateCategoryInfo.class).data;
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -187,6 +178,8 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         }
         if(null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
+
+        bindIntent.putExtra("item",mTemplateIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);

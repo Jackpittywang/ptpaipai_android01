@@ -15,7 +15,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
-import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
@@ -87,18 +87,17 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         holder.water_mark_category_name_tv.setText(info.name);
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
-        List<StickerIconInfo> list = null;
+        List<StickerCategoryInfo> list = null;
         try {
-            list = MainApplication.getDBServer().getStickerIconInfoByWhere(map);
-//            list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+            list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (null!=list &&list.size() > 0) {
-            holder.water_mark_photo_ok_iv.setVisibility(View.VISIBLE);
-//            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.gray_btn_bg);
-//            holder.water_mark_category_download_btn.setText("删除");
+//            holder.water_mark_photo_ok_iv.setVisibility(View.VISIBLE);
+//            holder.water_mark_photo_download_iv.setImageResource(R.drawable.btn_22_03);
+            holder.water_mark_category_download_btn.setImageResource(R.drawable.btn_22_03);
             holder.water_mark_category_download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -107,10 +106,11 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
                     }
                 }
             });
-            holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
+//            holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
         } else {
+            holder.water_mark_category_download_btn.setImageResource(R.drawable.btn_22_01);
 //            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.red_btn_bg);
-            holder.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
+//            holder.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
 //            holder.water_mark_category_download_btn.setText("下载");
             holder.water_mark_category_download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,13 +120,11 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
                     }
                 }
             });
-
-
-            if (info.is_new == 1) {
-                holder.water_mark_photo_new_iv.setVisibility(View.VISIBLE);
-            } else {
-                holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
-            }
+        }
+        if (info.is_new == 1) {
+            holder.water_mark_photo_new_iv.setVisibility(View.VISIBLE);
+        } else {
+            holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
         }
         holder.download_status_pb.setVisibility(View.INVISIBLE);
         holder.water_mark_category_count_tv.setText(info.num + "枚");

@@ -6,25 +6,29 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.putao.camera.R;
+import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.http.CacheRequest;
+import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.setting.watermark.management.CollageManagementActivity;
 import com.putao.camera.setting.watermark.management.DynamicManagementActivity;
 import com.putao.camera.setting.watermark.management.WaterMarkCategoryManagementActivity;
 import com.putao.camera.util.ActivityHelper;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class DownloadFinishMaterialCenterActivity extends BaseActivity implements View.OnClickListener {
     private Button back_btn, right_btn;
-    private TextView title_tv;
+    private TextView title_tv,sticker_count_tv,dynamic_count_tv,template_count_tv;
     private RelativeLayout sticker_management_rl,dynamic_pasting_management_rl,template_management_rl;
+    ArrayList<StickerCategoryInfo> StickerCategoryInfo_list;
+    ArrayList<DynamicIconInfo> DynamicIconInfo_list;
+    ArrayList<TemplateIconInfo> TemplateIconInfo_list;
 
 
     @Override
@@ -34,6 +38,16 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
 
     @Override
     public void doInitSubViews(View view) {
+       /* Map<String, String> map = new HashMap<String, String>();
+//        map.put("type", WaterMarkCategoryInfo.photo);
+        map.put("is_new", "1");
+        StickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        DynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        TemplateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);*/
+
+        sticker_count_tv=queryViewById(R.id.sticker_count_tv);
+        dynamic_count_tv=queryViewById(R.id.dynamic_count_tv);
+        template_count_tv=queryViewById(R.id.template_count_tv);
         back_btn = queryViewById(R.id.back_btn);
         title_tv = queryViewById(R.id.title_tv);
         right_btn = queryViewById(R.id.right_btn);
@@ -42,12 +56,16 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
         template_management_rl=queryViewById(R.id.template_management_rl);
 
         addOnClickListener(back_btn, sticker_management_rl, dynamic_pasting_management_rl,template_management_rl);
-        queryMatericalCenterList();
+//        queryMatericalCenterList();
     }
 
     @Override
     public void doInitData() {
         title_tv.setText("素材管理");
+       /* sticker_count_tv.setText(StickerCategoryInfo_list.size()+"套(共"+"文件大小MB"+")");
+        dynamic_count_tv.setText(DynamicIconInfo_list.size()+"套(共"+"文件大小MB"+")");
+        template_count_tv.setText(TemplateIconInfo_list.size()+"套(共"+"文件大小MB"+")");*/
+
     }
 
     @Override
@@ -69,7 +87,24 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
         }
     }
 
-    public void queryMatericalCenterList() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("is_new", "1");
+        StickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        DynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        TemplateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
+        sticker_count_tv.setText(StickerCategoryInfo_list.size()+"套(共"+"文件大小MB"+")");
+        dynamic_count_tv.setText(DynamicIconInfo_list.size()+"套(共"+"文件大小MB"+")");
+        template_count_tv.setText(TemplateIconInfo_list.size()+"套(共"+"文件大小MB"+")");
+
+
+    }
+
+
+
+   /* public void queryMatericalCenterList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -80,7 +115,7 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
                     MaterialInfo info0 = mMaterialInfoList.list.get(0);
                     MaterialInfo info1 = mMaterialInfoList.list.get(1);
 
-                  /*  water_mark_name_tv.setText(info0.category_name);
+                  *//*  water_mark_name_tv.setText(info0.category_name);
                     collage_name_tv.setText(info1.category_name);
 //                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
 //                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).displayer(new RoundedBitmapDisplayer(20) ).build();
@@ -109,7 +144,7 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
                         collage_new_icon_iv.setVisibility(View.INVISIBLE);
                     } else {
                         collage_new_icon_iv.setVisibility(View.VISIBLE);
-                    }*/
+                    }*//*
 
 
                 } catch (Exception e) {
@@ -125,7 +160,7 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
         HashMap<String, String> map = new HashMap<String, String>();
         CacheRequest mCacheRequest = new CacheRequest("watermark/watermark/mtcenter", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
-    }
+    }*/
 
     class MaterialInfoList {
         ArrayList<MaterialInfo> list;

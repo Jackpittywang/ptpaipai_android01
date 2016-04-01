@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.putao.ahibernate.dao.AhibernateDao;
+import com.putao.camera.bean.DynamicCategoryInfo;
+import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.TemplateCategoryInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
@@ -24,6 +28,10 @@ public class DatabaseServer {
     private AhibernateDao<WaterMarkCategoryInfo> mWaterMarkCategoryInfo;
     private AhibernateDao<StickerCategoryInfo> mStickerCategoryInfo;
     private AhibernateDao<StickerIconInfo> mStickerIconInfo;
+    private AhibernateDao<DynamicCategoryInfo> mDynamicCategoryInfo;
+    private AhibernateDao<DynamicIconInfo> mDynamicIconInfo;
+    private AhibernateDao<TemplateIconInfo> mTemplateIconInfo;
+    private AhibernateDao<TemplateCategoryInfo> mTemplateCategoryInfo;
 
     public DatabaseServer(Context context) {
         this.mContext = context;
@@ -33,6 +41,10 @@ public class DatabaseServer {
         this.mWaterMarkCategoryInfo = new AhibernateDao<WaterMarkCategoryInfo>(this.mSQLiteDatabase);
         this.mStickerCategoryInfo = new AhibernateDao<StickerCategoryInfo>(this.mSQLiteDatabase);
         this.mStickerIconInfo = new AhibernateDao<StickerIconInfo>(this.mSQLiteDatabase);
+        this.mDynamicCategoryInfo = new AhibernateDao<DynamicCategoryInfo>(this.mSQLiteDatabase);
+        this.mDynamicIconInfo = new AhibernateDao<DynamicIconInfo>(this.mSQLiteDatabase);
+        this.mTemplateIconInfo = new AhibernateDao<TemplateIconInfo>(this.mSQLiteDatabase);
+        this.mTemplateCategoryInfo = new AhibernateDao<TemplateCategoryInfo>(this.mSQLiteDatabase);
     }
 
     public SQLiteDatabase getSQLiteDatabase() {
@@ -62,6 +74,15 @@ public class DatabaseServer {
         return list;
     }
 
+    public List<DynamicIconInfo> getDynamicIconInfo(DynamicIconInfo iconInfo) {
+        List<DynamicIconInfo> list = mDynamicIconInfo.queryList(iconInfo);
+        return list;
+    }
+
+    public List<TemplateIconInfo> getTemplateIconInfo(TemplateIconInfo iconInfo) {
+        List<TemplateIconInfo> list = mTemplateIconInfo.queryList(iconInfo);
+        return list;
+    }
 
     public int addWaterMarkIconInfo(WaterMarkIconInfo iconInfo) {
         List<WaterMarkIconInfo> list = getWaterMarkIconInfos(iconInfo);
@@ -79,6 +100,23 @@ public class DatabaseServer {
             return -1;
         }
         return mStickerCategoryInfo.insert(iconInfo);
+    }
+
+    public int addDynamicIconInfo(DynamicIconInfo iconInfo) {
+        List<DynamicIconInfo> list = getDynamicIconInfo(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mDynamicIconInfo.insert(iconInfo);
+    }
+    public int addTemplateIconInfoInfo(TemplateIconInfo iconInfo) {
+        List<TemplateIconInfo> list = getTemplateIconInfo(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mTemplateIconInfo.insert(iconInfo);
     }
 
 
@@ -127,6 +165,16 @@ public class DatabaseServer {
     }
     public List<StickerCategoryInfo> getStickerCategoryInfoByWhere(Map<String, String> where) {
         List<StickerCategoryInfo> list = mStickerCategoryInfo.queryList(StickerCategoryInfo.class, where, "_id", true);
+        return list;
+    }
+
+    public List<DynamicIconInfo> getDynamicIconInfoByWhere(Map<String, String> where) {
+        List<DynamicIconInfo> list = mDynamicIconInfo.queryList(DynamicIconInfo.class, where, "_id", true);
+        return list;
+    }
+  
+    public List<TemplateIconInfo> getTemplateIconInfoByWhere(Map<String, String> where) {
+        List<TemplateIconInfo> list = mTemplateIconInfo.queryList(TemplateIconInfo.class, where, "_id", true);
         return list;
     }
 
@@ -187,6 +235,22 @@ public class DatabaseServer {
         for (int i = 0; i < list.size(); i++) {
             deleteWaterMarkIconInfo(list.get(i));
         }
+    }
+
+    public void deleteStickerCategoryInfo(StickerCategoryInfo entity) {
+    mStickerCategoryInfo.delete(entity);
+        try {
+//            new File(CollageHelper.getCollageFilePath() + entity.download_url).delete();
+            new File(CollageHelper.getCollageFilePath() + entity.cover_pic).delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 继续删除对应的IconInfo
+       /* Map<String, String> map = new HashMap<String, String>();
+        map.put("id", entity.id);
+        List<StickerCategoryInfo> list = getStickerCategoryInfoByWhere(map);
+        deleteStickerCategoryInfo(list.get(0));*/
+
     }
 
     public AhibernateDao<WaterMarkCategoryInfo> getWaterMarkCategoryInfoDao() {

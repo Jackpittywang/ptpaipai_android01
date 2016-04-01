@@ -7,25 +7,26 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
+import com.putao.camera.setting.watermark.download.DownloadFinishStickerAdapter;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
-import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,9 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
-    private WaterMarkManagementAdapter mManagementAdapter;
+//    private WaterMarkManagementAdapter mManagementAdapter;
+    private DownloadFinishStickerAdapter mManagementAdapter;
+    private ArrayList<StickerCategoryInfo> list;
     private TextView title_tv;
 
     @Override
@@ -59,33 +62,47 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void doInitData() {
-        mGridView = mPullRefreshGridView.getRefreshableView();
-        mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
-            @Override
-            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                Toast.makeText(WaterMarkCategoryManagementActivity.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
-            }
-
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
-            }
-        });
-        //        TextView tv = new TextView(this);
-        //        tv.setGravity(Gravity.CENTER);
-        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-        //        mPullRefreshGridView.setEmptyView(tv);
-        mManagementAdapter = new WaterMarkManagementAdapter(this);
-        mManagementAdapter.setUpdateCallback(this);
-        mGridView.setAdapter(mManagementAdapter);
-        mGridView.setOnItemClickListener(this);
-//        right_btn = (Button) this.findViewById(R.id.right_btn);
-//        right_btn.setText("已下载");
-        back_btn = (Button) this.findViewById(R.id.back_btn);
+//        mGridView = mPullRefreshGridView.getRefreshableView();
+//        mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
+//            @Override
+//            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
+//                Toast.makeText(WaterMarkCategoryManagementActivity.this, "Pull Down!", Toast.LENGTH_SHORT).show();
+//                //                new GetDataTask().execute();
+//            }
+//
+//            @Override
+//            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
+//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
+//                //                new GetDataTask().execute();
+//            }
+//        });
+//        //        TextView tv = new TextView(this);
+//        //        tv.setGravity(Gravity.CENTER);
+//        //        tv.setText("Empty View, Pull Down/Up to Add Items");
+//        //        mPullRefreshGridView.setEmptyView(tv);
+//        mManagementAdapter = new WaterMarkManagementAdapter(this);
+//        mManagementAdapter.setUpdateCallback(this);
+//        mGridView.setAdapter(mManagementAdapter);
+//        mGridView.setOnItemClickListener(this);
+////        right_btn = (Button) this.findViewById(R.id.right_btn);
+////        right_btn.setText("已下载");
+//        back_btn = (Button) this.findViewById(R.id.back_btn);
         addOnClickListener( back_btn);
-        queryWaterMarkList();
+//        queryWaterMarkList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGridView = mPullRefreshGridView.getRefreshableView();
+        mManagementAdapter = new DownloadFinishStickerAdapter(mActivity);
+        mGridView.setAdapter(mManagementAdapter);
+
+        Map<String, String> map = new HashMap<String, String>();
+//        map.put("type", WaterMarkCategoryInfo.photo);
+        map.put("is_new", "1");
+        list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        mManagementAdapter.setDatas(list);
     }
 
     @Override
@@ -143,7 +160,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
                 try {
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
-                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
+//                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -164,11 +181,6 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.right_btn:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("source", this.getClass().getName());
-//                ActivityHelper.startActivity(this, DownloadFinishActivity.class, bundle);
-//                break;
             case R.id.back_btn:
                 finish();
                 break;

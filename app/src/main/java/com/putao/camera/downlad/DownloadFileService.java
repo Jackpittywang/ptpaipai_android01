@@ -7,9 +7,10 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import com.google.gson.Gson;
-import com.putao.camera.bean.CollageConfigInfo;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
+import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
@@ -205,23 +206,29 @@ public class DownloadFileService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, int flags, int startId) {
         mPosition = intent.getIntExtra("position", 0);
         final String url = intent.getStringExtra("url");
         final String floderPath = intent.getStringExtra("floderPath");
+//        final StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
         final int type = intent.getIntExtra("type", DOWNLOAD_TYPE_STICKER);
         new Thread() {
             public void run() {
                 try {
                     downloadFile(url, floderPath);
                     if (type == DOWNLOAD_TYPE_STICKER) {
-                        unZipStickerFile(saveFile, "watermark_config.json");
-//                        unZipstickerFile(saveFile);
+                        StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
+                        MainApplication.getDBServer().addStickerCategoryInfo(item);
+                        unZipStickerFile(saveFile);
                     } else if(type ==DOWNLOAD_TYPE_DYNAMIC){
-                        unZipDynamicFile(saveFile, "collage_config.json");
+                        DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
+                        MainApplication.getDBServer().addDynamicIconInfo(item);
+                        unZipDynamicFile(saveFile);
                     }
                     else {
-                        unZipTemplateFile(saveFile, "collage_config.json");
+                        TemplateIconInfo item = (TemplateIconInfo) intent.getSerializableExtra("item");
+                        MainApplication.getDBServer().addTemplateIconInfoInfo(item);
+                        unZipTemplateFile(saveFile);
                     }
                     sendMsg(TYPE_UNZIP_FINISH);
                 } catch (Exception e) {
@@ -234,7 +241,7 @@ public class DownloadFileService extends Service {
         return START_STICKY;
     }
 
-    private void unZipStickerFile(File zipFile, String unZipJsonName) {
+    private void unZipStickerFile(File zipFile) {
         try {
             FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
@@ -243,10 +250,10 @@ public class DownloadFileService extends Service {
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(WaterMarkHelper.getWaterMarkUnzipFilePath() + upZipFloderName, WaterMarkHelper.getWaterMarkFilePath());
-            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_WATERMARK_FLODER_NAME, unZipJsonName);
-            Gson gson = new Gson();
-            WaterMarkCategoryInfo mWaterMarkCategoryInfo = gson.fromJson(watermark_config, WaterMarkCategoryInfo.class);
-            WaterMarkHelper.saveCategoryInfoToDb(mWaterMarkCategoryInfo, WaterMarkCategoryInfo.photo, "0");
+//            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_WATERMARK_FLODER_NAME, unZipJsonName);
+//            Gson gson = new Gson();
+//            WaterMarkCategoryInfo mWaterMarkCategoryInfo = gson.fromJson(watermark_config, WaterMarkCategoryInfo.class);
+//            WaterMarkHelper.saveCategoryInfoToDb(mWaterMarkCategoryInfo, WaterMarkCategoryInfo.photo, "0");
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();
             }
@@ -255,7 +262,7 @@ public class DownloadFileService extends Service {
         }
     }
 
-    private void unZipDynamicFile(File zipFile, String unZipJsonName) {
+    private void unZipDynamicFile(File zipFile) {
         try {
             FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
@@ -265,12 +272,12 @@ public class DownloadFileService extends Service {
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
 //            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
-            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
-            Gson gson = new Gson();
-            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
+//            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
+//            Gson gson = new Gson();
+//            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
 
 
-            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
+//            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
 //            CollageHelper.saveNewCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "1");
 
             if (!PuTaoConstants.isDebug) {
@@ -284,7 +291,7 @@ public class DownloadFileService extends Service {
 
 
 
-    private void unZipTemplateFile(File zipFile, String unZipJsonName) {
+    private void unZipTemplateFile(File zipFile) {
         try {
             FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
@@ -294,16 +301,6 @@ public class DownloadFileService extends Service {
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
 //            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
-            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
-
-//            String a = "textElements";
-//            String b = "imageElements";
-//            int start = watermark_config.indexOf(a);
-//            int stop = watermark_config.indexOf(b);
-//            String result = watermark_config.substring(0, start + a.length()) + watermark_config.substring(stop, watermark_config.length());
-//            watermark_config = result.replace("textElementsimageElements", "textElements\":[],\"imageElements");
-
-//            watermark_config = watermark_config.replace("{\"text\":\"\",\"textColor\":\"\",\"textSize\":\"\",\"textAlign\":\"\",\"left\":\"\",\"top\":\"\",\"right\":\"\",\"bottom\":\"\",\"textType\":\"\"}", "");
 //            Gson gson = new Gson();
 //            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
 //            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");

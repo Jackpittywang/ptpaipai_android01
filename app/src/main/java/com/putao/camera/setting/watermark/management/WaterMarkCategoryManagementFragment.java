@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseFragment;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
@@ -25,6 +27,7 @@ import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +38,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private GridView mGridView;
     private WaterMarkManagementAdapter mManagementAdapter;
     private StickerListInfo aWaterMarkRequestInfo;
+    ArrayList<StickerCategoryInfo> mStickerCategoryInfos;
 
     @Override
     public int doGetContentViewId() {
@@ -79,10 +83,17 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+//        mManagementAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Bundle bundle = new Bundle();
         StickerListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-        bundle.putInt("id", info.id);
+//        bundle.putInt("id", info.id);
+        bundle.putString("id", String.valueOf(info.id));
         bundle.putInt("position", position);
         ActivityHelper.startActivity(mActivity, WaterMarkCategoryDetailActivity.class, bundle);
     }
@@ -134,8 +145,8 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
                     mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
-//                    Gson gson1 = new Gson();
-//                    StickerIconInfo mStickerIconInfo = gson1.fromJson(json.toString(), StickerIconInfo.class);
+                    Gson gson1 = new Gson();
+                    mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconInfo.class).data;
 //                    WaterMarkHelper.saveCategoryInfoToDb(mStickerIconInfo);
 
                 } catch (Exception e) {
@@ -179,6 +190,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         }
         if(null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
+        bindIntent.putExtra("item",mStickerCategoryInfos.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
@@ -222,6 +234,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             case PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY:
                 mManagementAdapter.notifyDataSetChanged();
                 break;
+
         }
     }
 }

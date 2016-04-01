@@ -37,9 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by yanglun on 15/4/3.
- */
+
 public class WaterMarkCategoryDetailActivity extends BaseActivity implements View.OnClickListener {
     private Button download_btn;
 //    private ProgressBar download_status_pb;
@@ -53,7 +51,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private TextView description_tv,name_tv;
     private Button back_btn;
     private int position;
-    private int id;
+    private String id;
 
     @Override
     public int doGetContentViewId() {
@@ -87,7 +85,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     public void doInitData() {
         Intent intent = this.getIntent();
         position = intent.getIntExtra("position", 0);
-        id = intent.getIntExtra("id",0);
+        id = intent.getStringExtra("id");
         title_tv.setText("贴纸详情");
         mGridViewAdapter = new ImageAdapter();
         mGridView.setAdapter(mGridViewAdapter);
@@ -100,7 +98,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private boolean isDownloaded() {
         List<WaterMarkCategoryInfo> list = null;
         Map<String, String> map = new HashMap<String, String>();
-        map.put("id",id+"");
+        map.put("id",id);
         try {
             list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
         } catch (Exception e) {
