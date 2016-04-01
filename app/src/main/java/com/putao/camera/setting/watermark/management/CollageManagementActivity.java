@@ -62,7 +62,7 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
         Map<String, String> map = new HashMap<String, String>();
 //        map.put("type", WaterMarkCategoryInfo.photo);
-          map.put("is_new", "1");
+          map.put("type", "template");
 //        map.put("type", "1");
         list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
         mManagementAdapter.setDatas(list);

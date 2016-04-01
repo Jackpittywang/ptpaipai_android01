@@ -178,7 +178,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         }
         if(null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-
+        mTemplateIconInfo.get(position).type="template";
         bindIntent.putExtra("item",mTemplateIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);

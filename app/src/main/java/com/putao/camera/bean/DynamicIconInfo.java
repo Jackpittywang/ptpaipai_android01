@@ -21,6 +21,9 @@ public class DynamicIconInfo implements Serializable {
     @Column(name = "second_type")
     public String second_type;
 
+    @Column(name = "type")
+    public String type;
+
     @Column(name = "num")
     public String num;
 

@@ -18,6 +18,9 @@ public class TemplateIconInfo implements Serializable {
     @Column(name = "download_url")
     public String download_url;
 
+    @Column(name = "type")
+    public String type;
+
 
     @Column(name = "num")
     public String num;

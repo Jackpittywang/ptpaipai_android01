@@ -189,6 +189,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             Loger.i("startDownloadService:run");
         }
         if(null == url || null == folderPath) return;
+        mStickerCategoryInfos.get(position).type="sticker";
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
         bindIntent.putExtra("item",mStickerCategoryInfos.get(position));
         bindIntent.putExtra("position", position);

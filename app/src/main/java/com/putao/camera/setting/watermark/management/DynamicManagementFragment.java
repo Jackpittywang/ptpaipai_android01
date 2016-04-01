@@ -167,6 +167,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
             Loger.i("startDownloadService:run");
         }
         if(null == url || null == folderPath) return;
+        mDynamicIconInfo.get(position).type="dynamic";
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
         bindIntent.putExtra("item",mDynamicIconInfo.get(position));
         bindIntent.putExtra("position", position);

@@ -12,6 +12,9 @@ public class StickerCategoryInfo implements Serializable {
     @Id
     private Long _id;
 
+    @Column(name = "type")
+    public String type;
+
     @Column(name = "name")
     public String name;
 

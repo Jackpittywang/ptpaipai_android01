@@ -100,7 +100,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
         Map<String, String> map = new HashMap<String, String>();
 //        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("is_new", "1");
+        map.put("type", "sticker");
         list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
         mManagementAdapter.setDatas(list);
     }

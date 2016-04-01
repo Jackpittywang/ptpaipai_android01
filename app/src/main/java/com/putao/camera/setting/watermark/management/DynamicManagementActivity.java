@@ -69,7 +69,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 
         Map<String, String> map = new HashMap<String, String>();
 //        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("is_new", "1");
+        map.put("type", "dynamic");
 //        map.put("type", "1");
         list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
         mManagementAdapter.setDatas(list);
