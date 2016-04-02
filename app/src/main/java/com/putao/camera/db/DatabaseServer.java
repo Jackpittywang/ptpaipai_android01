@@ -9,6 +9,7 @@ import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.TemplateCategoryInfo;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
@@ -32,6 +33,7 @@ public class DatabaseServer {
     private AhibernateDao<DynamicIconInfo> mDynamicIconInfo;
     private AhibernateDao<TemplateIconInfo> mTemplateIconInfo;
     private AhibernateDao<TemplateCategoryInfo> mTemplateCategoryInfo;
+    private AhibernateDao<StickerUnZipInfo> mStickerUnZipInfo;
 
     public DatabaseServer(Context context) {
         this.mContext = context;
@@ -45,6 +47,7 @@ public class DatabaseServer {
         this.mDynamicIconInfo = new AhibernateDao<DynamicIconInfo>(this.mSQLiteDatabase);
         this.mTemplateIconInfo = new AhibernateDao<TemplateIconInfo>(this.mSQLiteDatabase);
         this.mTemplateCategoryInfo = new AhibernateDao<TemplateCategoryInfo>(this.mSQLiteDatabase);
+        this.mStickerUnZipInfo = new AhibernateDao<StickerUnZipInfo>(this.mSQLiteDatabase);
     }
 
     public SQLiteDatabase getSQLiteDatabase() {
@@ -71,6 +74,10 @@ public class DatabaseServer {
 
     public List<StickerCategoryInfo> getStickerCategoryInfos(StickerCategoryInfo iconInfo) {
         List<StickerCategoryInfo> list = mStickerCategoryInfo.queryList(iconInfo);
+        return list;
+    }
+    public List<StickerUnZipInfo> getStickerUnZipInfos(StickerUnZipInfo iconInfo) {
+        List<StickerUnZipInfo> list = mStickerUnZipInfo.queryList(iconInfo);
         return list;
     }
 
@@ -100,6 +107,14 @@ public class DatabaseServer {
             return -1;
         }
         return mStickerCategoryInfo.insert(iconInfo);
+    }
+    public int addStickerUnZipInfo(StickerUnZipInfo iconInfo) {
+        List<StickerUnZipInfo> list = getStickerUnZipInfos(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mStickerUnZipInfo.insert(iconInfo);
     }
 
     public int addDynamicIconInfo(DynamicIconInfo iconInfo) {

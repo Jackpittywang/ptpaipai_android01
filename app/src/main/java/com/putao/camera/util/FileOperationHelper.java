@@ -4,6 +4,7 @@ package com.putao.camera.util;
 import android.content.res.AssetManager;
 
 import com.putao.camera.application.MainApplication;
+import com.sunnybear.library.util.Logger;
 
 import org.apache.http.util.EncodingUtils;
 
@@ -21,7 +22,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-public class FileOperationHelper {
+public abstract class FileOperationHelper {
     public static boolean copyAssetsFileToExternalFile(String assetFileName) {
         boolean bSuccess = false;
         AssetManager assetManager = MainApplication.getInstance().getAssets();
@@ -146,6 +147,77 @@ public class FileOperationHelper {
             os.close();
         }
         zfile.close();
+    }
+
+    public double unZipFileWithProgress(File zipFile) throws ZipException, IOException {
+        double blockSize = getFileSizes(zipFile) / 1024;
+        ZipFile zfile = new ZipFile(zipFile);
+        Enumeration zList = zfile.entries();
+        ZipEntry ze = null;
+        byte[] buf = new byte[1024];
+        while (zList.hasMoreElements()) {
+            ze = (ZipEntry) zList.nextElement();
+            if (ze.isDirectory()) {
+                String dirstr = zipFile.getParent() + "/" + ze.getName();
+                dirstr = new String(dirstr.getBytes("8859_1"), "GB2312");
+                File f = new File(dirstr);
+                f.mkdir();
+                upZipProgress(ze.getName());
+                continue;
+            }
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(getRealFileName(zipFile.getParent(), ze.getName())));
+            InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
+            int readLen = 0;
+            while ((readLen = is.read(buf, 0, 1024)) != -1) {
+                os.write(buf, 0, readLen);
+            }
+            is.close();
+            os.close();
+        }
+        zfile.close();
+        return blockSize;
+    }
+
+    public abstract void upZipProgress(String name);
+
+    /**
+     * 获取指定文件夹
+     *
+     * @param f
+     * @return
+     * @throws Exception
+     */
+    private static double getFileSizes(File f) throws IOException {
+        double size = 0;
+        File flist[] = f.listFiles();
+        for (int i = 0; i < flist.length; i++) {
+            if (flist[i].isDirectory()) {
+                size = size + getFileSizes(flist[i]);
+            } else {
+                size = size + getFileSize(flist[i]);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * 获取指定文件大小
+     *
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    private static double getFileSize(File file) throws IOException {
+        long size = 0;
+        if (file.exists()) {
+            FileInputStream fis = null;
+            fis = new FileInputStream(file);
+            size = fis.available();
+        } else {
+            file.createNewFile();
+            Logger.e("获取文件大小", "文件不存在!");
+        }
+        return size;
     }
 
     public static void unZipFilePath(File zipFile) throws IOException {
