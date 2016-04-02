@@ -75,7 +75,7 @@ import java.util.Map;
 
 public class PhotoEditorActivity extends BaseActivity implements View.OnClickListener {
     private FrameLayout photo_area_rl;
-    private Button edit_button_save, edit_button_cancel, backBtn, saveBtn, btn_mark_hide;
+    private Button edit_button_save, edit_button_cancel, backBtn, btn_save, btn_mark_hide;
     private TextView tv_action;
     private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
@@ -138,7 +138,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         edit_button_cancel = queryViewById(R.id.edit_button_cancel);
         edit_button_save = queryViewById(R.id.edit_button_save);
         backBtn = queryViewById(R.id.back_btn);
-        saveBtn = queryViewById(R.id.btn_save);
+        btn_save = queryViewById(R.id.btn_save);
         btn_mark_hide = queryViewById(R.id.btn_mark_hide);
         btn_new_res = queryViewById(R.id.btn_new_res);
         show_image = queryViewById(R.id.show_image);
@@ -155,7 +155,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         mark_cate_contanier = queryViewById(R.id.mark_cate_contanier);
         tv_action = queryViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
-        addOnClickListener(btn_picture_filter, choice_water_mark_btn, saveBtn, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
+        addOnClickListener(btn_picture_filter, choice_water_mark_btn, btn_save, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
                 btn_new_res, btn_cut_image,rotate_image_ll,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip);
         EventBus.getEventBus().register(this);
 

@@ -1,7 +1,5 @@
 package com.putao.camera.editor.fragment;
 
-import java.io.File;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,10 +12,13 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
+import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.WaterMarkHelper;
+
+import java.io.File;
 
 public class WaterMarkChoiceAdapter extends BaseAdapter {
     private Context context;
@@ -25,25 +26,36 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
     //    private int[] mWaterMarkIconArray;
     //    private ArrayList<WaterMarkChoiceItem> mWaterMarkChoiceItemArray;
     WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+    StickerCategoryInfo mStickerCategoryInfo;
 
     //    public WaterMarkChoiceAdapter(Context mContext, int[] aWaterMarkIconArray)
     //    {
     //        this.context = mContext;
     //        setData(aWaterMarkIconArray);
     //    }
+
     public WaterMarkChoiceAdapter(Context mContext, WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
         this.context = mContext;
         setData(aWaterMarkCategoryInfo);
     }
 
+    public WaterMarkChoiceAdapter(Context mContext, StickerCategoryInfo mStickerCategoryInfo) {
+        this.context = mContext;
+        setData(mStickerCategoryInfo);
+    }
+
     public void setData(WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
         this.mWaterMarkCategoryInfo = aWaterMarkCategoryInfo;
+    }
+    public void setData(StickerCategoryInfo mStickerCategoryInfo) {
+        this.mStickerCategoryInfo = mStickerCategoryInfo;
     }
 
 
     @Override
     public int getCount() {
         return mWaterMarkCategoryInfo == null ? 0 : mWaterMarkCategoryInfo.elements.size();
+//        return mStickerCategoryInfo == null ? 0 : mStickerCategoryInfo
     }
 
     @Override

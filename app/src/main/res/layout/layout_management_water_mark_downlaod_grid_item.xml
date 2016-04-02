@@ -1,10 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_main"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
     android:background="@drawable/water_mark_download_grid_item_bg"
-    android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -17,58 +18,64 @@
             android:layout_height="match_parent" />
 
         <ProgressBar
-            android:visibility="invisible"
             android:id="@+id/download_status_pb"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="150dp"
             android:layout_height="14dp"
-            android:max="100"
-            android:progress="0"
-            android:orientation="horizontal"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:progressDrawable="@drawable/download_progressbar" />
-
-
-        <ImageView
-            android:id="@+id/delete_iv"
-            android:visibility="visible"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@drawable/download_delete" />
+            android:max="100"
+            android:orientation="horizontal"
+            android:progress="0"
+            android:progressDrawable="@drawable/download_progressbar"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
+
     <TextView
         android:id="@+id/water_mark_category_name_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
         android:text="大白"
         android:textColor="@color/text_color_dark_626262"
         android:textSize="16dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp">
 
         <TextView
             android:id="@+id/water_mark_category_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="22枚"
+            android:layout_alignParentBottom="true"
             android:layout_margin="1dp"
+            android:text="22枚"
             android:textColor="@color/text_color_dark_898989" />
 
         <TextView
             android:id="@+id/water_mark_category_size_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/water_mark_category_count_tv"
             android:text="2200k"
-            android:textColor="@color/text_color_dark_898989"
-            android:layout_margin="1dp" />
-    </LinearLayout>
+            android:textColor="@color/text_color_dark_898989" />
+
+        <ImageView
+            android:id="@+id/iv_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/check_box_nor" />
+    </RelativeLayout>
 
 
 </LinearLayout>

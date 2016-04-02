@@ -42,10 +42,18 @@ public class StickerCategoryInfo implements Serializable {
     @Column(name = "categoryId")
     public String categoryId;
 
-
-
     @Column(name = "icon")
     public String icon;
+
+    private boolean isChecked;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     public StickerCategoryInfo() {
 

@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.db.DatabaseServer;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
@@ -36,7 +38,7 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
     private DownloadFinishedTemplateAdapter mManagementAdapter;
-    private TextView title_tv;
+    private TextView title_tv,tv_delect_selected,tv_select_all;
     private ArrayList<TemplateIconInfo> list;
 
     @Override
@@ -46,6 +48,8 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
     @Override
     public void doInitSubViews(View view) {
+        tv_select_all=queryViewById(R.id.tv_select_all);
+        tv_delect_selected=queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText("拼图模板");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
@@ -99,7 +103,7 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 //        mGridView.setAdapter(mManagementAdapter);
 //        mGridView.setOnItemClickListener(this);
 //
-        addOnClickListener( back_btn);
+        addOnClickListener( back_btn,tv_delect_selected,tv_select_all);
 //        queryCollageList();
     }
 
@@ -183,6 +187,26 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 //                break;
             case R.id.back_btn:
                 finish();
+                break;
+            case R.id.tv_select_all:
+                for (TemplateIconInfo templateIconInfo : mManagementAdapter.getDatas()) {
+                    templateIconInfo.setChecked(true);
+                }
+                mManagementAdapter.notifyDataSetChanged();
+                break;
+            case R.id.tv_delect_selected:
+                DatabaseServer dbServer = MainApplication.getDBServer();
+                ArrayList<TemplateIconInfo> datas = new ArrayList<>();
+                for (TemplateIconInfo templateIconInfo : mManagementAdapter.getDatas()) {
+                    if (!templateIconInfo.isChecked()) {
+                        datas.add(templateIconInfo);
+                    } else dbServer.deleteTemplateIconInfo(templateIconInfo);
+                }
+                Bundle bundle = new Bundle();
+                mManagementAdapter.setDatas(datas);
+                mManagementAdapter.notifyDataSetChanged();
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY, bundle));
+
                 break;
         }
     }

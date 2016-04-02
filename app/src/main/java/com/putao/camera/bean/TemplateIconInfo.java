@@ -37,6 +37,16 @@ public class TemplateIconInfo implements Serializable {
     @Column(name = "size")
     public String size;
 
+    private boolean isChecked;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
 
     public TemplateIconInfo() {
 

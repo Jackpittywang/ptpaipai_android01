@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,6 +28,9 @@ public class DownloadFinishedTemplateAdapter extends BaseAdapter {
 
     public void setDatas(ArrayList<TemplateIconInfo> datas) {
         mDatas = datas;
+    }
+    public ArrayList<TemplateIconInfo> getDatas() {
+        return mDatas;
     }
 
     public DownloadFinishedTemplateAdapter(Context context) {
@@ -65,6 +69,8 @@ public class DownloadFinishedTemplateAdapter extends BaseAdapter {
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);
             holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
             holder.collage_photo_ok_iv = (ImageView) convertView.findViewById(R.id.collage_photo_ok_iv);
+            holder.iv_check = (ImageView) convertView.findViewById(R.id.iv_check);
+            holder.ll_main = (LinearLayout) convertView.findViewById(R.id.ll_main);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -74,12 +80,25 @@ public class DownloadFinishedTemplateAdapter extends BaseAdapter {
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.collage_download_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
         ImageLoader.getInstance().displayImage(info.cover_pic, holder.collage_download_iv, options);
+
+        holder.iv_check.setImageResource(info.isChecked() ? R.drawable.check_box_sel : R.drawable.check_box_nor);
+//        holder.iv_check.setImageResource(R.drawable.check_box_sel);
+        holder.ll_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                info.setChecked(!info.isChecked());
+                notifyDataSetChanged();
+            }
+        });
+
         return convertView;
     }
 
     class ViewHolder {
-        public ImageView collage_download_iv;
+        public ImageView collage_download_iv,iv_check;
         public ImageView collage_photo_ok_iv,collage_photo_new_iv;
         public ProgressBar download_status_pb;
+        public LinearLayout ll_main;
+
     }
 }

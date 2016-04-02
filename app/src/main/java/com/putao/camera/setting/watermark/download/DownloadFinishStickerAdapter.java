@@ -1,28 +1,21 @@
 
 package com.putao.camera.setting.watermark.download;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
-import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.StickerCategoryInfo;
-import com.putao.camera.constants.PuTaoConstants;
-import com.putao.camera.event.BasePostEvent;
-import com.putao.camera.event.EventBus;
-import com.putao.camera.setting.watermark.management.WaterMarkCategoryDetailActivity;
-import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 
 import java.util.ArrayList;
@@ -73,14 +66,16 @@ public class DownloadFinishStickerAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.water_mark_photo_download_iv = (ImageView) convertView.findViewById(R.id.water_mark_photo_download_iv);
             holder.water_mark_category_name_tv = (TextView) convertView.findViewById(R.id.water_mark_category_name_tv);
-            holder.delete_iv = (ImageView) convertView.findViewById(R.id.delete_iv);
+//            holder.delete_iv = (ImageView) convertView.findViewById(R.id.delete_iv);
             holder.water_mark_category_count_tv = (TextView) convertView.findViewById(R.id.water_mark_category_count_tv);
             holder.water_mark_category_size_tv = (TextView) convertView.findViewById(R.id.water_mark_category_size_tv);
+            holder.ll_main = (LinearLayout) convertView.findViewById(R.id.ll_main);
+            holder.iv_check = (ImageView) convertView.findViewById(R.id.iv_check);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.delete_iv.setVisibility(View.VISIBLE);
+/*        holder.delete_iv.setVisibility(View.VISIBLE);
         holder.delete_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,35 +85,46 @@ public class DownloadFinishStickerAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
             }
-        });
+        });*/
         final StickerCategoryInfo info = getItem(position);
         holder.water_mark_category_name_tv.setText(info.name);
         DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
                 .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.water_mark_photo_download_iv.setScaleType(ScaleType.CENTER_CROP);
         ImageLoader.getInstance().displayImage(info.cover_pic, holder.water_mark_photo_download_iv, options);
-        holder.water_mark_photo_download_iv.setOnClickListener(new View.OnClickListener() {
+/*        holder.water_mark_photo_download_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  Bundle bundle = new Bundle();
-        bundle.putString("id", info.id);
-        bundle.putInt("position", position);
-        ActivityHelper.startActivity((Activity) mContext, WaterMarkCategoryDetailActivity.class, bundle);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", info.id);
+                bundle.putInt("position", position);
+                ActivityHelper.startActivity((Activity) mContext, WaterMarkCategoryDetailActivity.class, bundle);
 
             }
-        });
+        });*/
 
 
         holder.water_mark_category_count_tv.setText(info.num + "枚");
         holder.water_mark_category_size_tv.setText(info.size);
+        holder.iv_check.setImageResource(info.isChecked() ? R.drawable.check_box_sel : R.drawable.check_box_nor);
+//        holder.iv_check.setImageResource(R.drawable.check_box_sel);
+        holder.ll_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                info.setChecked(!info.isChecked());
+                notifyDataSetChanged();
+            }
+        });
         return convertView;
     }
 
     class ViewHolder {
-        public ImageView delete_iv;
+        //        public ImageView delete_iv;
         public TextView water_mark_category_name_tv;
         public ImageView water_mark_photo_download_iv;
         public TextView water_mark_category_count_tv;
         public TextView water_mark_category_size_tv;
+        public ImageView iv_check;
+        public LinearLayout ll_main;
     }
 }

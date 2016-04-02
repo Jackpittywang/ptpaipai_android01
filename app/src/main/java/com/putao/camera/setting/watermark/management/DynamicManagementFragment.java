@@ -211,7 +211,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                     }
                 });
                 break;
-            case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
+            case PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY:
                 mActivity. runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

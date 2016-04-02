@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.db.DatabaseServer;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
@@ -37,7 +39,7 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
     private GridView mGridView;
 //    private DynamicManagementAdapter mManagementAdapter;
 private DownloadFinishedDynamicAdapter mManagementAdapter;
-    private TextView title_tv;
+    private TextView title_tv,tv_delect_selected,tv_select_all;
     private ArrayList<DynamicIconInfo> list;
 
     @Override
@@ -47,6 +49,8 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 
     @Override
     public void doInitSubViews(View view) {
+        tv_select_all=queryViewById(R.id.tv_select_all);
+        tv_delect_selected=queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText("动态贴图");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
@@ -97,7 +101,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 //        mManagementAdapter.setUpdateCallback(this);
 //        mGridView.setAdapter(mManagementAdapter);
 //        mGridView.setOnItemClickListener(this);
-        addOnClickListener(back_btn);
+        addOnClickListener(back_btn,tv_delect_selected,tv_select_all);
 //        queryCollageList();
     }
 
@@ -175,6 +179,26 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
         switch (v.getId()) {
             case R.id.back_btn:
                 finish();
+                break;
+            case R.id.tv_select_all:
+                for (DynamicIconInfo dynamicIconInfo : mManagementAdapter.getDatas()) {
+                    dynamicIconInfo.setChecked(true);
+                }
+                mManagementAdapter.notifyDataSetChanged();
+                break;
+            case R.id.tv_delect_selected:
+                DatabaseServer dbServer = MainApplication.getDBServer();
+                ArrayList<DynamicIconInfo> datas = new ArrayList<>();
+                for (DynamicIconInfo dynamicIconInfo : mManagementAdapter.getDatas()) {
+                    if (!dynamicIconInfo.isChecked()) {
+                        datas.add(dynamicIconInfo);
+                    } else dbServer.deleteDynamicIconInfo(dynamicIconInfo);
+                }
+                Bundle bundle = new Bundle();
+                mManagementAdapter.setDatas(datas);
+                mManagementAdapter.notifyDataSetChanged();
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY, bundle));
+
                 break;
         }
     }

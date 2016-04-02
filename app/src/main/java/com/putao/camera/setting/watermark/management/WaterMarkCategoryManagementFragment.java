@@ -10,7 +10,6 @@ import android.widget.GridView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
-import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseFragment;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
@@ -29,7 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public final class WaterMarkCategoryManagementFragment extends BaseFragment implements AdapterView.OnItemClickListener,
         UpdateCallback<StickerListInfo.PackageInfo>, View.OnClickListener {
@@ -106,10 +104,10 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 
     @Override
     public void delete(StickerListInfo.PackageInfo info, final int position) {
-        Map<String, String> map = new HashMap<String, String>();
+        /*Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
-        mManagementAdapter.notifyDataSetChanged();
+        mManagementAdapter.notifyDataSetChanged();*/
     }
 
     private void updateProgressPartly(int progress, int position) {

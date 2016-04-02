@@ -39,6 +39,7 @@ public class PuTaoConstants {
     public static final int COLLAGE_CAMERA_FINISH = 0x13;
     public static final int REFRESH_COLLAGE_MANAGEMENT_ACTIVITY = 0x013;
     public static final int REFRESH_WATERMARK_MANAGEMENT_ACTIVITY = 0x014;
+    public static final int REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY = 0x015;
     //选择拼接替换替换
     public static final int EVENT_CONNECT_PHOTO_SELECT = 0x15;
     public static final int EVENT_COLLAGE_PHOTO_SELECT = 0x16;

@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.db.DatabaseServer;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
@@ -35,10 +37,10 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
-//    private WaterMarkManagementAdapter mManagementAdapter;
+    //    private WaterMarkManagementAdapter mManagementAdapter;
     private DownloadFinishStickerAdapter mManagementAdapter;
     private ArrayList<StickerCategoryInfo> list;
-    private TextView title_tv;
+    private TextView title_tv, tv_delect_selected,tv_select_all;
 
     @Override
     public int doGetContentViewId() {
@@ -47,9 +49,11 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void doInitSubViews(View view) {
+        tv_select_all=queryViewById(R.id.tv_select_all);
+        tv_delect_selected = queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText("贴纸");
-        back_btn=queryViewById(R.id.back_btn);
+        back_btn = queryViewById(R.id.back_btn);
         mPullRefreshGridView = (PullToRefreshGridView) findViewById(R.id.pull_refresh_grid);
         EventBus.getEventBus().register(this);
     }
@@ -87,7 +91,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 ////        right_btn = (Button) this.findViewById(R.id.right_btn);
 ////        right_btn.setText("已下载");
 //        back_btn = (Button) this.findViewById(R.id.back_btn);
-        addOnClickListener( back_btn);
+        addOnClickListener(back_btn, tv_delect_selected,tv_select_all);
 //        queryWaterMarkList();
     }
 
@@ -150,7 +154,8 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
             }
         }
     }
-//请求水印列表
+
+    //请求水印列表
     public void queryWaterMarkList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
@@ -184,8 +189,34 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
             case R.id.back_btn:
                 finish();
                 break;
+            case R.id.tv_select_all:
+                for (StickerCategoryInfo stickerCategoryInfo : mManagementAdapter.getDatas()) {
+                    stickerCategoryInfo.setChecked(true);
+                }
+                mManagementAdapter.notifyDataSetChanged();
+                break;
+            case R.id.tv_delect_selected:
+                DatabaseServer dbServer = MainApplication.getDBServer();
+                ArrayList<StickerCategoryInfo> datas = new ArrayList<>();
+                for (StickerCategoryInfo stickerCategoryInfo : mManagementAdapter.getDatas()) {
+                    if (!stickerCategoryInfo.isChecked()) {
+                        datas.add(stickerCategoryInfo);
+                    } else dbServer.deleteStickerCategoryInfo(stickerCategoryInfo);
+                }
+                Bundle bundle = new Bundle();
+                mManagementAdapter.setDatas(datas);
+                mManagementAdapter.notifyDataSetChanged();
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
+//                MainApplication.getDBServer().deleteStickerCategoryInfo(mDatas.get(position));
+//                mDatas.remove(position);
+//                notifyDataSetChanged();
+//                Bundle bundle = new Bundle();
+//                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
+
+                break;
         }
     }
+
     //开启开始下载服务
     private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
@@ -195,7 +226,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
+        if (null == url || null == folderPath) return;
         Intent bindIntent = new Intent(this, DownloadFileService.class);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
@@ -203,6 +234,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_STICKER);
         this.startService(bindIntent);
     }
+
     //下载贴图包
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {

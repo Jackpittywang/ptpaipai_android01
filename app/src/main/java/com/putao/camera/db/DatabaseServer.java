@@ -219,6 +219,10 @@ public class DatabaseServer {
         mWaterMarkCategoryInfo.delete(WaterMarkCategoryInfo.class, where);
     }
 
+    public void deleteDynamicIconInfo(Map<String, String> where) {
+        mDynamicIconInfo.delete(DynamicIconInfo.class, where);
+    }
+
     public void deleteWaterMarkCategoryInfo(WaterMarkCategoryInfo entity) {
         mWaterMarkCategoryInfo.delete(entity);
         try {
@@ -250,6 +254,28 @@ public class DatabaseServer {
         map.put("id", entity.id);
         List<StickerCategoryInfo> list = getStickerCategoryInfoByWhere(map);
         deleteStickerCategoryInfo(list.get(0));*/
+
+    }
+    public void deleteDynamicIconInfo(DynamicIconInfo entity) {
+        mDynamicIconInfo.delete(entity);
+        try {
+//            new File(CollageHelper.getCollageFilePath() + entity.download_url).delete();
+            new File(CollageHelper.getCollageFilePath() + entity.cover_pic).delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public void deleteTemplateIconInfo(TemplateIconInfo entity) {
+        mTemplateIconInfo.delete(entity);
+        try {
+//            new File(CollageHelper.getCollageFilePath() + entity.download_url).delete();
+            new File(CollageHelper.getCollageFilePath() + entity.cover_pic).delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

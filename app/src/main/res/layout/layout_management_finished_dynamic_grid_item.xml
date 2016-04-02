@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/ll_main"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_horizontal"
     android:orientation="vertical">
@@ -15,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <ProgressBar
+      <!--  <ProgressBar
             android:id="@+id/download_status_pb"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="150dp"
@@ -27,7 +28,7 @@
             android:orientation="horizontal"
             android:progress="0"
             android:progressDrawable="@drawable/download_progressbar"
-            android:visibility="invisible" />
+            android:visibility="invisible" />-->
 
         <!--<ImageView
         android:id="@+id/collage_photo_ok_iv"
@@ -46,15 +47,14 @@
             android:src="@drawable/photo_new_icon"
             android:visibility="invisible" />-->
         <ImageView
-            android:id="@+id/collage_photo_download_iv"
+            android:id="@+id/iv_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/btn_22_01"
-            android:visibility="visible" />
+            android:layout_marginRight="@dimen/dimens_10dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/check_box_nor" />
 
 
 
