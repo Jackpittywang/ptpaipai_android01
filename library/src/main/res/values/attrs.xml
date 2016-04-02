@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--ImageDraweeView-->
+    <declare-styleable name="ImageDraweeView">
+        <attr name="aspect_ratio" format="float" />
+        <attr name="default_drawable" format="reference" />
+    </declare-styleable>
+    <!--BasicRecyclerView-->
+    <declare-styleable name="BasicRecyclerView">
+        <attr name="layout_mode" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+            <enum name="invalid_offset" value="2" />
+            <enum name="grid" value="3" />
+        </attr>
+        <attr name="column_num" format="integer" />
+        <attr name="has_row_divider" format="boolean" />
+        <attr name="has_rank_divider" format="boolean" />
+        <attr name="divider_width" format="dimension" />
+        <attr name="divider_height" format="dimension" />
+        <attr name="divider_marginLeft" format="dimension" />
+        <attr name="divider_marginRight" format="dimension" />
+        <attr name="divider_marginTop" format="dimension" />
+        <attr name="divider_marginBottom" format="dimension" />
+        <attr name="divider_color" format="color" />
+        <attr name="is_inner" format="boolean" />
+        <attr name="is_process" format="boolean" />
+        <attr name="process_background" format="integer|reference" />
+        <attr name="is_start_animator" format="boolean" />
+        <attr name="is_first_only" format="boolean" />
+        <attr name="duration_animator" format="integer" />
+    </declare-styleable>
+    <!--LoadMoreRecyclerView-->
+    <declare-styleable name="LoadMoreRecyclerView">
+        <attr name="loading_text" format="string" />
+        <attr name="no_more_text" format="string" />
+    </declare-styleable>
+    <!--NavigationBar-->
+    <declare-styleable name="NavigationBar">
+        <attr name="nav_left_icon" format="reference" />
+        <attr name="nav_right_icon" format="reference" />
+        <attr name="nav_main_title" format="string" />
+        <attr name="nav_main_title_color" format="color" />
+        <attr name="nav_dis_main_title_color" format="color" />
+        <attr name="nav_main_title_size" format="dimension|reference" />
+        <attr name="nav_left_title" format="string" />
+        <attr name="nav_left_title_color" format="color" />
+        <attr name="nav_dis_left_title_color" format="color" />
+        <attr name="nav_left_title_size" format="dimension|reference" />
+        <attr name="nav_right_title" format="string" />
+        <attr name="nav_right_title_color" format="color" />
+        <attr name="nav_dis_right_title_color" format="color" />
+        <attr name="nav_right_title_size" format="dimension|reference" />
+        <attr name="nav_divider_color" format="color" />
+        <attr name="nav_has_divider" format="boolean" />
+        <attr name="nav_has_right_title_icon" format="boolean" />
+        <attr name="nav_right_title_indicator_background" format="reference" />
+        <attr name="nav_right_title_icon_text_color" format="color" />
+    </declare-styleable>
+    <!--TitleBar-->
+    <declare-styleable name="TitleBar">
+        <attr name="title_main_text" format="string|reference" />
+        <attr name="title_left_text" format="string|reference" />
+        <attr name="title_right_text" format="string|reference" />
+        <attr name="title_left_icon" format="reference" />
+        <attr name="title_right_icon" format="reference" />
+    </declare-styleable>
+    <!--CleanableEditText-->
+    <declare-styleable name="CleanableEditText">
+        <attr name="maxLength" format="integer" />
+    </declare-styleable>
+    <!--TabItem-->
+    <declare-styleable name="TabItem">
+        <attr name="indicator_radius" format="integer" />
+        <attr name="activeDrawable" format="reference" />
+        <attr name="inactiveDrawable" format="reference" />
+        <attr name="active" format="boolean" />
+    </declare-styleable>
+    <!--PullToRefreshLayout-->
+    <declare-styleable name="PullToRefreshLayout">
+        <attr name="refresh_layout" format="reference" />
+        <attr name="refresh_layout_height" format="integer" />
+        <attr name="refresh_prepare_text" format="string|reference" />
+        <attr name="refresh_recycle_text" format="string|reference" />
+        <attr name="refresh_loading_text" format="string|reference" />
+        <attr name="refresh_complete_text" format="string|reference" />
+    </declare-styleable>
+    <!--SettingItem-->
+    <declare-styleable name="SettingItem">
+        <attr name="setting_icon" format="reference" />
+        <attr name="setting_text" format="string" />
+        <attr name="setting_divider" format="enum">
+            <enum name="none" value="0" />
+            <enum name="top" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
+        <attr name="setting_divider_color" format="color|reference" />
+        <attr name="setting_indicator_background" format="reference" />
+        <attr name="setting_indicator_color" format="color|reference" />
+    </declare-styleable>
+    <!--TimeButton-->
+    <declare-styleable name="TimeButton">
+        <attr name="countdown_time" format="integer" />
+        <attr name="text_before" format="string" />
+        <attr name="text_after" format="string" />
+        <attr name="click_background" format="reference" />
+        <attr name="unclick_background" format="reference" />
+    </declare-styleable>
+    <!--TitleItem-->
+    <declare-styleable name="TitleItem">
+        <attr name="is_active" format="boolean" />
+        <attr name="active_color" format="color|reference" />
+        <attr name="inactive_color" format="color|reference" />
+        <attr name="indicator_color" format="color|reference" />
+        <attr name="title_text" format="string" />
+    </declare-styleable>
+    <!--ScrollableLayout-->
+    <declare-styleable name="ScrollableLayout">
+        <attr name="scrollable_maxScroll" format="dimension" />
+        <attr name="scrollable_scrollerFlywheel" format="boolean" />
+        <attr name="scrollable_considerIdleMillis" format="integer" />
+        <attr name="scrollable_defaultCloseUp" format="boolean" />
+        <attr name="scrollable_friction" format="float" />
+        <attr name="scrollable_closeUpAnimationMillis" format="integer" />
+        <attr name="scrollable_closeUpAnimatorInterpolator" format="reference" />
+    </declare-styleable>
+    <!--IndicatorButton-->
+    <declare-styleable name="IndicatorButton">
+        <attr name="indicator_title" format="string" />
+        <attr name="indicator_drawable" format="reference" />
+        <attr name="indicator_title_color" format="color|reference" />
+        <attr name="indicator_title_size" format="dimension" />
+        <attr name="indicator_text_color" format="color|reference" />
+    </declare-styleable>
+    <!--SwitchButton-->
+    <declare-styleable name="SwitchButton">
+        <attr name="isSelect" format="boolean" />
+        <attr name="selDrawable" format="reference" />
+        <attr name="norDrawable" format="reference" />
+    </declare-styleable>
+    <!--FlowLayout-->
+    <declare-styleable name="FlowLayout">
+        <attr name="horizontalSpacing" format="dimension" />
+        <attr name="verticalSpacing" format="dimension" />
+        <attr name="orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="debugDraw" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="FlowLayout_LayoutParams">
+        <attr name="layout_newLine" format="boolean" />
+        <attr name="layout_horizontalSpacing" format="dimension" />
+        <attr name="layout_verticalSpacing" format="dimension" />
+    </declare-styleable>
+    <!--TagBar-->
+    <declare-styleable name="TagBar">
+        <attr name="tag_background_sel" format="reference" />
+        <attr name="tag_background_nor" format="reference" />
+        <attr name="tag_text_color_sel" format="color|reference" />
+        <attr name="tag_text_color_nor" format="color|reference" />
+        <attr name="tag_text_color_dis" format="color|reference" />
+    </declare-styleable>
+    <!--BannerLayout-->
+    <declare-styleable name="BannerLayout">
+        <attr name="intervalTime" format="integer" />
+        <attr name="isAutoScroll" format="boolean" />
+        <attr name="fill_color" format="color|reference" />
+        <attr name="page_color" format="color|reference" />
+    </declare-styleable>
+    <!--RadioItem-->
+    <declare-styleable name="RadioItem">
+        <attr name="select_drawable" format="reference" />
+        <attr name="select_text" format="string" />
+        <attr name="select_text_size" format="dimension" />
+        <attr name="select_text_color" format="color|reference" />
+        <attr name="is_select" format="boolean" />
+    </declare-styleable>
+    <!--AmountSelectLayout-->
+    <declare-styleable name="AmountSelectLayout">
+        <attr name="btn_background" format="reference" />
+        <attr name="edit_background" format="reference" />
+        <attr name="isEditable" format="boolean" />
+        <attr name="edit_text_colot" format="color|reference" />
+        <attr name="dis_color" format="color|reference" />
+        <attr name="nor_color" format="color|reference" />
+    </declare-styleable>
+    <!--JumpLoadingLayout-->
+    <declare-styleable name="JumpLoadingLayout">
+        <attr name="jump_color" format="color|reference" />
+    </declare-styleable>
+    <!--TooltipView-->
+    <declare-styleable name="TooltipView">
+        <attr name="anchoredView" format="reference" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="tooltipColor" format="color" />
+        <attr name="arrowHeight" format="dimension" />
+        <attr name="arrowWidth" format="dimension" />
+        <attr name="arrowAlignmentOffset" format="dimension" />
+        <attr name="arrowLocation" format="integer">
+            <enum name="top" value="0" />
+            <enum name="bottom" value="1" />
+        </attr>
+        <attr name="arrowAlignment" format="enum">
+            <enum name="start" value="0" />
+            <enum name="center" value="1" />
+            <enum name="end" value="2" />
+            <enum name="anchored_view" value="3" />
+        </attr>
+    </declare-styleable>
+    <!--ConvenientBanner-->
+    <declare-styleable name="ConvenientBanner">
+        <attr name="canLoop" format="boolean" />
+        <attr name="manualPageable" format="boolean" />
+        <attr name="autoTurningTime" format="integer" />
+        <attr name="align" format="enum">
+            <enum name="ALIGN_PARENT_LEFT" value="0" />
+            <enum name="ALIGN_PARENT_RIGHT" value="1" />
+            <enum name="CENTER_HORIZONTAL" value="2" />
+        </attr>
+        <attr name="pageDrawable" format="reference" />
+        <attr name="fillDrawable" format="reference" />
+    </declare-styleable>
+    <!--CircleTextView-->
+    <declare-styleable name="CircleTextView">
+        <attr name="background_color" format="color|reference" />
+    </declare-styleable>
+    <!--LoadingLayout-->
+    <declare-styleable name="LoadingLayout">
+        <attr name="loadingView" format="reference" />
+        <attr name="errorView" format="reference" />
+        <!--<attr name="retryView" format="reference" />-->
+        <attr name="emptyView" format="reference" />
+    </declare-styleable>
+    <!--CropImageView-->
+    <attr name="cropImageStyle" format="reference" />
+    <declare-styleable name="CropImageView">
+        <attr name="highlightColor" format="reference|color" />
+        <attr name="showThirds" format="boolean" />
+        <attr name="showHandles">
+            <enum name="changing" value="0" />
+            <enum name="always" value="1" />
+            <enum name="never" value="2" />
+        </attr>
+    </declare-styleable>
+    <!--QuantityView-->
+    <declare-styleable name="QuantityView">
+        <attr name="addButtonText" format="string" />
+        <attr name="addButtonBackground" format="color|reference" />
+        <attr name="addButtonTextColor" format="color" />
+        <attr name="removeButtonText" format="string" />
+        <attr name="removeButtonBackground" format="color|reference" />
+        <attr name="removeButtonTextColor" format="color" />
+        <attr name="quantity" format="integer" />
+        <attr name="quantityBackground" format="color|reference" />
+        <attr name="quantityTextColor" format="color" />
+        <attr name="quantityPadding" format="dimension" />
+        <attr name="maxQuantity" format="integer" />
+        <attr name="minQuantity" format="integer" />
+        <attr name="isEdit" format="boolean" />
+    </declare-styleable>
+    <!--BounceBackViewPager-->
+    <declare-styleable name="BounceBackViewPager">
+        <attr name="overscroll_translation" format="dimension" />
+        <attr name="overscroll_animation_duration" format="integer" />
+    </declare-styleable>
+    <!--DropDownMenu-->
+    <declare-styleable name="DropDownMenu">
+        <attr name="underlineColor" format="color" />
+        <attr name="dividerColor" format="color" />
+        <attr name="textSelectedColor" format="color" />
+        <attr name="textUnselectedColor" format="color" />
+        <attr name="menuBackgroundColor" format="color" />
+        <attr name="maskColor" format="color" />
+        <attr name="menuTextSize" format="dimension" />
+        <attr name="menuSelectedIcon" format="reference" />
+        <attr name="menuUnselectedIcon" format="reference" />
+    </declare-styleable>
+
+    <!--InterceptLinearLayout-->
+    <declare-styleable name="InterceptLinearLayout">
+        <attr name="isIntercept" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fragment_container" type="id" />
+    <!--NavigationBar-->
+    <item name="nav_background" type="id" />
+    <item name="navigation_bar" type="id" />
+    <!--PullToRefreshLayout-->
+    <item name="refresh_text" type="id" />
+    <item name="refresh_view" type="id" />
+    <!--BasicPopupWindow-->
+    <item name="popup_layout" type="id" />
+    <!--stickyHeaderLayout-->
+    <item name="stickyHeaderLayout_header" type="id" />
+    <item name="stickyHeaderLayout_sticky" type="id" />
+    <item name="stickyHeaderLayout_scrollable" type="id" />
+    <item name="sticky_layout" type="id" />
+    <!--ConvenientBanner-->
+    <item name="cb_item_tag" type="id"></item>
+    <!--LoadingLayout-->
+    <item name="btn_empty_retry" type="id" />
+    <item name="btn_error_retry" type="id" />
+</resources>
