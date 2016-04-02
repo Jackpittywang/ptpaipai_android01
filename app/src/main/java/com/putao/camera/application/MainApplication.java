@@ -15,6 +15,7 @@ import com.baidu.location.LocationClientOption.LocationMode;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.putao.account.AccountApi;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.collage.util.CollageHelper;
@@ -27,6 +28,7 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.sunnybear.library.util.AppUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
@@ -46,7 +48,9 @@ public class MainApplication extends Application {
         globalContext = this;
         //bugly
         CrashReport.initCrashReport(getApplicationContext(), "900022345", false);
-
+        app_id = AppUtils.getMetaData(getApplicationContext(), KEY_APP_ID);
+        //安装通行证
+        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
 
         DisplayHelper.init(globalContext);
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
@@ -265,6 +269,5 @@ public class MainApplication extends Application {
     public static final String PREFERENCE_KEY_EXPIRE_TIME = "expire_tim";
     public static final String PREFERENCE_KEY_REFRESH_TOKEN = "refresh_token";
     public static final String PREFERENCE_KEY_USER_INFO = "user_info";
-    public static final String PREFERENCE_KEY_BABY_ID = "baby_id";
-
+    private static final String KEY_APP_ID = "app_id";
 }
