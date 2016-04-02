@@ -38,13 +38,6 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
 
     @Override
     public void doInitSubViews(View view) {
-       /* Map<String, String> map = new HashMap<String, String>();
-//        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("is_new", "1");
-        StickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
-        DynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
-        TemplateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);*/
-
         sticker_count_tv=queryViewById(R.id.sticker_count_tv);
         dynamic_count_tv=queryViewById(R.id.dynamic_count_tv);
         template_count_tv=queryViewById(R.id.template_count_tv);
@@ -91,9 +84,11 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
     public void onResume() {
         super.onResume();
         Map<String, String> map = new HashMap<String, String>();
-        map.put("is_new", "1");
+        map.put("type", "sticker");
         StickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        map.put("type", "dynamic");
         DynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        map.put("type", "template");
         TemplateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
         sticker_count_tv.setText(StickerCategoryInfo_list.size()+"套(共"+"文件大小MB"+")");
         dynamic_count_tv.setText(DynamicIconInfo_list.size()+"套(共"+"文件大小MB"+")");
