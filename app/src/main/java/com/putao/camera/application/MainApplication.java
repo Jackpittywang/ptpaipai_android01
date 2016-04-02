@@ -253,4 +253,18 @@ public class MainApplication extends Application {
         return true;
     }
 
+
+    /**
+     * 以下为通行证定义常量
+     */
+    //===================preference key===========================
+    public static  String app_id;
+    public static final String PREFERENCE_KEY_UID = "uid";
+    public static final String PREFERENCE_KEY_TOKEN = "token";
+    public static final String PREFERENCE_KEY_NICKNAME = "nickname";
+    public static final String PREFERENCE_KEY_EXPIRE_TIME = "expire_tim";
+    public static final String PREFERENCE_KEY_REFRESH_TOKEN = "refresh_token";
+    public static final String PREFERENCE_KEY_USER_INFO = "user_info";
+    public static final String PREFERENCE_KEY_BABY_ID = "baby_id";
+
 }

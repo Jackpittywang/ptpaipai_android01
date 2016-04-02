@@ -10,6 +10,7 @@ android {
         targetSdkVersion 23
         versionCode 13
         versionName "1.2.4"
+        multiDexEnabled true
         ndk {
             //设置支持的SO库架构
             abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
@@ -78,17 +79,12 @@ android {
         channel_ppzhushou {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
         }
-        channel_liqu {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_liqu"]
-        }
-        channel_oppo {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
-        }
-
-
-
-
-
+//        channel_liqu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_liqu"]
+//        }
+//        channel_oppo {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
+//        }
 
 //        channel_anzhi {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhi"]
@@ -138,13 +134,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.loopj.android:android-async-http:1.4.7'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.google.code.gson:gson:2.3'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile 'com.tencent.bugly:crashreport:1.2.9'  // 后续更新SDK，请直接更新版本号
+    compile 'com.tencent.bugly:crashreport:1.2.9'
+    // 后续更新SDK，请直接更新版本号
+    compile project(':library')
 }
