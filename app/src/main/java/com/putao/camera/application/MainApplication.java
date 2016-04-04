@@ -18,6 +18,7 @@ import com.baidu.location.LocationClientOption.LocationMode;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.putao.account.AccountApi;
 import com.putao.account.AccountHelper;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
@@ -31,10 +32,9 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.squareup.okhttp.OkHttpClient;
 import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.controller.ActivityManager;
-import com.sunnybear.library.util.DiskFileCacheHelper;
+import com.sunnybear.library.util.AppUtils;
 import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.SDCardUtils;
 
@@ -49,11 +49,6 @@ public class MainApplication extends BasicApplication {
     private LocationMode tempMode = LocationMode.Battery_Saving;
     private String tempcoor = "gcj02";
     public static boolean isServiceClose;
-    public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
-    private static final String KEY_APP_ID = "app_id";
-    private static DiskFileCacheHelper mDiskFileCacheHelper;//磁盘文件缓存器
-    private static OkHttpClient mOkHttpClient;//OkHttpClient
-    public static String sdCardPath;//SdCard路径
 
 
     @Override
@@ -64,7 +59,9 @@ public class MainApplication extends BasicApplication {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
         // Umeng统计参数设置
 //        UmengAnalysisHelper.setCommonConfig();
-
+        //app_id配置
+        app_id = AppUtils.getMetaData(getApplicationContext(), KEY_APP_ID);
+        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
         // Umeng更新参数设置
         UmengUpdateHelper.getInstance().setCommonConfig();
         // Umeng消息推送
@@ -359,6 +356,8 @@ public class MainApplication extends BasicApplication {
     /**
      * 以下为通行证定义常量
      */
+    private static final String KEY_APP_ID = "app_id";
+    public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
     public static final String Fore_Message = "com.putao.isFore.message";
     public static final String Not_Fore_Message = "com.putao.isNotFore.message";
     //===================preference key===========================
