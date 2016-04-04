@@ -152,6 +152,39 @@ public class AccountApi {
                 .build(RequestMethod.POST, URL_FORGET);
     }
 
+    /**
+     * 登录
+     */
+    public static final String URL_LOGIN = BASE_URL + AccountConstants.Url.URL_LOGIN;
+
+    /**
+     * 登录
+     *
+     * @param mobile   账号
+     * @param password 密码
+     */
+    public static Request login(String mobile, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put(AccountConstants.Parameter.PARAM_MOBILE, mobile);
+        params.put(AccountConstants.Parameter.PARAM_PASSWD, password);
+        params.put(AccountConstants.Parameter.PARAM_CLIENT_TYPE, AccountApi.CLIENT_TYPE);
+        params.put(AccountConstants.Parameter.PARAM_VERSION, AccountApi.VERSION);
+        params.put(AccountConstants.Parameter.PARAM_PLATFORM_ID, AccountApi.PLATFORM_ID);
+        params.put(AccountConstants.Parameter.PARAM_DEVICE_ID, AppUtils.getDeviceId(MainApplication.getInstance()));
+        params.put(AccountConstants.Parameter.PARAM_APPID, AccountApi.APP_ID);
+        String sign = generateSign(params, SECRETKEY);
+        return FormEncodingRequestBuilder.newInstance()
+                .addParam(AccountConstants.Parameter.PARAM_MOBILE, mobile)
+                .addParam(AccountConstants.Parameter.PARAM_PASSWD, password)
+                .addParam(AccountConstants.Parameter.PARAM_CLIENT_TYPE, AccountApi.CLIENT_TYPE)
+                .addParam(AccountConstants.Parameter.PARAM_VERSION, AccountApi.VERSION)
+                .addParam(AccountConstants.Parameter.PARAM_PLATFORM_ID, AccountApi.PLATFORM_ID)
+                .addParam(AccountConstants.Parameter.PARAM_DEVICE_ID, AppUtils.getDeviceId(MainApplication.getInstance()))
+                .addParam(AccountConstants.Parameter.PARAM_APPID, AccountApi.APP_ID)
+                .addParam(AccountConstants.Parameter.PARAM_SIGN, sign)
+                .build(RequestMethod.POST, URL_LOGIN);
+    }
+
 
     /**
      * 图形验证码的登录

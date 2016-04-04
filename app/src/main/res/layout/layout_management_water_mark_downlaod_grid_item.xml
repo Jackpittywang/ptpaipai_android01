@@ -75,6 +75,7 @@
             android:layout_marginRight="@dimen/dimens_10dp"
             android:layout_marginTop="5dp"
             android:src="@drawable/check_box_nor" />
+
     </RelativeLayout>
 
 

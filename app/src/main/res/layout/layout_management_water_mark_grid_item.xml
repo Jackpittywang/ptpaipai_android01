@@ -1,15 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/water_mark_download_grid_item_bg"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="165dp"
-        android:layout_height="165dp"
-        >
+        android:layout_height="165dp">
 
         <!--<com.putao.camera.editor.view.FilterEffectThumbnailView
             android:id="@+id/water_mark_photo_download_iv"
@@ -21,8 +20,7 @@
             android:id="@+id/water_mark_photo_download_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-           />
+            android:scaleType="centerCrop" />
 
         <ProgressBar
             android:id="@+id/download_status_pb"
@@ -58,57 +56,59 @@
 
 
     <TextView
-        android:paddingLeft="@dimen/dimens_10dp"
         android:id="@+id/water_mark_category_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
+        android:paddingLeft="@dimen/dimens_10dp"
         android:text="大白"
         android:textColor="@color/text_color_dark_626262"
         android:textSize="16dp" />
 
-    <LinearLayout
-        android:paddingLeft="@dimen/dimens_10dp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimens_10dp">
 
-                android:id="@+id/water_mark_category_count_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:text="0枚"
+        <TextView
+            android:id="@+id/water_mark_category_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:text="0枚"
+            android:textColor="@color/text_color_dark_898989" />
 
-                android:textColor="@color/text_color_dark_898989" />
+        <TextView
+            android:id="@+id/water_mark_category_size_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/water_mark_category_count_tv"
+            android:text="0k"
+            android:textColor="@color/text_color_dark_898989" />
 
-            <TextView
-                android:layout_toRightOf="@+id/water_mark_category_count_tv"
-                android:id="@+id/water_mark_category_size_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="1dp"
-                android:text="0k"
-                android:textColor="@color/text_color_dark_898989" />
+        <ImageView
+            android:id="@+id/water_mark_category_download_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/btn_22_01"
+            android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/water_mark_category_download_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="10dp"
-                android:paddingBottom="10dp"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/btn_22_01"
-                android:visibility="visible" />
+        <ProgressBar
+            android:id="@+id/pb_download"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/btn_22_01"
+            android:visibility="gone" />
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-
-
-
-    </LinearLayout>
     <!--style="@style/button.red"-->
     <View
         android:layout_width="match_parent"

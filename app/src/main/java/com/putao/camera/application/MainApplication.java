@@ -273,7 +273,7 @@ public class MainApplication extends BasicApplication {
      *
      * @return 是否开启
      */
-    public boolean isDebug() {
+    public  boolean isDebug() {
         return true;
     }
 

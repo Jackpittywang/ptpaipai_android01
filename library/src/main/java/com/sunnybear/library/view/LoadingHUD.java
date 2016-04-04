@@ -45,9 +45,9 @@ public class LoadingHUD extends Dialog {
     }
 
     public static LoadingHUD getInstance(Context context) {
-//        if (instance == null) {
-        instance = new LoadingHUD(context);
-//        }
+        if (instance == null) {
+            instance = new LoadingHUD(context);
+        }
         return instance;
     }
 

@@ -39,4 +39,6 @@
     <dimen name="dimens_14sp">14sp</dimen>
     <dimen name="dimens_24sp">24sp</dimen>
     <!-- dp end -->
+
+    <dimen name="navigation_bar_height">48dp</dimen>
 </resources>

@@ -167,4 +167,57 @@
         <item name="android:textSize">18dp</item>
 
     </style>
+
+    <!--标题栏延时-->
+    <style name="style_navigation_bar">
+        <item name="android:id">@id/navigation_bar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/navigation_bar_height</item>
+        <item name="nav_has_divider">false</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="XiangjiText" parent="TextAppearance.AppCompat.Medium" />
+    <!--编辑字体样式-->
+    <style name="XiangjiText.EditText">
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:textColorHint">#C2C2C2</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:background">@color/edit_text_background</item>
+    </style>
+
+    <style name="style_login_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@drawable/text_select</item>
+        <item name="android:textSize">@dimen/text_size_18sp</item>
+    </style>
+
+    <!--图片加载主样式-->
+    <style name="image_style">
+        <!--加载图片比例类型-->
+        <item name="actualImageScaleType">focusCrop</item>
+        <!--占位图-->
+        <item name="placeholderImage">@drawable/img_image_default_l</item>
+        <!--占位图比例类型-->
+        <item name="placeholderImageScaleType">fitCenter</item>
+        <!--加载失败图-->
+        <item name="failureImage">@drawable/img_image_default_l</item>
+        <!--加载失败图比例类型-->
+        <item name="failureImageScaleType">centerInside</item>
+        <!--加载重试图比例类型-->
+        <item name="retryImageScaleType">centerCrop</item>
+        <!--加载时缓冲图比例类型-->
+        <item name="progressBarImageScaleType">centerInside</item>
+        <!--占位图比例类型-->
+        <item name="progressBarAutoRotateInterval">1000</item>
+    </style>
+    <!--圆形图片加载样式-->
+    <style name="image_circle" parent="image_style">
+        <item name="roundAsCircle">true</item>
+    </style>
+
+
 </resources>

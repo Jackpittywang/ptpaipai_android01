@@ -146,5 +146,6 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         public ProgressBar download_status_pb;
         public ImageView water_mark_photo_ok_iv;
         public ImageView water_mark_photo_new_iv;
+        public ProgressBar pb_download;
     }
 }

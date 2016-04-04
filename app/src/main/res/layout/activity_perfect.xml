@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll_main"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:auto="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/img_wt_bg"
+              android:orientation="vertical">
+
+    <!--标题栏-->
+    <com.sunnybear.library.view.NavigationBar
+        style="@style/style_navigation_bar"
+        android:background="@color/transparent"
+        auto:nav_left_icon="@drawable/back_selector"
+        auto:nav_main_title="完善用户信息"
+        auto:nav_main_title_color="@color/text_color"
+        auto:nav_right_title_color="@color/text_main_color_nor"
+        auto:nav_right_title="保存"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--用户昵称-->
+        <LinearLayout
+            android:id="@+id/ll_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_header_icon"
+            android:orientation="vertical">
+
+            <com.sunnybear.library.view.CleanableEditText
+                android:id="@+id/et_nickname"
+                style="@style/XiangjiText.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:drawableRight="@drawable/close_selector"
+                android:hint="用户昵称"/>
+            <!--间隔线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/divider_color"/>
+        </LinearLayout>
+
+        <!--个人简介-->
+        <LinearLayout
+            android:id="@+id/ll_intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_nickname"
+            android:orientation="vertical">
+
+            <com.sunnybear.library.view.CleanableEditText
+                android:id="@+id/et_intro"
+                style="@style/XiangjiText.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:drawableRight="@drawable/close_selector"
+                android:hint="个人简介(0-40个字)"
+                android:maxLength="100"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:singleLine="false"
+                auto:maxLength="40"/>
+            <!--间隔线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/divider_color"/>
+        </LinearLayout>
+        <!--头像-->
+        <RelativeLayout
+            android:id="@+id/rl_header_icon"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+            <FrameLayout
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true">
+
+                <com.sunnybear.library.view.image.ImageDraweeView
+                    android:id="@+id/iv_header_icon"
+                    style="@style/image_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    auto:placeholderImage="@drawable/img_head_signup"/>
+
+                <ImageView
+                    android:id="@+id/iv_select_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom|right"
+                    android:src="@drawable/icon_20_12"/>
+            </FrameLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

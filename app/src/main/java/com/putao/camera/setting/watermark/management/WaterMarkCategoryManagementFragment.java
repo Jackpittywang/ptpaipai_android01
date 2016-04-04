@@ -23,6 +23,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
+import com.sunnybear.library.view.LoadingHUD;
 
 import org.json.JSONObject;
 
@@ -37,6 +38,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private WaterMarkManagementAdapter mManagementAdapter;
     private StickerListInfo aWaterMarkRequestInfo;
     ArrayList<StickerCategoryInfo> mStickerCategoryInfos;
+    private LoadingHUD mLoading;
 
     @Override
     public int doGetContentViewId() {
@@ -45,6 +47,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 
     @Override
     public void doInitSubViews(View view) {
+        mLoading = LoadingHUD.getInstance(getActivity());
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         /*right_btn = (Button) view.findViewById(R.id.right_btn);
         right_btn.setText("已下载");
@@ -119,6 +122,8 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 WaterMarkManagementAdapter.ViewHolder vh = (WaterMarkManagementAdapter.ViewHolder) view.getTag();
                 vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
+                    vh.pb_download.setVisibility(View.VISIBLE);
+                    vh.water_mark_category_download_btn.setVisibility(View.GONE);
                     vh.water_mark_category_download_btn.setOnClickListener(null);
 //                    vh.water_mark_category_download_btn.setText("下载中");
                     vh.download_status_pb.setVisibility(View.VISIBLE);
@@ -127,12 +132,16 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     //                    vh.download_status_pb.setVisibility(View.INVISIBLE);
                     //                    vh.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
                     //                    mManagementAdapter.notifyDataSetChanged();
+                    vh.pb_download.setVisibility(View.GONE);
+                    vh.water_mark_category_download_btn.setVisibility(View.VISIBLE);
                 }
             }
         }
     }
-//请求水印列表
+
+    //请求水印列表
     public void queryWaterMarkList() {
+        mLoading.show();
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -151,11 +160,13 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     e.printStackTrace();
                 }
                 mManagementAdapter.notifyDataSetChanged();
+                mLoading.dismiss();
             }
 
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                mLoading.dismiss();
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
@@ -177,6 +188,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 //                break;
         }
     }
+
     //开启开始下载服务
     private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(mActivity, DownloadFileService.class.getName());
@@ -186,16 +198,17 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
-        mStickerCategoryInfos.get(position).type="sticker";
+        if (null == url || null == folderPath) return;
+        mStickerCategoryInfos.get(position).type = "sticker";
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-        bindIntent.putExtra("item",mStickerCategoryInfos.get(position));
+        bindIntent.putExtra("item", mStickerCategoryInfos.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_STICKER);
         mActivity.startService(bindIntent);
     }
+
     //下载贴图包
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
@@ -223,7 +236,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();

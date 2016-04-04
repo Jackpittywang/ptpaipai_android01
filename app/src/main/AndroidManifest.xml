@@ -223,21 +223,23 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name=".load.LoadingActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name=".load.RegisterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name=".load.ForgetPasswordActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
             android:name=".setting.watermark.management.DynamicManagementActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
+
+
+        <activity
+            android:name=".user.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.ForgetPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.PerfectActivity"
+            android:screenOrientation="portrait" />
 
 
         <!-- 微博分享配置 -->

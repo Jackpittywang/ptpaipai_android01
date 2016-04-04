@@ -21,11 +21,11 @@ import com.putao.camera.bean.WaterMarkRequestInfo;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.http.CacheRequest;
-import com.putao.camera.load.LoadingActivity;
 import com.putao.camera.movie.MovieCameraActivity;
 import com.putao.camera.setting.AboutActivity;
 import com.putao.camera.setting.watermark.management.MatterCenterActivity;
 import com.putao.camera.umengfb.UmengFeedbackActivity;
+import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.Loger;
@@ -150,7 +150,7 @@ public class MenuActivity extends BaseActivity implements View.OnClickListener {
 //                ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
             case R.id.loading:
-                ActivityHelper.startActivity(this, LoadingActivity.class);
+                ActivityHelper.startActivity(this, LoginActivity.class);
                 break;
             //            case R.id.water_mark_btn:
             //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
