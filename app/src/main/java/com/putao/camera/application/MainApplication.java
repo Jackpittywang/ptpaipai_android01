@@ -1,11 +1,14 @@
 
 package com.putao.camera.application;
 
-import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -15,6 +18,7 @@ import com.baidu.location.LocationClientOption.LocationMode;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.putao.account.AccountHelper;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.collage.util.CollageHelper;
@@ -27,11 +31,16 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.squareup.okhttp.OkHttpClient;
+import com.sunnybear.library.BasicApplication;
+import com.sunnybear.library.controller.ActivityManager;
+import com.sunnybear.library.util.DiskFileCacheHelper;
+import com.sunnybear.library.util.Logger;
+import com.sunnybear.library.util.SDCardUtils;
 
 import java.io.File;
 
-public class MainApplication extends Application {
+public class MainApplication extends BasicApplication {
     private static Context globalContext;
     private WaterMarkConfigInfo mWaterMarkConfigInfo;
     public static LocationClient mLocationClient;
@@ -39,15 +48,18 @@ public class MainApplication extends Application {
     private static DatabaseServer dbServer;
     private LocationMode tempMode = LocationMode.Battery_Saving;
     private String tempcoor = "gcj02";
+    public static boolean isServiceClose;
+    public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
+    private static final String KEY_APP_ID = "app_id";
+    private static DiskFileCacheHelper mDiskFileCacheHelper;//磁盘文件缓存器
+    private static OkHttpClient mOkHttpClient;//OkHttpClient
+    public static String sdCardPath;//SdCard路径
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         globalContext = this;
-        //bugly
-        CrashReport.initCrashReport(getApplicationContext(), "900022345", false);
-
-
         DisplayHelper.init(globalContext);
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
         // Umeng统计参数设置
@@ -71,11 +83,21 @@ public class MainApplication extends Application {
         initAssetsDate();
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(getApplicationContext());
+        //启动内部推送
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.putao.isNotFore.message");
+        registerReceiver(new HomeBroadcastReceiver(), intentFilter);
+        startRedDotService();
     }
 
 
     public static Context getInstance() {
         return globalContext;
+    }
+
+    @Override
+    protected String getBuglyKey() {
+        return "900022345";
     }
 
     public static void stopLocationClient() {
@@ -151,7 +173,7 @@ public class MainApplication extends Application {
     public static DatabaseServer getDBServer() {
         try {
             if (dbServer == null) {
-                dbServer =  new DatabaseServer(globalContext);
+                dbServer = new DatabaseServer(globalContext);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -249,16 +271,98 @@ public class MainApplication extends Application {
         }
     }
 
-    public static boolean isDebug(){
+    /**
+     * debug模式
+     *
+     * @return 是否开启
+     */
+    public boolean isDebug() {
         return true;
     }
 
+    @Override
+    public String getPackageName() {
+        return "com.putao.camera";
+    }
+
+    /**
+     * 设置sdCard路径
+     *
+     * @return sdCard路径
+     */
+    protected String getSdCardPath() {
+        return SDCardUtils.getSDCardPath() + File.separator + getLogTag();
+    }
+
+    /**
+     * 设置调试日志标签名
+     *
+     * @return 调试日志标签名
+     */
+    protected String getLogTag() {
+        return "putao_camera";
+    }
+
+    /**
+     * 网络缓存文件大小
+     *
+     * @return 缓存文件大小
+     */
+    protected int getNetworkCacheSize() {
+        return 20 * 1024 * 1024;
+    }
+
+    @Override
+    protected int getNetworkCacheMaxAgeTime() {
+        return 0;
+    }
+
+    /**
+     * 捕捉到异常就退出App
+     *
+     * @param ex 异常信息
+     */
+    protected void onCrash(Throwable ex) {
+        Logger.e("APP崩溃了,错误信息是" + ex.getMessage());
+        ex.printStackTrace();
+        ActivityManager.getInstance().killProcess(getApplicationContext());
+    }
+
+    protected String getNetworkCacheDirectoryPath() {
+        return sdCardPath + File.separator + "http_cache";
+    }
+
+    /**
+     * 监听程序已经在后台
+     */
+    private class HomeBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (isServiceClose) {
+                startRedDotService();
+                isServiceClose = false;
+            }
+        }
+    }
+
+    /**
+     * 启动内部推送
+     */
+    private void startRedDotService() {
+        if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
+        Intent intent = new Intent(ACTION_PUSH_SERVICE);
+        intent.setPackage(getPackageName());
+        startService(intent);
+    }
 
     /**
      * 以下为通行证定义常量
      */
+    public static final String Fore_Message = "com.putao.isFore.message";
+    public static final String Not_Fore_Message = "com.putao.isNotFore.message";
     //===================preference key===========================
-    public static  String app_id;
+    public static String app_id;
     public static final String PREFERENCE_KEY_UID = "uid";
     public static final String PREFERENCE_KEY_TOKEN = "token";
     public static final String PREFERENCE_KEY_NICKNAME = "nickname";

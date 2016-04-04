@@ -24,7 +24,7 @@ public class AccountApi {
     public static final String PLATFORM_ID = "1";   //平台id
     public static final String CLIENT_TYPE = "2";  //设备类型
 
-    public static final String BASE_URL = MainApplication.isDebug() ? "https://account-api-dev.putao.com/" : "https://account-api.putao.com/";
+    public static final String BASE_URL = MainApplication.isDebug ? "https://account-api-dev.putao.com/" : "https://account-api.putao.com/";
     public static String APP_ID;//app_id
     public static String VERSION;//版本号
     public static String SECRETKEY;
