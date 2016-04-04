@@ -24,8 +24,8 @@ import java.util.Map;
 
 public class DownloadFinishMaterialCenterActivity extends BaseActivity implements View.OnClickListener {
     private Button back_btn, right_btn;
-    private TextView title_tv,sticker_count_tv,dynamic_count_tv,template_count_tv;
-    private RelativeLayout sticker_management_rl,dynamic_pasting_management_rl,template_management_rl;
+    private TextView title_tv, sticker_count_tv, dynamic_count_tv, template_count_tv;
+    private RelativeLayout sticker_management_rl, dynamic_pasting_management_rl, template_management_rl;
     ArrayList<StickerCategoryInfo> StickerCategoryInfo_list;
     ArrayList<DynamicIconInfo> DynamicIconInfo_list;
     ArrayList<TemplateIconInfo> TemplateIconInfo_list;
@@ -38,17 +38,17 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
 
     @Override
     public void doInitSubViews(View view) {
-        sticker_count_tv=queryViewById(R.id.sticker_count_tv);
-        dynamic_count_tv=queryViewById(R.id.dynamic_count_tv);
-        template_count_tv=queryViewById(R.id.template_count_tv);
+        sticker_count_tv = queryViewById(R.id.sticker_count_tv);
+        dynamic_count_tv = queryViewById(R.id.dynamic_count_tv);
+        template_count_tv = queryViewById(R.id.template_count_tv);
         back_btn = queryViewById(R.id.back_btn);
         title_tv = queryViewById(R.id.title_tv);
         right_btn = queryViewById(R.id.right_btn);
-        sticker_management_rl=queryViewById(R.id.sticker_management_rl);
-        dynamic_pasting_management_rl=queryViewById(R.id.dynamic_pasting_management_rl);
-        template_management_rl=queryViewById(R.id.template_management_rl);
+        sticker_management_rl = queryViewById(R.id.sticker_management_rl);
+        dynamic_pasting_management_rl = queryViewById(R.id.dynamic_pasting_management_rl);
+        template_management_rl = queryViewById(R.id.template_management_rl);
 
-        addOnClickListener(back_btn, sticker_management_rl, dynamic_pasting_management_rl,template_management_rl);
+        addOnClickListener(back_btn, sticker_management_rl, dynamic_pasting_management_rl, template_management_rl);
 //        queryMatericalCenterList();
     }
 
@@ -86,13 +86,17 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
         Map<String, String> map = new HashMap<String, String>();
         map.put("type", "sticker");
         StickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        double size = 0;
+        for (StickerCategoryInfo stickerCategoryInfo : StickerCategoryInfo_list) {
+            size = Double.parseDouble(stickerCategoryInfo.zipSize) + size;
+        }
         map.put("type", "dynamic");
         DynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
         map.put("type", "template");
         TemplateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
-        sticker_count_tv.setText(StickerCategoryInfo_list.size()+"套(共"+"文件大小MB"+")");
-        dynamic_count_tv.setText(DynamicIconInfo_list.size()+"套(共"+"文件大小MB"+")");
-        template_count_tv.setText(TemplateIconInfo_list.size()+"套(共"+"文件大小MB"+")");
+        sticker_count_tv.setText(StickerCategoryInfo_list.size() + "套(共" +size+ "MB)");
+        dynamic_count_tv.setText(DynamicIconInfo_list.size() + "套(共" + "文件大小MB" + ")");
+        template_count_tv.setText(TemplateIconInfo_list.size() + "套(共" + "文件大小MB" + ")");
 
 
     }

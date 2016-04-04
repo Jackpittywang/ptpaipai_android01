@@ -12,6 +12,7 @@ import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.TemplateCategoryInfo;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
@@ -48,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             TableUtils.createTable(db, true, DynamicCategoryInfo.class);
             TableUtils.createTable(db, true, TemplateCategoryInfo.class);
             TableUtils.createTable(db, true, TemplateIconInfo.class);
+            TableUtils.createTable(db, true, StickerUnZipInfo.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TableUtils.dropTable(db, DynamicCategoryInfo.class);
                 TableUtils.dropTable(db, TemplateCategoryInfo.class);
                 TableUtils.dropTable(db, TemplateIconInfo.class);
+                TableUtils.dropTable(db, StickerUnZipInfo.class);
                 onCreate(db);
                 // 不需要 break
             case 7:

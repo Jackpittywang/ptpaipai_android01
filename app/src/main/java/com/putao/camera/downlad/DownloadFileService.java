@@ -10,6 +10,7 @@ import android.os.IBinder;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
@@ -218,14 +219,16 @@ public class DownloadFileService extends Service {
                     downloadFile(url, floderPath);
                     if (type == DOWNLOAD_TYPE_STICKER) {
                         StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
+                        String url = item.download_url;
+//                        MainApplication.getDBServer().addStickerCategoryInfo(item);
+//                        StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
+                        item.zipSize = unZipStickerFile(saveFile, url) + "";
                         MainApplication.getDBServer().addStickerCategoryInfo(item);
-                        unZipStickerFile(saveFile);
-                    } else if(type ==DOWNLOAD_TYPE_DYNAMIC){
+                    } else if (type == DOWNLOAD_TYPE_DYNAMIC) {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
                         MainApplication.getDBServer().addDynamicIconInfo(item);
                         unZipDynamicFile(saveFile);
-                    }
-                    else {
+                    } else {
                         TemplateIconInfo item = (TemplateIconInfo) intent.getSerializableExtra("item");
                         MainApplication.getDBServer().addTemplateIconInfoInfo(item);
                         unZipTemplateFile(saveFile);
@@ -241,9 +244,18 @@ public class DownloadFileService extends Service {
         return START_STICKY;
     }
 
-    private void unZipStickerFile(File zipFile) {
+    private double unZipStickerFile(File zipFile, String url) {
+        final StickerUnZipInfo stickerUnZipInfo = new StickerUnZipInfo();
+        double zipSize = 0;
+        stickerUnZipInfo.zipName = zipFile.toString();
         try {
-            FileOperationHelper.unZipFilePath(zipFile);
+            zipSize = new FileOperationHelper() {
+                @Override
+                public void upZipProgress(String name) {
+                    stickerUnZipInfo.imgName = name;
+                    MainApplication.getDBServer().addStickerUnZipInfo(stickerUnZipInfo);
+                }
+            }.unZipFileWithProgress(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
@@ -260,6 +272,7 @@ public class DownloadFileService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return zipSize;
     }
 
     private void unZipDynamicFile(File zipFile) {
@@ -287,8 +300,6 @@ public class DownloadFileService extends Service {
             e.printStackTrace();
         }
     }
-
-
 
 
     private void unZipTemplateFile(File zipFile) {
