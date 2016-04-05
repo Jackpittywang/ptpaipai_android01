@@ -101,6 +101,11 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     public void delete(TemplateListInfo.PackageInfo info, final int position) {
     }
 
+    @Override
+    public void queryDetail(TemplateListInfo.PackageInfo info, int position) {
+
+    }
+
     private void updateProgressPartly(int progress, int position) {
         int firstVisiblePosition = mGridView.getFirstVisiblePosition();
         int lastVisiblePosition = mGridView.getLastVisiblePosition();
@@ -108,11 +113,13 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
             View view = mGridView.getChildAt(position - firstVisiblePosition);
             if (view.getTag() instanceof CollageManagementAdapter.ViewHolder) {
                 CollageManagementAdapter.ViewHolder vh = (CollageManagementAdapter.ViewHolder) view.getTag();
-                vh.download_status_pb.setProgress(progress);
+//                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
-                    vh.download_status_pb.setVisibility(View.VISIBLE);
+                    vh.pb_download.setVisibility(View.VISIBLE);
+//                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
-                    vh.download_status_pb.setVisibility(View.INVISIBLE);
+                    vh.pb_download.setVisibility(View.GONE);
+//                    vh.download_status_pb.setVisibility(View.INVISIBLE);
 //                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
                 }
             }

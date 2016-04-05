@@ -74,11 +74,12 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
             holder.water_mark_photo_download_iv = (ImageView) convertView.findViewById(R.id.water_mark_photo_download_iv);
             holder.water_mark_category_name_tv = (TextView) convertView.findViewById(R.id.water_mark_category_name_tv);
             holder.water_mark_category_download_btn = (ImageView) convertView.findViewById(R.id.water_mark_category_download_btn);
-            holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
+//            holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
             holder.water_mark_category_count_tv = (TextView) convertView.findViewById(R.id.water_mark_category_count_tv);
             holder.water_mark_category_size_tv = (TextView) convertView.findViewById(R.id.water_mark_category_size_tv);
             holder.water_mark_photo_ok_iv = (ImageView) convertView.findViewById(R.id.water_mark_photo_ok_iv);
             holder.water_mark_photo_new_iv = (ImageView) convertView.findViewById(R.id.water_mark_photo_new_iv);
+            holder.pb_download = (ProgressBar) convertView.findViewById(R.id.pb_download);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -116,6 +117,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     if (null != updateCallback) {
+                        updateCallback.queryDetail(info,position);
                         updateCallback.startProgress(info, position);
                     }
                 }
@@ -126,7 +128,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         } else {
             holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
         }
-        holder.download_status_pb.setVisibility(View.INVISIBLE);
+//        holder.download_status_pb.setVisibility(View.INVISIBLE);
         holder.water_mark_category_count_tv.setText(info.num + "枚");
 
         holder.water_mark_category_size_tv.setText(info.size);
@@ -143,7 +145,7 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
         public TextView water_mark_category_size_tv;
         public ImageView water_mark_photo_download_iv,water_mark_category_download_btn;
 //        public Button water_mark_category_download_btn;
-        public ProgressBar download_status_pb;
+//        public ProgressBar download_status_pb;
         public ImageView water_mark_photo_ok_iv;
         public ImageView water_mark_photo_new_iv;
         public ProgressBar pb_download;

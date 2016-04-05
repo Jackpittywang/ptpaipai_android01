@@ -17,6 +17,7 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.http.CacheRequest;
+import com.putao.camera.setting.watermark.bean.StickerPackageDetailInfo;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
@@ -99,6 +100,8 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         ActivityHelper.startActivity(mActivity, WaterMarkCategoryDetailActivity.class, bundle);
     }
 
+
+
     @Override
     public void startProgress(StickerListInfo.PackageInfo info, final int position) {
         String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
@@ -113,6 +116,35 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         mManagementAdapter.notifyDataSetChanged();*/
     }
 
+    @Override
+    public void queryDetail(StickerListInfo.PackageInfo info, int position) {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+                try {
+                    Gson gson = new Gson();
+                    StickerPackageDetailInfo mStickerPackageDetailInfo = gson.fromJson(json.toString(), StickerPackageDetailInfo.class);
+//                    MainApplication.getDBServer().addStickerCategoryInfo(item);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+                Loger.d("queryWaterMarkDetail(),onFail():" + whatCode + "," + statusCode + "," + responseString);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest("/material/details?type=sticker_pic&material_id=" + info.id, map,
+                mWaterMarkUpdateCallback);
+        mCacheRequest.startGetRequest();
+
+    }
+
     private void updateProgressPartly(int progress, int position) {
         int firstVisiblePosition = mGridView.getFirstVisiblePosition();
         int lastVisiblePosition = mGridView.getLastVisiblePosition();
@@ -120,13 +152,13 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             View view = mGridView.getChildAt(position - firstVisiblePosition);
             if (view.getTag() instanceof WaterMarkManagementAdapter.ViewHolder) {
                 WaterMarkManagementAdapter.ViewHolder vh = (WaterMarkManagementAdapter.ViewHolder) view.getTag();
-                vh.download_status_pb.setProgress(progress);
+//                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
                     vh.pb_download.setVisibility(View.VISIBLE);
                     vh.water_mark_category_download_btn.setVisibility(View.GONE);
                     vh.water_mark_category_download_btn.setOnClickListener(null);
 //                    vh.water_mark_category_download_btn.setText("下载中");
-                    vh.download_status_pb.setVisibility(View.VISIBLE);
+//                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     //                    vh.water_mark_category_download_btn.setText("删除");
                     //                    vh.download_status_pb.setVisibility(View.INVISIBLE);

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_bg_signup"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <com.sunnybear.library.view.NavigationBar
+        style="@style/style_navigation_bar"
+        android:background="@color/white"
+        auto:nav_left_icon="@drawable/back_selector"
+        auto:nav_main_title="个人简介"
+        auto:nav_main_title_color="@color/text_color"
+        auto:nav_right_title="保存"
+        auto:nav_right_title_color="@drawable/text_select" />
+
+    <!--间隔线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider_color" />
+
+    <!--昵称-->
+    <EditText
+        android:id="@+id/et_intro"
+        style="@style/XiangjiText.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:gravity="top"
+        android:hint="这个用户很懒，还没有留下签名"
+        android:lineSpacingExtra="5dp"
+        android:maxLength="40"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:textCursorDrawable="@null" />
+    <!--间隔线-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider_color" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_info_limit"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/text_userinfo_limit_shape"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="40"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+</LinearLayout>

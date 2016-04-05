@@ -59,9 +59,12 @@ public class MainApplication extends BasicApplication {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
         // Umeng统计参数设置
 //        UmengAnalysisHelper.setCommonConfig();
+
         //app_id配置
         app_id = AppUtils.getMetaData(getApplicationContext(), KEY_APP_ID);
-        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
+//        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
+        AccountApi.install("1", app_id, "6a395698c5c243d0ba55ed2175c566ff");
+
         // Umeng更新参数设置
         UmengUpdateHelper.getInstance().setCommonConfig();
         // Umeng消息推送

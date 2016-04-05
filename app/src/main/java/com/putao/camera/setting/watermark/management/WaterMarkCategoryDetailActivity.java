@@ -3,7 +3,6 @@ package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
@@ -96,11 +95,12 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     }
 
     private boolean isDownloaded() {
-        List<WaterMarkCategoryInfo> list = null;
+        List<StickerCategoryInfo> list = null;
         Map<String, String> map = new HashMap<String, String>();
         map.put("id",id);
         try {
-            list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
+            list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+//            list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,7 +115,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 //            download_status_pb.setVisibility(View.INVISIBLE);
 
             download_btn.setVisibility(View.VISIBLE);
-            download_btn.setText("删除");
+            download_btn.setText("已下载");
             download_btn.setBackgroundResource(R.drawable.gray_btn_bg_larger_corners);
         } else {
             download_btn.setVisibility(View.VISIBLE);
@@ -135,16 +135,16 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     return;
                 }
                 if (isDownloaded()) {
-                    Map<String, String> map = new HashMap<String, String>();
+                   /* Map<String, String> map = new HashMap<String, String>();
                     map.put("id", id+"");
                     try {
-                        MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
+//                        MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     updateDownloadBtn();
                     Bundle bundle = new Bundle();
-                    EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
+                    EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));*/
                 } else {
                     String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
                     if(mStickerPackageDetailInfo == null || path == null || mStickerPackageDetailInfo.data.download_url ==null) return;
@@ -301,6 +301,11 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private void updateProgressPartly(int progress, int position) {
         if (progress >= 0 && progress <= 100) {
 //            download_status_pb.setProgress(progress);
+        }else {
+            download_btn.setVisibility(View.VISIBLE);
+            download_btn.setText("已下载");
+            download_btn.setBackgroundResource(R.drawable.gray_btn_bg_larger_corners);
         }
+
     }
 }

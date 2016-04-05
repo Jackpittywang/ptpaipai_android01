@@ -73,7 +73,8 @@ public class CollageManagementAdapter extends BaseAdapter {
             holder.collage_photo_download_iv= (ImageView) convertView.findViewById(R.id.collage_photo_download_iv);
             holder.collage_photo_new_iv= (ImageView) convertView.findViewById(R.id.collage_photo_new_iv);
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);
-            holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
+//            holder.download_status_pb = (ProgressBar) convertView.findViewById(R.id.download_status_pb);
+            holder.pb_download = (ProgressBar) convertView.findViewById(R.id.pb_download);
             holder.collage_photo_ok_iv = (ImageView) convertView.findViewById(R.id.collage_photo_ok_iv);
             convertView.setTag(holder);
         } else {
@@ -95,7 +96,6 @@ public class CollageManagementAdapter extends BaseAdapter {
             holder.collage_download_iv.setOnClickListener(null);
 //            holder.collage_photo_new_iv.setVisibility(View.INVISIBLE);
         } else {
-            holder.collage_photo_ok_iv.setVisibility(View.INVISIBLE);
             holder.collage_download_iv.setOnClickListener(new View.OnClickListener() {
                 private boolean isClick = false;
 
@@ -126,6 +126,7 @@ public class CollageManagementAdapter extends BaseAdapter {
     class ViewHolder {
         public ImageView collage_download_iv;
         public ImageView collage_photo_ok_iv,collage_photo_new_iv,collage_photo_download_iv;
-        public ProgressBar download_status_pb;
+//        public ProgressBar download_status_pb;
+        public ProgressBar pb_download;
     }
 }

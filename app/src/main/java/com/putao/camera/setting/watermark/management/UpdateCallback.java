@@ -7,4 +7,5 @@ public interface UpdateCallback<K> {
     public void startProgress(K info, int position);
 
     public void delete(K info, int position);
+    public void queryDetail(K info, int position);
 }

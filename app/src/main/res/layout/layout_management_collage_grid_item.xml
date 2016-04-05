@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <ProgressBar
+        <!--<ProgressBar
             android:id="@+id/download_status_pb"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="150dp"
@@ -27,7 +27,7 @@
             android:orientation="horizontal"
             android:progress="0"
             android:progressDrawable="@drawable/download_progressbar"
-            android:visibility="invisible" />
+            android:visibility="invisible" />-->
 
         <ImageView
             android:id="@+id/collage_photo_new_iv"
@@ -38,14 +38,25 @@
             android:src="@drawable/photo_new_icon"
             android:visibility="invisible" />
         <ImageView
-            android:id="@+id/iv_check"
+            android:id="@+id/collage_photo_download_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="@dimen/dimens_10dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/check_box_nor" />
+            android:src="@drawable/btn_22_01"
+            android:visibility="visible" />
+        <ProgressBar
+            android:id="@+id/pb_download"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:src="@drawable/btn_22_01"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

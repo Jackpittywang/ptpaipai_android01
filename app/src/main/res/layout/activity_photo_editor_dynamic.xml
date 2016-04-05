@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/color_c8c7c5"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title_bar_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/black">
+
+        <LinearLayout
+            android:id="@+id/left_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="@drawable/selector_back_btn" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_dark_898989"
+                android:textSize="@dimen/dimens_20dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/right_btn_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:paddingRight="@dimen/dimens_10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_save"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:text="保存/分享" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/photo_area_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_sticker"
+        android:layout_below="@id/title_bar_rl"
+        android:background="@color/black">
+
+            <ImageView
+                android:id="@+id/show_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter" />
+    </FrameLayout>
+    <com.putao.camera.camera.view.AnimationImageView
+        android:layout_below="@id/title_bar_rl"
+        android:layout_above="@id/layout_sticker"
+        android:id="@+id/animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+         />
+
+    <LinearLayout
+        android:id="@+id/layout_sticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#252525"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_sticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layout_sticker_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#252525"
+                android:orientation="horizontal"></LinearLayout>
+
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

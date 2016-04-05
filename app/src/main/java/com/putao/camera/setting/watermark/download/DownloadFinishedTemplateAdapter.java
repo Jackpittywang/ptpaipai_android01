@@ -63,7 +63,7 @@ public class DownloadFinishedTemplateAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_collage_grid_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_management_finished_collage_grid_item, null);
             holder = new ViewHolder();
             holder.collage_photo_new_iv= (ImageView) convertView.findViewById(R.id.collage_photo_new_iv);
             holder.collage_download_iv = (ImageView) convertView.findViewById(R.id.collage_download_iv);

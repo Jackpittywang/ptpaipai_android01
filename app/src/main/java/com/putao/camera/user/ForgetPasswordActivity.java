@@ -16,6 +16,10 @@ import com.putao.account.AccountConstants;
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.base.PTXJActivity;
+import com.putao.camera.bean.UserInfo;
+import com.putao.camera.constants.UserApi;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.StringUtils;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
@@ -193,16 +197,16 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
      * 验证登录
      */
     private void checkLogin() {
-       /* networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
+        networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
                 AccountHelper.setUserInfo(result);
                 EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
-                startActivity(IndexActivity.class);
+//                startActivity(IndexActivity.class);
                 finish();
                 loading.dismiss();
             }
-        });*/
+        });
     }
 
 }

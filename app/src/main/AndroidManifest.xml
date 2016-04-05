@@ -39,6 +39,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true">
+        <meta-data
+            android:name="app_id"
+            android:value="1201" />
+
 
         <activity
             android:name=".logo.LogoActivity"
@@ -227,6 +231,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
 
+        <activity
+            android:name=".editor.PhotoDynamicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
+
 
         <activity
             android:name=".user.LoginActivity"
@@ -239,6 +248,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.PerfectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.CompleteActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.NickActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.UserInfoActivity"
             android:screenOrientation="portrait" />
 
 

@@ -220,10 +220,10 @@ public class DownloadFileService extends Service {
                     if (type == DOWNLOAD_TYPE_STICKER) {
                         StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
                         String url = item.download_url;
-//                        MainApplication.getDBServer().addStickerCategoryInfo(item);
-//                        StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
                         item.zipSize = unZipStickerFile(saveFile, url) + "";
                         MainApplication.getDBServer().addStickerCategoryInfo(item);
+
+
                     } else if (type == DOWNLOAD_TYPE_DYNAMIC) {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
                         MainApplication.getDBServer().addDynamicIconInfo(item);

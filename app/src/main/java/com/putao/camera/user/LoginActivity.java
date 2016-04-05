@@ -101,7 +101,9 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         new JPushHeaper().setAlias(mContext, result.getString("uid"));
                                         mContext.sendBroadcast(new Intent(MainApplication.Not_Fore_Message));
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
-                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
+//                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
+                                        startActivity(CompleteActivity.class);
+//                                        startActivity(PerfectActivity.class);
                                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                                         }

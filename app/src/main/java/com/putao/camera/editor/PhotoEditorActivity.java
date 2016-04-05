@@ -75,12 +75,12 @@ import java.util.Map;
 
 public class PhotoEditorActivity extends BaseActivity implements View.OnClickListener {
     private FrameLayout photo_area_rl;
-    private Button edit_button_save, edit_button_cancel, backBtn, btn_save, btn_mark_hide;
-    private TextView tv_action;
+    private Button edit_button_save, edit_button_cancel, backBtn,btn_mark_hide;
+    private TextView tv_action,tv_save;
     private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
-    private LinearLayout btn_picture_filter, choice_water_mark_btn, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
-            mark_cate_contanier, btn_cut_image,rotate_image_ll,rotate_contanier,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip;
+    private LinearLayout ll_picture_filter, choice_water_mark_ll, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
+            mark_cate_contanier, ll_cut_image,rotate_image_ll,rotate_contanier,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip,ll_dynamic_filter;
     private ViewGroup title_bar_rl, option_bars;
     // 相片编辑状态
     private HorizontalScrollView filter_scrollview;
@@ -101,6 +101,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
+    private Bundle bundle;
     public static final int CROP_11 = 1;
     public static final int CROP_43 = 2;
 
@@ -125,6 +126,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void doInitSubViews(View view) {
+        ll_dynamic_filter=queryViewById(R.id.ll_dynamic_filter);
         anti_clockwise=queryViewById(R.id.anti_clockwise);
         clockwise_spin=queryViewById(R.id.clockwise_spin);
         horizontal_flip=queryViewById(R.id.horizontal_flip);
@@ -138,13 +140,13 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         edit_button_cancel = queryViewById(R.id.edit_button_cancel);
         edit_button_save = queryViewById(R.id.edit_button_save);
         backBtn = queryViewById(R.id.back_btn);
-        btn_save = queryViewById(R.id.btn_save);
+        tv_save = queryViewById(R.id.tv_save);
         btn_mark_hide = queryViewById(R.id.btn_mark_hide);
         btn_new_res = queryViewById(R.id.btn_new_res);
         show_image = queryViewById(R.id.show_image);
-        btn_cut_image = queryViewById(R.id.btn_cut_image);
-        choice_water_mark_btn = queryViewById(R.id.choice_water_mark_btn);
-        btn_picture_filter = queryViewById(R.id.btn_picture_filter);
+        ll_cut_image = queryViewById(R.id.ll_cut_image);
+        choice_water_mark_ll = queryViewById(R.id.choice_water_mark_ll);
+        ll_picture_filter = queryViewById(R.id.ll_picture_filter);
         title_bar_rl = queryViewById(R.id.title_bar_rl);
         filter_scrollview = queryViewById(R.id.filter_scrollview);
         filter_contanier = queryViewById(R.id.filter_contanier);
@@ -155,8 +157,8 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         mark_cate_contanier = queryViewById(R.id.mark_cate_contanier);
         tv_action = queryViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
-        addOnClickListener(btn_picture_filter, choice_water_mark_btn, btn_save, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
-                btn_new_res, btn_cut_image,rotate_image_ll,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip);
+        addOnClickListener(ll_picture_filter, choice_water_mark_ll, tv_save, backBtn, edit_button_cancel, edit_button_save, btn_mark_hide,
+                btn_new_res, ll_cut_image,rotate_image_ll,anti_clockwise,clockwise_spin,horizontal_flip,vertical_flip,ll_dynamic_filter);
         EventBus.getEventBus().register(this);
 
     }
@@ -250,6 +252,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void loadWaterMarkCategories() {
+        //读取已有水印
         initMarkCategoryInfos();
 
         mark_cate_contanier.removeAllViews();
@@ -410,6 +413,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 }
                 is_edited = true;
                 break;
+
 
             case PuTaoConstants.FINISH_TO_MENU_PAGE:
                 finish();
@@ -840,22 +844,28 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         }).show();
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_cut_image:
-                Bundle bundle = new Bundle();
+            case R.id.ll_dynamic_filter:
+                bundle = new Bundle();
+                bundle.putString("photo_data", photo_data);
+                ActivityHelper.startActivity(this, PhotoDynamicActivity.class, bundle);
+                break;
+            case R.id.ll_cut_image:
+                bundle = new Bundle();
                 bundle.putString("photo_data", photo_data);
                 ActivityHelper.startActivity(this, PhotoEditorCutActivity.class, bundle);
                 break;
-            case R.id.choice_water_mark_btn:
+            case R.id.choice_water_mark_ll:
                 showWaterMarkContent();
                 hideTitleAni();
                 showMarkContent();
                 tv_action.setText("贴纸");
                 mEditAction = EditAction.ACTION_Mark;
                 break;
-            case R.id.btn_picture_filter:
+            case R.id.ll_picture_filter:
                 filter_scrollview.setVisibility(View.VISIBLE);
                 hideTitleAni();
                 tv_action.setText("滤镜");
@@ -865,7 +875,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 showQuitTip();
             }
             break;
-            case R.id.btn_save:
+            case R.id.tv_save:
                 save();
                 break;
             case R.id.edit_button_cancel:

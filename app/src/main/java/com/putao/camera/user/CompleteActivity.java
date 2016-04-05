@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -19,9 +19,9 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.base.SelectPopupWindow;
+import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
-import com.putao.camera.util.ToasterHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
 import com.sunnybear.library.model.http.callback.JSONObjectCallback;
@@ -31,7 +31,6 @@ import com.sunnybear.library.util.ImageUtils;
 import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.StringUtils;
 import com.sunnybear.library.util.ToastUtils;
-import com.sunnybear.library.view.CleanableEditText;
 import com.sunnybear.library.view.image.ImageDraweeView;
 
 import java.io.File;
@@ -41,12 +40,10 @@ import butterknife.OnClick;
 
 /**
  * 完善用户信息
+ * Created by guchenkai on 2015/11/29.
  */
-public class PerfectActivity extends PTXJActivity implements View.OnClickListener {
-    public static final String EVENT_USER_INFO_SAVE_SUCCESS = "user_info_save_success";
-    public static final String ET_MOBILE = "et_mobile";
-    public static final String ET_PASSWORD = "et_password";
-    public static final String ET_SMS_VERIFY = "et_sms_verify";
+public class CompleteActivity extends PTXJActivity implements View.OnClickListener {
+    //    public static final String EVENT_USER_INFO_SAVE_SUCCESS = "user_info_save_success";
     public static final String NICK_NAME = "nick_name";
     public static final String USER_INFO = "user_info";
     @Bind(R.id.ll_main)
@@ -55,13 +52,16 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
     RelativeLayout rl_header_icon;
     @Bind(R.id.iv_header_icon)
     ImageDraweeView iv_header_icon;
-    @Bind(R.id.et_nickname)
-    CleanableEditText et_nickname;
-    @Bind(R.id.et_intro)
-    CleanableEditText et_intro;
+    @Bind(R.id.rl_nick_name)
+    RelativeLayout rl_nick_name;
+    @Bind(R.id.tv_nick_name)
+    TextView tv_nick_name;
+    @Bind(R.id.rl_user_info)
+    RelativeLayout rl_user_info;
+    @Bind(R.id.tv_user_info)
+    TextView tv_user_info;
 
 
-    private JSONObject mObject;
     private SelectPopupWindow mSelectPopupWindow;
     private final int CAMERA_REQCODE = 1;
     private final int ALBUM_REQCODE = 2;
@@ -87,16 +87,16 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_perfect;
+        return R.layout.activity_complete;
     }
 
     @Override
     public void onViewCreatedFinish(Bundle savedInstanceState) {
         addNavigation();
         filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
+        initInfo();
 //        IndexActivity.isNotRefreshUserInfo = false;
-        et_nickname.setText(AccountHelper.getUserNickName());
-//        initInfo();
+
         mSelectPopupWindow = new SelectPopupWindow(mContext) {
             @Override
             public void onFirstClick(View v) {
@@ -112,51 +112,15 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
         };
     }
 
-    @Override
-    public void onRightAction() {
-        if (et_nickname.length() < 2) {
-            ToastUtils.showToastShort(mContext, "请设置2-24字的用户昵称");
-
-        }
-        String ext = "";
-        String filename = "";
-        String hash = "";
-        if (null != mObject) {
-            ext = mObject.getString("ext");
-            filename = mObject.getString("filename");
-            hash = mObject.getString("hash");
-        }
-        loading.show();
-        networkRequest(UserApi.userAdd(ext, filename, hash, et_nickname.getText().toString(), et_intro.getText().toString()),
-                new SimpleFastJsonCallback<String>(String.class, loading) {
-                    @Override
-                    public void onSuccess(String url, String result) {
-                        ToasterHelper.show(mContext,"成功");
-                        perfect();
-                    }
-
-                    @Override
-                    public void onFinish(String url, boolean isSuccess, String msg) {
-                        super.onFinish(url, isSuccess, msg);
-                        loading.dismiss();
-                        if (!TextUtils.isEmpty(msg))
-                            ToastUtils.showToastShort(mContext, msg);
-                    }
-                });
-    }
-
-    private void perfect() {
-        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
-        EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
-        finish();
-    }
-
-/*    private void initInfo() {
+    private void initInfo() {
         networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
-                et_nickname.setText(result.getNick_name());
+                iv_header_icon.setImageURL(result.getHead_img());
+                tv_nick_name.setText(result.getNick_name());
+                tv_user_info.setText(result.getProfile().isEmpty() ? "这个用户很懒" : result.getProfile());
                 AccountHelper.setUserInfo(result);
+                loading.dismiss();
             }
 
             @Override
@@ -165,20 +129,32 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                 ToastUtils.showToastLong(mContext, "登录失败请重新登录");
             }
         });
-    }*/
+    }
 
     @Override
     protected String[] getRequestUrls() {
         return new String[0];
     }
 
-    @OnClick({R.id.rl_header_icon})
+    @OnClick({R.id.rl_header_icon, R.id.rl_nick_name, R.id.rl_user_info})
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
         switch (v.getId()) {
             case R.id.rl_header_icon://选择用户头像
                 mSelectPopupWindow.show(ll_main);
+                break;
+            case R.id.rl_nick_name://修改用户昵称
+                bundle.putString(NICK_NAME, tv_nick_name.getText().toString());
+                Intent nickIntent = new Intent(this, NickActivity.class);
+                nickIntent.putExtra(NICK_NAME, bundle);
+                startActivityForResult(nickIntent, CHANGE_NICK);
+                break;
+            case R.id.rl_user_info://修改用户简介
+                bundle.putString(USER_INFO, tv_user_info.getText().toString());
+                Intent infoiIntent = new Intent(this, UserInfoActivity.class);
+                infoiIntent.putExtra(USER_INFO, bundle);
+                startActivityForResult(infoiIntent, CHANGE_INFO);
                 break;
         }
     }
@@ -210,14 +186,10 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
             @Override
             public void onSuccess(String url, JSONObject result) {
                 String hash = result.getString("hash");
-                if (StringUtils.isEmpty(hash)){
-                    ToasterHelper.show(mContext,"上传文件成功");
+                if (StringUtils.isEmpty(hash))
                     getUploadToken();
-                }else{
+                else
                     upload("jpg", hash, hash);
-                }
-
-                loading.dismiss();
             }
 
             @Override
@@ -242,15 +214,14 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                 UploadApi.uploadFile(uploadToken, sha1, uploadFile, new UploadFileTask.UploadCallback() {
                     @Override
                     public void onSuccess(JSONObject result) {
+
                         Logger.d(result.toJSONString());
-                        mObject = result;
-                       /* Bundle bundle = new Bundle();
+                        Bundle bundle = new Bundle();
                         bundle.putString("ext", result.getString("ext"));
                         bundle.putString("filename", result.getString("filename"));
                         bundle.putString("hash", result.getString("hash"));
-                        ToasterHelper.show(mContext,"上传PHP");
                         //上传PHP服务器
-                        mHandler.sendMessage(Message.obtain(mHandler, 0x01, bundle));*/
+                        mHandler.sendMessage(Message.obtain(mHandler, 0x01, bundle));
                     }
                 });
             }
@@ -266,7 +237,7 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                     @Override
                     public void onSuccess(String url, String result) {
                         Logger.i("保存用户信息");
-                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
+//                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
                         EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
 //                        startActivity(IndexActivity.class);
 //                        finish();
@@ -276,9 +247,9 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        EventBusHelper.post(EVEVT_USER_INFO, EVEVT_USER_INFO);
         if (resultCode == RESULT_OK) {
             Bitmap bitmap = null;
-            loading.show();
             switch (requestCode) {
                 case CAMERA_REQCODE://相机选择
                     Bundle bundle = data.getExtras();
@@ -289,9 +260,11 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                     checkSha1(filePath);
                     break;
                 case ALBUM_REQCODE://相册选择
-                    ToastUtils.showToastShort(this, "系统图库返回");
+//                    ToastUtils.showToastShort(this, "系统图库返回");
+
                     Uri selectedImage = data.getData();
-                    String picturePath=  ImageUtils.getImageAbsolutePath(PerfectActivity.this,selectedImage);
+                    String picturePath = ImageUtils.getImageAbsolutePath(CompleteActivity.this, selectedImage);
+
                     Logger.d(picturePath);
                     bitmap = ImageUtils.getSmallBitmap(picturePath, 320, 320);
                     iv_header_icon.resize(320, 320).setDefaultImage(bitmap);
@@ -300,5 +273,22 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                     break;
             }
         }
+        switch (requestCode) {
+            case CHANGE_NICK:
+                if (resultCode == 1) {
+                    EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
+                    initInfo();
+                }
+                break;
+            case CHANGE_INFO:
+                if (resultCode == 1)
+                    initInfo();
+                break;
+        }
+    }
+
+    @Override
+    public void onLeftAction() {
+        super.onLeftAction();
     }
 }
