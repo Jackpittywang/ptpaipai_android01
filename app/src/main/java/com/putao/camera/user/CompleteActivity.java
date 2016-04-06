@@ -22,6 +22,8 @@ import com.putao.camera.base.SelectPopupWindow;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
+import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.util.ActivityHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
 import com.sunnybear.library.model.http.callback.JSONObjectCallback;
@@ -116,6 +118,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
+
                 iv_header_icon.setImageURL(result.getHead_img());
                 tv_nick_name.setText(result.getNick_name());
                 tv_user_info.setText(result.getProfile().isEmpty() ? "这个用户很懒" : result.getProfile());
@@ -131,12 +134,19 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ActivityHelper.startActivity(this, MenuActivity.class);
+    }
+
     @Override
     protected String[] getRequestUrls() {
         return new String[0];
     }
 
-    @OnClick({R.id.rl_header_icon, R.id.rl_nick_name, R.id.rl_user_info})
+    @OnClick({R.id.rl_header_icon, R.id.rl_nick_name,R.id.rl_user_info})
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();
@@ -286,6 +296,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
                 break;
         }
     }
+
 
     @Override
     public void onLeftAction() {

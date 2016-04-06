@@ -245,6 +245,7 @@ public class DownloadFileService extends Service {
     }
 
     private double unZipStickerFile(File zipFile, String url) {
+//        double fileSize=FileOperationHelper.getFileSize(zipFile);
         final StickerUnZipInfo stickerUnZipInfo = new StickerUnZipInfo();
         double zipSize = 0;
         stickerUnZipInfo.zipName = zipFile.toString();

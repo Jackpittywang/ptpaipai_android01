@@ -18,6 +18,7 @@ import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
+import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.NetManager;
 import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
@@ -103,7 +104,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
                                         startActivity(CompleteActivity.class);
-//                                        startActivity(PerfectActivity.class);
+//                                        startActivity(MenuActivity.class);
                                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                                         }
@@ -175,6 +176,15 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(MenuActivity.class);
+
+    }
+
+
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {

@@ -79,10 +79,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_ll,show_filter_btn, show_material_btn, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_ll,show_filter_btn, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
     private ImageButton btn_close_ar_list;
-    //    private RedPointBaseButton show_material_btn;
+    //    private RedPointBaseButton show_material_ll;
   private ImageView Tips;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
@@ -204,7 +204,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
         Tips = queryViewById(R.id.Tips);
         tv_takephoto = queryViewById(R.id.tv_takephoto);
-        show_material_btn = queryViewById(R.id.show_material_btn);
+        show_material_ll = queryViewById(R.id.show_material_ll);
         container = queryViewById(R.id.container);
         camera_top_rl = queryViewById(R.id.camera_top_rl);
         flash_light_btn = queryViewById(R.id.flash_light_btn);
@@ -232,7 +232,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn,album_btn, show_sticker_ll, show_filter_btn,show_material_btn, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
+        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn,album_btn, show_sticker_ll, show_filter_btn,show_material_ll, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
                 Tips, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
@@ -319,7 +319,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 //                if (mOrientationCompensation != orientationCompensation) {
 //                    mOrientationCompensation = orientationCompensation;
 //                    OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
-//                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_ll, show_material_btn,
+//                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_ll, show_material_ll,
 //                            take_photo_btn, back_home_btn, camera_set_btn);
 //
 //                }
@@ -585,7 +585,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.btn_close_ar_list:
                 showSticker(false);
                 break;
-            case R.id.show_material_btn:
+            case R.id.show_material_ll:
                 ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
 
                 break;

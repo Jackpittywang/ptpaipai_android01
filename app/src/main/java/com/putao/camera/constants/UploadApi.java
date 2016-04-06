@@ -22,7 +22,7 @@ public class UploadApi {
     public static final String REQUEST_FILE = "file";
 
     private static final String BASE_URL = MainApplication.isDebug ? "http://upload.dev.putaocloud.com/" : "http://upload.putaocloud.com/";//基础url
-    private static final String UPLOAD_APP_ID = "1003";//上传使用的app_id
+    private static final String UPLOAD_APP_ID = "1010";//上传使用的app_id
 
     public static void install(String base_url) {
 //        BASE_URL = base_url;
@@ -47,6 +47,7 @@ public class UploadApi {
     /**
      * 上传文件
      */
+
     public static final String URL_UPLOAD_FILE = BASE_URL + "upload";
 
     /**

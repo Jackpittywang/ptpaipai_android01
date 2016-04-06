@@ -207,7 +207,7 @@ public abstract class FileOperationHelper {
      * @return
      * @throws Exception
      */
-    private static double getFileSize(File file) throws IOException {
+    public static double getFileSize(File file) throws IOException {
         long size = 0;
         if (file.exists()) {
             FileInputStream fis = null;

@@ -117,7 +117,7 @@ public class RegisterActivity extends PTXJActivity implements View.OnClickListen
                 });
                 break;
             case R.id.tv_user_protocol://用户服务协议
-//                startActivity(ProtocolActivity.class);
+                startActivity(ProtocolActivity.class);
                 break;
             case R.id.image_graph_verify://改变图形验证码
                 AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_REGISTER);

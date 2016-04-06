@@ -1,4 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/img_index_bg"
@@ -11,6 +13,7 @@
     <!--android:layout_gravity="bottom|right"-->
     <!--android:layout_marginBottom="3dp"-->
     <!--android:layout_marginRight="-5dp" />-->
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -232,7 +235,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/loading"
+        android:id="@+id/login_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -241,13 +244,23 @@
         android:visibility="visible"
         android:gravity="center_vertical">
 
-        <ImageView
+        <com.sunnybear.library.view.image.ImageDraweeView
+            android:id="@+id/iv_header_icon"
+            style="@style/image_circle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            auto:placeholderImage="@drawable/img_head_signup" />
+
+      <!--  <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
-            android:src="@drawable/img_head_signup"/>
+            android:src="@drawable/img_head_signup"/>-->
 
         <TextView
+            android:id="@+id/user_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

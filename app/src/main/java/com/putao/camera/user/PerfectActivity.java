@@ -2,6 +2,7 @@ package com.putao.camera.user;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,8 +20,11 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.base.SelectPopupWindow;
+import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
+import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
@@ -32,6 +36,7 @@ import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.StringUtils;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
+import com.sunnybear.library.view.image.FastBlur;
 import com.sunnybear.library.view.image.ImageDraweeView;
 
 import java.io.File;
@@ -93,10 +98,16 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
     @Override
     public void onViewCreatedFinish(Bundle savedInstanceState) {
         addNavigation();
-        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
+        if (!AccountHelper.isLogin()) {
+            filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
 //        IndexActivity.isNotRefreshUserInfo = false;
-        et_nickname.setText(AccountHelper.getUserNickName());
+            et_nickname.setText(AccountHelper.getUserNickName());
 //        initInfo();
+        } else if ( AccountHelper.isLogin()) {
+            setMainTitle("修改用户信息");
+            getUserInfo();
+        }
+
         mSelectPopupWindow = new SelectPopupWindow(mContext) {
             @Override
             public void onFirstClick(View v) {
@@ -127,7 +138,7 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
             hash = mObject.getString("hash");
         }
         loading.show();
-        networkRequest(UserApi.userAdd(ext, filename, hash, et_nickname.getText().toString(), et_intro.getText().toString()),
+        networkRequest(UserApi.userAdd(ext, filename, hash, et_nickname.getText().toString(),et_intro.getText().toString()),
                 new SimpleFastJsonCallback<String>(String.class, loading) {
                     @Override
                     public void onSuccess(String url, String result) {
@@ -146,26 +157,14 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
     }
 
     private void perfect() {
-        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
-        EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
+        /*EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
+        EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);*/
+
+        ActivityHelper.startActivity(PerfectActivity.this, MenuActivity.class);
         finish();
+
     }
 
-/*    private void initInfo() {
-        networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
-            @Override
-            public void onSuccess(String url, UserInfo result) {
-                et_nickname.setText(result.getNick_name());
-                AccountHelper.setUserInfo(result);
-            }
-
-            @Override
-            public void onFailure(String url, int statusCode, String msg) {
-                super.onFailure(url, statusCode, msg);
-                ToastUtils.showToastLong(mContext, "登录失败请重新登录");
-            }
-        });
-    }*/
 
     @Override
     protected String[] getRequestUrls() {
@@ -232,6 +231,12 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ActivityHelper.startActivity(PerfectActivity.this, MenuActivity.class);
+    }
+
     /**
      * 上传文件
      */
@@ -272,6 +277,56 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
 //                        finish();
                     }
                 });
+    }
+
+    public static boolean ONREFRESH = true;
+    private String mImg = "";
+    public static final String ME_BLUR = "me_blur";
+
+    /**
+     * 获取用户信息
+     */
+    private void getUserInfo() {
+        ONREFRESH = false;
+        if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
+        networkRequest(UserApi.getUserInfo(),
+                new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
+                    @Override
+                    public void onSuccess(String url, final UserInfo result) {
+                        ONREFRESH = true;
+                        //Message message = new Message();
+                        AccountHelper.setUserInfo(result);
+                        et_nickname.setText(result.getNick_name());
+                        if (mImg.equals(result.getHead_img())) {
+                            if (TextUtils.isEmpty(result.getHead_img())) setDefaultBlur();
+                            loading.dismiss();
+                            return;
+                        }
+                        mImg = result.getHead_img();
+                        iv_header_icon.setImageURL(setSmallImageUrl(result.getHead_img()), true);
+                        if (TextUtils.isEmpty(mImg)) {
+                            setDefaultBlur();
+                            return;
+                        }
+                        //message.obj = result.getHead_img();
+                        loading.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(String url, int statusCode, String msg) {
+                        super.onFailure(url, statusCode, msg);
+                        ONREFRESH = true;
+//                        ToastUtils.showToastLong(this, "登录失败请重新登录");
+                    }
+                });
+    }
+    private String setSmallImageUrl(String str) {
+        return str.substring(0, str.length() - 4) + "_120x120" + str.substring(str.length() - 4);
+    }
+
+    private void setDefaultBlur() {
+        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 50, false);
+        EventBusHelper.post(apply, ME_BLUR);
     }
 
     @Override

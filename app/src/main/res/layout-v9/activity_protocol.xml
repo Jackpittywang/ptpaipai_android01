@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_bg_signup"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <com.sunnybear.library.view.NavigationBar
+        style="@style/style_navigation_bar"
+        auto:nav_left_icon="@drawable/back_selector"
+        auto:nav_left_title_color="@color/text_main_color_nor"
+        auto:nav_main_title="用户服务协议"
+        auto:nav_main_title_color="@color/text_color" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_protocol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#444444" />
+            <!--<WebView-->
+            <!--android:id="@+id/web_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"></WebView>-->
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -158,12 +158,12 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <!-- android:theme="@android:style/Theme.NoTitleBar"
+         android:windowSoftInputMode="adjustResize|stateHidden"-->
         <activity
             android:name=".menu.MenuActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".movie.MovieCameraActivity"
             android:launchMode="singleTask"
@@ -257,6 +257,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.UserInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".user.ProtocolActivity"
             android:screenOrientation="portrait" />
 
 
