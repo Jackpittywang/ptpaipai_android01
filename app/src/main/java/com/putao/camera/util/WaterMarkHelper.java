@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
@@ -120,6 +121,15 @@ public class WaterMarkHelper {
             Map<String, String> map = new HashMap<String, String>();
             map.put("categoryId", info.id);
             List<WaterMarkIconInfo> list = MainApplication.getDBServer().getWaterMarkIconInfoByWhere(map);
+            info.elements.addAll(list);
+        }
+    }
+    public static void getStickerUnZipInfos(ArrayList<StickerCategoryInfo> infoList) {
+        for (int i = 0; i < infoList.size(); i++) {
+            StickerCategoryInfo info = infoList.get(i);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("parentid", info.id);
+            List<StickerUnZipInfo> list = MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
             info.elements.addAll(list);
         }
     }

@@ -36,7 +36,8 @@ import android.widget.TextView;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
@@ -64,6 +65,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.sunnybear.library.BasicApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -94,8 +96,10 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     private String mCurrentFilter = GLEffectRender.DEFAULT_EFFECT_ID;
     private String mTempFilter = GLEffectRender.DEFAULT_EFFECT_ID;
     private WaterMarkChoiceAdapter mWaterMarkChoiceAdapter;
-    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
-    private ArrayList<WaterMarkCategoryInfo> content = new ArrayList<WaterMarkCategoryInfo>();
+//    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+    private StickerCategoryInfo mStickerCategoryInfo;
+//    private ArrayList<WaterMarkCategoryInfo> content = new ArrayList<WaterMarkCategoryInfo>();
+    private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
     private int photoType;
     final List<View> filterEffectViews = new ArrayList<View>();
@@ -179,19 +183,21 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         loadFilters();
         ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap,photoType);
         show_image.setImageBitmap(ImageCropBitmap);
+
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
-        mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mWaterMarkCategoryInfo);
+        mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mStickerCategoryInfo);
         water_mark_collection_icon_gv.setAdapter(mWaterMarkChoiceAdapter);
         setGridView();
         water_mark_collection_icon_gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<String, String> watermarkMap = new HashMap<String, String>();
-                watermarkMap.put(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, mWaterMarkChoiceAdapter.getItem(position).sample_image);
+                watermarkMap.put(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, mWaterMarkChoiceAdapter.getItem(position).imgName);
 
                 Bundle bundle = new Bundle();
-                WaterMarkIconInfo info = mWaterMarkChoiceAdapter.getItem(position);
+//                WaterMarkIconInfo info = mWaterMarkChoiceAdapter.getItem(position);
+                StickerUnZipInfo info = mWaterMarkChoiceAdapter.getItem(position);
                 bundle.putSerializable("iconRes", info);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.WATER_MARK_ICON_CHOICE_REFRESH, bundle));
             }
@@ -208,8 +214,8 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
     }
 
     void setGridView() {
-        if (mWaterMarkCategoryInfo != null) {
-            int size = mWaterMarkCategoryInfo.elements.size();
+        if (mStickerCategoryInfo != null) {
+            int size = mStickerCategoryInfo.elements.size();
             int itemWidth = DisplayHelper.getScreenWidth() / 4;
             int gridviewWidth = 0;
             int columns = (size % 4 == 0) ? size / 4 : size / 4 + 1;
@@ -235,20 +241,21 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         content.clear();
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("isInner", "1");
-        List<WaterMarkCategoryInfo> camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, false);
+        map.put("type", "sticker");
+//        map.put("isInner", "1");
+//        List<WaterMarkCategoryInfo> camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, false);
+        List<StickerCategoryInfo> camera_water_list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
         content.addAll(camera_water_list);
 
-        map = new HashMap<String, String>();
+        /*map = new HashMap<String, String>();
         map.put("type", WaterMarkCategoryInfo.photo);
         map.put("isInner", "0");
         camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, true);
         if(camera_water_list.size()==0)return;
-        content.addAll(1, camera_water_list);
+        content.addAll(1, camera_water_list);*/
 
         //Loger.d("chen+++++content.size()="+content.size());
-        WaterMarkHelper.getWaterMarkIconInfos(content);
+        WaterMarkHelper.getStickerUnZipInfos(content);
     }
 
     private void loadWaterMarkCategories() {
@@ -258,9 +265,9 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         mark_cate_contanier.removeAllViews();
 
         for (int i = 0; i < content.size(); i++) {
-            final WaterMarkCategoryInfo info_temp = content.get(i);
+            final StickerCategoryInfo info_temp = content.get(i);
             final MyTextView textView = new MyTextView(mActivity);
-            textView.setText(info_temp.category);
+            textView.setText(info_temp.name);
             textView.setTag(info_temp);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             p.leftMargin = 30;
@@ -280,31 +287,50 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             mark_cate_contanier.addView(textView);
         }
         if (content.size() > 0) {
-            mWaterMarkCategoryInfo = content.get(0);
+            mStickerCategoryInfo = content.get(0);
             mSelectMarkCategoryIndex = 0;
             updateMarkSelectColor();
             updateWaterList();
         }
     }
 
-    private void onWatermarkClicked(View v, WaterMarkCategoryInfo info_temp, MyTextView textView) {
-        mWaterMarkCategoryInfo = (WaterMarkCategoryInfo) v.getTag();
+    /*private void onWatermarkClicked(View v, WaterMarkCategoryInfo info_temp, MyTextView textView) {
+        mStickerCategoryInfo = (WaterMarkCategoryInfo) v.getTag();
         updateWaterList();
         mSelectMarkCategoryIndex = ((MyTextView) v).mIndex;
         updateMarkSelectColor();
+    }*/
+    private void onWatermarkClicked(View v, StickerCategoryInfo info_temp, MyTextView textView) {
+        mStickerCategoryInfo = (StickerCategoryInfo) v.getTag();
+        updateWaterList();
+        mSelectMarkCategoryIndex = ((MyTextView) v).mIndex;
+        updateMarkSelectColor();
+    }
+    void updateMarkSelectColor() {
+        for (int i = 0; i < mark_cate_contanier.getChildCount(); i++) {
+            MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
+            if (mSelectMarkCategoryIndex == view.mIndex) {
+                view.setTextColor(Color.RED);
+            } else {
+                view.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+            }
+        }
+        updateMarkSelectIcon();
     }
 
     void updateMarkSelectIcon() {
         for (int i = 0; i < mark_cate_contanier.getChildCount(); i++) {
             MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
-            final WaterMarkCategoryInfo info_temp = (WaterMarkCategoryInfo) view.getTag();
+            final StickerCategoryInfo info_temp = (StickerCategoryInfo) view.getTag();
             Drawable bm_icon = null;
-            if (!StringHelper.isEmpty(info_temp.icon) && !StringHelper.isEmpty(info_temp.icon_selected)) {
+            if ( !StringHelper.isEmpty(info_temp.cover_pic)) {
                 String image_path;
                 if (mSelectMarkCategoryIndex == i) {
-                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon_selected;
+//                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon_selected;
+                    image_path = info_temp.cover_pic;
                 } else {
-                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon;
+//                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon;
+                    image_path = info_temp.cover_pic;
                 }
 
                 Bitmap icon = BitmapHelper.getInstance().loadBitmap(image_path);
@@ -329,20 +355,10 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    void updateMarkSelectColor() {
-        for (int i = 0; i < mark_cate_contanier.getChildCount(); i++) {
-            MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
-            if (mSelectMarkCategoryIndex == view.mIndex) {
-                view.setTextColor(Color.RED);
-            } else {
-                view.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
-            }
-        }
-        updateMarkSelectIcon();
-    }
+
 
     void updateWaterList() {
-        mWaterMarkChoiceAdapter.setData(mWaterMarkCategoryInfo);
+        mWaterMarkChoiceAdapter.setData(mStickerCategoryInfo);
         setGridView();
         mWaterMarkChoiceAdapter.notifyDataSetChanged();
         if (!mFlagMarkShow) {
@@ -361,22 +377,23 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             case PuTaoConstants.WATER_MARK_ICON_CHOICE_REFRESH: {
                 Bundle bundle = event.bundle;
                 String resName = "";
-                WaterMarkIconInfo iconInfo = null;
+                StickerUnZipInfo iconInfo = null;
                 if (bundle != null) {
-                    iconInfo = (WaterMarkIconInfo) bundle.getSerializable("iconRes");
-                    resName = iconInfo.watermark_image;
+                    iconInfo = (StickerUnZipInfo) bundle.getSerializable("iconRes");
+                    resName = iconInfo.imgName;
                 }
                 try {
-                    String image_path = WaterMarkHelper.getWaterMarkFilePath() + resName;
+//                    String image_path = WaterMarkHelper.getWaterMarkFilePath() + resName;
+                    String image_path = BasicApplication.sdCardPath + File.separator+iconInfo.zipName +File.separator + resName;
                     Bitmap bm = BitmapHelper.getInstance().loadBitmap(image_path);
                     hideMarkContent();
-                    if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_Normal)) {
+//                    if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_Normal)) {
                         addNormalWaterMarkView(iconInfo, bm);
-                    } else if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_DISTANCE)
+                   /* } else if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_DISTANCE)
                             || iconInfo.type.equals(WaterMarkView.WaterType.TYPE_FESTIVAL)
                             || iconInfo.type.equals(WaterMarkView.WaterType.TYPE_TEXTEDIT)) {
                         addTextWaterMarkView(iconInfo, bm);
-                    }
+                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -616,6 +633,21 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             }
         });
         mMarkView.setTag(iconInfo.id);
+        addWaterView(mMarkView);
+    }
+    private void addNormalWaterMarkView(StickerUnZipInfo iconInfo, Bitmap bm) {
+        NormalWaterMarkView mMarkView = new NormalWaterMarkView(mActivity, bm, true);
+        (mMarkView).setOnRemoveWaterListener(new WaterMarkView.OnRemoveWaterListener() {
+            @Override
+            public void onRemoveClick(WaterMarkView view) {
+                if (mMarkViewList.contains(view)) {
+                    doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_DELETE);
+                    removeWaterView(view);
+                }
+            }
+        });
+        //mMarkView.setTag(iconInfo.id);
+//        mMarkView.setTag(iconInfo.imgName);
         addWaterView(mMarkView);
     }
 

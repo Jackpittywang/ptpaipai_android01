@@ -12,6 +12,9 @@ public class StickerUnZipInfo implements Serializable {
     @Id
     private Long _id;
 
+    @Column(name = "parentid")
+    public String parentid;
+
     @Column(name = "zipName")
     public String zipName;
 

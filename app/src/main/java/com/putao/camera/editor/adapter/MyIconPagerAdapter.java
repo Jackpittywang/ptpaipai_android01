@@ -1,7 +1,5 @@
 package com.putao.camera.editor.adapter;
 
-import java.util.ArrayList;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +10,8 @@ import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.editor.fragment.WaterMarkChoiceFragment;
 import com.putao.widget.viewpagerindicator.IconPagerAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by jidongdong on 15/3/3.

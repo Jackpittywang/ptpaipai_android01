@@ -13,10 +13,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.bean.StickerCategoryInfo;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
-import com.putao.camera.bean.WaterMarkIconInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.util.BitmapHelper;
-import com.putao.camera.util.WaterMarkHelper;
+import com.sunnybear.library.BasicApplication;
 
 import java.io.File;
 
@@ -25,7 +24,7 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
     private boolean bMultiSelectState = false;
     //    private int[] mWaterMarkIconArray;
     //    private ArrayList<WaterMarkChoiceItem> mWaterMarkChoiceItemArray;
-    WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+//    WaterMarkCategoryInfo mWaterMarkCategoryInfo;
     StickerCategoryInfo mStickerCategoryInfo;
 
     //    public WaterMarkChoiceAdapter(Context mContext, int[] aWaterMarkIconArray)
@@ -34,33 +33,34 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
     //        setData(aWaterMarkIconArray);
     //    }
 
-    public WaterMarkChoiceAdapter(Context mContext, WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
+   /* public WaterMarkChoiceAdapter(Context mContext, WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
         this.context = mContext;
         setData(aWaterMarkCategoryInfo);
-    }
+    }*/
 
     public WaterMarkChoiceAdapter(Context mContext, StickerCategoryInfo mStickerCategoryInfo) {
         this.context = mContext;
         setData(mStickerCategoryInfo);
     }
 
-    public void setData(WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
+    /*public void setData(WaterMarkCategoryInfo aWaterMarkCategoryInfo) {
         this.mWaterMarkCategoryInfo = aWaterMarkCategoryInfo;
-    }
+    }*/
     public void setData(StickerCategoryInfo mStickerCategoryInfo) {
         this.mStickerCategoryInfo = mStickerCategoryInfo;
     }
 
 
+
     @Override
     public int getCount() {
-        return mWaterMarkCategoryInfo == null ? 0 : mWaterMarkCategoryInfo.elements.size();
+        return mStickerCategoryInfo == null ? 0 : mStickerCategoryInfo.elements.size();
 //        return mStickerCategoryInfo == null ? 0 : mStickerCategoryInfo
     }
 
     @Override
-    public WaterMarkIconInfo getItem(int position) {
-        return mWaterMarkCategoryInfo == null ? null : mWaterMarkCategoryInfo.elements.get(position);
+    public StickerUnZipInfo getItem(int position) {
+        return mStickerCategoryInfo == null ? null : mStickerCategoryInfo.elements.get(position);
     }
 
     @Override
@@ -80,13 +80,20 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
         } else {
             holder = (PhotoItemHolder) convertView.getTag();
         }
-        WaterMarkIconInfo iconInfo = getItem(position);
-        String path = WaterMarkHelper.getWaterMarkFilePath() + iconInfo.sample_image;
+        StickerUnZipInfo iconInfo = getItem(position);
+//        String path = WaterMarkHelper.getWaterMarkFilePath() + iconInfo.sample_image;
+        String path = BasicApplication.sdCardPath + File.separator+iconInfo.zipName +File.separator+ iconInfo.imgName;
         //Bitmap bitmap = BitmapHelper.getInstance().loadBitmap(path);
         //holder.water_marker_item_icon_im.setImageBitmap(bitmap);
-        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
-                .cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+                .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+//        ImageLoader.getInstance().displayImage(path, holder.water_marker_item_icon_im, options);
+
+
+//        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
+//                .cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+//
+        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         holder.water_marker_item_icon_im.setTag(path);
         ImageLoader.getInstance().displayImage(Uri.fromFile(new File(path)).toString(), holder.water_marker_item_icon_im, options);
 

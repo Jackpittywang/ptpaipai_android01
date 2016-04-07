@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -149,7 +150,7 @@ public abstract class FileOperationHelper {
         zfile.close();
     }
 
-    public double unZipFileWithProgress(File zipFile) throws ZipException, IOException {
+    /*public double unZipFileWithProgress(File zipFile) throws ZipException, IOException {
         double blockSize = getFileSizes(zipFile) / 1024;
         ZipFile zfile = new ZipFile(zipFile);
         Enumeration zList = zfile.entries();
@@ -176,7 +177,7 @@ public abstract class FileOperationHelper {
         }
         zfile.close();
         return blockSize;
-    }
+    }*/
 
     public abstract void upZipProgress(String name);
 
@@ -187,7 +188,7 @@ public abstract class FileOperationHelper {
      * @return
      * @throws Exception
      */
-    private static double getFileSizes(File f) throws IOException {
+    public static double getFileSizes(File f) throws IOException {
         double size = 0;
         File flist[] = f.listFiles();
         for (int i = 0; i < flist.length; i++) {
@@ -198,6 +199,29 @@ public abstract class FileOperationHelper {
             }
         }
         return size;
+    }
+
+    //获取文件大小并保留两位小数调整为MB
+    public static   String double2String(File file){
+        double d=0;
+        try{
+            d = FileOperationHelper.getFileSize(file);
+            d = d / 1024 / 1024;
+            BigDecimal bigdecimal = new BigDecimal(d);
+            d = bigdecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return d+"";
+
+    }
+    //保留两位小数
+    public static  double doubleCut(double d){
+            BigDecimal bigdecimal = new BigDecimal(d);
+            d = bigdecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return d;
+
     }
 
     /**

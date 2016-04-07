@@ -16,6 +16,7 @@ import com.putao.camera.setting.watermark.management.CollageManagementActivity;
 import com.putao.camera.setting.watermark.management.DynamicManagementActivity;
 import com.putao.camera.setting.watermark.management.WaterMarkCategoryManagementActivity;
 import com.putao.camera.util.ActivityHelper;
+import com.putao.camera.util.FileOperationHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,10 +56,6 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
     @Override
     public void doInitData() {
         title_tv.setText("素材管理");
-       /* sticker_count_tv.setText(StickerCategoryInfo_list.size()+"套(共"+"文件大小MB"+")");
-        dynamic_count_tv.setText(DynamicIconInfo_list.size()+"套(共"+"文件大小MB"+")");
-        template_count_tv.setText(TemplateIconInfo_list.size()+"套(共"+"文件大小MB"+")");*/
-
     }
 
     @Override
@@ -84,22 +81,33 @@ public class DownloadFinishMaterialCenterActivity extends BaseActivity implement
     public void onResume() {
         super.onResume();
         Map<String, String> map = new HashMap<String, String>();
+        double stickerCategoryInfoSize=0;
+        double dynamicIconInfoSize=0;
+        double templateIconInfoSize=0;
         map.put("type", "sticker");
         stickerCategoryInfo_list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
-        double size = 0;
         if (null != stickerCategoryInfo_list) {
             for (StickerCategoryInfo stickerCategoryInfo : stickerCategoryInfo_list) {
-                size = Double.parseDouble(stickerCategoryInfo.zipSize) + size;
+                stickerCategoryInfoSize = Double.parseDouble(stickerCategoryInfo.zipSize) + stickerCategoryInfoSize;
             }
-            sticker_count_tv.setText(stickerCategoryInfo_list.size() + "套(共" + size + "MB)");
+            sticker_count_tv.setText(stickerCategoryInfo_list.size() + "套(共" + FileOperationHelper.doubleCut(stickerCategoryInfoSize) + "MB)");
         }
         map.put("type", "dynamic");
         dynamicIconInfo_list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        if (null != stickerCategoryInfo_list) {
+            for (DynamicIconInfo dynamicIconInfo : dynamicIconInfo_list) {
+                dynamicIconInfoSize = Double.parseDouble(dynamicIconInfo.zipSize) + dynamicIconInfoSize;
+            }
+            dynamic_count_tv.setText(dynamicIconInfo_list.size() + "套(共" + FileOperationHelper.doubleCut(dynamicIconInfoSize) + "MB)");
+        }
         map.put("type", "template");
         templateIconInfo_list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
-        dynamic_count_tv.setText(dynamicIconInfo_list.size() + "套(共" + "文件大小MB" + ")");
-        template_count_tv.setText(templateIconInfo_list.size() + "套(共" + "文件大小MB" + ")");
-
+        if (null != stickerCategoryInfo_list) {
+            for (TemplateIconInfo templateIconInfo : templateIconInfo_list) {
+                templateIconInfoSize = Double.parseDouble(templateIconInfo.zipSize) + templateIconInfoSize;
+            }
+            template_count_tv.setText(templateIconInfo_list.size() + "套(共" + FileOperationHelper.doubleCut(templateIconInfoSize) + "MB)");
+        }
     }
 
 

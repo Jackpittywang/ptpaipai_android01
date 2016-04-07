@@ -7,7 +7,9 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import com.google.gson.Gson;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
@@ -17,6 +19,7 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.FileOperationHelper;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
 
@@ -206,6 +209,8 @@ public class DownloadFileService extends Service {
         }
     }
 
+
+
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         mPosition = intent.getIntExtra("position", 0);
@@ -219,17 +224,18 @@ public class DownloadFileService extends Service {
                     downloadFile(url, floderPath);
                     if (type == DOWNLOAD_TYPE_STICKER) {
                         StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
-                        String url = item.download_url;
-                        item.zipSize = unZipStickerFile(saveFile, url) + "";
+                        item.zipSize = FileOperationHelper.double2String(saveFile);
+                        String parentId= item.id;
+                        unZipStickerFile(saveFile,parentId);
                         MainApplication.getDBServer().addStickerCategoryInfo(item);
-
-
                     } else if (type == DOWNLOAD_TYPE_DYNAMIC) {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
+                        item.zipSize = FileOperationHelper.double2String(saveFile);
                         MainApplication.getDBServer().addDynamicIconInfo(item);
                         unZipDynamicFile(saveFile);
                     } else {
                         TemplateIconInfo item = (TemplateIconInfo) intent.getSerializableExtra("item");
+                        item.zipSize = FileOperationHelper.double2String(saveFile);
                         MainApplication.getDBServer().addTemplateIconInfoInfo(item);
                         unZipTemplateFile(saveFile);
                     }
@@ -244,19 +250,20 @@ public class DownloadFileService extends Service {
         return START_STICKY;
     }
 
-    private double unZipStickerFile(File zipFile, String url) {
-//        double fileSize=FileOperationHelper.getFileSize(zipFile);
+
+
+    private void unZipStickerFile(File zipFile,String parentid) {
+
         final StickerUnZipInfo stickerUnZipInfo = new StickerUnZipInfo();
-        double zipSize = 0;
-        stickerUnZipInfo.zipName = zipFile.toString();
+       /* stickerUnZipInfo.zipName = zipFile.toString();
+        MainApplication.getDBServer().addStickerUnZipInfo(stickerUnZipInfo);*/
         try {
-            zipSize = new FileOperationHelper() {
-                @Override
-                public void upZipProgress(String name) {
-                    stickerUnZipInfo.imgName = name;
-                    MainApplication.getDBServer().addStickerUnZipInfo(stickerUnZipInfo);
-                }
-            }.unZipFileWithProgress(zipFile);
+            zipFile.getName();
+            zipFile.getAbsolutePath();
+            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true,parentid);
+//            MainApplication.getDBServer().addStickerUnZipInfo();
+//            FileOperationHelper.unZipFilePath(zipFile);
+
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
@@ -273,12 +280,14 @@ public class DownloadFileService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return zipSize;
     }
 
     private void unZipDynamicFile(File zipFile) {
         try {
-            FileOperationHelper.unZipFilePath(zipFile);
+            zipFile.getName();
+            zipFile.getAbsolutePath();
+            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true);
+//            FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
@@ -305,7 +314,10 @@ public class DownloadFileService extends Service {
 
     private void unZipTemplateFile(File zipFile) {
         try {
-            FileOperationHelper.unZipFilePath(zipFile);
+            zipFile.getName();
+            zipFile.getAbsolutePath();
+            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true);
+//            FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
@@ -325,6 +337,29 @@ public class DownloadFileService extends Service {
             e.printStackTrace();
         }
     }
+
+    private void unZipCollageFile(File zipFile, String unZipJsonName) {
+        try {
+            FileOperationHelper.unZipFilePath(zipFile);
+            File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
+            if (file_old.exists()) {
+                file_old.delete();
+            }
+            String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
+            FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
+            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
+            Gson gson = new Gson();
+            CollageConfigInfo info = gson.fromJson(watermark_config, CollageConfigInfo.class);
+            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), info, "0");
+
+            if (!PuTaoConstants.isDebug) {
+                zipFile.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void sendMsg(int type) {
         if (type == TYPE_DOWNLOAD_FINISH) {

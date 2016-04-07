@@ -111,9 +111,12 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 //                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
                     vh.pb_download.setVisibility(View.VISIBLE);
+                    vh.collage_photo_download_iv.setVisibility(View.GONE);
+                    vh.collage_photo_download_iv.setOnClickListener(null);
 //                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     vh.pb_download.setVisibility(View.GONE);
+                    vh.collage_photo_download_iv.setVisibility(View.VISIBLE);
 //                    vh.download_status_pb.setVisibility(View.INVISIBLE);
 //                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
                 }
@@ -149,6 +152,12 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
         HashMap<String, String> map = new HashMap<String, String>();
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mManagementAdapter.notifyDataSetChanged();
     }
 
     @Override

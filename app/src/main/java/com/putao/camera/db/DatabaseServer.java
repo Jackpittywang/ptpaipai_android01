@@ -62,6 +62,11 @@ public class DatabaseServer {
         return list;
     }
 
+    public List<StickerUnZipInfo> getStickerUnZipInfoByWhere(Map<String, String> where) {
+        List<StickerUnZipInfo> list = mStickerUnZipInfo.queryList(StickerUnZipInfo.class, where);
+        return list;
+    }
+
     public List<WaterMarkIconInfo> getAllWaterMarkIconInfo() {
         List<WaterMarkIconInfo> list = mWaterMarkIconInfo.queryList(WaterMarkIconInfo.class, null, "_id");
         return list;

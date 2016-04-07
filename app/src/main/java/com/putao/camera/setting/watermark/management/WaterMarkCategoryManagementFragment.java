@@ -87,7 +87,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     @Override
     public void onResume() {
         super.onResume();
-//        mManagementAdapter.notifyDataSetChanged();
+        mManagementAdapter.notifyDataSetChanged();
     }
 
     @Override

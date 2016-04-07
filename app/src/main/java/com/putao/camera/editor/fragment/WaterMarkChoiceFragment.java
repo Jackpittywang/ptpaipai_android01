@@ -1,7 +1,5 @@
 package com.putao.camera.editor.fragment;
 
-import java.util.HashMap;
-
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -13,12 +11,14 @@ import android.widget.LinearLayout;
 
 import com.putao.camera.R;
 import com.putao.camera.base.BaseFragment;
-import com.putao.camera.bean.WaterMarkCategoryInfo;
-import com.putao.camera.bean.WaterMarkIconInfo;
+import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
+
+import java.util.HashMap;
 
 public class WaterMarkChoiceFragment extends BaseFragment implements OnItemClickListener {
     private GridView water_mark_collection_icon_gv;
@@ -26,7 +26,8 @@ public class WaterMarkChoiceFragment extends BaseFragment implements OnItemClick
     //    private ArrayList<WaterMarkChoiceItem> mWaterMarkChoiceItemArray;
     private WaterMarkChoiceAdapter mWaterMarkChoiceAdapter;
     private int mdType = 0;
-    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+//    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+    StickerCategoryInfo mStickerCategoryInfo;
 
     @Override
     public int doGetContentViewId() {
@@ -52,7 +53,7 @@ public class WaterMarkChoiceFragment extends BaseFragment implements OnItemClick
         // 加载水印效果
         if (bundle != null) {
             mdType = bundle.getInt("dtype", 0);
-            mWaterMarkCategoryInfo = (WaterMarkCategoryInfo) bundle.getSerializable("WaterMarkCategoryInfo");
+            mStickerCategoryInfo = (StickerCategoryInfo) bundle.getSerializable("WaterMarkCategoryInfo");
             //            String prefix_name = bundle.getString(WaterMarkChoiceDialogFragment.WATER_MARK_PREFIX_NAME);
             //            int start_index = bundle.getInt(WaterMarkChoiceDialogFragment.WATER_MARK_START_INDEX);
             //            int end_index = bundle.getInt(WaterMarkChoiceDialogFragment.WATER_MARK_END_INDEX);
@@ -130,14 +131,14 @@ public class WaterMarkChoiceFragment extends BaseFragment implements OnItemClick
 //            UmengAnalysisHelper.onEvent(mActivity, UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHARACTER);
 //        }
 
-        mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mWaterMarkCategoryInfo);
+        mWaterMarkChoiceAdapter = new WaterMarkChoiceAdapter(mActivity, mStickerCategoryInfo);
         water_mark_collection_icon_gv.setAdapter(mWaterMarkChoiceAdapter);
         setGridView();
         water_mark_collection_icon_gv.setOnItemClickListener(this);
     }
 
     void setGridView() {
-        int size = mWaterMarkCategoryInfo.elements.size();
+        int size = mStickerCategoryInfo.elements.size();
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         int itemWidth = dm.widthPixels / 3 - 10;
@@ -161,13 +162,13 @@ public class WaterMarkChoiceFragment extends BaseFragment implements OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         HashMap<String, String> watermarkMap = new HashMap<String, String>();
-        watermarkMap.put(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, mWaterMarkChoiceAdapter.getItem(position).sample_image);
+        watermarkMap.put(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, mWaterMarkChoiceAdapter.getItem(position).imgName);
 //        UmengAnalysisHelper.onEvent(mActivity, UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, watermarkMap);
         //        String sample_image = mWaterMarkChoiceAdapter.getItem(position).sample_image;
         //                watermarkMap.put(getResources().getResourceEntryName(iconRes), getResources().getResourceEntryName(iconRes));
         //        UmengAnalysisHelper.getInstance().onEvent(mActivity, UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CHOISE, watermarkMap);
         Bundle bundle = new Bundle();
-        WaterMarkIconInfo info = mWaterMarkChoiceAdapter.getItem(position);
+        StickerUnZipInfo info = mWaterMarkChoiceAdapter.getItem(position);
         bundle.putSerializable("iconRes", info);
         EventBus.getEventBus().post(
                 new BasePostEvent((mdType == 0) ? PuTaoConstants.WATER_MARK_ICON_CHOICE_REFRESH : PuTaoConstants.WATER_MARK_TAKE_PHOTO, bundle));

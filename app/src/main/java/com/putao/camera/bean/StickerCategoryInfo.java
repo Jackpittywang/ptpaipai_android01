@@ -5,6 +5,7 @@ import com.putao.ahibernate.annotation.Id;
 import com.putao.ahibernate.annotation.Table;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Table(name = "StickerCategoryInfo")
 public class StickerCategoryInfo implements Serializable {
@@ -57,6 +58,8 @@ public class StickerCategoryInfo implements Serializable {
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
+
+    public ArrayList<StickerUnZipInfo> elements = new ArrayList<StickerUnZipInfo>();
 
     public StickerCategoryInfo() {
 
