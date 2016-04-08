@@ -94,6 +94,7 @@ public class DynamicManagementAdapter extends BaseAdapter {
             holder.collage_photo_download_iv.setImageResource(R.drawable.btn_22_03);
             holder.collage_download_iv.setOnClickListener(null);
         } else {
+            holder.collage_photo_download_iv.setImageResource(R.drawable.btn_22_01);
             holder.collage_photo_ok_iv.setVisibility(View.INVISIBLE);
             holder.collage_download_iv.setOnClickListener(new View.OnClickListener() {
                 private boolean isClick = false;

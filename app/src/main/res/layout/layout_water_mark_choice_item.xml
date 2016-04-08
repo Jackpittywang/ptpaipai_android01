@@ -12,7 +12,7 @@
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
         android:background="@null"
-        android:scaleType="centerInside"></ImageView>
+        android:scaleType="centerCrop"></ImageView>
 
     <!--<ImageView-->
     <!--android:id="@+id/editmark_icon"-->

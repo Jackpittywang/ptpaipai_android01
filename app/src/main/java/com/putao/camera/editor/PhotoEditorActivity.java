@@ -61,6 +61,7 @@ import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DateUtil;
 import com.putao.camera.util.DisplayHelper;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
@@ -325,13 +326,14 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
             Drawable bm_icon = null;
             if ( !StringHelper.isEmpty(info_temp.cover_pic)) {
                 String image_path;
-                if (mSelectMarkCategoryIndex == i) {
+               /* if (mSelectMarkCategoryIndex == i) {
 //                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon_selected;
-                    image_path = info_temp.cover_pic;
+                    image_path =  FileUtils.getPutaoCameraPath()  + File.separator+info_temp.elements.get(0).zipName +File.separator+ info_temp.elements.get(0).imgName;
                 } else {
 //                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon;
                     image_path = info_temp.cover_pic;
-                }
+                }*/
+                image_path =  FileUtils.getPutaoCameraPath()  + File.separator+info_temp.elements.get(0).zipName +File.separator+ info_temp.elements.get(0).imgName;
 
                 Bitmap icon = BitmapHelper.getInstance().loadBitmap(image_path);
 //                Bitmap more_icon = ((BitmapDrawable) getResources().getDrawable(R.drawable.res_download_icon)).getBitmap();

@@ -93,6 +93,11 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     }
 
     @Override
+    public void startActivity(DynamicListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
     public void delete(DynamicListInfo.PackageInfo info, final int position) {
     }
 
@@ -228,12 +233,8 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 });
                 break;
             case PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY:
-                mActivity. runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mManagementAdapter.notifyDataSetChanged();
-                    }
-                });
+                mManagementAdapter.notifyDataSetChanged();
+
                 break;
         }
     }

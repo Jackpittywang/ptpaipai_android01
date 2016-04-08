@@ -236,6 +236,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
 
+        <activity android:name=".setting.watermark.management.TemplateManagemenActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" />
+
 
         <activity
             android:name=".user.LoginActivity"

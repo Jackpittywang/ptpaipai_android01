@@ -213,7 +213,7 @@ public final class FileUtils {
      * @throws IOException
      */
     public static void unZipInSdCard(String zipPath, String outputDir, boolean isReWrite,String id) throws IOException {
-        String outputDirectory = getSdcardPath() + File.separator + outputDir;
+        String outputDirectory = getPutaoCameraPath() + File.separator + outputDir;
         // 创建解压目标目录
         File file = new File(outputDirectory);
         // 如果目标目录不存在，则创建
@@ -248,6 +248,13 @@ public final class FileUtils {
                 }
             }
             StickerUnZipInfo item = new StickerUnZipInfo();
+
+           /* String a=zipEntry.getName();
+            String regEx="[^0-9]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(a);
+            String position= m.replaceAll("").trim();
+            item.position=position;*/
             item.parentid=id;
             item.zipName =outputDir;
             item.imgName=zipEntry.getName();
@@ -295,11 +302,70 @@ public final class FileUtils {
                 }
             }
 
+
             // 定位到下一个文件入口
             zipEntry = zipInputStream.getNextEntry();
         }
         zipInputStream.close();
     }
+
+
+    public static void unZipInARStickersPath(String zipPath, String outputDir, boolean isReWrite,String id) throws IOException {
+        String outputDirectory = getARStickersPath() + File.separator + outputDir;
+        // 创建解压目标目录
+        File file = new File(outputDirectory);
+        // 如果目标目录不存在，则创建
+        if (!file.exists()) file.mkdirs();
+        // 打开压缩文件
+        InputStream inputStream = new FileInputStream(new File(zipPath));
+        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        // 读取一个进入点
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
+        // 使用1Mbuffer
+        byte[] buffer = new byte[1024 * 1024];
+        // 解压时字节计数
+        int count = 0;
+        // 如果进入点为空说明已经遍历完所有压缩包中文件和目录
+
+        while (zipEntry != null) {
+            // 如果是一个目录
+            if (zipEntry.isDirectory()) {
+                file = new File(outputDirectory + File.separator + zipEntry.getName());
+                // 文件需要覆盖或者是文件不存在
+                if (isReWrite || !file.exists()) file.mkdir();
+            } else {
+                // 如果是文件
+                file = new File(outputDirectory + File.separator + zipEntry.getName());
+                // 文件需要覆盖或者文件不存在，则解压文件
+                if (isReWrite || !file.exists()) {
+                    file.createNewFile();
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    while ((count = zipInputStream.read(buffer)) > 0)
+                        fileOutputStream.write(buffer, 0, count);
+                    fileOutputStream.close();
+                }
+            }
+            StickerUnZipInfo item = new StickerUnZipInfo();
+           /* String a=zipEntry.getName();
+            String regEx="[^0-9]";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(a);
+            String position= m.replaceAll("").trim();
+            item.position=position;*/
+            item.parentid=id;
+            item.zipName =outputDir;
+            item.imgName=zipEntry.getName();
+            if(zipEntry.getName().contains(".xml")){
+                item.xmlName=zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(".xml"));
+            }
+            MainApplication.getDBServer().addStickerUnZipInfo(item);
+
+            // 定位到下一个文件入口
+            zipEntry = zipInputStream.getNextEntry();
+        }
+        zipInputStream.close();
+    }
+
 
     /**
      * 删除文件
@@ -439,7 +505,14 @@ public final class FileUtils {
      * 获取sd卡路径
      */
     public static String getSdcardPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
+        return Environment.getExternalStorageDirectory().getAbsolutePath()  ;
+    }
+
+    /**
+     * 获取sd卡路径
+     */
+    public static String getPutaoCameraPath() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator + FILE_PARENT_NAME  ;
     }
 
     /**
@@ -499,5 +572,7 @@ public final class FileUtils {
         }
         return true;
     }
+
+
 
 }

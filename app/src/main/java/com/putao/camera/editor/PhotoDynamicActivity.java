@@ -14,7 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,13 +25,21 @@ import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.bean.DynamicCategoryInfo;
+import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.camera.view.IntentARImageView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
+import com.putao.camera.http.CacheRequest;
+import com.putao.camera.setting.watermark.management.DynamicListInfo;
+import com.putao.camera.setting.watermark.management.DynamicManagementAdapter;
+import com.putao.camera.setting.watermark.management.UpdateCallback;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
@@ -38,22 +48,27 @@ import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mobile.ReadFace.YMDetector;
 import mobile.ReadFace.YMFace;
 
 
-public class PhotoDynamicActivity extends BaseActivity implements View.OnClickListener {
-//    private PCameraFragment current;
+public class PhotoDynamicActivity extends BaseActivity implements AdapterView.OnItemClickListener,
+        UpdateCallback<DynamicListInfo.PackageInfo>, View.OnClickListener {
+    //    private PCameraFragment current;
     private LinearLayout layout_sticker_list;
     private String TAG = PhotoARShowActivity.class.getName();
     private Button back_btn;
     private TextView tv_save;
     private ImageView show_image;
     private Bitmap originImageBitmap;
+    private GridView mGridView;
     private String imagePath = "";
     private String animationName = "";
     private String videoImagePath = "";
@@ -84,10 +99,44 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
         animation_view = queryViewById(R.id.animation_view);
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
-//        getFragmentManager().beginTransaction().replace(R.id.photo_area_rl, current).commit();
+
+       /* mGridView = new GridView(mActivity);
+        mGridView.setNumColumns(30);
+        ViewGroup.LayoutParams layoutParams = mGridView.getLayoutParams();
+        layoutParams.height = DensityUtil.dp2px(this,80);
+        mGridView.setLayoutParams(layoutParams);*/
+        /*mManagementAdapter = new DynamicManagementAdapter(mActivity);
+        mManagementAdapter.setUpdateCallback(this);*/
+//        mGridView.setAdapter(mManagementAdapter);
+//        mGridView.setOnItemClickListener(this);
+
+
         addOnClickListener(tv_save, back_btn);
         EventBus.getEventBus().register(this);
-//        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    }
+
+    @Override
+    public void startProgress(DynamicListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
+    public void startActivity(DynamicListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
+    public void delete(DynamicListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
+    public void queryDetail(DynamicListInfo.PackageInfo info, int position) {
 
     }
 
@@ -114,8 +163,10 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
         Intent intent = this.getIntent();
         if (intent == null) return;
         String photo_data = intent.getStringExtra("photo_data");
+
 //        animationName = intent.getStringExtra("animationName");
-        Bitmap  tempBitmap= BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+
+        Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                 DisplayHelper.getScreenHeight());
 
         Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
@@ -141,7 +192,7 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
         show_image.setImageBitmap(originImageBitmap);
 
         //检测人脸
-        final YMDetector YMDetector = new YMDetector(this);
+       /* final YMDetector YMDetector = new YMDetector(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -154,29 +205,12 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
                     }
                 }
             }
-        }).start();
+        }).start();*/
 
         bgImageBitmap.recycle();
         resizedBgImage.recycle();
 
     }
-
-    // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
-    View.OnClickListener arStickerOnclickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-//            ToasterHelper.show(getApplicationContext(), "请将正脸置于取景器内");
-            ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
-            if (animation_view.isAnimationLoading()) {
-                showToast("动画加载中请稍后");
-                return;
-            }
-            animation_view.clearData();
-            animationName = (String) v.getTag();
-            animation_view.setData(animationName, false);
-
-        }
-    };
 
 
     private Handler mHandle = new Handler() {
@@ -212,7 +246,7 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
             String iconInfo = elements.get(i);
             if (StringHelper.isEmpty(iconInfo)) continue;
             ARImageView arImageView = new ARImageView(mActivity);
-
+//iconInfo 为包名
             String imagePath = FileUtils.getARStickersPath() + iconInfo + "_icon.png";
             arImageView.setData(imagePath);
             arImageView.setTag(iconInfo);
@@ -220,6 +254,129 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
             layout_sticker_list.addView(arImageView);
 
         }
+
+        //增加网络数据
+        queryCollageList();
+
+
+
+    }
+
+    // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
+    View.OnClickListener arStickerOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+            if (animation_view.isAnimationLoading()) {
+                showToast("动画加载中请稍后");
+                return;
+            }
+            animation_view.clearData();
+            animationName = (String) v.getTag();
+            animation_view.setData(animationName, false);
+            //检测人脸
+            final YMDetector YMDetector = new YMDetector(PhotoDynamicActivity.this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
+                    if (faces != null && faces.size() > 0) {
+                        YMFace face = faces.get(0);
+                        landmarks = face.getLandmarks();
+                        if (landmarks != null && landmarks.length > 0) {
+                            mHandle.sendEmptyMessage(123);
+                        }
+                    }
+                }
+            }).start();
+
+        }
+    };
+
+    View.OnClickListener arIntentStickerOnclickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+            if (animation_view.isAnimationLoading()) {
+                showToast("动画加载中请稍后");
+                return;
+            }
+            animation_view.clearData();
+            animationName = (String) v.getTag();
+            animation_view.setData(animationName, false);
+            //检测人脸
+            final YMDetector YMDetector = new YMDetector(PhotoDynamicActivity.this);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
+                    if (faces != null && faces.size() > 0) {
+                        YMFace face = faces.get(0);
+                        landmarks = face.getLandmarks();
+                        if (landmarks != null && landmarks.length > 0) {
+                            mHandle.sendEmptyMessage(123);
+                        }
+                    }
+                }
+            }).start();
+
+        }
+    };
+
+    private DynamicManagementAdapter mManagementAdapter;
+    private DynamicListInfo aDynamicListInfo;
+    ArrayList<DynamicIconInfo> mDynamicIconInfo;
+    String downUrl;
+    public void queryCollageList() {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+//                final DynamicListInfo aDynamicListInfo;
+                try {
+                    Gson gson = new Gson();
+                    aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
+//                    mManagementAdapter.setDatas(aDynamicListInfo.data);
+                    for (int i = 0; i < aDynamicListInfo.data.size(); i++) {
+                        imagePath= aDynamicListInfo.data.get(i).cover_pic;
+                        if (StringHelper.isEmpty(imagePath)) continue;
+                        IntentARImageView arImageView2 = new IntentARImageView(mActivity);
+                        arImageView2.setDataFromInternt(imagePath);
+                        downUrl=aDynamicListInfo.data.get(i).download_url;
+                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
+                        arImageView2.setTag(tag);
+                        arImageView2.setOnClickListener(arIntentStickerOnclickListener);
+                       /* imagePath= aDynamicListInfo.data.get(i).cover_pic;
+                        if (StringHelper.isEmpty(imagePath)) continue;
+                        IntentARImageView arImageView2 = new IntentARImageView(mActivity);*/
+//iconInfo 为包名
+//                        String imagePath = FileUtils.getARStickersPath() + iconInfo + "_icon.png";
+                        /*arImageView2.setDataFromInternt(imagePath);
+                        String downUrl=aDynamicListInfo.data.get(i).download_url;
+                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
+                        arImageView2.setTag(tag);*/
+
+                        layout_sticker_list.addView(arImageView2);
+
+                    }
+
+
+                    Gson gson1 = new Gson();
+                    mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
+        mCacheRequest.startGetRequest();
     }
 
 
@@ -361,8 +518,6 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
     }
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -405,5 +560,6 @@ public class PhotoDynamicActivity extends BaseActivity implements View.OnClickLi
         }
 
     }
+
 
 }

@@ -124,6 +124,11 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
     }
 
     @Override
+    public void startActivity(TemplateListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
     public void delete(TemplateListInfo.PackageInfo info, final int position) {
     }
 
@@ -268,12 +273,9 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
                 });
                 break;
             case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+
                         mManagementAdapter.notifyDataSetChanged();
-                    }
-                });
+
                 break;
         }
     }

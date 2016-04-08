@@ -1,6 +1,7 @@
 package com.putao.camera.camera.view;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,6 +26,9 @@ public class ARImageView extends RelativeLayout {
 
     public void setData(String imagePath) {
         img_ar_icon.setImageBitmap(BitmapHelper.getBitmapFromPath(imagePath));
+    }
+    public void setDataFromInternt(String imagePath) {
+        img_ar_icon.setImageURI(Uri.parse(imagePath));
     }
 
     private void initComponent(Context context) {

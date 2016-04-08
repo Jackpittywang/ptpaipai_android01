@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.bean.PintuInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.TemplateIconInfo;
@@ -22,6 +23,7 @@ import com.putao.camera.util.FileOperationHelper;
 import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.camera.util.XmlUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -232,12 +234,15 @@ public class DownloadFileService extends Service {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
                         MainApplication.getDBServer().addDynamicIconInfo(item);
-                        unZipDynamicFile(saveFile);
+                        String parentId= item.id;
+                        unZipDynamicFile(saveFile,parentId);
                     } else {
                         TemplateIconInfo item = (TemplateIconInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
+                        item.zipName=saveFile.getName();
                         MainApplication.getDBServer().addTemplateIconInfoInfo(item);
-                        unZipTemplateFile(saveFile);
+                        String parentId= item.id;
+                        unZipTemplateFile(saveFile,parentId,"pintu.xml");
                     }
                     sendMsg(TYPE_UNZIP_FINISH);
                 } catch (Exception e) {
@@ -282,11 +287,11 @@ public class DownloadFileService extends Service {
         }
     }
 
-    private void unZipDynamicFile(File zipFile) {
+    private void unZipDynamicFile(File zipFile,String parentid) {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
-            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true);
+            FileUtils.unZipInARStickersPath(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true,parentid);
 //            FileOperationHelper.unZipFilePath(zipFile);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
@@ -312,7 +317,7 @@ public class DownloadFileService extends Service {
     }
 
 
-    private void unZipTemplateFile(File zipFile) {
+    private void unZipTemplateFile(File zipFile,String parentid,String unZipXmlName) {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
@@ -324,6 +329,15 @@ public class DownloadFileService extends Service {
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
+            //解析xml
+            String pintu = FileOperationHelper.readJsonFile(zipFile.getName().replace(".zip", ""), unZipXmlName);
+            String pintuInfo=XmlUtils.xmlToJson(pintu,"jigsaw");
+            Gson gson = new Gson();
+            //解析为拼图信息
+            PintuInfo mPintuInfo = gson.fromJson(pintuInfo, PintuInfo.class);
+
+
+
 //            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
 //            Gson gson = new Gson();
 //            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);

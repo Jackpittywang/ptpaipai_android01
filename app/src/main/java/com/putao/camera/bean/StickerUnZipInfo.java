@@ -20,4 +20,10 @@ public class StickerUnZipInfo implements Serializable {
 
     @Column(name = "imgName")
     public String imgName;
+
+    @Column(name = "position")
+    public String position;
+
+    @Column(name = "xmlName")
+    public String xmlName;
 }

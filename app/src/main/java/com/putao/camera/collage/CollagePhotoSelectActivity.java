@@ -26,6 +26,7 @@ import com.putao.camera.R;
 import com.putao.camera.album.AlbumProcessDialog;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.CollageConfigInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.collage.adapter.GalleryListAdapter;
 import com.putao.camera.collage.adapter.StickyGridAdapter;
@@ -64,6 +65,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     private int maxnum = 1;
     private CollageSampleItem mSampleInfo;
     private CollageConfigInfo.ConnectImageInfo mConnectSample;
+    private TemplateIconInfo mTemplateIconInfo;
     private LinearLayout sl_gallery_list;
     private boolean mGalleryShow = false;
     ArrayList<GalleryEntity> mGalleryList;
@@ -176,6 +178,15 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         selectImages.clear();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+                 String photo_num_str = "";
+            mTemplateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
+                if (mTemplateIconInfo != null) {
+                    maxnum = Integer.parseInt(mTemplateIconInfo.num);
+                    photo_num_str = "1~"+maxnum;
+                    doAnalysis();
+                }
+        tv_photo_num.setText(String.format(getResources().getString(R.string.collage_select_image), photo_num_str));
+        /*if (bundle != null) {
             mIsconnect = bundle.getBoolean("isconnect", false);
             String photo_num_str = "";
             if (mIsconnect) {
@@ -189,8 +200,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
                     photo_num_str = maxnum + "";
                     doAnalysis();
                 }
-            }
-            tv_photo_num.setText(String.format(getResources().getString(R.string.collage_select_image), photo_num_str));
+            }*/
         }
         getData();
         getGallery();
@@ -385,21 +395,26 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
 
 
     private void goMageCollage() {
-        if (!mIsconnect && (selectImages.size() != maxnum)) {
+        /*if (!mIsconnect && (selectImages.size() != maxnum)) {
             showToast("请先选择" + maxnum + "图片");
             return;
-        }
+        }*/
         doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_JIGSAW_IMAGEPICKER_NEXT);
         Bundle bundle = new Bundle();
         bundle.putSerializable("images", selectImages);
+         if (!mIsconnect) {
+            bundle.putSerializable("sampleinfo", mTemplateIconInfo);
+             ActivityHelper.startActivity(mActivity, CollageMakeActivity.class, bundle);
+//            ActivityHelper.startActivity(mActivity, ConnectPhotoActivity.class, bundle);
+        }
 
-        if (mIsconnect) {
+       /* if (mIsconnect) {
             bundle.putSerializable("sampleinfo", mConnectSample);
             ActivityHelper.startActivity(mActivity, ConnectPhotoActivity.class, bundle);
         } else {
             bundle.putSerializable("sampleinfo", mSampleInfo);
             ActivityHelper.startActivity(mActivity, CollageMakeActivity.class, bundle);
-        }
+        }*/
     }
 
     void enableCollageButton(boolean enable) {
@@ -413,8 +428,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     }
 
     void updateCollageButtonEnable() {
-        if (mIsconnect) {
-            if (selectImages.size() >= 2) {
+        if (!mIsconnect) {
+            if (selectImages.size() >= 1) {
                 enableCollageButton(true);
             } else {
                 enableCollageButton(false);

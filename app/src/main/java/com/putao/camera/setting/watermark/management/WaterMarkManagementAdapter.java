@@ -107,7 +107,6 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
                     }
                 }
             });
-//            holder.water_mark_photo_new_iv.setVisibility(View.INVISIBLE);
         } else {
             holder.water_mark_category_download_btn.setImageResource(R.drawable.btn_22_01);
 //            holder.water_mark_category_download_btn.setBackgroundResource(R.drawable.red_btn_bg);
@@ -116,8 +115,10 @@ public class WaterMarkManagementAdapter extends BaseAdapter {
             holder.water_mark_category_download_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if (null != updateCallback) {
                         updateCallback.queryDetail(info,position);
+
                         updateCallback.startProgress(info, position);
                     }
                 }

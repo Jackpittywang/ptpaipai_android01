@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class XmlUtils {
 
-    private static String xmlToJson(String xml, String rootName) {
+    public static String xmlToJson(String xml, String rootName) {
         try {
             JSONObject object = XML.toJSONObject(xml);
             return object.getString(rootName);

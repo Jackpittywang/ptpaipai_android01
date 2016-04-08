@@ -126,6 +126,11 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     }
 
     @Override
+    public void startActivity(StickerListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
     public void delete(StickerListInfo.PackageInfo info, final int position) {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));

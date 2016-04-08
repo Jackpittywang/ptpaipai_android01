@@ -5,6 +5,7 @@ import com.putao.ahibernate.annotation.Id;
 import com.putao.ahibernate.annotation.Table;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Table(name = "TemplateIconInfo")
 public class TemplateIconInfo implements Serializable {
@@ -25,6 +26,9 @@ public class TemplateIconInfo implements Serializable {
     @Column(name = "num")
     public String num;
 
+    @Column(name = "zipName")
+    public String zipName;
+
     @Column(name = "id")
     public String id;
 
@@ -39,6 +43,8 @@ public class TemplateIconInfo implements Serializable {
 
     @Column(name = "zipSize")
     public String zipSize;
+
+    public ArrayList<StickerUnZipInfo> elements = new ArrayList<StickerUnZipInfo>();
 
     private boolean isChecked;
 

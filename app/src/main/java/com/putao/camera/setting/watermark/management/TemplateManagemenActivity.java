@@ -2,20 +2,27 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
-import com.putao.camera.base.BaseFragment;
+import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.TemplateCategoryInfo;
 import com.putao.camera.bean.TemplateIconInfo;
+import com.putao.camera.collage.CollagePhotoSelectActivity;
+import com.putao.camera.collage.mode.CollageSampleItem;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
+import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
+import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
@@ -26,22 +33,30 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public final class CollageManagementFragment extends BaseFragment implements AdapterView.OnItemClickListener,
+public final class TemplateManagemenActivity extends BaseActivity implements AdapterView.OnItemClickListener,
         UpdateCallback<TemplateListInfo.PackageInfo>, View.OnClickListener {
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
+    private TextView title_tv;
+    private Button right_btn, back_btn;
     private CollageManagementAdapter mManagementAdapter;
+    private ArrayList<String> selectImages = new ArrayList<String>();
     ArrayList<TemplateIconInfo> mTemplateIconInfo;
 
     @Override
     public int doGetContentViewId() {
-        return R.layout.fragment_collage_management;
+        return R.layout.activity_template_management;
     }
 
     @Override
     public void doInitSubViews(View view) {
+        EventBus.getEventBus().register(this);
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
+        back_btn=queryViewById(R.id.back_btn);
+        title_tv=queryViewById(R.id.title_tv);
+        title_tv.setText("选择模板");
     }
+
 
     @Override
     public void onResume() {
@@ -52,10 +67,12 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getEventBus().unregister(this);
     }
 
     @Override
-    public void doInitDataes() {
+    public void doInitData() {
+
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
@@ -74,16 +91,17 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
+        addOnClickListener(back_btn);
 
         queryCollageList();
     }
-
+    private ArrayList<CollageSampleItem> mCollageList;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Bundle bundle = new Bundle();
-//                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//                bundle.putSerializable("info", info);
-//                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
+                /*Bundle bundle = new Bundle();
+                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
+                bundle.putSerializable("info", info);
+                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);*/
     }
 
     int progress = 0;
@@ -99,6 +117,10 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void startActivity(TemplateListInfo.PackageInfo info, int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("images", selectImages);
+        bundle.putSerializable("sampleinfo",  mTemplateIconInfo.get(position));
+        ActivityHelper.startActivity(mActivity, CollagePhotoSelectActivity.class, bundle);
 
     }
 
@@ -118,26 +140,18 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
             View view = mGridView.getChildAt(position - firstVisiblePosition);
             if (view.getTag() instanceof CollageManagementAdapter.ViewHolder) {
                 CollageManagementAdapter.ViewHolder vh = (CollageManagementAdapter.ViewHolder) view.getTag();
-//                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
                     vh.pb_download.setVisibility(View.VISIBLE);
                     vh.collage_photo_download_iv.setVisibility(View.GONE);
                     vh.collage_photo_download_iv.setOnClickListener(null);
-//                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     vh.pb_download.setVisibility(View.GONE);
                     vh.collage_photo_download_iv.setVisibility(View.VISIBLE);
-//                    vh.download_status_pb.setVisibility(View.INVISIBLE);
-//                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
                 }
             }
         }
     }
 
-    private void updateFinish() {
-        //        vh.download_status_pb.setVisibility(View.INVISIBLE);
-        //        vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-    }
 
     public void queryCollageList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
@@ -171,16 +185,11 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.right_btn:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("source", this.getClass().getName());
-//                ActivityHelper.startActivity(mActivity, DownloadFinishActivity.class, bundle);
-//                break;
-//            case R.id.back_btn:
-////                finish();
-//                break;
-//        }
+        switch (v.getId()) {
+            case R.id.back_btn:
+                finish();
+                break;
+        }
     }
 
     private void startDownloadService(final String url, final String folderPath, final int position) {
@@ -203,7 +212,6 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         mActivity.startService(bindIntent);
     }
 
-//    @Subcriber(tag=)
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
@@ -239,8 +247,12 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                 });
                 break;
             case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
-                mManagementAdapter.notifyDataSetChanged();
-
+                mActivity. runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mManagementAdapter.notifyDataSetChanged();
+                    }
+                });
                 break;
         }
     }

@@ -17,7 +17,6 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.http.CacheRequest;
-import com.putao.camera.setting.watermark.bean.StickerPackageDetailInfo;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
@@ -109,6 +108,11 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     }
 
     @Override
+    public void startActivity(StickerListInfo.PackageInfo info, int position) {
+
+    }
+
+    @Override
     public void delete(StickerListInfo.PackageInfo info, final int position) {
         /*Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
@@ -118,30 +122,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 
     @Override
     public void queryDetail(StickerListInfo.PackageInfo info, int position) {
-        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
-            @Override
-            public void onSuccess(int whatCode, JSONObject json) {
-                super.onSuccess(whatCode, json);
-                try {
-                    Gson gson = new Gson();
-                    StickerPackageDetailInfo mStickerPackageDetailInfo = gson.fromJson(json.toString(), StickerPackageDetailInfo.class);
-//                    MainApplication.getDBServer().addStickerCategoryInfo(item);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFail(int whatCode, int statusCode, String responseString) {
-                super.onFail(whatCode, statusCode, responseString);
-                Loger.d("queryWaterMarkDetail(),onFail():" + whatCode + "," + statusCode + "," + responseString);
-            }
-        };
-        HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest("/material/details?type=sticker_pic&material_id=" + info.id, map,
-                mWaterMarkUpdateCallback);
-        mCacheRequest.startGetRequest();
 
     }
 
@@ -154,9 +135,10 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 WaterMarkManagementAdapter.ViewHolder vh = (WaterMarkManagementAdapter.ViewHolder) view.getTag();
 //                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
+                    vh.water_mark_category_download_btn.setImageResource(R.drawable.btn_22_02);
                     vh.pb_download.setVisibility(View.VISIBLE);
-                    vh.water_mark_category_download_btn.setVisibility(View.GONE);
                     vh.water_mark_category_download_btn.setOnClickListener(null);
+
 //                    vh.water_mark_category_download_btn.setText("下载中");
 //                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
@@ -165,7 +147,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     //                    vh.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
                     //                    mManagementAdapter.notifyDataSetChanged();
                     vh.pb_download.setVisibility(View.GONE);
-                    vh.water_mark_category_download_btn.setVisibility(View.VISIBLE);
+//                    vh.water_mark_category_download_btn.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -186,7 +168,6 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
                     Gson gson1 = new Gson();
                     mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconInfo.class).data;
-//                    WaterMarkHelper.saveCategoryInfoToDb(mStickerIconInfo);
 
                 } catch (Exception e) {
                     e.printStackTrace();

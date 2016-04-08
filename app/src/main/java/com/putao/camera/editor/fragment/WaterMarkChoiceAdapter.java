@@ -2,7 +2,6 @@ package com.putao.camera.editor.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import com.putao.camera.R;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.util.BitmapHelper;
-import com.sunnybear.library.BasicApplication;
+import com.putao.camera.util.FileUtils;
 
 import java.io.File;
 
@@ -82,20 +81,28 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
         }
         StickerUnZipInfo iconInfo = getItem(position);
 //        String path = WaterMarkHelper.getWaterMarkFilePath() + iconInfo.sample_image;
-        String path = BasicApplication.sdCardPath + File.separator+iconInfo.zipName +File.separator+ iconInfo.imgName;
-        //Bitmap bitmap = BitmapHelper.getInstance().loadBitmap(path);
-        //holder.water_marker_item_icon_im.setImageBitmap(bitmap);
-        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
-                .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-//        ImageLoader.getInstance().displayImage(path, holder.water_marker_item_icon_im, options);
+        String path = FileUtils.getPutaoCameraPath()  + File.separator+iconInfo.zipName +File.separator+ iconInfo.imgName;
+//        Bitmap bitmap = BitmapHelper.getInstance().loadBitmap(path);
+//        holder.water_marker_item_icon_im.setImageBitmap(bitmap);
+
+      /*  DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+                .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();*/
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder().
+                showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
+                .considerExifParams(true)
+                .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+
+        ImageLoader.getInstance().displayImage("file://" + path, holder.water_marker_item_icon_im, options);
 
 
-//        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
-//                .cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-//
-        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+      /*  DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
+                .cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+
+        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_CROP);
         holder.water_marker_item_icon_im.setTag(path);
-        ImageLoader.getInstance().displayImage(Uri.fromFile(new File(path)).toString(), holder.water_marker_item_icon_im, options);
+        ImageLoader.getInstance().displayImage(Uri.fromFile(new File(path)).toString(), holder.water_marker_item_icon_im, options);*/
 
 //        holder.editmark_icon.setVisibility(View.GONE);
 //        if (iconInfo.type != null) {

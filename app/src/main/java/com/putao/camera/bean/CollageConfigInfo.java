@@ -36,7 +36,6 @@ public class CollageConfigInfo extends BaseItem {
         public String category;
 
         public ArrayList<CollageItemInfo> elements = new ArrayList<CollageItemInfo>();
-        public ArrayList<CollageItemInfoNew> datas = new ArrayList<CollageItemInfoNew>();
     }
 
     /**
@@ -62,50 +61,6 @@ public class CollageConfigInfo extends BaseItem {
         @Column(name = "mask_image")
         public String mask_image;
     }
-
-
-
-    @Table(name = "CollageItemInfoNew")
-    static public class CollageItemInfoNew implements Serializable {
-
-
-        private static final long serialVersionUID = -7971488953798453286L;
-
-        @Id
-        private Long _id;
-
-        @Column(name = "cover_pic")
-        public String cover_pic;
-
-        @Column(name = "mask_image")
-        public String mask_image;
-
-        @Column(name = "id")
-        public String id;
-
-        @Column(name = "parentId")
-        public String parentId;
-
-        @Column(name = "parentCategory")
-        public String parentCategory;
-
-        @Column(name = "isInner")
-        public String isInner = "1";
-
-//        public int  id;
-//        public String name;
-//        public int second_type;
-//        public String download_url;
-//        public String  size;
-//        public int num;
-//        public int max_num;
-//        public String cover_pic;
-//        public int release_time;
-//        public int is_new;
-
-
-    }
-
 
 
     /**

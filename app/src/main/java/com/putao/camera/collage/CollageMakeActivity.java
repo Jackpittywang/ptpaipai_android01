@@ -154,6 +154,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
 
 
     public void initCollageView() {
+        //边框图片,按照图片数量选择
         String mask_path = CollageHelper.getCollageFilePath()
                 + mCollageItemInfo.mask_image;
         Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPath(mask_path);
@@ -200,8 +201,10 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
 
     private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
             CollageSampleItem info) {
+        //得到模板框内点的信息
         ArrayList<CollageView.CollagePhotoSet> photoSet = new ArrayList<CollageView.CollagePhotoSet>();
         if (photoSet != null) {
+            //获取选中模板图片张数
             for (int i = 0; i < info.imageElements.size(); i++) {
                 CollageConfigInfo.CollageImageInfo imageInfo = info.imageElements
                         .get(i);

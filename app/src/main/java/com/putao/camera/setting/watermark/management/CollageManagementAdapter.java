@@ -94,8 +94,24 @@ public class CollageManagementAdapter extends BaseAdapter {
             holder.collage_photo_download_iv.setImageResource(R.drawable.btn_22_03);
 //            holder.collage_photo_ok_iv.setVisibility(View.VISIBLE);
             holder.collage_download_iv.setOnClickListener(null);
+            holder.collage_download_iv.setOnClickListener(new View.OnClickListener() {
+                private boolean isClick = false;
+                @Override
+                public void onClick(View v) {
+                    if (null != updateCallback) {
+                        if (isClick == false) {
+                            isClick = true;
+                            updateCallback.startActivity(info, position);
+                        }
+                    }
+                }
+            });
+
+
 //            holder.collage_photo_new_iv.setVisibility(View.INVISIBLE);
         } else {
+            holder.collage_photo_download_iv.setImageResource(R.drawable.btn_22_01);
+//
             holder.collage_download_iv.setOnClickListener(new View.OnClickListener() {
                 private boolean isClick = false;
 

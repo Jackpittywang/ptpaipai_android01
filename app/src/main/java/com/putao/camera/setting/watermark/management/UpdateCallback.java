@@ -5,6 +5,7 @@ package com.putao.camera.setting.watermark.management;
  */
 public interface UpdateCallback<K> {
     public void startProgress(K info, int position);
+    public void startActivity(K info, int position);
 
     public void delete(K info, int position);
     public void queryDetail(K info, int position);

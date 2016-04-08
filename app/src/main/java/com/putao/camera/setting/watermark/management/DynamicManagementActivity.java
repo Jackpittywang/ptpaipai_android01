@@ -49,13 +49,14 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 
     @Override
     public void doInitSubViews(View view) {
+        EventBus.getEventBus().register(this);
         tv_select_all=queryViewById(R.id.tv_select_all);
         tv_delect_selected=queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText("动态贴图");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         back_btn = (Button) view.findViewById(R.id.back_btn);
-        EventBus.getEventBus().register(this);
+
 
     }
 
@@ -119,6 +120,11 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
     public void startProgress(DynamicListInfo.PackageInfo info, final int position) {
         String path = CollageHelper.getCollageUnzipFilePath();
         startDownloadService(info.download_url, path, position);
+    }
+
+    @Override
+    public void startActivity(DynamicListInfo.PackageInfo info, int position) {
+
     }
 
     @Override
@@ -259,13 +265,9 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                     }
                 });
                 break;
-            case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
-                mActivity. runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+            case PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY:
                         mManagementAdapter.notifyDataSetChanged();
-                    }
-                });
+
                 break;
         }
     }

@@ -2,14 +2,22 @@
 package com.putao.camera.util;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import com.putao.camera.application.MainApplication;
 import com.sunnybear.library.util.Logger;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.basic.DoubleConverter;
+import com.thoughtworks.xstream.converters.basic.FloatConverter;
+import com.thoughtworks.xstream.converters.basic.IntConverter;
+import com.thoughtworks.xstream.converters.basic.LongConverter;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import org.apache.http.util.EncodingUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,6 +30,8 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+
 
 public abstract class FileOperationHelper {
     public static boolean copyAssetsFileToExternalFile(String assetFileName) {
@@ -357,7 +367,8 @@ public abstract class FileOperationHelper {
     public static String readJsonFile(String zipFloderName, String fileName) {
         String reslt = "";
         try {
-            String path = getExternalFilePath() + "/" + zipFloderName;
+//            String path = getExternalFilePath() + "/" + zipFloderName;
+            String path =FileUtils.getSdcardPath() + File.separator + zipFloderName;
             File jsonFile = new File(path, fileName);
             FileInputStream fin = new FileInputStream(jsonFile);
             int length = fin.available();
@@ -422,4 +433,132 @@ public abstract class FileOperationHelper {
     //            return null;
     //        }
     //    }
+
+    public static String readFileToBean(String zipFloderName, String fileName) {
+        String reslt = "";
+        try {
+            String path = getExternalFilePath() + "/" + zipFloderName;
+            File jsonFile = new File(path, fileName);
+            FileInputStream fin = new FileInputStream(jsonFile);
+            int length = fin.available();
+            byte[] buffer = new byte[length];
+            fin.read(buffer);
+//            toBean(PinTuInfo.class,fin);
+
+            reslt = EncodingUtils.getString(buffer, "UTF-8");
+            fin.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reslt;
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    public static <T> T toBean(Class<T> type, InputStream is) {
+        XStream xmStream = new XStream(new DomDriver("UTF-8"));
+        // 设置可忽略为在javabean类中定义的界面属性
+        xmStream.ignoreUnknownElements();
+        xmStream.registerConverter(new MyIntCoverter());
+        xmStream.registerConverter(new MyLongCoverter());
+        xmStream.registerConverter(new MyFloatCoverter());
+        xmStream.registerConverter(new MyDoubleCoverter());
+        xmStream.processAnnotations(type);
+        T obj = null;
+        try {
+            obj = (T) xmStream.fromXML(is);
+        } catch (Exception e) {
+            Log.e("TAG", "解析xml发生异常：" + e.getMessage());
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return obj;
+    }
+
+    public static <T> T toBean(Class<T> type, byte[] bytes) {
+        if (bytes == null) return null;
+        return toBean(type, new ByteArrayInputStream(bytes));
+    }
+
+    private static class MyIntCoverter extends IntConverter {
+
+        @Override
+        public Object fromString(String str) {
+            int value;
+            try {
+                value = (Integer) super.fromString(str);
+            } catch (Exception e) {
+                value = 0;
+            }
+            return value;
+        }
+
+        @Override
+        public String toString(Object obj) {
+            return super.toString(obj);
+        }
+    }
+
+    private static class MyLongCoverter extends LongConverter {
+        @Override
+        public Object fromString(String str) {
+            long value;
+            try {
+                value = (Long) super.fromString(str);
+            } catch (Exception e) {
+                value = 0;
+            }
+            return value;
+        }
+
+        @Override
+        public String toString(Object obj) {
+            return super.toString(obj);
+        }
+    }
+
+    private static class MyFloatCoverter extends FloatConverter {
+        @Override
+        public Object fromString(String str) {
+            float value;
+            try {
+                value = (Float) super.fromString(str);
+            } catch (Exception e) {
+                value = 0;
+            }
+            return value;
+        }
+
+        @Override
+        public String toString(Object obj) {
+            return super.toString(obj);
+        }
+    }
+
+    private static class MyDoubleCoverter extends DoubleConverter {
+        @Override
+        public Object fromString(String str) {
+            double value;
+            try {
+                value = (Double) super.fromString(str);
+            } catch (Exception e) {
+                value = 0;
+            }
+            return value;
+        }
+
+        @Override
+        public String toString(Object obj) {
+            return super.toString(obj);
+        }
+    }
+
+
+
 }

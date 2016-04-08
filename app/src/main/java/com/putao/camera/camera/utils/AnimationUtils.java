@@ -1,16 +1,15 @@
 package com.putao.camera.camera.utils;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
-
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.camera.model.AnimationModel;
 import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.XmlUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yanguoqiang on 16/2/22.
@@ -26,7 +25,18 @@ public class AnimationUtils {
      */
     public static AnimationModel getModelFromXML(String animationName) {
         // xxx/xxx/xxx.xml
-        String modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";
+        //第一个name为包名,第二个为文件名
+//        String modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";
+        String modelSetFile="";
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("zipName", animationName);
+        List<StickerUnZipInfo> list= MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
+        if(list.size()==0){
+            modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";
+        }else {
+            String xmlName=list.get(0).xmlName;
+            modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + xmlName + ".xml";
+        }
         String xmlStr = FileUtils.getFileContent(modelSetFile);
         if (xmlStr == null) return null;
         AnimationModel model = XmlUtils.xmlToModel(xmlStr, "animation", com.putao.camera.camera.model.AnimationModel.class);

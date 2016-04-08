@@ -42,7 +42,6 @@ import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
 import com.putao.camera.camera.view.AnimationImageView;
-import com.putao.camera.collage.CollageSampleSelectActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.CitySelectActivity;
@@ -59,6 +58,7 @@ import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
 import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DateUtil;
@@ -586,7 +586,8 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 showSticker(false);
                 break;
             case R.id.show_material_ll:
-                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+//                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
+                ActivityHelper.startActivity(this, TemplateManagemenActivity.class);
 
                 break;
             case R.id.tv_takephoto:

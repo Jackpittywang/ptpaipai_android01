@@ -4,6 +4,19 @@
     android:background="@color/color_c8c7c5"
     android:orientation="vertical">
 
+
+    <ImageView
+        android:id="@+id/show_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter" />
+
+    <com.putao.camera.camera.view.AnimationImageView
+        android:id="@+id/animation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+      />
+
     <RelativeLayout
         android:id="@+id/title_bar_rl"
         android:layout_width="match_parent"
@@ -50,37 +63,15 @@
             android:orientation="horizontal">
 
             <TextView
-                android:paddingRight="@dimen/dimens_10dp"
+                android:id="@+id/tv_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_save"
-                android:textSize="18dp"
+                android:paddingRight="@dimen/dimens_10dp"
+                android:text="保存/分享"
                 android:textColor="@color/white"
-                android:text="保存/分享" />
+                android:textSize="18dp" />
         </LinearLayout>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/photo_area_rl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/layout_sticker"
-        android:layout_below="@id/title_bar_rl"
-        android:background="@color/black">
-
-            <ImageView
-                android:id="@+id/show_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter" />
-    </FrameLayout>
-    <com.putao.camera.camera.view.AnimationImageView
-        android:layout_below="@id/title_bar_rl"
-        android:layout_above="@id/layout_sticker"
-        android:id="@+id/animation_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
 
     <LinearLayout
         android:id="@+id/layout_sticker"

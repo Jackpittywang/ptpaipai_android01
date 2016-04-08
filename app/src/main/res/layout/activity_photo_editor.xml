@@ -407,7 +407,7 @@
         android:layout_above="@id/option_bars"
         android:background="@color/transparent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/mark_list_pager"
