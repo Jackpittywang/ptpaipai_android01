@@ -24,12 +24,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumProcessDialog;
+import com.putao.camera.album.adapter.AlbumGridAdapter;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.collage.adapter.GalleryListAdapter;
-import com.putao.camera.collage.adapter.StickyGridAdapter;
 import com.putao.camera.collage.mode.CollageSampleItem;
 import com.putao.camera.collage.mode.GalleryEntity;
 import com.putao.camera.collage.mode.PhotoGridItem;
@@ -71,6 +71,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     ArrayList<GalleryEntity> mGalleryList;
     private RelativeLayout gallery_list_panel;
     private boolean mIsconnect = false;
+    private int bucket_id = -1;
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -108,7 +110,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         nonePhotoView = queryViewById(R.id.body_iv_none);
         back_btn = queryViewById(R.id.back_btn);
         title_tv = queryViewById(R.id.title_tv);
-        title_tv.setText("选择照片");
+        title_tv.setText("相机胶卷");
         btn_gallery = queryViewById(R.id.right_btn);
         btn_gallery.setBackgroundResource(R.drawable.icon_album_group);
         grid_rl = (RelativeLayout) findViewById(R.id.grid_rl);
@@ -179,7 +181,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
                  String photo_num_str = "";
-            mTemplateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
+                mTemplateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
                 if (mTemplateIconInfo != null) {
                     maxnum = Integer.parseInt(mTemplateIconInfo.num);
                     photo_num_str = "1~"+maxnum;
@@ -215,17 +217,68 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     }
 
     void getGallery() {
+        final ProgressDialog dialog = new ProgressDialog(mContext);
+        dialog.setMessage("正在读取照片...");
+        dialog.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 mGalleryList = CollagePhotoUtil.QueryALLGalleryList(mContext);
                 sendHandleMessage(SetGalleryList);
+                for (int i = 0; i < mGalleryList.size(); i++) {
+                    GalleryEntity item = mGalleryList.get(i);
+                    if (item.getImage_path().contains(PuTaoConstants.PAIAPI_PHOTOS_FOLDER)) {
+                        bucket_id = item.getBucket_id();
+                    }
+                }
+                dialog.dismiss();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        reSetAlbumData();
+                    }
+                });
+            }
+        }).start();
+    }
+
+   /* void getGallery() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mGalleryList = CollagePhotoUtil.QueryALLGalleryList(mContext);
+                sendHandleMessage(SetGalleryList);
+               *//* for (int i = 0; i < mGalleryList.size(); i++) {
+                    GalleryEntity item = mGalleryList.get(i);
+                    if (item.getImage_path().contains(PuTaoConstants.PAIAPI_PHOTOS_FOLDER)) {
+                        bucket_id = item.getBucket_id();
+                    }
+                }*//*
+            }
+        }).start();
+    }*/
+
+    void reSetAlbumData() {
+        final ProgressDialog dialog = new ProgressDialog(mContext);
+        dialog.setMessage("正在更新相册照片...");
+        dialog.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Loger.d("chen+++bucket_id=" + bucket_id);
+                if (bucket_id != -1) {
+                    mGirdList = CollagePhotoUtil.QueryPhotoByBUCKET_ID(mContext, bucket_id);
+                } else {
+                    mGirdList = CollagePhotoUtil.QueryALLPhoto(mContext);
+                }
+                sendHandleMessage(SetAlbumPhotos);
+                dialog.dismiss();
             }
         }).start();
     }
 
 
-    void reSetAlbumData(final int bucket_id) {
+   /* void reSetAlbumData(final int bucket_id) {
         final ProgressDialog dialog = new AlbumProcessDialog(mContext, "正在更新相册照片...").Get();
         dialog.show();
         new Thread(new Runnable() {
@@ -238,8 +291,24 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         }).start();
 
     }
-
+*/
     void loadGalleryList() {
+        GalleryListAdapter galleryAdapter = new GalleryListAdapter(mContext, mGalleryList);
+        layout_gallery_list.setAdapter(galleryAdapter);
+        layout_gallery_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GalleryEntity entity = mGalleryList.get(position);
+                bucket_id = entity.getBucket_id();
+                title_tv.setText(entity.getBucket_name());
+                reSetAlbumData();
+                hideGalleryLsit();
+            }
+        });
+    }
+
+
+   /* void loadGalleryList() {
         GalleryListAdapter galleryAdapter = new GalleryListAdapter(mContext, mGalleryList);
         layout_gallery_list.setAdapter(galleryAdapter);
         layout_gallery_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -250,7 +319,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
                 hideGalleryLsit();
             }
         });
-    }
+    }*/
 
     /**
      * 执行友盟统计
@@ -273,13 +342,23 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         }
         doUmengEventAnalysis(eventcode);
     }
-
+    private AlbumGridAdapter mAlbumGridAdapter;
 
     void LoadAlbumData() {
-        mGridView.setAdapter(new StickyGridAdapter(mActivity, mGirdList, mGridView));
-        /**
-         * 应用相册空时，显示提示
-         */
+       /* mGridView.setAdapter(new StickyGridAdapter(mActivity, mGirdList, mGridView));
+        //至少有一个相机的Icon
+        if (mGirdList.size() > 1) {
+            nonePhotoView.setVisibility(View.INVISIBLE);
+            jigsaw_photo_selected.setVisibility(View.VISIBLE);
+            mGridView.setVisibility(View.VISIBLE);
+        } else {
+            nonePhotoView.setVisibility(View.VISIBLE);
+            jigsaw_photo_selected.setVisibility(View.INVISIBLE);
+            mGridView.setVisibility(View.INVISIBLE);
+        }*/
+
+        mAlbumGridAdapter = new AlbumGridAdapter(mActivity, mGirdList, mGridView);
+        mGridView.setAdapter(mAlbumGridAdapter);
         //至少有一个相机的Icon
         if (mGirdList.size() > 1) {
             nonePhotoView.setVisibility(View.INVISIBLE);
@@ -290,6 +369,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             jigsaw_photo_selected.setVisibility(View.INVISIBLE);
             mGridView.setVisibility(View.INVISIBLE);
         }
+
     }
 
     void getData() {

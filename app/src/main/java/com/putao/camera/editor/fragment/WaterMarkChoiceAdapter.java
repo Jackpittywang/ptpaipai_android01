@@ -82,17 +82,14 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
         StickerUnZipInfo iconInfo = getItem(position);
 //        String path = WaterMarkHelper.getWaterMarkFilePath() + iconInfo.sample_image;
         String path = FileUtils.getPutaoCameraPath()  + File.separator+iconInfo.zipName +File.separator+ iconInfo.imgName;
-//        Bitmap bitmap = BitmapHelper.getInstance().loadBitmap(path);
-//        holder.water_marker_item_icon_im.setImageBitmap(bitmap);
 
-      /*  DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
-                .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();*/
 
         DisplayImageOptions options = new DisplayImageOptions.Builder().
                 showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
                 .considerExifParams(true)
                 .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-
+        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.water_marker_item_icon_im.setTag(path);
         ImageLoader.getInstance().displayImage("file://" + path, holder.water_marker_item_icon_im, options);
 
 

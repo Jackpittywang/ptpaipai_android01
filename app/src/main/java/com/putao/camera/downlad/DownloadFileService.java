@@ -11,9 +11,7 @@ import com.google.gson.Gson;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.DynamicIconInfo;
-import com.putao.camera.bean.PintuInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
-import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
@@ -33,6 +31,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by yanglun on 15/3/10.
@@ -212,7 +212,6 @@ public class DownloadFileService extends Service {
     }
 
 
-
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         mPosition = intent.getIntExtra("position", 0);
@@ -227,22 +226,21 @@ public class DownloadFileService extends Service {
                     if (type == DOWNLOAD_TYPE_STICKER) {
                         StickerCategoryInfo item = (StickerCategoryInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
-                        String parentId= item.id;
-                        unZipStickerFile(saveFile,parentId);
+                        String parentId = item.id;
+                        unZipStickerFile(saveFile, parentId);
                         MainApplication.getDBServer().addStickerCategoryInfo(item);
                     } else if (type == DOWNLOAD_TYPE_DYNAMIC) {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
                         MainApplication.getDBServer().addDynamicIconInfo(item);
-                        String parentId= item.id;
-                        unZipDynamicFile(saveFile,parentId);
+                        String parentId = item.id;
+                        unZipDynamicFile(saveFile, parentId);
                     } else {
                         TemplateIconInfo item = (TemplateIconInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
-                        item.zipName=saveFile.getName();
+                        item.zipName = saveFile.getName();
+                        unZipTemplateFile(saveFile, item, "pintu.xml");
                         MainApplication.getDBServer().addTemplateIconInfoInfo(item);
-                        String parentId= item.id;
-                        unZipTemplateFile(saveFile,parentId,"pintu.xml");
                     }
                     sendMsg(TYPE_UNZIP_FINISH);
                 } catch (Exception e) {
@@ -256,18 +254,11 @@ public class DownloadFileService extends Service {
     }
 
 
-
-    private void unZipStickerFile(File zipFile,String parentid) {
-
-        final StickerUnZipInfo stickerUnZipInfo = new StickerUnZipInfo();
-       /* stickerUnZipInfo.zipName = zipFile.toString();
-        MainApplication.getDBServer().addStickerUnZipInfo(stickerUnZipInfo);*/
+    private void unZipStickerFile(File zipFile, String parentid) {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
-            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true,parentid);
-//            MainApplication.getDBServer().addStickerUnZipInfo();
-//            FileOperationHelper.unZipFilePath(zipFile);
+            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true, parentid);
 
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
@@ -275,10 +266,6 @@ public class DownloadFileService extends Service {
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(WaterMarkHelper.getWaterMarkUnzipFilePath() + upZipFloderName, WaterMarkHelper.getWaterMarkFilePath());
-//            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_WATERMARK_FLODER_NAME, unZipJsonName);
-//            Gson gson = new Gson();
-//            WaterMarkCategoryInfo mWaterMarkCategoryInfo = gson.fromJson(watermark_config, WaterMarkCategoryInfo.class);
-//            WaterMarkHelper.saveCategoryInfoToDb(mWaterMarkCategoryInfo, WaterMarkCategoryInfo.photo, "0");
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();
             }
@@ -287,27 +274,17 @@ public class DownloadFileService extends Service {
         }
     }
 
-    private void unZipDynamicFile(File zipFile,String parentid) {
+    private void unZipDynamicFile(File zipFile, String parentid) {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
-            FileUtils.unZipInARStickersPath(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true,parentid);
-//            FileOperationHelper.unZipFilePath(zipFile);
+            FileUtils.unZipInARStickersPath(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true, parentid);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
-//            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
-//            String watermark_config = FileOperationHelper.readJsonFile(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME, unZipJsonName);
-//            Gson gson = new Gson();
-//            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
-
-
-//            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
-//            CollageHelper.saveNewCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "1");
-
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();
             }
@@ -317,32 +294,39 @@ public class DownloadFileService extends Service {
     }
 
 
-    private void unZipTemplateFile(File zipFile,String parentid,String unZipXmlName) {
+    private void unZipTemplateFile(File zipFile, TemplateIconInfo templateIconInfo, String unZipXmlName) {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
-            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""),true);
-//            FileOperationHelper.unZipFilePath(zipFile);
+            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
             }
             String upZipFloderName = zipFile.getName().substring(0, zipFile.getName().indexOf("."));
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
+
             //解析xml
             String pintu = FileOperationHelper.readJsonFile(zipFile.getName().replace(".zip", ""), unZipXmlName);
-            String pintuInfo=XmlUtils.xmlToJson(pintu,"jigsaw");
-            Gson gson = new Gson();
+
+            Pattern pattern = Pattern.compile("mask\":\\{(.+?)\\}");
+            Matcher matcher = pattern.matcher(XmlUtils.xmlToJson(pintu, "jigsaw"));
+            StringBuffer sbr = new StringBuffer();
+            if (matcher.find()) {
+                Pattern pattern1 = Pattern.compile("\\{");
+                Matcher matcher1 = pattern1.matcher(matcher.group());
+                Pattern pattern2 = Pattern.compile("\\}");
+                Matcher matcher2 = pattern2.matcher(matcher1.replaceFirst("\\[\\{"));
+                matcher.appendReplacement(sbr, matcher2.replaceFirst("\\}\\]"));
+            }
+            matcher.appendTail(sbr);
+            templateIconInfo.pintuGson = sbr.toString();
+           /* Gson gson = new Gson();
             //解析为拼图信息
             PintuInfo mPintuInfo = gson.fromJson(pintuInfo, PintuInfo.class);
-
-
-
-//            FileOperationHelper.copyFolder(CollageHelper.getTemplateUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
-//            Gson gson = new Gson();
-//            CollageConfigInfo mCollageConfigInfo = gson.fromJson(watermark_config, CollageConfigInfo.class);
-//            CollageHelper.saveCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "0");
-//            CollageHelper.saveNewCollageConfigInfoToDB(getBaseContext(), mCollageConfigInfo, "1");
+            mPintuInfo.parentId=templateIconInfo.id;
+//            MainApplication.getDBServer().addTemplateIconInfoInfo(item);
+            MainApplication.getDBServer().addPintuInfoInfo(mPintuInfo);*/
 
             if (!PuTaoConstants.isDebug) {
                 zipFile.delete();

@@ -45,7 +45,9 @@ public class IntentARImageView extends RelativeLayout {
     public void setData(String imagePath) {
         collage_download_iv.setImageBitmap(BitmapHelper.getBitmapFromPath(imagePath));
     }
-    public void setDataFromInternt(String imagePath) {
+    public void setDataFromInternt(String  imagePath) {
+
+
         Map<String, String> map = new HashMap<String, String>();
         map.put("cover_pic", imagePath);
         List<DynamicIconInfo> list = null;
@@ -56,7 +58,7 @@ public class IntentARImageView extends RelativeLayout {
         }
         if (null!=list &&list.size() > 0) {
             collage_photo_download_iv.setVisibility(GONE);
-            collage_download_iv.setOnClickListener(null);
+//            collage_download_iv.setOnClickListener(null);
         } else {
             collage_photo_download_iv.setImageResource(R.drawable.btn_22_01);
            /* collage_download_iv.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +68,7 @@ public class IntentARImageView extends RelativeLayout {
                     if (null != updateCallback) {
                         if (isClick == false) {
                             isClick = true;
-//                            updateCallback.startProgress(info, position);
+//                            updateCallback.startProgress(imagePath, 0);
                         }
                     }
                 }

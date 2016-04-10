@@ -92,33 +92,36 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:background="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp">
+                    >
 
                     <TextView
+
                         android:id="@+id/tv_photo_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/collage_select_image"
-                        android:textColor="@color/grey_dark"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
 
+                   <!-- style="@style/button.red"-->
                     <Button
                         android:id="@+id/btn_ok"
                         style="@style/button.red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
                         android:background="@drawable/background_view_grey"
                         android:text="下一步" />
 
                 </LinearLayout>
 
                 <HorizontalScrollView
+                    android:background="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="95dp"
                     android:layout_above="@id/camera_button_bar"

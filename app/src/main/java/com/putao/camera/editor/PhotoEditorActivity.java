@@ -66,7 +66,6 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
-import com.sunnybear.library.BasicApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -386,7 +385,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 }
                 try {
 //                    String image_path = WaterMarkHelper.getWaterMarkFilePath() + resName;
-                    String image_path = BasicApplication.sdCardPath + File.separator+iconInfo.zipName +File.separator + resName;
+                    String image_path = FileUtils.getPutaoCameraPath() + File.separator+iconInfo.zipName +File.separator + resName;
                     Bitmap bm = BitmapHelper.getInstance().loadBitmap(image_path);
                     hideMarkContent();
 //                    if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_Normal)) {

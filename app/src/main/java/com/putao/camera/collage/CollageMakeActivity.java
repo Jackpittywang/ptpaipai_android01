@@ -14,15 +14,16 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
+import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
-import com.putao.camera.bean.CollageConfigInfo;
+import com.putao.camera.bean.PintuInfo;
+import com.putao.camera.bean.TemplateIconInfo;
 import com.putao.camera.collage.mode.CollageSampleItem;
-import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.collage.view.CollageView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
@@ -34,9 +35,8 @@ import com.putao.camera.setting.watermark.management.CollageManagementActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
-import com.putao.camera.util.DateUtil;
 import com.putao.camera.util.DisplayHelper;
-import com.putao.camera.util.SharedPreferencesHelper;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.StringHelper;
 
 import java.io.File;
@@ -44,6 +44,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jidongdong on 15/1/27.
@@ -54,13 +57,15 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     private Button back_btn, btn_save, btn_fold;
     private LinearLayout cur_cate_samples, panel_sample_list;
     private HorizontalScrollView sl_sample_list;
-    private CollageConfigInfo mCollageConfigInfo;
+    //    private CollageConfigInfo mCollageConfigInfo;
     private MyTextView btn_new_res;
     private CollageSampleItem mCollageItemInfo;
+    private TemplateIconInfo mTemplateIconInfo;
     private float sample_scale = 1.0f;
     private String filePath;
     private boolean mIsExpand = true;
     AlertDialog dialog;
+    String zipName;
     private int mPhotoSelectIndex = -1;
 
     @Override
@@ -90,22 +95,139 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             showPhotoOptdialog();
         }
     };
+    PintuInfo pintuInfo;
 
     @SuppressWarnings("unchecked")
     @Override
     public void doInitData() {
         sample_scale = DisplayHelper.getDensity() / 2;
-        mCollageConfigInfo = CollageHelper.getCollageConfigInfoFromDB(mContext);
+//        mCollageConfigInfo = CollageHelper.getCollageConfigInfoFromDB(mContext);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            mCollageItemInfo = (CollageSampleItem) bundle.getSerializable("sampleinfo");
+//            mCollageItemInfo = (CollageSampleItem) bundle.getSerializable("sampleinfo");
             selectImages = (ArrayList<String>) bundle.getSerializable("images");
+
+            mTemplateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("id", String.valueOf(mTemplateIconInfo.id));
+            List<TemplateIconInfo> list = MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
+            zipName = list.get(0).zipName.substring(0, list.get(0).zipName.lastIndexOf(".zip"));
+            Gson gson = new Gson();
+            pintuInfo = gson.fromJson(list.get(0).pintuGson, PintuInfo.class);
+
+
             initCollageView();
         }
-        loadSamples();
+//        loadSamples();
     }
 
-    private void loadSamples() {
+    public void initCollageView() {
+        String imagName = pintuInfo.maskList.get(selectImages.size()-1).imageName;
+        String mask_path = FileUtils.getSdcardPath() + File.separator + zipName + File.separator + imagName;
+
+        //边框图片,按照图片数量选择
+        /*String mask_path = CollageHelper.getCollageFilePath()
+                + mCollageItemInfo.mask_image;*/
+        Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPath(mask_path);
+        if (bitmap != null) {
+            Matrix matrix = new Matrix();
+            matrix.postScale(sample_scale, sample_scale);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true);
+            mCollageView.setSampleImage(bitmap);
+            mCollageView.setImageList(getPhotoSetFromCollageItemInfo(mTemplateIconInfo));
+//            mCollageView.setTextList(getCollageTextList(mTemplateIconInfo));
+        }
+    }
+
+    private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
+            TemplateIconInfo info) {
+
+        //得到模板框内点的信息
+        ArrayList<CollageView.CollagePhotoSet> photoSet = new ArrayList<CollageView.CollagePhotoSet>();
+        if (photoSet != null) {
+            //获取选中模板图片张数
+            for (int i = 0; i < selectImages.size(); i++) {
+                PintuInfo.Mask mask = pintuInfo.maskList.get(selectImages.size()-1).mask.get(i);
+//                PintuInfo.MaskInfo imageInfo = info.elements .get(0).datas.get(selectImages.size()).mask.get(i);
+
+                if (i < selectImages.size()) {
+                    Bitmap bitmap = BitmapHelper.getInstance()
+                            .getBitmapFromPathWithSize(selectImages.get(i),
+                                    DisplayHelper.getScreenWidth(),
+                                    DisplayHelper.getScreenHeight());
+                    if (bitmap != null) {
+                        photoSet.add(mCollageView.new CollagePhotoSet(bitmap,
+                                getImagePointsByCollageImageInfo(mask)));
+                    }
+                }
+            }
+        }
+        return photoSet;
+    }
+
+
+
+     /* private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
+            CollageSampleItem info) {
+        //得到模板框内点的信息
+        ArrayList<CollageView.CollagePhotoSet> photoSet = new ArrayList<CollageView.CollagePhotoSet>();
+        if (photoSet != null) {
+            //获取选中模板图片张数
+            for (int i = 0; i < info.imageElements.size(); i++) {
+                CollageConfigInfo.CollageImageInfo imageInfo = info.imageElements
+                        .get(i);
+                if (i < selectImages.size()) {
+                    Bitmap bitmap = BitmapHelper.getInstance()
+                            .getBitmapFromPathWithSize(selectImages.get(i),
+                                    DisplayHelper.getScreenWidth(),
+                                    DisplayHelper.getScreenHeight());
+                    if (bitmap != null) {
+                        photoSet.add(mCollageView.new CollagePhotoSet(bitmap,
+                                getImagePointsByCollageImageInfo(imageInfo)));
+                    }
+                }
+            }
+        }
+        return photoSet;
+    }*/
+
+    private CollageView.Area getImagePointsByCollageImageInfo(
+            PintuInfo.Mask mask) {
+        int count = mask.point.size();
+        float[] p_x = new float[count];
+        float[] p_y = new float[count];
+        for (int i = 0; i < count; i++) {
+            String pointNum = mask.point.get(i);
+            String[] pointXY = pointNum.split(",");
+            p_x[i] = Float.parseFloat(pointXY[0]);
+            p_y[i] = Float.parseFloat(pointXY[1]);
+        }
+
+        CollageView.Area area = mCollageView.new Area(
+                mCollageView.getScalePloyX(p_x, sample_scale),
+                mCollageView.getScalePloyY(p_y, sample_scale));
+        return area;
+    }
+
+
+  /*  private CollageView.Area getImagePointsByCollageImageInfo(
+            CollageConfigInfo.CollageImageInfo imageInfo) {
+        int count = imageInfo.pointArray.size();
+        float[] p_x = new float[count];
+        float[] p_y = new float[count];
+        for (int i = 0; i < count; i++) {
+            p_x[i] = imageInfo.pointArray.get(i).point_x;
+            p_y[i] = imageInfo.pointArray.get(i).point_y;
+        }
+
+        CollageView.Area area = mCollageView.new Area(
+                mCollageView.getScalePloyX(p_x, sample_scale),
+                mCollageView.getScalePloyY(p_y, sample_scale));
+        return area;
+    }*/
+
+   /* private void loadSamples() {
         ArrayList<CollageConfigInfo.CollageItemInfo> list = getCollageSampleList(mCollageItemInfo.category);
         if (list.size() > 0) {
             for (CollageConfigInfo.CollageItemInfo item : list) {
@@ -133,10 +255,10 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
                 cur_cate_samples.addView(imageView);
             }
         }
-    }
+    }*/
 
 
-    protected ArrayList<CollageConfigInfo.CollageItemInfo> getCollageSampleList(String category) {
+   /* protected ArrayList<CollageConfigInfo.CollageItemInfo> getCollageSampleList(String category) {
         if (mCollageConfigInfo == null) {
             return null;
         }
@@ -150,94 +272,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             }
         }
         return list;
-    }
-
-
-    public void initCollageView() {
-        //边框图片,按照图片数量选择
-        String mask_path = CollageHelper.getCollageFilePath()
-                + mCollageItemInfo.mask_image;
-        Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPath(mask_path);
-        if (bitmap != null) {
-            Matrix matrix = new Matrix();
-            matrix.postScale(sample_scale, sample_scale);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                    bitmap.getHeight(), matrix, true);
-            mCollageView.setSampleImage(bitmap);
-            mCollageView
-                    .setImageList(getPhotoSetFromCollageItemInfo(mCollageItemInfo));
-            mCollageView.setTextList(getCollageTextList(mCollageItemInfo));
-        }
-    }
-
-    private ArrayList<CollageConfigInfo.CollageText> getCollageTextList(
-            CollageSampleItem itemInfo) {
-        ArrayList<CollageConfigInfo.CollageText> textlist = new ArrayList<CollageConfigInfo.CollageText>();
-        if (itemInfo.textElements != null) {
-            String current_city = SharedPreferencesHelper.readStringValue(
-                    mContext, PuTaoConstants.PREFERENCE_CURRENT_CITY, "");
-            String current_time = DateUtil.getStringDateShort();
-            for (int i = 0; i < itemInfo.textElements.size(); i++) {
-                CollageConfigInfo.CollageText textItem = mCollageConfigInfo.new CollageText();
-                textItem.textColor = itemInfo.textElements.get(i).textColor;
-                if (itemInfo.textElements.get(i)
-                        .equals(CollageView.CollageTextType.CURRENT_CITY)) {
-                    if (!StringHelper.isEmpty(current_city))
-                        textItem.text = current_city;
-                } else if (itemInfo.textElements.get(i).textType
-                        .equals(CollageView.CollageTextType.CURRENT_TIME)) {
-                    textItem.text = current_time;
-                }
-                textItem.left = itemInfo.textElements.get(i).left * sample_scale;
-                textItem.right = itemInfo.textElements.get(i).right * sample_scale;
-                textItem.bottom = itemInfo.textElements.get(i).bottom * sample_scale;
-                textItem.top = itemInfo.textElements.get(i).top * sample_scale;
-                textItem.textSize = (int) (itemInfo.textElements.get(i).textSize * sample_scale);
-                textlist.add(textItem);
-            }
-        }
-        return textlist;
-    }
-
-    private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
-            CollageSampleItem info) {
-        //得到模板框内点的信息
-        ArrayList<CollageView.CollagePhotoSet> photoSet = new ArrayList<CollageView.CollagePhotoSet>();
-        if (photoSet != null) {
-            //获取选中模板图片张数
-            for (int i = 0; i < info.imageElements.size(); i++) {
-                CollageConfigInfo.CollageImageInfo imageInfo = info.imageElements
-                        .get(i);
-                if (i < selectImages.size()) {
-                    Bitmap bitmap = BitmapHelper.getInstance()
-                            .getBitmapFromPathWithSize(selectImages.get(i),
-                                    DisplayHelper.getScreenWidth(),
-                                    DisplayHelper.getScreenHeight());
-                    if (bitmap != null) {
-                        photoSet.add(mCollageView.new CollagePhotoSet(bitmap,
-                                getImagePointsByCollageImageInfo(imageInfo)));
-                    }
-                }
-            }
-        }
-        return photoSet;
-    }
-
-    private CollageView.Area getImagePointsByCollageImageInfo(
-            CollageConfigInfo.CollageImageInfo imageInfo) {
-        int count = imageInfo.pointArray.size();
-        float[] p_x = new float[count];
-        float[] p_y = new float[count];
-        for (int i = 0; i < count; i++) {
-            p_x[i] = imageInfo.pointArray.get(i).point_x;
-            p_y[i] = imageInfo.pointArray.get(i).point_y;
-        }
-
-        CollageView.Area area = mCollageView.new Area(
-                mCollageView.getScalePloyX(p_x, sample_scale),
-                mCollageView.getScalePloyY(p_y, sample_scale));
-        return area;
-    }
+    }*/
 
     private File saveCollage() {
         mCollageView.setDrawingCacheEnabled(true);
@@ -268,6 +303,38 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         filePath = pictureFile.getPath();
         return pictureFile;
     }
+
+
+
+    /*private ArrayList<CollageConfigInfo.CollageText> getCollageTextList(
+            CollageSampleItem itemInfo) {
+        ArrayList<CollageConfigInfo.CollageText> textlist = new ArrayList<CollageConfigInfo.CollageText>();
+        if (itemInfo.textElements != null) {
+            String current_city = SharedPreferencesHelper.readStringValue(
+                    mContext, PuTaoConstants.PREFERENCE_CURRENT_CITY, "");
+            String current_time = DateUtil.getStringDateShort();
+            for (int i = 0; i < itemInfo.textElements.size(); i++) {
+                CollageConfigInfo.CollageText textItem = mCollageConfigInfo.new CollageText();
+                textItem.textColor = itemInfo.textElements.get(i).textColor;
+                if (itemInfo.textElements.get(i)
+                        .equals(CollageView.CollageTextType.CURRENT_CITY)) {
+                    if (!StringHelper.isEmpty(current_city))
+                        textItem.text = current_city;
+                } else if (itemInfo.textElements.get(i).textType
+                        .equals(CollageView.CollageTextType.CURRENT_TIME)) {
+                    textItem.text = current_time;
+                }
+                textItem.left = itemInfo.textElements.get(i).left * sample_scale;
+                textItem.right = itemInfo.textElements.get(i).right * sample_scale;
+                textItem.bottom = itemInfo.textElements.get(i).bottom * sample_scale;
+                textItem.top = itemInfo.textElements.get(i).top * sample_scale;
+                textItem.textSize = (int) (itemInfo.textElements.get(i).textSize * sample_scale);
+                textlist.add(textItem);
+            }
+        }
+        return textlist;
+    }*/
+
 
     @Override
     public void onBackPressed() {

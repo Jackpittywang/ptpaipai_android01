@@ -249,12 +249,6 @@ public final class FileUtils {
             }
             StickerUnZipInfo item = new StickerUnZipInfo();
 
-           /* String a=zipEntry.getName();
-            String regEx="[^0-9]";
-            Pattern p = Pattern.compile(regEx);
-            Matcher m = p.matcher(a);
-            String position= m.replaceAll("").trim();
-            item.position=position;*/
             item.parentid=id;
             item.zipName =outputDir;
             item.imgName=zipEntry.getName();
@@ -301,6 +295,7 @@ public final class FileUtils {
                     fileOutputStream.close();
                 }
             }
+
 
 
             // 定位到下一个文件入口

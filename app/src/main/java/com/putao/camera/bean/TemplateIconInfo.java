@@ -44,7 +44,10 @@ public class TemplateIconInfo implements Serializable {
     @Column(name = "zipSize")
     public String zipSize;
 
-    public ArrayList<StickerUnZipInfo> elements = new ArrayList<StickerUnZipInfo>();
+    @Column(name = "pintuGson")
+    public String pintuGson;
+
+    public ArrayList<PintuInfo> elements = new ArrayList<PintuInfo>();
 
     private boolean isChecked;
 

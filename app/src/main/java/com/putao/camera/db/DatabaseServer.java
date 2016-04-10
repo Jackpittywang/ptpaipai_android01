@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.putao.ahibernate.dao.AhibernateDao;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.bean.PintuInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerIconInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
@@ -31,6 +32,7 @@ public class DatabaseServer {
     private AhibernateDao<StickerIconInfo> mStickerIconInfo;
     private AhibernateDao<DynamicCategoryInfo> mDynamicCategoryInfo;
     private AhibernateDao<DynamicIconInfo> mDynamicIconInfo;
+    private AhibernateDao<PintuInfo> mPintuInfo;
     private AhibernateDao<TemplateIconInfo> mTemplateIconInfo;
     private AhibernateDao<TemplateCategoryInfo> mTemplateCategoryInfo;
     private AhibernateDao<StickerUnZipInfo> mStickerUnZipInfo;
@@ -48,6 +50,7 @@ public class DatabaseServer {
         this.mTemplateIconInfo = new AhibernateDao<TemplateIconInfo>(this.mSQLiteDatabase);
         this.mTemplateCategoryInfo = new AhibernateDao<TemplateCategoryInfo>(this.mSQLiteDatabase);
         this.mStickerUnZipInfo = new AhibernateDao<StickerUnZipInfo>(this.mSQLiteDatabase);
+        this.mPintuInfo = new AhibernateDao<PintuInfo>(this.mSQLiteDatabase);
     }
 
     public SQLiteDatabase getSQLiteDatabase() {
@@ -95,6 +98,10 @@ public class DatabaseServer {
         List<TemplateIconInfo> list = mTemplateIconInfo.queryList(iconInfo);
         return list;
     }
+    public List<PintuInfo> getPintuInfo(PintuInfo iconInfo) {
+        List<PintuInfo> list = mPintuInfo.queryList(iconInfo);
+        return list;
+    }
 
     public int addWaterMarkIconInfo(WaterMarkIconInfo iconInfo) {
         List<WaterMarkIconInfo> list = getWaterMarkIconInfos(iconInfo);
@@ -137,6 +144,15 @@ public class DatabaseServer {
             return -1;
         }
         return mTemplateIconInfo.insert(iconInfo);
+    }
+
+    public int addPintuInfoInfo(PintuInfo iconInfo) {
+        List<PintuInfo> list = getPintuInfo(iconInfo);
+        if (list.size() > 0) {
+            // 已经存在
+            return -1;
+        }
+        return mPintuInfo.insert(iconInfo);
     }
 
 

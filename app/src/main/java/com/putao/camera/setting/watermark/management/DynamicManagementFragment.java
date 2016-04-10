@@ -232,10 +232,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                     }
                 });
                 break;
-            case PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY:
-                mManagementAdapter.notifyDataSetChanged();
 
-                break;
         }
     }
 }

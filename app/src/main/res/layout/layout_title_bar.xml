@@ -25,6 +25,7 @@
             android:background="@drawable/btn_20_back_w_nor"
             android:textColor="@color/title_text_color" />
 
+
         <Button
             android:id="@+id/camera_btn"
             android:layout_width="wrap_content"
