@@ -417,6 +417,26 @@
             android:background="@drawable/sticker_dialog_bg"
             android:orientation="vertical">
 
+            <!--<HorizontalScrollView
+                android:id="@+id/scroll_watermark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/option_bars"
+                android:background="@color/transparent"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/mark_cate_contanier"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
+
+                </LinearLayout>
+
+            </HorizontalScrollView>-->
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -492,7 +512,20 @@
                     android:paddingLeft="10dp">
 
                 </LinearLayout>
+
             </HorizontalScrollView>
+
+            <!--<com.putao.camera.editor.view.MyTextView
+                android:id="@+id/btn_new_res"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@color/transparent"
+                android:drawableTop="@drawable/res_download_icon"
+                android:gravity="center_horizontal"
+                android:text="更 多"
+                android:textColor="@color/text_color_dark_898989"
+                android:textSize="16sp" />-->
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

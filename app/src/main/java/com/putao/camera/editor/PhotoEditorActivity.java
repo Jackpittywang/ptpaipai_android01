@@ -899,7 +899,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
                 mEditAction = EditAction.ACTION_Mark;
                 break;
             case R.id.ll_picture_filter:
-                filter_scrollview.setVisibility(View.VISIBLE);
+                btn_new_res.setVisibility(View.VISIBLE);
                 hideTitleAni();
                 tv_action.setText("滤镜");
                 mEditAction = EditAction.ACTION_FILTER;

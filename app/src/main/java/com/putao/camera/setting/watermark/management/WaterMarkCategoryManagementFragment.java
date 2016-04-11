@@ -100,7 +100,6 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     }
 
 
-
     @Override
     public void startProgress(StickerListInfo.PackageInfo info, final int position) {
         String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
@@ -139,15 +138,10 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     vh.pb_download.setVisibility(View.VISIBLE);
                     vh.water_mark_category_download_btn.setOnClickListener(null);
 
-//                    vh.water_mark_category_download_btn.setText("下载中");
-//                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
-                    //                    vh.water_mark_category_download_btn.setText("删除");
-                    //                    vh.download_status_pb.setVisibility(View.INVISIBLE);
-                    //                    vh.water_mark_photo_ok_iv.setVisibility(View.INVISIBLE);
-                    //                    mManagementAdapter.notifyDataSetChanged();
+                    //mManagementAdapter.notifyDataSetChanged();
                     vh.pb_download.setVisibility(View.GONE);
-//                    vh.water_mark_category_download_btn.setVisibility(View.VISIBLE);
+                    vh.water_mark_category_download_btn.setImageResource(R.drawable.btn_22_03);
                 }
             }
         }

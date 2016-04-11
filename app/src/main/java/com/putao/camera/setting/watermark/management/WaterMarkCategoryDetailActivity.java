@@ -19,6 +19,7 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.StickerCategoryInfo;
+import com.putao.camera.bean.StickerIconDetailInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
@@ -29,6 +30,7 @@ import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
+import com.sunnybear.library.view.LoadingHUD;
 
 import org.json.JSONObject;
 
@@ -51,6 +53,8 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private Button back_btn;
     private int position;
     private String id;
+    StickerCategoryInfo mStickerCategoryInfos;
+    LoadingHUD loading;
 
     @Override
     public int doGetContentViewId() {
@@ -72,6 +76,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         mGridView = (GridView) this.findViewById(R.id.grid_view);
         addOnClickListener(download_btn, back_btn);
         EventBus.getEventBus().register(this);
+        loading= LoadingHUD.getInstance(this);
     }
 
     @Override
@@ -113,7 +118,6 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private void updateDownloadBtn() {
         if (isDownloaded()) {
 //            download_status_pb.setVisibility(View.INVISIBLE);
-
             download_btn.setVisibility(View.VISIBLE);
             download_btn.setText("已下载");
             download_btn.setBackgroundResource(R.drawable.gray_btn_bg_larger_corners);
@@ -182,6 +186,10 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     sample_iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ImageLoader.getInstance().displayImage(mStickerPackageDetailInfo.data.banner_pic, sample_iv, options);
 
+                    Gson gson1 = new Gson();
+                    mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconDetailInfo.class).data;
+                    String id=mStickerCategoryInfos.id;
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -208,7 +216,10 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
             Loger.i("startDownloadService:run");
         }
         if(null == url || null == folderPath) return;
+
+        mStickerCategoryInfos.type = "sticker";
         Intent bindIntent = new Intent(this, DownloadFileService.class);
+        bindIntent.putExtra("item", mStickerCategoryInfos);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
@@ -300,6 +311,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     private void updateProgressPartly(int progress, int position) {
         if (progress >= 0 && progress <= 100) {
+
 //            download_status_pb.setProgress(progress);
         }else {
             download_btn.setVisibility(View.VISIBLE);

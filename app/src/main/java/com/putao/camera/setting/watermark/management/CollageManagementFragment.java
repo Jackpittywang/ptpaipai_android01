@@ -121,23 +121,16 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 //                vh.download_status_pb.setProgress(progress);
                 if (progress > 0 && progress < 100) {
                     vh.pb_download.setVisibility(View.VISIBLE);
-                    vh.collage_photo_download_iv.setVisibility(View.GONE);
+                    vh.collage_photo_download_iv.setImageResource(R.drawable.btn_22_02);
                     vh.collage_photo_download_iv.setOnClickListener(null);
-//                    vh.download_status_pb.setVisibility(View.VISIBLE);
                 } else if (progress == 100) {
                     vh.pb_download.setVisibility(View.GONE);
-                    vh.collage_photo_download_iv.setVisibility(View.VISIBLE);
-//                    vh.download_status_pb.setVisibility(View.INVISIBLE);
-//                    vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
+                    vh.collage_photo_download_iv.setImageResource(R.drawable.btn_22_03);
                 }
             }
         }
     }
 
-    private void updateFinish() {
-        //        vh.download_status_pb.setVisibility(View.INVISIBLE);
-        //        vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-    }
 
     public void queryCollageList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {

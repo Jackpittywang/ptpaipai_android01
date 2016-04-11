@@ -428,7 +428,7 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 //                        updateProgressPartly(percent, position);
@@ -532,11 +532,10 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         }
     }
 
-
-   /* @Override
+    @Override
     public void onBackPressed() {
         showQuitTip();
-    }*/
+    }
 
     void showQuitTip() {
         if (progressDialog != null) {
