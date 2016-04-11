@@ -22,6 +22,7 @@ public class TemplateListInfo extends BaseItem {
         public String cover_pic;
         public int release_time;
         public int is_new;
+
     }
 }
 

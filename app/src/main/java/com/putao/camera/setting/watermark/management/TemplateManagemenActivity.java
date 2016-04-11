@@ -14,6 +14,7 @@ import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.TemplateCategoryInfo;
 import com.putao.camera.bean.TemplateIconInfo;
+import com.putao.camera.collage.CollageMakeActivity;
 import com.putao.camera.collage.CollagePhotoSelectActivity;
 import com.putao.camera.collage.mode.CollageSampleItem;
 import com.putao.camera.collage.util.CollageHelper;
@@ -42,6 +43,8 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     private CollageManagementAdapter mManagementAdapter;
     private ArrayList<String> selectImages = new ArrayList<String>();
     ArrayList<TemplateIconInfo> mTemplateIconInfo;
+    TemplateIconInfo templateIconInfo;
+    private int imageTotal = 0;
 
     @Override
     public int doGetContentViewId() {
@@ -52,9 +55,11 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     public void doInitSubViews(View view) {
         EventBus.getEventBus().register(this);
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
-        back_btn=queryViewById(R.id.back_btn);
-        title_tv=queryViewById(R.id.title_tv);
+        right_btn=queryViewById(R.id.right_btn);
+        back_btn = queryViewById(R.id.back_btn);
+        title_tv = queryViewById(R.id.title_tv);
         title_tv.setText("选择模板");
+        right_btn.setText("返回");
     }
 
 
@@ -91,11 +96,27 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
         mManagementAdapter.setUpdateCallback(this);
         mGridView.setAdapter(mManagementAdapter);
         mGridView.setOnItemClickListener(this);
-        addOnClickListener(back_btn);
 
-        queryCollageList();
+        addOnClickListener(back_btn,right_btn);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            selectImages=(ArrayList<String>) bundle.getSerializable("images");
+            imageTotal = bundle.getInt("imgsum");
+            templateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
+
+            back_btn.setVisibility(View.GONE);
+            right_btn.setVisibility(View.VISIBLE);
+        }else {
+            back_btn.setVisibility(View.VISIBLE);
+            right_btn.setVisibility(View.GONE);
+        }
+
+        queryCollageList(imageTotal);
     }
+
     private ArrayList<CollageSampleItem> mCollageList;
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 /*Bundle bundle = new Bundle();
@@ -118,9 +139,18 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     @Override
     public void startActivity(TemplateListInfo.PackageInfo info, int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("images", selectImages);
-        bundle.putSerializable("sampleinfo",  mTemplateIconInfo.get(position));
-        ActivityHelper.startActivity(mActivity, CollagePhotoSelectActivity.class, bundle);
+        if (imageTotal!=0) {
+            bundle.putSerializable("images", selectImages);
+            bundle.putSerializable("sampleinfo", mTemplateIconInfo.get(position));
+            ActivityHelper.startActivity(mActivity, CollageMakeActivity.class, bundle);
+            finish();
+        }else {
+            bundle.putSerializable("images", selectImages);
+            bundle.putSerializable("sampleinfo", mTemplateIconInfo.get(position));
+            ActivityHelper.startActivity(mActivity, CollagePhotoSelectActivity.class, bundle);
+
+        }
+
 
     }
 
@@ -153,7 +183,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     }
 
 
-    public void queryCollageList() {
+    public void queryCollageList(final int imgSum) {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -162,10 +192,32 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 try {
                     Gson gson = new Gson();
                     aCollageInfo = (TemplateListInfo) gson.fromJson(json.toString(), TemplateListInfo.class);
-                    mManagementAdapter.setDatas(aCollageInfo.data);
-
                     Gson gson1 = new Gson();
                     mTemplateIconInfo = gson1.fromJson(json.toString(), TemplateCategoryInfo.class).data;
+                    if (imgSum == 0) {
+                        mManagementAdapter.setDatas(aCollageInfo.data);
+
+                    } else {
+                        ArrayList<TemplateListInfo.PackageInfo> packageInfos=new ArrayList<>();
+                        ArrayList<TemplateIconInfo> newTemplateIconInfo=new ArrayList<>();
+                        for (TemplateListInfo.PackageInfo iconInfo : aCollageInfo.data) {
+                            if (iconInfo.max_num > imgSum) {
+                                packageInfos.add(iconInfo);
+                            }
+                        }
+                        mManagementAdapter.setDatas(packageInfos);
+
+                        for(TemplateIconInfo templateIconInfo:mTemplateIconInfo){
+                            if (Integer.parseInt(templateIconInfo.num) > imgSum) {
+                                newTemplateIconInfo.add(templateIconInfo);
+                            }
+
+                        }
+                        mTemplateIconInfo=newTemplateIconInfo;
+                    }
+
+
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,6 +241,13 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
             case R.id.back_btn:
                 finish();
                 break;
+            case R.id.right_btn:
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("images",selectImages);
+                 bundle.putSerializable("sampleinfo",templateIconInfo);
+                ActivityHelper.startActivity(mActivity, CollageMakeActivity.class, bundle);
+                finish();
+                break;
         }
     }
 
@@ -200,10 +259,10 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
+        if (null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-        mTemplateIconInfo.get(position).type="template";
-        bindIntent.putExtra("item",mTemplateIconInfo.get(position));
+        mTemplateIconInfo.get(position).type = "template";
+        bindIntent.putExtra("item", mTemplateIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
@@ -218,7 +277,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -230,7 +289,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 //                String filePath = event.bundle.getString("percent");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -239,7 +298,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();
@@ -247,7 +306,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 });
                 break;
             case PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();

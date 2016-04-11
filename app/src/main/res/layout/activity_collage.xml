@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_c8c7c5"
+    android:background="@drawable/img_blur_bg"
     android:orientation="vertical"
     tools:context="com.putao.camera.collage.CollageActivity">
 
@@ -11,7 +11,7 @@
         android:id="@+id/title_bar_rl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white">
+        android:background="#00000000">
 
         <Button
             android:id="@+id/back_btn"
@@ -27,29 +27,21 @@
             android:layout_centerInParent="true"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="拼图"
-                android:textColor="@color/text_color_dark_898989"
-                android:textSize="@dimen/activity_title_size" />
+
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_save"
-            style="@style/button.red"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="保存" />
-
-        <Button
-            android:id="@+id/album_share_btn"
+        <TextView
+            android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:layout_toLeftOf="@id/btn_save"
-            android:background="@drawable/selector_share_btn"
-            android:visibility="invisible" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="保存/分享"
+            android:paddingRight="8dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/activity_title_size" />
+
+
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -64,70 +56,101 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" />
 
-        <LinearLayout
-            android:id="@+id/panel_sample_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:orientation="vertical"
-                android:paddingRight="30dp">
-
-                <Button
-                    android:id="@+id/btn_fold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/template_button_fold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.putao.camera.editor.view.MyTextView
-                    android:id="@+id/btn_new_res"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="@dimen/dimens_10dp"
-                    android:background="@color/transparent"
-                    android:drawableTop="@drawable/res_download_icon"
-                    android:gravity="center_horizontal"
-                    android:text="更 多"
-                    android:textColor="@color/grey_dark"
-                    android:textSize="16sp" />
-
-                <HorizontalScrollView
-                    android:id="@+id/sl_sample_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:id="@+id/cur_cate_samples"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="10dp">
-
-                    </LinearLayout>
-
-                </HorizontalScrollView>
-            </LinearLayout>
-        </LinearLayout>
     </RelativeLayout>
+
+    <LinearLayout
+
+        android:id="@+id/ll_change_make"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:paddingTop="15dp"
+            android:paddingBottom="5dp"
+            android:layout_margin="@dimen/dimens_5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_change_make"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_capture_20_36"/>
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:layout_toRightOf="@+id/iv_change_make"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="更换模板"/>
+
+
+        </RelativeLayout>
+
+        <!-- <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:gravity="right"
+             android:orientation="vertical"
+             android:paddingRight="30dp">
+
+             <Button
+                 android:id="@+id/btn_fold"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/template_button_fold" />
+         </LinearLayout>-->
+
+        <!-- <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@color/white"
+             android:gravity="center"
+             android:orientation="horizontal">
+
+             <com.putao.camera.editor.view.MyTextView
+                 android:id="@+id/btn_new_res"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="10dp"
+                 android:layout_marginRight="@dimen/dimens_10dp"
+                 android:background="@color/transparent"
+                 android:drawableTop="@drawable/res_download_icon"
+                 android:gravity="center_horizontal"
+                 android:text="更 多"
+                 android:textColor="@color/grey_dark"
+                 android:textSize="16sp" />
+
+             <HorizontalScrollView
+                 android:id="@+id/sl_sample_list"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="@color/white"
+                 android:scrollbars="none">
+
+                 <LinearLayout
+                     android:id="@+id/cur_cate_samples"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal"
+                     android:paddingBottom="10dp"
+                     android:paddingLeft="10dp"
+                     android:paddingRight="10dp"
+                     android:paddingTop="10dp">
+
+                 </LinearLayout>
+
+             </HorizontalScrollView>
+         </LinearLayout>-->
+
+
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

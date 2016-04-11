@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/sl_gallery_list"
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:scrollbars="none"

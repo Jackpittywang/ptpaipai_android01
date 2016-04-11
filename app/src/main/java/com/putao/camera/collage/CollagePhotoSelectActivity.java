@@ -61,7 +61,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     private final static int SetGalleryList = 2;
     private StickyGridHeadersGridView mGridView;
     private List<PhotoGridItem> mGirdList = new ArrayList<PhotoGridItem>();
-    private TextView tv_photo_num;
+    private TextView tv_photo_num,back_tv;
+    private  ImageView iv_icon;
     private int maxnum = 1;
     private CollageSampleItem mSampleInfo;
     private CollageConfigInfo.ConnectImageInfo mConnectSample;
@@ -99,6 +100,9 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
 
     @Override
     public void doInitSubViews(View view) {
+        back_tv=queryViewById(R.id.back_tv);
+        iv_icon=queryViewById(R.id.iv_icon);
+        iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
         mGridView = queryViewById(R.id.asset_grid);
         body_iv_none_camera = queryViewById(R.id.body_iv_none_camera);
         body_iv_none_camera.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +115,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         back_btn = queryViewById(R.id.back_btn);
         title_tv = queryViewById(R.id.title_tv);
         title_tv.setText("相机胶卷");
-        btn_gallery = queryViewById(R.id.right_btn);
-        btn_gallery.setBackgroundResource(R.drawable.icon_album_group);
+        /*btn_gallery = queryViewById(R.id.right_btn);
+        btn_gallery.setBackgroundResource(R.drawable.icon_album_group);*/
         grid_rl = (RelativeLayout) findViewById(R.id.grid_rl);
         btn_ok = queryViewById(R.id.btn_ok);
         tv_photo_num = queryViewById(R.id.tv_photo_num);
@@ -130,7 +134,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             }
         });
         gallery_list_panel.setVisibility(View.GONE);
-        addOnClickListener(back_btn, btn_ok, btn_gallery);
+        addOnClickListener(back_btn, btn_ok, title_tv,back_tv);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -181,6 +185,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
                  String photo_num_str = "";
+
                 mTemplateIconInfo = (TemplateIconInfo) bundle.getSerializable("sampleinfo");
                 if (mTemplateIconInfo != null) {
                     maxnum = Integer.parseInt(mTemplateIconInfo.num);
@@ -397,13 +402,18 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             case R.id.back_btn:
                 finish();
                 break;
+            case R.id.back_tv:
+                finish();
+                break;
             case R.id.btn_ok:
                 goMageCollage();
                 break;
-            case R.id.right_btn:
+            case R.id.title_tv:
                 if (mGalleryShow) {
+                    iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
                     hideGalleryLsit();
                 } else {
+                    iv_icon.setImageResource(R.drawable.btn_nav_spread_up);
                     showGalleryList();
                 }
                 break;
@@ -454,16 +464,16 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         applyBlur();
 
         gallery_list_panel.setBackgroundColor(0x66000000);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(10).start();
+//        ObjectAnimator.ofFloat(sl_gallery_list, "translationY", -sl_gallery_list.getHeight(),0).setDuration(10).start();
         sl_gallery_list.setVisibility(View.VISIBLE);
         gallery_list_panel.setVisibility(View.VISIBLE);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", sl_gallery_list.getWidth(), 0).setDuration(300).start();
+        ObjectAnimator.ofFloat(sl_gallery_list, "translationY", -sl_gallery_list.getHeight(),0).setDuration(300).start();
         mGalleryShow = true;
     }
 
     void hideGalleryLsit() {
         gallery_list_panel.setBackgroundColor(0x00000000);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(300).start();
+        ObjectAnimator.ofFloat(sl_gallery_list, "translationY",0, -sl_gallery_list.getHeight()).setDuration(300).start();
         mGalleryShow = false;
         gallery_list_panel.postDelayed(new Runnable() {
             @Override
@@ -532,7 +542,6 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
 
         if (selectImages.size() >= maxnum) {
             ToasterHelper.showShort(this,"最多只能选择" + maxnum + "张照片",R.drawable.img_blur_bg);
-//            showToast("最多只能选择" + maxnum + "张照片");
             return;
         }
         final RelativeLayout viewItem = (RelativeLayout) LayoutInflater.from(mContext).inflate(R.layout.activity_photo_selected_item, null);

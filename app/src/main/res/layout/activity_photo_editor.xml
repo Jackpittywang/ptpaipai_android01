@@ -414,6 +414,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_above="@id/option_bars"
             android:background="@drawable/sticker_dialog_bg"
             android:orientation="vertical">
 

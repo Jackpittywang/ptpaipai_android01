@@ -1,6 +1,5 @@
 package com.putao.camera.collage;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +14,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
@@ -28,10 +28,9 @@ import com.putao.camera.collage.view.CollageView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.PhotoShareActivity;
-import com.putao.camera.editor.view.MyTextView;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.setting.watermark.management.CollageManagementActivity;
+import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
@@ -54,11 +53,11 @@ import java.util.Map;
 public class CollageMakeActivity extends BaseActivity implements View.OnClickListener {
     private CollageView mCollageView;
     private ArrayList<String> selectImages;
-    private Button back_btn, btn_save, btn_fold;
-    private LinearLayout cur_cate_samples, panel_sample_list;
+    private TextView tv_save;
+    private Button back_btn;
+    private LinearLayout cur_cate_samples, panel_sample_list,ll_change_make;
     private HorizontalScrollView sl_sample_list;
     //    private CollageConfigInfo mCollageConfigInfo;
-    private MyTextView btn_new_res;
     private CollageSampleItem mCollageItemInfo;
     private TemplateIconInfo mTemplateIconInfo;
     private float sample_scale = 1.0f;
@@ -76,15 +75,15 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doInitSubViews(View view) {
         mCollageView = queryViewById(R.id.collage_view);
-        btn_save = queryViewById(R.id.btn_save);
+        tv_save = queryViewById(R.id.tv_save);
         back_btn = queryViewById(R.id.back_btn);
-        btn_fold = queryViewById(R.id.btn_fold);
+
         cur_cate_samples = queryViewById(R.id.cur_cate_samples);
         panel_sample_list = queryViewById(R.id.panel_sample_list);
         sl_sample_list = queryViewById(R.id.sl_sample_list);
-        btn_new_res = queryViewById(R.id.btn_new_res);
+        ll_change_make = queryViewById(R.id.ll_change_make);
         mCollageView.setOnPhotoItemOnClick(mOnPhotoItemOnClick);
-        addOnClickListener(btn_save, back_btn, btn_fold, btn_new_res);
+        addOnClickListener(tv_save, back_btn, ll_change_make);
         EventBus.getEventBus().register(this);
     }
 
@@ -355,7 +354,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             case R.id.back_btn:
                 showQuitTip();
                 break;
-            case R.id.btn_save:
+            case R.id.tv_save:
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_JIGSAW_SHARE_DONE);
                 if (StringHelper.isEmpty(filePath)) {
                     saveCollage();
@@ -364,16 +363,21 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
                 bundle.putString("from", "collage");
                 ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
                 break;
-            case R.id.btn_fold:
+          /*  case R.id.btn_fold:
                 int start = mIsExpand ? 0 : sl_sample_list.getHeight();
                 int end = mIsExpand ? sl_sample_list.getHeight() : 0;
                 int bg_res_id = mIsExpand ? R.drawable.template_button_fold2 : R.drawable.template_button_fold;
                 mIsExpand = !mIsExpand;
                 btn_fold.setBackgroundDrawable(getResources().getDrawable(bg_res_id));
                 ObjectAnimator.ofFloat(panel_sample_list, "translationY", start, end).setDuration(300).start();
-                break;
-            case R.id.btn_new_res:
-                ActivityHelper.startActivity(mActivity, CollageManagementActivity.class);
+                break;*/
+            case R.id.ll_change_make:
+                bundle.putSerializable("sampleinfo",mTemplateIconInfo);
+                bundle.putSerializable("images",selectImages);
+                bundle.putInt("imgsum", selectImages.size());
+                bundle.putString("from", "collageMake");
+                ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class,bundle);
+                finish();
                 break;
             case R.id.btn_replace:
                 bundle.putBoolean("from_collage_photo", true);

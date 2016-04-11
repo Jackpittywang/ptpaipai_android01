@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">葡萄相机</string>
-    <string name="collage_select_image">请选择%s张图片</string>
+    <string name="collage_select_image">请选择%s张照片进行拼图</string>
     <string name="collage_button_next"> 拼   图 </string>
 
     <string name="movie_default_zh">点击这里输入中文字幕</string>
