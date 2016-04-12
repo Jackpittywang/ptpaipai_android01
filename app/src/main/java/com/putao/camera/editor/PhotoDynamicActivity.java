@@ -90,7 +90,6 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     private GoogleApiClient client;
     private float[] landmarks;
     private RecyclerView mRecyclerView;
-    private GalleryAdapter mAdapter;
 
     @Override
     public int doGetContentViewId() {

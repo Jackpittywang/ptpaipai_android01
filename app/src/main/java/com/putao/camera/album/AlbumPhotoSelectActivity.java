@@ -54,7 +54,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     private boolean mGalleryShow = false;
     ArrayList<GalleryEntity> mGalleryList;
     private RelativeLayout gallery_list_panel;
-    private TextView title_tv;
+    private TextView title_tv,back_tv;
     private boolean multiSelectState = false;
     Handler mHandler = new Handler() {
         @Override
@@ -78,6 +78,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     private LinearLayout nonePhotoView;
     private RelativeLayout grid_rl;
     private ImageView body_iv_none_camera;
+    private  ImageView iv_icon;
 
     private int bucket_id = -1;
 
@@ -88,6 +89,9 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
 
     @Override
     public void doInitSubViews(View view) {
+        back_tv=queryViewById(R.id.back_tv);
+        iv_icon=queryViewById(R.id.iv_icon);
+        iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
         nonePhotoView = (LinearLayout) this.findViewById(R.id.body_iv_none);
         body_iv_none_camera = (ImageView) this.findViewById(R.id.body_iv_none_camera);
         body_iv_none_camera.setOnClickListener(new View.OnClickListener() {
@@ -101,9 +105,8 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
         mGridView = (StickyGridHeadersGridView) findViewById(R.id.asset_grid);
         back_btn = (Button) this.findViewById(R.id.back_btn);
         title_tv = (TextView) this.findViewById(R.id.title_tv);
-        title_tv.setText("葡萄相册");
+        title_tv.setText("相机胶卷");
         right_btn = (Button) findViewById(R.id.right_btn);
-        right_btn.setBackgroundResource(R.drawable.icon_album_group);
         grid_rl = (RelativeLayout) findViewById(R.id.grid_rl);
         layout_gallery_list = (ListView) findViewById(R.id.layout_gallery_list);
         sl_gallery_list = (LinearLayout) findViewById(R.id.sl_gallery_list);
@@ -117,7 +120,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             }
         });
         gallery_list_panel.setVisibility(View.GONE);
-        addOnClickListener(back_btn, right_btn);
+        addOnClickListener(back_btn, right_btn,title_tv,back_tv);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -139,7 +142,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
                 }
             }
         });
-        mGridView.setLongClickable(true);
+       /* mGridView.setLongClickable(true);
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -150,7 +153,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
                 }
                 return true;
             }
-        });
+        });*/
         mGridView.setHeadersIgnorePadding(true);
         EventBus.getEventBus().register(this);
     }
@@ -315,7 +318,10 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             case R.id.back_btn:
                 finish();
                 break;
-            case R.id.right_btn:
+            case R.id.back_tv:
+                finish();
+                break;
+            /*case R.id.right_btn:
                 if (!isMultiSelectState()) {
                     if (mGalleryShow) {
                         hideGalleryLsit();
@@ -325,7 +331,16 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
                 } else {
                     deleteSelectedAlbumPhotos();
                 }
-                break;
+                break;*/
+
+            case R.id.title_tv:
+                if (mGalleryShow) {
+                    iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
+                    hideGalleryLsit();
+                } else {
+                    iv_icon.setImageResource(R.drawable.btn_nav_spread_up);
+                    showGalleryList();
+                }
             default:
                 break;
         }
@@ -368,16 +383,18 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     void showGalleryList() {
         applyBlur();
         gallery_list_panel.setBackgroundColor(0x66000000);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(10).start();
+//        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(10).start();
         sl_gallery_list.setVisibility(View.VISIBLE);
         gallery_list_panel.setVisibility(View.VISIBLE);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", sl_gallery_list.getWidth(), 0).setDuration(300).start();
+//        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", sl_gallery_list.getWidth(), 0).setDuration(300).start();
+        ObjectAnimator.ofFloat(sl_gallery_list, "translationY", -sl_gallery_list.getHeight(),0).setDuration(300).start();
         mGalleryShow = true;
     }
 
     void hideGalleryLsit() {
         gallery_list_panel.setBackgroundColor(0x00000000);
-        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(300).start();
+//        ObjectAnimator.ofFloat(sl_gallery_list, "translationX", 0, sl_gallery_list.getWidth()).setDuration(300).start();
+        ObjectAnimator.ofFloat(sl_gallery_list, "translationY",0, -sl_gallery_list.getHeight()).setDuration(300).start();
         mGalleryShow = false;
         gallery_list_panel.postDelayed(new Runnable() {
             @Override
