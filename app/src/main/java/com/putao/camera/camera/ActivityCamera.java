@@ -7,12 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +51,10 @@ import com.putao.camera.editor.FestivalSelectActivity;
 import com.putao.camera.editor.PhotoARShowActivity;
 import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.editor.dialog.WaterTextDialog;
+import com.putao.camera.editor.filtereffect.EffectCollection;
+import com.putao.camera.editor.filtereffect.EffectImageTask;
+import com.putao.camera.editor.filtereffect.GLEffectRender;
+import com.putao.camera.editor.view.FilterEffectThumbnailView;
 import com.putao.camera.editor.view.NormalWaterMarkView;
 import com.putao.camera.editor.view.TextWaterMarkView;
 import com.putao.camera.editor.view.TextWaterMarkView.WaterTextEventType;
@@ -73,17 +79,18 @@ import com.putao.camera.util.WaterMarkHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActivityCamera extends BaseActivity implements OnClickListener {
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_sticker_list, show_sticker_ll,show_filter_btn, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
-    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar;
-    private ImageButton btn_close_ar_list;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter, layout_sticker_list, layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar, btn_clear_filter;
+    private ImageButton btn_close_ar_list, btn_close_filter_list;
     //    private RedPointBaseButton show_material_ll;
-  private ImageView Tips;
+    private ImageView Tips, show_image;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
@@ -195,6 +202,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
+        show_image = queryViewById(R.id.show_image);
         flash_light_ll = queryViewById(R.id.flash_light_ll);
         camera_timer_ll = queryViewById(R.id.camera_timer_ll);
         camera_scale_ll = queryViewById(R.id.camera_scale_ll);
@@ -211,13 +219,15 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_timer_btn = queryViewById(R.id.camera_timer_btn);
         camera_scale_btn = queryViewById(R.id.camera_scale_btn);
         switch_camera_btn = queryViewById(R.id.switch_camera_btn);
-        show_filter_btn=queryViewById(R.id.show_filter_btn);
+        show_filter_ll = queryViewById(R.id.show_filter_ll);
+        layout_filter_list = queryViewById(R.id.layout_filter_list);
         show_sticker_ll = queryViewById(R.id.show_sticker_ll);
         take_photo_btn = queryViewById(R.id.take_photo_btn);
         back_home_btn = queryViewById(R.id.back_home_btn);
         album_btn = queryViewById(R.id.album_btn);
         camera_set_btn = queryViewById(R.id.camera_set_btn);
         bar = queryViewById(R.id.bar);
+        layout_filter = queryViewById(R.id.layout_filter);
         layout_sticker = queryViewById(R.id.layout_sticker);
         camera_activy = queryViewById(R.id.camera_activy);
         layout_sticker_list = queryViewById(R.id.layout_sticker_list);
@@ -225,14 +235,16 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         fill_blank_bottom = queryViewById(R.id.fill_blank_bottom);
         btn_enhance_switch = queryViewById(R.id.btn_enhance_switch);
         btn_close_ar_list = queryViewById(R.id.btn_close_ar_list);
+        btn_close_filter_list = queryViewById(R.id.btn_close_filter_list);
         btn_clear_ar = queryViewById(R.id.btn_clear_ar);
+        btn_clear_filter = queryViewById(R.id.btn_clear_filter);
 
         animation_view = queryViewById(R.id.animation_view);
         // 必须设置图片的文件夹，否则显示不出图片
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
 
-        addOnClickListener( camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn,album_btn, show_sticker_ll, show_filter_btn,show_material_ll, take_photo_btn, btn_enhance_switch, btn_close_ar_list, btn_clear_ar, tv_takephoto,
+        addOnClickListener(camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, album_btn, show_sticker_ll, show_filter_ll, show_material_ll, take_photo_btn, btn_enhance_switch, btn_close_filter_list, btn_close_ar_list, btn_clear_filter, btn_clear_ar, tv_takephoto,
                 Tips, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll);
         if (hasTwoCameras) {
             std = PCameraFragment.newInstance(false);
@@ -254,6 +266,9 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             SharedPreferencesHelper.saveBooleanValue(this, PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, false);
             Tips.setVisibility(View.VISIBLE);
         }
+        loadFilters();
+
+
     }
 
     TakePictureListener photoListener = new TakePictureListener() {
@@ -369,6 +384,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_top_rl.getBackground().setAlpha(255);
         bar.getBackground().setAlpha(255);
         setStickerStatus();
+        setFilterStatus();
     }
 
     void setCameraRatioFull() {
@@ -388,6 +404,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_top_rl.getBackground().setAlpha(100);
         bar.getBackground().setAlpha(0);
         setStickerStatus();
+        setFilterStatus();
     }
 
     void setCameraRatioOneToOne() {
@@ -413,13 +430,14 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         camera_top_rl.getBackground().setAlpha(255);
         bar.getBackground().setAlpha(255);
         setStickerStatus();
+        setFilterStatus();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        SharedPreferencesHelper.saveBooleanValue(this,"ispause",false);
+        SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
         if (lastSelectArImageView != null) {
@@ -435,7 +453,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferencesHelper.saveBooleanValue(this,"ispause",true);
+        SharedPreferencesHelper.saveBooleanValue(this, "ispause", true);
         mOrientationEvent.disable();
         if (animation_view != null) {
             animation_view.clearData();
@@ -479,7 +497,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 switch_camera_ll.setEnabled(false);
                 clearAnimationData();
                 if (hasTwoCameras) {
-                        switchCamera();
+                    switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
                     /*
                      * Umeng事件统计
@@ -536,7 +554,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 //                current.sendMessage();
                 break;
             case R.id.album_btn:
-                i=0;
+                i = 0;
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class);
@@ -561,10 +579,10 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     mShowSticker = !mShowSticker;
                 }
                 break;
-            case R.id.show_filter_btn:
+            case R.id.show_filter_ll:
                 //显示滤镜
-                /*showSticker(true);
-                if (!camera_watermark_setting) {
+                showFilter(true);
+               /* if (!camera_watermark_setting) {
                     mShowSticker = !mShowSticker;
                 }*/
                 break;
@@ -575,15 +593,23 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             case R.id.camera_set_btn:
                 showSetWindow(this, v);
                 break;
-            case R.id.btn_enhance_switch:
-                current.setEnableEnhance(!current.isEnableEnhance());
+           /* case R.id.btn_enhance_switch:
+//                current.setEnableEnhance(!current.isEnableEnhance());
+                current.setEnableEnhance(true);
                 setEnhanceButton();
-                break;
+                break;*/
             case R.id.btn_clear_ar:
                 clearAnimationData();
                 break;
+            case R.id.btn_clear_filter:
+//                new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
+                break;
             case R.id.btn_close_ar_list:
                 showSticker(false);
+                break;
+
+            case R.id.btn_close_filter_list:
+                showFilter(false);
                 break;
             case R.id.show_material_ll:
 //                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
@@ -591,7 +617,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
                 break;
             case R.id.tv_takephoto:
-                if (flag){
+                if (flag) {
                     take_photo_btn.setEnabled(false);
                     takePhoto();
                 }
@@ -769,6 +795,51 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         }
     }
 
+    //  把layout_sticker设置到最下面
+    private void setFilterStatus() {
+        layout_filter.setVisibility(View.INVISIBLE);
+        layout_filter.setAlpha(0);
+    }
+
+    private void showFilter(boolean show) {
+        layout_filter.setVisibility(View.VISIBLE);
+
+        if (show) {
+            layout_filter.setAlpha(0.f);
+            ObjectAnimator anim = ObjectAnimator//
+                    .ofFloat(layout_filter, "alpha", 0.0F, 1.0F)//
+                    .setDuration(300);//
+            anim.start();
+        } else {
+            layout_filter.setAlpha(1.f);
+            ObjectAnimator anim = ObjectAnimator//
+                    .ofFloat(layout_filter, "alpha", 1.0F, 0.0F)//
+                    .setDuration(300);//
+            anim.start();
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    layout_filter.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+            });
+        }
+    }
+
 
     //设置点屏拍照默认为关闭
     private boolean flag = false;
@@ -779,11 +850,11 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_13);
             tv_takephoto.setVisibility(View.VISIBLE);
 //            ToasterHelper.show(this, "打开");
-            ToasterHelper.showShort(this,"打开",R.drawable.img_blur_bg);
+            ToasterHelper.showShort(this, "打开", R.drawable.img_blur_bg);
         } else {
             camera_set_btn.setBackgroundResource(R.drawable.icon_capture_20_12);
 //            ToasterHelper.show(this, "关闭");
-            ToasterHelper.showShort(this,"关闭",R.drawable.img_blur_bg);
+            ToasterHelper.showShort(this, "关闭", R.drawable.img_blur_bg);
 
         }
 
@@ -899,7 +970,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_OFF;
                 mHdrState = HDRSTATE.OFF;
-                ToasterHelper.showShort(this,"闪光关",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "闪光关", R.drawable.img_blur_bg);
 
                 break;
             case FLASHMODECODE_OFF:
@@ -908,7 +979,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_ON;
                 mHdrState = HDRSTATE.ON;
-                ToasterHelper.showShort(this,"闪光开",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "闪光开", R.drawable.img_blur_bg);
                 break;
             case FLASHMODECODE_ON:
 
@@ -916,7 +987,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_LIGHT;
                 mHdrState = HDRSTATE.ON;
-                ToasterHelper.showShort(this,"长亮",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "长亮", R.drawable.img_blur_bg);
                 break;
             case FLASHMODECODE_LIGHT:
 
@@ -924,7 +995,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 setFlashResource(current.getCurrentModeCode());
                 flashType = FLASHMODECODE_AUTO;
                 mHdrState = HDRSTATE.AUTO;
-                ToasterHelper.showShort(this,"自动",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "自动", R.drawable.img_blur_bg);
                 break;
         }
 
@@ -1281,6 +1352,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private void doInitARStick() {
         loadARThumbnail();
     }
+
     //加载滤镜效果
     private void doInitARFilter() {
 //        loadFilters();
@@ -1340,13 +1412,18 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
 
         }
     }
+
+    private Bitmap filter_origin;
+
+    private String mTempFilter = GLEffectRender.DEFAULT_EFFECT_ID;
+    final List<View> filterEffectViews = new ArrayList<View>();
+    List<TextView> filterNameViews = new ArrayList<TextView>();
+
     //加载滤镜效果
-    private void loadFilters() {
+    public void loadFilters() {
         List<String> filterEffectNameList = new ArrayList<String>();
         filterEffectNameList.addAll(Arrays.asList(getResources().getStringArray(R.array.filter_effect)));
-        /*if (filter_origin == null) {
-            filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
-        }
+        filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
         for (final String item : filterEffectNameList) {
             new EffectImageTask(filter_origin, item, new EffectImageTask.FilterEffectListener() {
                 @Override
@@ -1356,9 +1433,66 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                     }
                 }
             }).execute();
-        }*/
+        }
     }
 
+    private void AddFilterView(String item, Bitmap bitmap_sample) {
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.filter_item, null);
+        FilterEffectThumbnailView simple_image = (FilterEffectThumbnailView) view.findViewById(R.id.filter_preview);
+        simple_image.setImageBitmap(bitmap_sample);
+        TextView tv_filter_name = (TextView) view.findViewById(R.id.filter_name);
+        tv_filter_name.setText(EffectCollection.getFilterName(item));
+        tv_filter_name.setTag(item);
+        view.setTag(item);
+       /* originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+                DisplayHelper.getScreenHeight());*/
+        final   Bitmap bitmap=BitmapHelper.getLoadingBitmap( DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Umeng事件统计
+                HashMap<String, String> filterMap = new HashMap<String, String>();
+                filterMap.put((String) view.getTag(), (String) view.getTag());
+                mTempFilter = (String) view.getTag();
+                new EffectImageTask(bitmap, mTempFilter,
+                        new EffectImageTask.FilterEffectListener() {
+                            @Override
+                            public void rendered(Bitmap bitmap) {
+                                if (bitmap != null) {
+                                    show_image.setImageBitmap(bitmap);
+                                }
+                            }
+                        }).execute();
+                // 边框
+                for (View viewTemp : filterEffectViews) {
+                    FilterEffectThumbnailView aRoundCornnerImageView = ((FilterEffectThumbnailView) viewTemp.findViewById(R.id.filter_preview));
+                    if ((viewTemp.getTag()).equals(view.getTag())) {
+                        aRoundCornnerImageView.setPhotoSelected(true);
+                    } else {
+                        aRoundCornnerImageView.setPhotoSelected(false);
+                    }
+                }
+                for (TextView tv : filterNameViews) {
+                    if (tv.getTag().equals(view.getTag())) {
+                        tv.setTextColor(Color.RED);
+                    } else {
+                        tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+                    }
+                }
+            }
+        });
+        layout_filter_list.addView(view);
+        filterEffectViews.add(view);
+        filterNameViews.add(tv_filter_name);
+    }
+
+    private static Bitmap zoomSmall(Bitmap bitmap) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(0.65f, 0.65f);
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizeBmp;
+    }
 
 
     // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
@@ -1366,7 +1500,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         @Override
         public void onClick(View v) {
 //            ToasterHelper.show(getApplicationContext(), "请将正脸置于取景器内");
-            ToasterHelper.showShort(ActivityCamera.this,"请将正脸置于取景器内",R.drawable.img_blur_bg);
+            ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
             if (current == null) return;
             if (animation_view.isAnimationLoading()) {
                 showToast("动画加载中请稍后");
@@ -1442,43 +1576,41 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
             }
         }
     };
-private void showScaleType(){
-    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
-    switch (scaleType) {
-        case SCALETYPE_ONE:
 
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
-            scaleType = SCALETYPE_FULL;
-            mPictureRatio = PictureRatio.RATIO_DEFAULT;
-            setCameraRatioFull();
-            i = 0;
-            ToasterHelper.showShort(this,"FULL",R.drawable.img_blur_bg);
-            break;
-        case SCALETYPE_THREE:
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
-            scaleType = SCALETYPE_ONE;
-            mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
-            setCameraRatioOneToOne();
-            i = PhotoEditorActivity.CROP_11;
-            ToasterHelper.showShort(this,"1:1",R.drawable.img_blur_bg);
-            break;
-        case SCALETYPE_FULL:
-            camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
-            scaleType = SCALETYPE_THREE;
-            mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
-            setCameraRatioThreeToFour();
-            i = PhotoEditorActivity.CROP_43;
-            ToasterHelper.showShort(this,"3:4",R.drawable.img_blur_bg);
-            break;
+    private void showScaleType() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) container.getLayoutParams();
+        switch (scaleType) {
+            case SCALETYPE_ONE:
+
+                camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_07);
+                scaleType = SCALETYPE_FULL;
+                mPictureRatio = PictureRatio.RATIO_DEFAULT;
+                setCameraRatioFull();
+                i = 0;
+                ToasterHelper.showShort(this, "FULL", R.drawable.img_blur_bg);
+                break;
+            case SCALETYPE_THREE:
+                camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_06);
+                scaleType = SCALETYPE_ONE;
+                mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
+                setCameraRatioOneToOne();
+                i = PhotoEditorActivity.CROP_11;
+                ToasterHelper.showShort(this, "1:1", R.drawable.img_blur_bg);
+                break;
+            case SCALETYPE_FULL:
+                camera_scale_btn.setBackgroundResource(R.drawable.icon_capture_20_05);
+                scaleType = SCALETYPE_THREE;
+                mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
+                setCameraRatioThreeToFour();
+                i = PhotoEditorActivity.CROP_43;
+                ToasterHelper.showShort(this, "3:4", R.drawable.img_blur_bg);
+                break;
+        }
+
+
+        container.setLayoutParams(params);
+
     }
-
-
-    container.setLayoutParams(params);
-
-}
-
-
-
 
 
     /**
@@ -1492,25 +1624,25 @@ private void showScaleType(){
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_09);
                 timeType = DELAY_THREE;
-                ToasterHelper.showShort(this,"延时3秒",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "延时3秒", R.drawable.img_blur_bg);
                 break;
             case DELAY_THREE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_10);
                 timeType = DELAY_FIVE;
-                ToasterHelper.showShort(this,"延时5秒",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "延时5秒", R.drawable.img_blur_bg);
                 break;
             case DELAY_FIVE:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_11);
                 timeType = DELAY_TEN;
-                ToasterHelper.showShort(this,"延时10秒",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "延时10秒", R.drawable.img_blur_bg);
                 break;
             case DELAY_TEN:
 
                 camera_timer_btn.setBackgroundResource(R.drawable.icon_capture_20_08);
                 timeType = DELAY_NONE;
-                ToasterHelper.showShort(this,"延时关闭",R.drawable.img_blur_bg);
+                ToasterHelper.showShort(this, "延时关闭", R.drawable.img_blur_bg);
                 break;
         }
 //        container.setLayoutParams(params);

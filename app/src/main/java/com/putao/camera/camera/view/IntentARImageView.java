@@ -29,6 +29,7 @@ public class IntentARImageView extends RelativeLayout {
     private ImageView img_ar_checked;
     private  ProgressBar pb_download;
     private UpdateCallback updateCallback;
+    private int position;
 
     public void setUpdateCallback(UpdateCallback updateCallback) {
         this.updateCallback = updateCallback;
@@ -45,6 +46,14 @@ public class IntentARImageView extends RelativeLayout {
     public void setData(String imagePath) {
         collage_download_iv.setImageBitmap(BitmapHelper.getBitmapFromPath(imagePath));
     }
+    public void setPosition(int i) {
+        this.position=i;
+    }
+    public int getPosition() {
+        return  position;
+    }
+
+
     public void setDataFromInternt(String  imagePath) {
 
 

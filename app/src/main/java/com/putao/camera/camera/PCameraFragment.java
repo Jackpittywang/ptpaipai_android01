@@ -89,6 +89,7 @@ public class PCameraFragment extends CameraFragment {
 
 
     private boolean mEnableEnhance = false;
+//    private boolean mEnableEnhance = true;
 
     /**
      * 是否启用HDR

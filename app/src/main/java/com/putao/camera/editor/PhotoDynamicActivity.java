@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,7 +43,6 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.management.DynamicListInfo;
-import com.putao.camera.setting.watermark.management.DynamicManagementAdapter;
 import com.putao.camera.setting.watermark.management.UpdateCallback;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
@@ -90,7 +90,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     private ProgressDialog progressDialog = null;
     private GoogleApiClient client;
     private float[] landmarks;
-
+    private RecyclerView mRecyclerView;
+    private GalleryAdapter mAdapter;
 
     @Override
     public int doGetContentViewId() {
@@ -98,7 +99,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     }
 
     @Override
-    public void doInitSubViews(View view) {
+        public void doInitSubViews(View view) {
+        mRecyclerView=queryViewById(R.id.id_recyclerview_horizontal);
         layout_sticker_list = queryViewById(R.id.layout_sticker_list);
         back_btn = queryViewById(R.id.back_btn);
         tv_save = queryViewById(R.id.tv_save);
@@ -106,20 +108,16 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         animation_view = queryViewById(R.id.animation_view);
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
-
-       /* mGridView = new GridView(mActivity);
-        mGridView.setNumColumns(30);
-        ViewGroup.LayoutParams layoutParams = mGridView.getLayoutParams();
-        layoutParams.height = DensityUtil.dp2px(this,80);
-        mGridView.setLayoutParams(layoutParams);*/
-        /*mManagementAdapter = new DynamicManagementAdapter(mActivity);
-        mManagementAdapter.setUpdateCallback(this);*/
-//        mGridView.setAdapter(mManagementAdapter);
-//        mGridView.setOnItemClickListener(this);
-
-
         addOnClickListener(tv_save, back_btn);
         EventBus.getEventBus().register(this);
+
+      /*  LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        //设置适配器
+        mAdapter = new GalleryAdapter(mActivity);
+        mRecyclerView.setAdapter(mAdapter);
+*/
 
     }
 
@@ -234,6 +232,7 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
      * 加载相机拍照界面动态贴图缩略图
      */
     private void loadARThumbnail() {
+        layout_sticker_list.removeAllViews();
         // 第一版本数据写死，因为后台接口都没有通，以后的版本此处要包括随app打包的和从服务器上下载的所有ar贴纸
         ArrayList<String> elements = new ArrayList<String>();
         elements.add("cn");
@@ -263,6 +262,7 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
 
         //增加网络数据
         queryCollageList();
+
 
 
     }
@@ -301,6 +301,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     View.OnClickListener arIntentStickerOnclickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            IntentARImageView view=(IntentARImageView)v;
+            int position=view.getPosition();
             animationName = (String) v.getTag();
             Map<String, String> map = new HashMap<String, String>();
             map.put("download_url", animationName);
@@ -309,7 +311,7 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
             if (list.size() == 0) {
                 ToasterHelper.showShort(PhotoDynamicActivity.this, "开始下载", R.drawable.img_blur_bg);
                 String path = CollageHelper.getCollageUnzipFilePath();
-//                startDownloadService(animationName,path,0);
+                startDownloadService(animationName,path,position);
 
             } else {
                 ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
@@ -359,10 +361,11 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         mActivity.startService(bindIntent);
     }
 
-    private DynamicManagementAdapter mManagementAdapter;
+//    private DynamicManagementAdapter mManagementAdapter;
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
     String downUrl;
+    IntentARImageView arImageView2;
 
     public void queryCollageList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
@@ -373,26 +376,28 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 try {
                     Gson gson = new Gson();
                     aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
-//                    mManagementAdapter.setDatas(aDynamicListInfo.data);
+
                     for (int i = 0; i < aDynamicListInfo.data.size(); i++) {
                         imagePath = aDynamicListInfo.data.get(i).cover_pic;
                         if (StringHelper.isEmpty(imagePath)) continue;
-                        IntentARImageView arImageView2 = new IntentARImageView(mActivity);
+                        arImageView2 = new IntentARImageView(mActivity);
                         arImageView2.setDataFromInternt(imagePath);
                         downUrl = aDynamicListInfo.data.get(i).download_url;
 //                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
                         arImageView2.setTag(downUrl);
+                        arImageView2.setPosition(i);
                         arImageView2.setOnClickListener(arIntentStickerOnclickListener);
                         layout_sticker_list.addView(arImageView2);
 
                     }
-
-
+//                    mAdapter.setDatas(aDynamicListInfo.data);
                     Gson gson1 = new Gson();
                     mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+//                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -431,10 +436,12 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        doInitData();
+                        ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
+
 //                        updateProgressPartly(percent, position);
                     }
                 });
-                queryCollageList();
                 break;
             }
         }

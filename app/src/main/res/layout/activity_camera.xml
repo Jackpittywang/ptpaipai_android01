@@ -12,7 +12,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true" >
+        <ImageView
+            android:id="@+id/show_image"
+            android:background="#22ff0000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <com.putao.camera.camera.view.AnimationImageView
         android:id="@+id/animation_view"
@@ -213,7 +220,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/show_filter_btn"
+                android:id="@+id/show_filter_ll"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -239,6 +246,61 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/icon_capture_20_17" />
             </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+  <!--  滤镜滚动-->
+    <LinearLayout
+        android:id="@+id/layout_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#252525"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layout_filter_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#252525"
+                android:orientation="horizontal"></LinearLayout>
+
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_close_filter_list"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#252525"
+                android:src="@drawable/btn_spread_down"
+                android:textColor="#dddddd" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/dimens_10dp"
+                android:layout_marginTop="@dimen/dimens_10dp"
+                android:background="#333333" />
+
+            <Button
+                android:id="@+id/btn_clear_filter"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="#252525"
+                android:text="清除"
+                android:textColor="#dddddd" />
         </LinearLayout>
     </LinearLayout>
 
@@ -270,8 +332,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btn_close_ar_list"
@@ -300,11 +361,11 @@
     </LinearLayout>
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/Tips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/img_tips_fullscreen01"/>
+        android:background="@drawable/img_tips_fullscreen01"
+        android:visibility="gone" />
 
 
 </RelativeLayout>
