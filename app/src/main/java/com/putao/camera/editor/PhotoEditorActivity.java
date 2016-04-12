@@ -55,7 +55,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
-import com.putao.camera.setting.watermark.management.WaterMarkCategoryManagementActivity;
+import com.putao.camera.setting.watermark.management.MatterCenterActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
@@ -265,7 +265,7 @@ public class PhotoEditorActivity extends BaseActivity implements View.OnClickLis
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityHelper.startActivity(mActivity, WaterMarkCategoryManagementActivity.class);
+                ActivityHelper.startActivity(mActivity, MatterCenterActivity.class);
                 finish();
             }
         });

@@ -65,9 +65,7 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
         mGridView.setAdapter(mManagementAdapter);
 
         Map<String, String> map = new HashMap<String, String>();
-//        map.put("type", WaterMarkCategoryInfo.photo);
           map.put("type", "template");
-//        map.put("type", "1");
         list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
         mManagementAdapter.setDatas(list);
     }
