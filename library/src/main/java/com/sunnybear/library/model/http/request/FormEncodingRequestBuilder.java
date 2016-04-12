@@ -1,5 +1,7 @@
 package com.sunnybear.library.model.http.request;
 
+import android.view.Menu;
+
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.Request;
 import com.sunnybear.library.util.Logger;
@@ -15,6 +17,7 @@ public final class FormEncodingRequestBuilder {
     private static final String TAG = FormEncodingRequestBuilder.class.getSimpleName();
     private Map<String, String> headers;//请求头参数
     private Map<String, String> params;//请求参数
+    private Map<Menu, String> menus;//请求参数
 
     private Request.Builder builder;
 
@@ -67,6 +70,16 @@ public final class FormEncodingRequestBuilder {
         }
         return this;
     }
+
+    public FormEncodingRequestBuilder addMenuParam(Menu name, String value) {
+        try {
+            menus.put(name, value);
+        } catch (NullPointerException e) {
+            Logger.e(TAG, "设置参数为空,参数名:" + name + ",参数值:" + value);
+        }
+        return this;
+    }
+
 
     /**
      * 构建Request实例

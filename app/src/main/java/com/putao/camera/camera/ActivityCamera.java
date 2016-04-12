@@ -90,7 +90,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
     private Button camera_scale_btn, camera_timer_btn, flash_light_btn, switch_camera_btn, back_home_btn, camera_set_btn, take_photo_btn, btn_enhance_switch, btn_clear_ar, btn_clear_filter;
     private ImageButton btn_close_ar_list, btn_close_filter_list;
     //    private RedPointBaseButton show_material_ll;
-    private ImageView Tips, show_image;
+    private ImageView Tips;
     private View fill_blank_top, fill_blank_bottom;
     private AlbumButton album_btn;
     private FrameLayout container;
@@ -202,7 +202,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
-        show_image = queryViewById(R.id.show_image);
         flash_light_ll = queryViewById(R.id.flash_light_ll);
         camera_timer_ll = queryViewById(R.id.camera_timer_ll);
         camera_scale_ll = queryViewById(R.id.camera_scale_ll);
@@ -1460,7 +1459,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                             @Override
                             public void rendered(Bitmap bitmap) {
                                 if (bitmap != null) {
-                                    show_image.setImageBitmap(bitmap);
+//                                    show_image.setImageBitmap(bitmap);
                                 }
                             }
                         }).execute();

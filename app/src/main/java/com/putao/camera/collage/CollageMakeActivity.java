@@ -36,6 +36,7 @@ import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
+import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 
 import java.io.File;
@@ -66,6 +67,13 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     AlertDialog dialog;
     String zipName;
     private int mPhotoSelectIndex = -1;
+    boolean isFirstUseMake;
+
+    @Override
+    public void doBefore() {
+        super.doBefore();
+        isFirstUseMake= SharedPreferencesHelper.readBooleanValue(this,"isFirstUseMake",true);
+    }
 
     @Override
     public int doGetContentViewId() {
@@ -85,6 +93,10 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         mCollageView.setOnPhotoItemOnClick(mOnPhotoItemOnClick);
         addOnClickListener(tv_save, back_btn, ll_change_make);
         EventBus.getEventBus().register(this);
+        if(isFirstUseMake){
+            //左右滑动显示
+            SharedPreferencesHelper.saveBooleanValue(this,"isFirstUseMake",false);
+        }
     }
 
     CollageView.OnPhotoItemOnClick mOnPhotoItemOnClick = new CollageView.OnPhotoItemOnClick() {

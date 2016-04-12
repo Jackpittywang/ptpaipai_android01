@@ -118,6 +118,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
+                String re=result.toString();
 
                 iv_header_icon.setImageURL(result.getHead_img());
                 tv_nick_name.setText(result.getNick_name());

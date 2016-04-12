@@ -247,11 +247,15 @@ public final class FileUtils {
                     fileOutputStream.close();
                 }
             }
-            StickerUnZipInfo item = new StickerUnZipInfo();
 
+            StickerUnZipInfo item = new StickerUnZipInfo();
+            if(zipEntry.getName().contains("icon")){
+                item.iconName=zipEntry.getName();
+            }else {
+                item.imgName=zipEntry.getName();
+            }
             item.parentid=id;
             item.zipName =outputDir;
-            item.imgName=zipEntry.getName();
             MainApplication.getDBServer().addStickerUnZipInfo(item);
             // 定位到下一个文件入口
             zipEntry = zipInputStream.getNextEntry();

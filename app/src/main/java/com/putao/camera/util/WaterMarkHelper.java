@@ -130,6 +130,11 @@ public class WaterMarkHelper {
             Map<String, String> map = new HashMap<String, String>();
             map.put("parentid", info.id);
             List<StickerUnZipInfo> list = MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
+            for(StickerUnZipInfo stickerUnZipInfo:list){
+                if(stickerUnZipInfo.iconName!=null){
+                    list.remove(stickerUnZipInfo);
+                }
+            }
             info.elements.addAll(list);
         }
     }

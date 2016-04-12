@@ -25,6 +25,7 @@ import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
+import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
@@ -265,7 +266,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
 
-//                        ActivityHelper.startActivity(PhotoARShowActivity.this, ActivityCamera.class);
+                        ActivityHelper.startActivity(PhotoARShowActivity.this, PhotoShareActivity.class);
                     }
                 });
                 finish();

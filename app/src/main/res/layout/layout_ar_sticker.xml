@@ -17,7 +17,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/check_box_sel"
+        android:src="@drawable/btn_22_03"
         android:visibility="gone"
         />
 

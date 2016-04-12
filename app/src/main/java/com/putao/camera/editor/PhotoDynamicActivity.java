@@ -32,7 +32,6 @@ import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
-import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.IntentARImageView;
@@ -494,8 +493,10 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
-
-                        ActivityHelper.startActivity(PhotoDynamicActivity.this, ActivityCamera.class);
+                        Bundle bundle=new Bundle();
+                        bundle.putString("savefile",videoPath);
+                         bundle.putString("from","dynamic");
+                        ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class,bundle);
                     }
                 });
                 finish();

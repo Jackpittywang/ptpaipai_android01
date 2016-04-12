@@ -13,12 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" >
-        <ImageView
-            android:id="@+id/show_image"
-            android:background="#22ff0000"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </FrameLayout>
 
     <com.putao.camera.camera.view.AnimationImageView
@@ -26,6 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
+
 
     <LinearLayout
         android:id="@+id/camera_top_rl"

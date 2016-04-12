@@ -28,6 +28,7 @@ import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
+import com.sunnybear.library.view.LoadingHUD;
 
 import org.json.JSONObject;
 
@@ -45,6 +46,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     ArrayList<TemplateIconInfo> mTemplateIconInfo;
     TemplateIconInfo templateIconInfo;
     private int imageTotal = 0;
+    private LoadingHUD mLoading;
 
     @Override
     public int doGetContentViewId() {
@@ -53,6 +55,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
 
     @Override
     public void doInitSubViews(View view) {
+        mLoading = LoadingHUD.getInstance(this);
         EventBus.getEventBus().register(this);
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         right_btn=queryViewById(R.id.right_btn);
@@ -184,6 +187,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
 
 
     public void queryCollageList(final int imgSum) {
+        mLoading.show();
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -214,6 +218,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
 
                         }
                         mTemplateIconInfo=newTemplateIconInfo;
+                        mLoading.dismiss();
                     }
 
 

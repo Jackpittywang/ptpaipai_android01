@@ -26,4 +26,9 @@ public class StickerUnZipInfo implements Serializable {
 
     @Column(name = "xmlName")
     public String xmlName;
+
+    @Column(name = "iconName")
+    public String iconName;
+
+
 }

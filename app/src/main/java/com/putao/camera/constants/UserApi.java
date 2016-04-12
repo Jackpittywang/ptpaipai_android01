@@ -17,6 +17,8 @@ public class UserApi {
     private static final String REQUEST_NICK_NAME = "nick_name";//昵称
     private static final String REQUEST_PROFILE = "profile";//简介
     private static final String REQUEST_EXT = "ext";
+    private static final String REQUEST_MEDIA = "media_type";
+
     private static final String REQUEST_FILENAME = "file_name";
     private static final String REQUEST_FILEHASH = "hash";
     private static final String REQUEST_HEAD_ICON = "userProfilePhoto";//头像
@@ -25,17 +27,17 @@ public class UserApi {
     private static final String REQUEST_MSG = "message";//提问问题
     public static final String HAS_DEVICE = "has_device";//是否已经添加设备
 
-    private static final String BABY_ID = "baby_id";//孩子ID
+    /*private static final String BABY_ID = "baby_id";//孩子ID
     private static final String BABY_NAME = "baby_name";//孩子昵称
     private static final String RELATION = "relation";//与孩子关系
     private static final String SEX = "sex";//孩子性别
-    private static final String BIRTHDAY = "birthday";//孩子生日
+    private static final String BIRTHDAY = "birthday";//孩子生日*/
 
 
     private static final String REQUEST_NICKNAME = "nickName";
     private static final String BASE_URL = MainApplication.isDebug ? "http://api-paipai.ptdev.cn/" : "http://api.camera.putao.com/";
 
-//    private static final String BASE_URL = MainApplication.isDebug ? "http://api-weidu.ptdev.cn/" : "http://api-weidu.putao.com/";//基础url
+    //    private static final String BASE_URL = MainApplication.isDebug ? "http://api-weidu.ptdev.cn/" : "http://api-weidu.putao.com/";//基础url
     private static final String BASE_ACTION_URL = MainApplication.isDebug ? "http://api-weidu.ptdev.cn/" : "http://api-event-dev.putao.com/";//活动,消息,提问使用的地址
 
     public static void install(String base_url) {
@@ -62,6 +64,18 @@ public class UserApi {
      */
     public static final String URL_USER_ADD = BASE_URL + "user/add";
     public static final String URL_USER_EDIT = BASE_URL + "user/edit";
+    public static final String URL_USER_MEDIA = BASE_URL + "relation/media";
+
+    public static Request userMedia(String ext, String filename, String filehash, String nick_name, String media_type) {
+        return PTWDRequestHelper.explore()
+                .addParam(REQUEST_EXT, ext)
+                .addParam(REQUEST_FILENAME, filename)
+                .addParam(REQUEST_FILEHASH, filehash)
+                .addParam(REQUEST_NICK_NAME, nick_name)
+                .addParam(REQUEST_MEDIA, media_type)
+                .build(RequestMethod.POST, URL_USER_MEDIA);
+    }
+
 
     public static Request userAdd(String ext, String filename, String filehash, String nick_name, String user_info) {
         return PTWDRequestHelper.explore()
@@ -232,9 +246,9 @@ public class UserApi {
      */
     public static final String URL_CHILD_SET = BASE_URL + "kids/setinfo";
 
-    /**
+   /* *//**
      * 保存孩子信息
-     */
+     *//*
     public static Request setChildInfo(String baby_id, String baby_name, String relation, String sex, String birthday) {
         return PTWDRequestHelper.user()
                 .addParam(BABY_ID, baby_id)
@@ -243,7 +257,7 @@ public class UserApi {
                 .addParam(SEX, sex)
                 .addParam(BIRTHDAY, birthday)
                 .build(RequestMethod.POST, URL_CHILD_SET);
-    }
+    }*/
 
     /**
      * 资源更新

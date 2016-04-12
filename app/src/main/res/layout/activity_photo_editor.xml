@@ -477,14 +477,16 @@
             </HorizontalScrollView>
         </LinearLayout>
 
+        <!--android:background="@color/color_eeefea"-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_eeefea"
+            android:background="#000000"
             android:gravity="center"
+
             android:orientation="horizontal">
 
-            <com.putao.camera.editor.view.MyTextView
+           <!-- <com.putao.camera.editor.view.MyTextView
                 android:id="@+id/btn_new_res"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -494,7 +496,7 @@
                 android:gravity="center_horizontal"
                 android:text="更 多"
                 android:textColor="@color/text_color_dark_898989"
-                android:textSize="16sp" />
+                android:textSize="16sp" />-->
 
             <HorizontalScrollView
                 android:id="@+id/mark_cate_scrollview"

@@ -4,44 +4,78 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.putao.camera.R;
-import com.putao.camera.base.BaseActivity;
+import com.putao.camera.album.AlbumPhotoSelectActivity;
+import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.camera.ActivityCamera;
-import com.putao.camera.collage.CollageSampleSelectActivity;
-import com.putao.camera.constants.PuTaoConstants;
-import com.putao.camera.event.BasePostEvent;
-import com.putao.camera.event.EventBus;
-import com.putao.camera.menu.MenuActivity;
-import com.putao.camera.movie.MovieCameraActivity;
+import com.putao.camera.constants.UploadApi;
+import com.putao.camera.constants.UserApi;
+import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.thirdshare.ShareTools;
 import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
+import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.sunnybear.library.model.http.UploadFileTask;
+import com.sunnybear.library.model.http.callback.JSONObjectCallback;
+import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
+import com.sunnybear.library.util.FileUtils;
+import com.sunnybear.library.util.Logger;
+import com.sunnybear.library.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.OnClick;
+
 /**
  * Created by jidongdong on 15/3/3.
  */
-public class PhotoShareActivity extends BaseActivity implements View.OnClickListener, ThirdShareDialog.ThirdShareDialogProcessListener {
+public class PhotoShareActivity extends PTXJActivity implements View.OnClickListener, ThirdShareDialog.ThirdShareDialogProcessListener {
 
-    private Button btn_back, btn_home, share_btn_sina, share_btn_wechat, share_btn_friend, share_btn_qq, share_btn_qzone;
+
     private String filepath;
-    private TextView tv_filepath;
-    private LinearLayout  btn_go_camera, btn_go_collage, btn_go_movie;
-    private TextView title_tv;
     public static ShareTools mShareTools;
     private String from;
 
 
+
+
+
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_photo_share;
+    }
+
+    @Override
+    protected void onViewCreatedFinish(Bundle saveInstanceState) {
+        addNavigation();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            filepath = bundle.getString("savefile");
+            from = bundle.getString("from");
+        }
+        mShareTools = new ShareTools(this, filepath);
+        //loadShareImage();
+        //showPathToast();
+
+    }
+
+    @Override
+    protected String[] getRequestUrls() {
+        return new String[0];
+    }
+
+
+ /*   @Override
 
     public int doGetContentViewId() {
         return R.layout.activity_photo_share;
@@ -65,22 +99,21 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
         btn_go_collage = (LinearLayout) findViewById(R.id.btn_go_collage);
         btn_go_movie = (LinearLayout) findViewById(R.id.btn_go_movie);
         addOnClickListener(btn_back, btn_home, share_btn_friend, share_btn_sina, share_btn_qq, share_btn_qzone, share_btn_wechat, btn_go_camera,  btn_go_collage, btn_go_movie);
-    }
-
-    @Override
+    }*/
+   /* @Override
     public void doInitData() {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             filepath = bundle.getString("savefile");
-
             from = bundle.getString("from");
             tv_filepath.setText("图片保存在" + filepath);
+            videoPath=bundle.getString("videoPath");
         }
         mShareTools = new ShareTools(mActivity, filepath);
         //loadShareImage();
         //showPathToast();
-    }
+    }*/
 
 //    void showPathToast() {
 //        if (!StringHelper.isEmpty(filepath)) {
@@ -88,27 +121,32 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
 //        }
 //    }
 
+
+    @Override
+    public void onRightAction() {
+        super.onRightAction();
+        ActivityHelper.startActivity(this, ActivityCamera.class);
+        finish();
+    }
+
+    @Override
+    public void onLeftAction() {
+        super.onLeftAction();
+    }
+
+    @OnClick({ R.id.share_btn_friend, R.id.share_btn_qq, R.id.share_btn_sina, R.id.share_btn_wechat,R.id.rl_beautify,R.id.rl_take_photo,R.id.rl_template})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back_btn:
-                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
-                finish();
-                break;
-            case R.id.right_btn:
-//                ActivityHelper.startActivity(mActivity, MenuActivity.class);
-//                BasePostEvent
-//                EventBus.getEventBus().post();
-                Bundle bundle = new Bundle();
-                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.FINISH_TO_MENU_PAGE, bundle));
-                ActivityHelper.startActivity(mActivity, MenuActivity.class);
-                finish();
-                break;
             case R.id.share_btn_friend:
-                if (isAppInstalled(mContext, "com.tencent.mm")){
-                    mShareTools.sendBitmapToWeixin(true);
+                if (isAppInstalled(mContext, "com.tencent.mm")) {
+                    if (from.equals("dynamic")) {
+                        checkSha1(filepath);
+                    }else {
+                        mShareTools.sendBitmapToWeixin(true);
                     }
-                else {
+
+                } else {
                     Toast.makeText(mContext, "未安装微信", Toast.LENGTH_SHORT).show();
                 }
 //
@@ -120,13 +158,13 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(mContext, "未安装QQ", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.share_btn_qzone:
+           /* case R.id.share_btn_qzone:
                 if (isAppInstalled(mContext, "com.tencent.mobileqq"))
                     mShareTools.doShareToQzone();
                 else {
                     Toast.makeText(mContext, "未安装QQ", Toast.LENGTH_SHORT).show();
                 }
-                break;
+                break;*/
             case R.id.share_btn_sina:
                 if (isAppInstalled(mContext, "com.sina.weibo"))
                     mShareTools.doShareToWeibo();
@@ -141,10 +179,9 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                     Toast.makeText(mContext, "未安装微信", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.btn_go_camera:
-                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
-//                ActivityHelper.startActivity(mActivity, MenuActivity.class);
-//                finish();
+            case R.id.rl_take_photo:
+                ActivityHelper.startActivity(this, ActivityCamera.class);
+                finish();
                 break;
             /*case R.id.btn_go_chartlet:
                 if ("collage".equals(from)||"connect".equals(from)) {
@@ -154,13 +191,13 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
                 }
 //                finish();
                 break;*/
-            case R.id.btn_go_collage:
-                ActivityHelper.startActivity(mActivity, CollageSampleSelectActivity.class);
-//                finish();
+            case R.id.rl_beautify:
+                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
+                finish();
                 break;
-            case R.id.btn_go_movie:
-                ActivityHelper.startActivity(mActivity, MovieCameraActivity.class);
-//                finish();
+            case R.id.rl_template:
+                ActivityHelper.startActivity(this, TemplateManagemenActivity.class);
+                finish();
                 break;
 
             default:
@@ -185,4 +222,106 @@ public class PhotoShareActivity extends BaseActivity implements View.OnClickList
         }
         return pName.contains(packageName);
     }
+
+
+
+
+
+    private String uploadToken;//上传token
+    private File uploadFile;//上传文件
+    private String sha1;//上传文件sha1
+
+    private void checkSha1(String uploadFilePath) {
+        uploadFile = new File(uploadFilePath);
+        sha1 = FileUtils.getSHA1ByFile(uploadFile);
+
+        networkRequest(UploadApi.checkSha1(sha1), new JSONObjectCallback() {
+            @Override
+            public void onSuccess(String url, JSONObject result) {
+                String hash = result.getString("hash");
+                if (StringUtils.isEmpty(hash))
+                    getUploadToken();
+                else
+                    upload("mp4", hash, hash);
+            }
+
+            @Override
+            public void onCacheSuccess(String url, JSONObject result) {
+
+            }
+
+            @Override
+            public void onFailure(String url, int statusCode, String msg) {
+
+            }
+        });
+    }
+
+
+    /**
+     * 获得上传参数
+     */
+    private void getUploadToken() {
+        networkRequest(UserApi.getUploadToken(), new SimpleFastJsonCallback<String>(String.class, null) {
+            @Override
+            public void onSuccess(String url, String result) {
+                JSONObject jsonObject = JSON.parseObject(result);
+                uploadToken = jsonObject.getString("uploadToken");
+                Logger.d(uploadToken);
+                uploadFile();
+            }
+        });
+    }
+
+    /**
+     * 上传文件
+     */
+    private void uploadFile() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UploadApi.uploadFile(uploadToken, sha1, uploadFile, new UploadFileTask.UploadCallback() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+
+                        Logger.d(result.toJSONString());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ext", result.getString("ext"));
+                        bundle.putString("filename", result.getString("filename"));
+                        bundle.putString("hash", result.getString("hash"));
+                        //上传PHP服务器
+                        mHandler.sendMessage(Message.obtain(mHandler, 0x01, bundle));
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 上传PHP服务器
+     */
+    private void upload(String ext, String filename, String filehash) {
+        networkRequest(UserApi.userEdit(ext, filename, filehash),
+                new SimpleFastJsonCallback<String>(String.class, loading) {
+                    @Override
+                    public void onSuccess(String url, String result) {
+                        Logger.i("保存用户信息");
+//                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
+                        EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
+//                        startActivity(IndexActivity.class);
+//                        finish();
+                    }
+                });
+    }
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = (Bundle) msg.obj;
+            //上传PHP服务器
+            upload(bundle.getString("ext"), bundle.getString("filename"), bundle.getString("hash"));
+        }
+    };
+
+
 }

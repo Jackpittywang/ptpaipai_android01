@@ -88,7 +88,7 @@ public class WaterMarkChoiceAdapter extends BaseAdapter {
                 showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
                 .considerExifParams(true)
                 .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        holder.water_marker_item_icon_im.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         holder.water_marker_item_icon_im.setTag(path);
         ImageLoader.getInstance().displayImage("file://" + path, holder.water_marker_item_icon_im, options);
 
