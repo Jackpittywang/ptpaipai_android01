@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/color_c8c7c5"
@@ -18,13 +19,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/back_btn"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:background="@drawable/selector_back_btn" />
+                android:paddingLeft="10dp"
+                android:background="@drawable/btn_20_back_w_nor"/>
+
+           <!-- <Button
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/btn_20_back_w_nor" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -50,13 +58,13 @@
             android:orientation="horizontal">
 
             <TextView
-                android:paddingRight="@dimen/dimens_10dp"
+                android:id="@+id/tv_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_save"
-                android:textSize="18dp"
+                android:paddingRight="@dimen/dimens_10dp"
+                android:text="保存/分享"
                 android:textColor="@color/white"
-                android:text="保存/分享" />
+                android:textSize="18dp" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -75,6 +83,7 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="@dimen/dimens_10dp"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:id="@+id/choice_water_mark_ll"
                 android:layout_width="match_parent"
@@ -98,6 +107,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll_picture_filter"
                 android:layout_width="match_parent"
@@ -121,14 +131,16 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll_dynamic_filter"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
                 android:background="#ff5a5d"
-                android:orientation="vertical">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="1dp">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -169,6 +181,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/rotate_image_ll"
                 android:layout_width="match_parent"
@@ -192,8 +205,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimens_14sp" />
             </LinearLayout>
-
-
 
 
         </LinearLayout>
@@ -288,68 +299,71 @@
             android:orientation="horizontal"></LinearLayout>
     </HorizontalScrollView>
 
+    <LinearLayout
+        android:id="@+id/rotate_contanier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/option_bars"
+        android:background="@color/black"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:visibility="gone">
+
         <LinearLayout
-            android:visibility="gone"
-            android:layout_above="@id/option_bars"
-            android:background="@color/black"
-            android:id="@+id/rotate_contanier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/anti_clockwise"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center"
-            android:paddingTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/anti_clockwise"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_capture_20_30"
+                android:paddingTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:paddingTop="10dp"
+                android:text="逆时钟"
 
-                <ImageView
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/icon_capture_20_30" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimens_14sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:gravity="center"
-                    android:text="逆时钟"
+        <LinearLayout
+            android:id="@+id/clockwise_spin"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/dimens_14sp" />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/clockwise_spin"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_capture_20_31" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:paddingTop="10dp"
+                android:text="顺时钟"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimens_14sp" />
+        </LinearLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/icon_capture_20_31" />
-
-                <TextView
-                    android:paddingTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:gravity="center"
-                    android:text="顺时钟"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/dimens_14sp" />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/horizontal_flip"
-                android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/horizontal_flip"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -361,17 +375,18 @@
                 android:background="@drawable/icon_capture_20_32" />
 
             <TextView
-                android:paddingTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:gravity="center"
+                android:paddingTop="10dp"
                 android:text="水平翻转"
                 android:textColor="@color/white"
                 android:textSize="@dimen/dimens_14sp" />
         </LinearLayout>
-            <LinearLayout
-                android:id="@+id/vertical_flip"
+
+        <LinearLayout
+            android:id="@+id/vertical_flip"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -384,38 +399,35 @@
                 android:background="@drawable/icon_capture_20_33" />
 
             <TextView
-                android:paddingTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
                 android:gravity="center"
+                android:paddingTop="10dp"
                 android:text="垂直翻转"
                 android:textColor="@color/white"
                 android:textSize="@dimen/dimens_14sp" />
         </LinearLayout>
 
 
-
-
-        </LinearLayout>
+    </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/mark_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/option_bars"
+        android:layout_alignParentBottom="true"
         android:background="@color/transparent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/mark_list_pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_above="@id/option_bars"
-            android:background="@drawable/sticker_dialog_bg"
+            android:background="@drawable/gray_btn_bg"
             android:orientation="vertical">
 
             <!--<HorizontalScrollView
@@ -438,7 +450,7 @@
 
             </HorizontalScrollView>-->
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -450,12 +462,21 @@
                     android:layout_margin="6dp"
                     android:background="@drawable/edit_button_close" />
 
-            </RelativeLayout>
+            </RelativeLayout>-->
 
-            <HorizontalScrollView
+            <com.sunnybear.library.view.recycler.BasicRecyclerView
+                android:id="@+id/rv_articlesdetail_applyusers"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                auto:divider_width="5dp"
+                auto:has_rank_divider="true"
+                auto:layout_mode="horizontal" />
+          <HorizontalScrollView
                 android:id="@+id/scroll_watermark"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -463,16 +484,18 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <GridView
-                        android:id="@+id/water_mark_collection_icon_gv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:listSelector="@android:color/transparent"
-                        android:numColumns="auto_fit"
-                        android:scrollbars="none"
-                        android:stretchMode="spacingWidthUniform"
-                        android:verticalSpacing="10dp"></GridView>
+                  <!--  <GridView
+                            android:id="@+id/water_mark_collection_icon_gv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:listSelector="@android:color/transparent"
+                            android:numColumns="auto_fit"
+                            android:scrollbars="none"
+                            android:stretchMode="spacingWidthUniform"
+                            android:verticalSpacing="10dp"></GridView>-->
+
+
                 </LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
@@ -486,17 +509,26 @@
 
             android:orientation="horizontal">
 
-           <!-- <com.putao.camera.editor.view.MyTextView
-                android:id="@+id/btn_new_res"
+            <ImageView
+                android:id="@+id/iv_hide_mark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:background="@color/transparent"
-                android:drawableTop="@drawable/res_download_icon"
-                android:gravity="center_horizontal"
-                android:text="更 多"
-                android:textColor="@color/text_color_dark_898989"
-                android:textSize="16sp" />-->
+                android:paddingBottom="3dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/btn_spread_down" />
+
+            <!-- <com.putao.camera.editor.view.MyTextView
+                 android:id="@+id/btn_new_res"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="10dp"
+                 android:background="@color/transparent"
+                 android:drawableTop="@drawable/res_download_icon"
+                 android:gravity="center_horizontal"
+                 android:text="更 多"
+                 android:textColor="@color/text_color_dark_898989"
+                 android:textSize="16sp" />-->
 
             <HorizontalScrollView
                 android:id="@+id/mark_cate_scrollview"

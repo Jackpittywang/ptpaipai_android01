@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
 import com.putao.camera.base.PTXJActivity;
@@ -22,7 +23,7 @@ import com.putao.camera.thirdshare.ShareTools;
 import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
 import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
-import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.putao.camera.util.ToasterHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
 import com.sunnybear.library.model.http.callback.JSONObjectCallback;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
@@ -141,7 +142,17 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             case R.id.share_btn_friend:
                 if (isAppInstalled(mContext, "com.tencent.mm")) {
                     if (from.equals("dynamic")) {
-                        checkSha1(filepath);
+                        if (!AccountHelper.isLogin()) {
+                            ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
+                            Bundle bundle=new Bundle();
+                            bundle.putString("from","share");
+                            ActivityHelper.startActivity(this, LoginActivity.class, bundle);
+                        } else if ( AccountHelper.isLogin()) {
+                            checkSha1(filepath);
+                            ShareTools vedioShareTools = new ShareTools(this, url);
+                            vedioShareTools.sendBitmapToWeixin(true);
+                        }
+
                     }else {
                         mShareTools.sendBitmapToWeixin(true);
                     }
@@ -296,20 +307,25 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             }
         }).start();
     }
-
+   private String url;
     /**
      * 上传PHP服务器
      */
     private void upload(String ext, String filename, String filehash) {
-        networkRequest(UserApi.userEdit(ext, filename, filehash),
+        networkRequest(UserApi.userMedia(ext, filename, filehash,"VIDEO"),
                 new SimpleFastJsonCallback<String>(String.class, loading) {
                     @Override
                     public void onSuccess(String url, String result) {
+                        url=result;
                         Logger.i("保存用户信息");
 //                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
-                        EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
 //                        startActivity(IndexActivity.class);
 //                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String url, int statusCode, String msg) {
+                        super.onFailure(url, statusCode, msg);
                     }
                 });
     }

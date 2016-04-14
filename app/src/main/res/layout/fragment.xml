@@ -11,6 +11,7 @@
 
     <com.putao.camera.camera.view.StarsView
         android:id="@+id/stars_view"
+        android:background="#ff0000"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:layout_centerInParent="true"

@@ -311,7 +311,9 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 break;
             case R.id.login_ll:
                 if (!AccountHelper.isLogin()) {
-                    ActivityHelper.startActivity(this, LoginActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("from","menu");
+                    ActivityHelper.startActivity(this, LoginActivity.class,bundle);
                     finish();
                 } else if ( AccountHelper.isLogin()) {
                     mSelectPopupWindow.show(fl_main);

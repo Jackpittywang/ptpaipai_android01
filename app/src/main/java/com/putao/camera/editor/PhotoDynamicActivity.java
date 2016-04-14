@@ -496,9 +496,10 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                         bundle.putString("savefile",videoPath);
                          bundle.putString("from","dynamic");
                         ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class,bundle);
+                        finish();
                     }
                 });
-                finish();
+
             }
 
             @Override

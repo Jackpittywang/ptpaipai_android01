@@ -4,7 +4,6 @@ package com.putao.camera.thirdshare;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.BitmapHelper;
@@ -181,6 +180,32 @@ public class ShareTools {
         req.scene = isTimelineCb ? SendMessageToWX.Req.WXSceneTimeline : SendMessageToWX.Req.WXSceneSession;
         mWXAPIFactory.sendReq(req);
     }
+
+    /**
+     * 微信网页分享
+     */
+    /*public static void wechatWebShare(Context context, boolean isWechat, String title, String text, String imageUrl, String url) {
+        WechatHelper.ShareParams params = null;
+        if (isWechat)
+            params = new Wechat.ShareParams();
+        else
+            params = new WechatFavorite.ShareParams();
+        params.title = title;
+        params.text = text;
+        params.imageUrl = imageUrl;
+        params.url = url;
+        params.setShareType(Platform.SHARE_WEBPAGE);
+
+        Platform plat = null;
+        if (isWechat)
+            plat = ShareSDK.getPlatform(Wechat.NAME);
+        else
+            plat = ShareSDK.getPlatform(WechatMoments.NAME);
+        // 设置分享事件回调
+        plat.setPlatformActionListener(new MyPlatformActionListener(context));
+        plat.share(params);
+    }*/
+
 
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();

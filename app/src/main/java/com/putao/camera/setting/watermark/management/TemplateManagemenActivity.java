@@ -218,16 +218,13 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
 
                         }
                         mTemplateIconInfo=newTemplateIconInfo;
-                        mLoading.dismiss();
+
                     }
-
-
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 mManagementAdapter.notifyDataSetChanged();
+                mLoading.dismiss();
             }
 
             @Override

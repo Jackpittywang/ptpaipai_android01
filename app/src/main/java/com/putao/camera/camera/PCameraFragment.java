@@ -198,7 +198,7 @@ public class PCameraFragment extends CameraFragment {
             starsView.Play(new StarsView.PlayListener() {
                 @Override
                 public void playOver() {
-                    starsView.setVisibility(View.INVISIBLE);
+//                    starsView.setVisibility(View.INVISIBLE);
                 }
             });
         } else {

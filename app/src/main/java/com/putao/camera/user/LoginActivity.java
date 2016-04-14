@@ -51,6 +51,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     CleanableEditText et_graph_verify;
     @Bind(R.id.image_graph_verify)
     ImageDraweeView image_graph_verify;
+    String from;
 
     private int mErrorCount = 0;
 
@@ -65,6 +66,9 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         et_mobile.addTextChangedListener(this);
         et_password.addTextChangedListener(this);
         btn_login.setClickable(false);
+        Intent intent = this.getIntent();
+        from = intent.getStringExtra("from");
+
     }
 
     @Override
@@ -103,7 +107,13 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         mContext.sendBroadcast(new Intent(MainApplication.Not_Fore_Message));
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
-                                        startActivity(CompleteActivity.class);
+                                        if(from.equals("share")){
+                                            finish();
+                                        }else {
+                                            startActivity(CompleteActivity.class);
+                                        }
+
+//                                        startActivity(CompleteActivity.class);
 //                                        startActivity(MenuActivity.class);
                                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);

@@ -8,7 +8,6 @@ import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -112,9 +111,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     public void onPreviewFrame(final byte[] data, Camera camera) {
 
         // Loger.d("onPreviewFrame  ....   .... .. animationImageView is:"+animationImageView);
-
+//
 //        if (animationImageView == null) return;
-
+//
 //        long startTime = System.currentTimeMillis();
 //        long gap = 0;
 //        if (cameraSize == null)
@@ -139,8 +138,8 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
 //
 //        int [] points = NativeCode.FaceDetectAndFlandmarks(previewMat);
 //        Highgui.imwrite("/mnt/sdcard/test.jpg", previewMat);
-//
-//
+
+
 //        animationImageView.setPositionAndStartAnimation(points);
 
         if (animationImageView == null) return;

@@ -80,6 +80,14 @@
         android:layout_alignParentBottom="true"
         android:background="#252525"
         android:orientation="vertical">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/id_recyclerview_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            android:background="#FF0000"
+            android:scrollbars="none" />
 
         <HorizontalScrollView
             android:id="@+id/scroll_sticker"
@@ -97,14 +105,7 @@
 
         </HorizontalScrollView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/id_recyclerview_horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_centerVertical="true"
-            android:visibility="gone"
-            android:background="#FF0000"
-            android:scrollbars="none" />
+
     </LinearLayout>
 
 </RelativeLayout>
