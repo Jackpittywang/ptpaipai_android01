@@ -219,16 +219,18 @@
             android:visibility="gone">
 
             <LinearLayout
+                android:id="@+id/edit_ll_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
-
-                <Button
-                    android:id="@+id/edit_button_cancel"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_button_cancel" />
+
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -247,16 +249,21 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/edit_ll_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
-
-                <Button
-                    android:id="@+id/edit_button_save"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edit_button_save" />
+
+              <!--  <Button
+                    android:id="@+id/edit_button_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_button_save" />-->
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

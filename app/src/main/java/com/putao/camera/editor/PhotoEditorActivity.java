@@ -81,12 +81,12 @@ import butterknife.OnClick;
 
 public class PhotoEditorActivity extends BasicFragmentActivity implements View.OnClickListener {
     private FrameLayout photo_area_rl;
-    private Button edit_button_save, edit_button_cancel, backBtn;
+    private Button backBtn;
     private TextView tv_action, tv_save;
     //    private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
     private LinearLayout ll_picture_filter, choice_water_mark_ll, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
-            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll;
+            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_save;
     private ViewGroup title_bar_rl, option_bars;
     private BasicRecyclerView rv_articlesdetail_applyusers;
     // 相片编辑状态
@@ -203,12 +203,10 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         photo_area_rl = (FrameLayout) findViewById(R.id.photo_area_rl);
         opt_button_bar2 = (LinearLayout) findViewById(R.id.opt_button_bar2);
         opt_button_bar = (LinearLayout) findViewById(R.id.opt_button_bar);
-        edit_button_cancel = (Button) findViewById(R.id.edit_button_cancel);
-        edit_button_save = (Button) findViewById(R.id.edit_button_save);
+        edit_ll_cancel = (LinearLayout) findViewById(R.id.edit_ll_cancel);
+        edit_ll_save = (LinearLayout) findViewById(R.id.edit_ll_save);
         backBtn = (Button) findViewById(R.id.back_btn);
         tv_save = (TextView) findViewById(R.id.tv_save);
-//        btn_mark_hide = (Button) findViewById(R.id.btn_mark_hide);
-//        btn_new_res = queryViewById(R.id.btn_new_res);
         show_image = (ImageView) findViewById(R.id.show_image);
         ll_cut_image = (LinearLayout) findViewById(R.id.ll_cut_image);
         choice_water_mark_ll = (LinearLayout) findViewById(R.id.choice_water_mark_ll);
@@ -219,7 +217,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         option_bars = (ViewGroup) findViewById(R.id.option_bars);
         mark_content = (LinearLayout) findViewById(R.id.mark_content);
         mark_list_pager = (LinearLayout) findViewById(R.id.mark_list_pager);
-//        water_mark_collection_icon_gv = queryViewById(R.id.water_mark_collection_icon_gv);
         rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
         mark_cate_contanier = (LinearLayout) findViewById(R.id.mark_cate_contanier);
         tv_action = (TextView) findViewById(R.id.tv_action);
@@ -228,8 +225,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     }
 
-    @OnClick({R.id.ll_picture_filter, R.id.choice_water_mark_ll, R.id.tv_save, R.id.edit_button_cancel,
-            R.id.edit_button_save, R.id.ll_cut_image, R.id.rotate_image_ll, R.id.anti_clockwise,
+    @OnClick({R.id.ll_picture_filter, R.id.choice_water_mark_ll, R.id.tv_save, R.id.edit_ll_cancel,
+            R.id.edit_ll_save, R.id.ll_cut_image, R.id.rotate_image_ll, R.id.anti_clockwise,
             R.id.clockwise_spin, R.id.horizontal_flip, R.id.vertical_flip, R.id.ll_dynamic_filter, R.id.iv_hide_mark,
             R.id.left_btn_ll})
     @Override
@@ -246,6 +243,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 ActivityHelper.startActivity(this, PhotoEditorCutActivity.class, bundle);
                 break;
             case R.id.choice_water_mark_ll:
+                choice_water_mark_ll.setClickable(false);
                 showWaterMarkContent();
 //                opt_button_bar.setVisibility(View.GONE);
 //                hideTitleAni();
@@ -266,19 +264,17 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             case R.id.tv_save:
                 save();
                 break;
-            case R.id.edit_button_cancel:
+            case R.id.edit_ll_cancel:
                 cancelEditing();
                 break;
             case R.id.iv_hide_mark:
-//                cancelEditing();
-//                showTitleAni();
+                choice_water_mark_ll.setClickable(true);
                 opt_button_bar.setVisibility(View.VISIBLE);
-//                showMenuAni();
                 rotate_contanier.setVisibility(View.GONE);
                 filter_scrollview.setVisibility(View.GONE);
                 mark_content.setVisibility(View.GONE);
                 break;
-            case R.id.edit_button_save:
+            case R.id.edit_ll_save:
                 saveEditing();
                 break;
            /* case R.id.btn_mark_hide:

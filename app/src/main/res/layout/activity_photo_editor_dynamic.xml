@@ -33,12 +33,19 @@
             android:layout_alignParentLeft="true"
             android:orientation="horizontal">
 
-            <Button
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/btn_20_back_w_nor"/>
+
+         <!--   <Button
                 android:id="@+id/back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:background="@drawable/selector_back_btn" />
+                android:background="@drawable/selector_back_btn" />-->
         </LinearLayout>
 
         <LinearLayout

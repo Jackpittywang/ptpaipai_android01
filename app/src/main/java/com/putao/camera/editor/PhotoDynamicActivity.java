@@ -15,7 +15,6 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,9 +69,9 @@ import mobile.ReadFace.YMFace;
 
 public class PhotoDynamicActivity extends BasicFragmentActivity implements
         UpdateCallback<DynamicIconInfo>, View.OnClickListener {
-    private LinearLayout layout_sticker_list;
+    private LinearLayout layout_sticker_list,left_btn_ll;
     private String TAG = PhotoARShowActivity.class.getName();
-    private Button back_btn;
+//    private Button back_btn;
     private TextView tv_save;
     private ImageView show_image;
     private Bitmap originImageBitmap;
@@ -132,7 +131,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
     public void doInitSubViews() {
         rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
         layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
-        back_btn = (Button) findViewById(R.id.back_btn);
+        left_btn_ll= (LinearLayout) findViewById(R.id.left_btn_ll);
+//        back_btn = (Button) findViewById(R.id.back_btn);
         tv_save = (TextView) findViewById(R.id.tv_save);
         show_image = (ImageView) findViewById(R.id.show_image);
         animation_view = (AnimationImageView) findViewById(R.id.animation_view);
@@ -197,11 +197,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
 
     }
 
-    @OnClick({R.id.back_btn,R.id.tv_save})
+    @OnClick({R.id.left_btn_ll,R.id.tv_save})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back_btn: {
+            case R.id.left_btn_ll: {
                 showQuitTip();
             }
             break;

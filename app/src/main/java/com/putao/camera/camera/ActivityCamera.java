@@ -611,7 +611,6 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
                 showFilter(false);
                 break;
             case R.id.show_material_ll:
-//                ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
                 ActivityHelper.startActivity(this, TemplateManagemenActivity.class);
 
                 break;
@@ -1445,7 +1444,7 @@ public class ActivityCamera extends BaseActivity implements OnClickListener {
         view.setTag(item);
        /* originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                 DisplayHelper.getScreenHeight());*/
-        final   Bitmap bitmap=BitmapHelper.getLoadingBitmap( DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+        final Bitmap bitmap = BitmapHelper.getLoadingBitmap(DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
