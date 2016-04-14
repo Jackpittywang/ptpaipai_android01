@@ -310,6 +310,7 @@ public class DownloadFileService extends Service {
             String pintu = FileOperationHelper.readJsonFile(zipFile.getName().replace(".zip", ""), unZipXmlName);
 
             Pattern pattern = Pattern.compile("mask\":\\{(.+?)\\}");
+
             Matcher matcher = pattern.matcher(XmlUtils.xmlToJson(pintu, "jigsaw"));
             StringBuffer sbr = new StringBuffer();
             if (matcher.find()) {
@@ -320,6 +321,22 @@ public class DownloadFileService extends Service {
                 matcher.appendReplacement(sbr, matcher2.replaceFirst("\\}\\]"));
             }
             matcher.appendTail(sbr);
+
+           pintu=sbr.toString();
+            pattern = Pattern.compile("maskList\":\\{(.+?)\\}\\]\\}");
+            matcher = pattern.matcher(pintu);
+            sbr = new StringBuffer();
+            if (matcher.find()) {
+                Pattern pattern1 = Pattern.compile("\\{");
+                Matcher matcher1 = pattern1.matcher(matcher.group());
+                Pattern pattern2 = Pattern.compile("\\}\\]\\}");
+                Matcher matcher2 = pattern2.matcher(matcher1.replaceFirst("\\[\\{"));
+                matcher.appendReplacement(sbr, matcher2.replaceFirst("\\}\\]\\}\\]"));
+            }
+            matcher.appendTail(sbr);
+
+
+
             templateIconInfo.pintuGson = sbr.toString();
            /* Gson gson = new Gson();
             //解析为拼图信息

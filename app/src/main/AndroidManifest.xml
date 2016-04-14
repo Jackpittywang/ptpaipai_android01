@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.putao.camera"
-    android:versionCode="13"
-    android:versionName="1.2.4">
+    android:versionCode="14"
+    android:versionName="1.2.5">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -64,11 +64,10 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".editor.PhotoEditorActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".editor.PhotoShareActivity"
-            android:screenOrientation="portrait"
-             />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".camera.ActivityCamera"
             android:launchMode="singleTask"
@@ -232,10 +231,10 @@
 
         <activity
             android:name=".editor.PhotoDynamicActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".setting.watermark.management.TemplateManagemenActivity"
+        <activity
+            android:name=".setting.watermark.management.TemplateManagemenActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
 
@@ -261,8 +260,53 @@
         <activity
             android:name=".user.UserInfoActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".user.ProtocolActivity"
+        <activity
+            android:name=".user.ProtocolActivity"
             android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+            <!--
+                Dropbox的SSO功能需要在此处添加一个对ACTION_VIEW事件的过滤器，其中的scheme是
+                “db-”前缀再开发者应用的加上appKey。如果此过滤器不设置，则不能完成SSO功能授权
+            -->
+            <intent-filter>
+                <data android:scheme="db-7janx53ilz11gbs" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!--
+    如果集成QQ分享，或者使用QQ客户端来进行QQ空间的
+    分享，须要在此处添加一个对ACTION_VIEW事件的过滤器，
+    其中的scheme是“tencent”前缀再开发者应用的加上appId。
+    如果此过滤器不设置，则分享结束以后不能得到正确的回调
+    -->
+            <intent-filter android:priority="1000">
+                <data android:scheme="tencent100371282" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <!-- 调用新浪原生SDK，需要注册的回调activity -->
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 微信分享配置 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true" />
 
 
         <!-- 微博分享配置 -->
@@ -278,10 +322,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- 微信分享配置 -->
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true" />
+
         <!-- umeng意见反馈 -->
         <activity android:name="com.umeng.fb.ConversationActivity" />
         <!-- Umeng更新组件 -->

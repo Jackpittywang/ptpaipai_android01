@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 
 import java.io.BufferedReader;
@@ -17,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -198,6 +202,23 @@ public final class FileUtils {
                     fileOutputStream.close();
                 }
             }
+            DynamicIconInfo item = new DynamicIconInfo();
+            if(zipEntry.getName().contains(".xml")){
+                item.id="0";
+                item.cover_pic="file://"+FileUtils.getARStickersPath()+assetName.substring(0,assetName.lastIndexOf(".zip"))+"_icon.png";
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("cover_pic", item.cover_pic);
+                List<DynamicIconInfo> list = null;
+                try {
+                    list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (list.size()==0) {
+                    MainApplication.getDBServer().addDynamicIconInfo(item);
+                }
+            }
+
             // 定位到下一个文件入口
             zipEntry = zipInputStream.getNextEntry();
         }

@@ -205,14 +205,14 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                         ArrayList<TemplateListInfo.PackageInfo> packageInfos=new ArrayList<>();
                         ArrayList<TemplateIconInfo> newTemplateIconInfo=new ArrayList<>();
                         for (TemplateListInfo.PackageInfo iconInfo : aCollageInfo.data) {
-                            if (iconInfo.max_num > imgSum) {
+                            if (iconInfo.max_num >=imgSum) {
                                 packageInfos.add(iconInfo);
                             }
                         }
                         mManagementAdapter.setDatas(packageInfos);
 
                         for(TemplateIconInfo templateIconInfo:mTemplateIconInfo){
-                            if (Integer.parseInt(templateIconInfo.num) > imgSum) {
+                            if (Integer.parseInt(templateIconInfo.num) >= imgSum) {
                                 newTemplateIconInfo.add(templateIconInfo);
                             }
 

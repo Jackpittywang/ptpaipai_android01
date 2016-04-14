@@ -40,6 +40,8 @@ import com.sunnybear.library.util.SDCardUtils;
 
 import java.io.File;
 
+
+
 public class MainApplication extends BasicApplication {
     private static Context globalContext;
     private WaterMarkConfigInfo mWaterMarkConfigInfo;
@@ -65,6 +67,9 @@ public class MainApplication extends BasicApplication {
 //        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
         AccountApi.install("1", app_id, "6a395698c5c243d0ba55ed2175c566ff");
 
+       /* //开启shareSDK
+        ShareSDK.initSDK(getApplicationContext());//开启shareSDK
+*/
         // Umeng更新参数设置
         UmengUpdateHelper.getInstance().setCommonConfig();
         // Umeng消息推送

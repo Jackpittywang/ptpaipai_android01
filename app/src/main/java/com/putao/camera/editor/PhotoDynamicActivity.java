@@ -12,10 +12,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -23,13 +22,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
-import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.camera.view.ARImageView;
@@ -42,6 +39,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.management.DynamicListInfo;
+import com.putao.camera.setting.watermark.management.DynamicPicAdapter;
 import com.putao.camera.setting.watermark.management.UpdateCallback;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
@@ -52,22 +50,26 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
+import com.sunnybear.library.controller.BasicFragmentActivity;
+import com.sunnybear.library.view.recycler.BasicRecyclerView;
+import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.OnClick;
 import mobile.ReadFace.YMDetector;
 import mobile.ReadFace.YMFace;
 
 
-public class PhotoDynamicActivity extends BaseActivity implements AdapterView.OnItemClickListener,
-        UpdateCallback<DynamicListInfo.PackageInfo>, View.OnClickListener {
-    //    private PCameraFragment current;
+public class PhotoDynamicActivity extends BasicFragmentActivity implements
+        UpdateCallback<DynamicIconInfo>, View.OnClickListener {
     private LinearLayout layout_sticker_list;
     private String TAG = PhotoARShowActivity.class.getName();
     private Button back_btn;
@@ -89,85 +91,62 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     private ProgressDialog progressDialog = null;
     private GoogleApiClient client;
     private float[] landmarks;
-    private RecyclerView mRecyclerView;
+    private DynamicPicAdapter mDynamicPicAdapter;
+    private BasicRecyclerView rv_articlesdetail_applyusers;
 
     @Override
-    public int doGetContentViewId() {
+    protected int getLayoutId() {
         return R.layout.activity_photo_editor_dynamic;
     }
 
     @Override
-        public void doInitSubViews(View view) {
-        mRecyclerView=queryViewById(R.id.id_recyclerview_horizontal);
-        layout_sticker_list = queryViewById(R.id.layout_sticker_list);
-        back_btn = queryViewById(R.id.back_btn);
-        tv_save = queryViewById(R.id.tv_save);
-        show_image = queryViewById(R.id.show_image);
-        animation_view = queryViewById(R.id.animation_view);
+    protected void onViewCreatedFinish(Bundle saveInstanceState) {
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        doInitSubViews();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mDynamicPicAdapter = new DynamicPicAdapter(mContext, null);
+        rv_articlesdetail_applyusers.setAdapter(mDynamicPicAdapter);
+        rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
+        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Serializable serializable, int position) {
+
+            }
+        });
+        doInitData();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "0");
+        List<DynamicIconInfo> list = null;
+        try {
+            list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mDynamicPicAdapter.addAll(list);
+
+
+    }
+
+
+    public void doInitSubViews() {
+        rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
+        layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
+        back_btn = (Button) findViewById(R.id.back_btn);
+        tv_save = (TextView) findViewById(R.id.tv_save);
+        show_image = (ImageView) findViewById(R.id.show_image);
+        animation_view = (AnimationImageView) findViewById(R.id.animation_view);
         animation_view.setImageFolder(FileUtils.getARStickersPath());
         animation_view.setScreenDensity(screenDensity);
-        addOnClickListener(tv_save, back_btn);
-        EventBus.getEventBus().register(this);
-
-      /*  LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        //设置适配器
-        mAdapter = new GalleryAdapter(mActivity);
-        mRecyclerView.setAdapter(mAdapter);
-*/
-
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    }
-
-    @Override
-    public void startProgress(DynamicListInfo.PackageInfo info, int position) {
-
-    }
-
-    @Override
-    public void startActivity(DynamicListInfo.PackageInfo info, int position) {
-
-    }
-
-    @Override
-    public void delete(DynamicListInfo.PackageInfo info, int position) {
-
-    }
-
-    @Override
-    public void queryDetail(DynamicListInfo.PackageInfo info, int position) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.back_btn: {
-                showQuitTip();
-            }
-            break;
-            case R.id.tv_save:
-                save();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void doInitData() {
         //加载动态贴图
         loadARThumbnail();
         Intent intent = this.getIntent();
         if (intent == null) return;
         String photo_data = intent.getStringExtra("photo_data");
-
 //        animationName = intent.getStringExtra("animationName");
-
         Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                 DisplayHelper.getScreenHeight());
 
@@ -189,30 +168,51 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         originImageBitmap = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
         Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
         originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
-//        animation_view.setData("fd", false);
-//        show_image.setImageBitmap(originImageBitmap);
         show_image.setImageBitmap(originImageBitmap);
-
-        //检测人脸
-       /* final YMDetector YMDetector = new YMDetector(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
-                if (faces != null && faces.size() > 0) {
-                    YMFace face = faces.get(0);
-                    landmarks = face.getLandmarks();
-                    if (landmarks != null && landmarks.length > 0) {
-                        mHandle.sendEmptyMessage(123);
-                    }
-                }
-            }
-        }).start();*/
 
         bgImageBitmap.recycle();
         resizedBgImage.recycle();
 
     }
+
+
+
+    @Override
+    public void startProgress(DynamicIconInfo info, int position) {
+
+    }
+
+    @Override
+    public void startActivity(DynamicIconInfo info, int position) {
+
+    }
+
+    @Override
+    public void delete(DynamicIconInfo info, int position) {
+
+    }
+
+    @Override
+    public void queryDetail(DynamicIconInfo info, int position) {
+
+    }
+
+    @OnClick({R.id.back_btn,R.id.tv_save})
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_btn: {
+                showQuitTip();
+            }
+            break;
+            case R.id.tv_save:
+                save();
+                break;
+        }
+    }
+
+
+
 
 
     private Handler mHandle = new Handler() {
@@ -248,19 +248,19 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         for (int i = 0; i < elements.size(); i++) {
             String iconInfo = elements.get(i);
             if (StringHelper.isEmpty(iconInfo)) continue;
-            ARImageView arImageView = new ARImageView(mActivity);
+            ARImageView arImageView = new ARImageView(mContext);
 //iconInfo 为包名
             String imagePath = FileUtils.getARStickersPath() + iconInfo + "_icon.png";
             arImageView.setData(imagePath);
             arImageView.setTag(iconInfo);
             arImageView.setOnClickListener(arStickerOnclickListener);
+
             layout_sticker_list.addView(arImageView);
 
         }
 
         //增加网络数据
         queryCollageList();
-
 
 
     }
@@ -271,7 +271,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         public void onClick(View v) {
             ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
             if (animation_view.isAnimationLoading()) {
-                showToast("动画加载中请稍后");
+
+                ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
                 return;
             }
             animation_view.clearData();
@@ -299,8 +300,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     View.OnClickListener arIntentStickerOnclickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            IntentARImageView view=(IntentARImageView)v;
-            int position=view.getPosition();
+            IntentARImageView view = (IntentARImageView) v;
+            int position = view.getPosition();
             animationName = (String) v.getTag();
             Map<String, String> map = new HashMap<String, String>();
             map.put("download_url", animationName);
@@ -309,12 +310,12 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
             if (list.size() == 0) {
                 ToasterHelper.showShort(PhotoDynamicActivity.this, "开始下载", R.drawable.img_blur_bg);
                 String path = CollageHelper.getCollageUnzipFilePath();
-                startDownloadService(animationName,path,position);
+                startDownloadService(animationName, path, position);
 
             } else {
                 ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                 if (animation_view.isAnimationLoading()) {
-                    showToast("动画加载中请稍后");
+                    ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
                     return;
                 }
                 animation_view.clearData();
@@ -341,7 +342,7 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
     };
 
     private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(mActivity, DownloadFileService.class.getName());
+        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
         if (isExistRunning) {
             Loger.i("startDownloadService:exist");
             return;
@@ -350,16 +351,16 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
         }
         if (null == url || null == folderPath) return;
         mDynamicIconInfo.get(position).type = "dynamic";
-        Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
+        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
         bindIntent.putExtra("item", mDynamicIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
-        mActivity.startService(bindIntent);
+        mContext.startService(bindIntent);
     }
 
-//    private DynamicManagementAdapter mManagementAdapter;
+    //    private DynamicManagementAdapter mManagementAdapter;
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
     String downUrl;
@@ -374,11 +375,10 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 try {
                     Gson gson = new Gson();
                     aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
-
                     for (int i = 0; i < aDynamicListInfo.data.size(); i++) {
                         imagePath = aDynamicListInfo.data.get(i).cover_pic;
                         if (StringHelper.isEmpty(imagePath)) continue;
-                        arImageView2 = new IntentARImageView(mActivity);
+                        arImageView2 = new IntentARImageView(mContext);
                         arImageView2.setDataFromInternt(imagePath);
                         downUrl = aDynamicListInfo.data.get(i).download_url;
 //                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
@@ -388,14 +388,14 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                         layout_sticker_list.addView(arImageView2);
 
                     }
-//                    mAdapter.setDatas(aDynamicListInfo.data);
                     Gson gson1 = new Gson();
                     mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                    mDynamicPicAdapter.addAll(mDynamicIconInfo);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-//                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -431,10 +431,11 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity.runOnUiThread(new Runnable() {
+                this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         doInitData();
+//                        mDynamicPicAdapter.notifyDataSetChanged();
                         ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
 
 //                        updateProgressPartly(percent, position);
@@ -492,10 +493,10 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
                 MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
-                        Bundle bundle=new Bundle();
-                        bundle.putString("savefile",videoPath);
-                         bundle.putString("from","dynamic");
-                        ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class,bundle);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("savefile", videoPath);
+                        bundle.putString("from", "dynamic");
+                        ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
                         finish();
                     }
                 });
@@ -564,46 +565,8 @@ public class PhotoDynamicActivity extends BaseActivity implements AdapterView.On
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "PhotoARShow Page", // TODO: Define a title for the content shown.
-                Uri.parse("http://host/path"),
-                Uri.parse("android-app://com.putao.camera.editor/http/host/path")
-        );
-        try {
-            AppIndex.AppIndexApi.start(client, viewAction);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "PhotoARShow Page", // TODO: Define a title for the content shown.
-                Uri.parse("http://host/path"),
-                Uri.parse("android-app://com.putao.camera.editor/http/host/path")
-        );
-        try {
-            AppIndex.AppIndexApi.end(client, viewAction);
-            client.disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    protected String[] getRequestUrls() {
+        return new String[0];
     }
 
 

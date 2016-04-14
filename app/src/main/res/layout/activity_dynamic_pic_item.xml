@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_comment_particpate"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:orientation="vertical">
+
+    <com.sunnybear.library.view.image.ImageDraweeView
+        android:id="@+id/iv_user_icon"
+        style="@style/image_circle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:paddingLeft="5dp" />
+
+
+    <ImageView
+        android:id="@+id/photo_download_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingRight="3dp"
+        android:paddingBottom="3dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/btn_22_01"
+        android:visibility="visible" />
+    <ProgressBar
+        android:id="@+id/pb_download"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+        android:src="@drawable/btn_22_02"
+        android:visibility="gone" />
+
+</RelativeLayout>

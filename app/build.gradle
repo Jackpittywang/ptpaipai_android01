@@ -8,8 +8,8 @@ android {
         applicationId "com.putao.camera"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 13
-        versionName "1.2.4"
+        versionCode 14
+        versionName "1.2.5"
         multiDexEnabled true
         ndk {
             //设置支持的SO库架构
@@ -54,9 +54,9 @@ android {
 //        channel_putao {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
 //        }
-//        channel_baiduzhushou {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
-//        }
+        channel_baiduzhushou {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
+        }
 //        channel_360 {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
 //        }
@@ -76,9 +76,9 @@ android {
 //        channel_91 {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
 //        }
-        channel_ppzhushou {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
-        }
+//        channel_ppzhushou {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
+//        }
 //        channel_liqu {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_liqu"]
 //        }
@@ -144,4 +144,5 @@ dependencies {
     // 后续更新SDK，请直接更新版本号
     compile project(':library')
     compile files('libs/xstream-1.4.7.jar')
+    compile files('libs/MobCommons-2016.0406.1915.jar')
 }

@@ -1,11 +1,6 @@
 
 package com.putao.camera.voice;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -44,6 +39,11 @@ import com.tencent.mm.sdk.openapi.WXWebpageObject;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class VoicePhotoShareActivity extends BaseActivity implements View.OnClickListener {
     private WebView voice_photo_body_wv;
