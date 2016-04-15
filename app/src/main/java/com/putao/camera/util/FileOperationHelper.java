@@ -381,6 +381,24 @@ public abstract class FileOperationHelper {
         }
         return reslt;
     }
+    public static String readOldJsonFile(String zipFloderName, String fileName) {
+        String reslt = "";
+        try {
+            String path = getExternalFilePath() + "/" + zipFloderName;
+//            String path =FileUtils.getSdcardPath() + File.separator + zipFloderName;
+            File jsonFile = new File(path, fileName);
+            FileInputStream fin = new FileInputStream(jsonFile);
+            int length = fin.available();
+            byte[] buffer = new byte[length];
+            fin.read(buffer);
+            reslt = EncodingUtils.getString(buffer, "UTF-8");
+            fin.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reslt;
+    }
+
 
     public static String getExternalFilePath() {
         String path = null;

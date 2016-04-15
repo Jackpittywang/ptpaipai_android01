@@ -470,6 +470,15 @@
                     android:background="@drawable/edit_button_close" />
 
             </RelativeLayout>-->
+            <com.sunnybear.library.view.recycler.BasicRecyclerView
+                android:id="@+id/rv_nativ_mark"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                auto:divider_width="5dp"
+                auto:has_rank_divider="true"
+                auto:layout_mode="horizontal" />
 
             <com.sunnybear.library.view.recycler.BasicRecyclerView
                 android:id="@+id/rv_articlesdetail_applyusers"

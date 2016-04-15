@@ -257,7 +257,7 @@ public class MainApplication extends BasicApplication {
             try {
                 FileOperationHelper.unZipFile(unZipFileName + ".zip");
                 //读取
-                String config_str = FileOperationHelper.readJsonFile("watermark", "watermark_config.json");
+                String config_str = FileOperationHelper.readOldJsonFile("watermark", "watermark_config.json");
                 //                Loger.i("config_str save:" + config_str);
                 //                写入SharePreference
                 SharedPreferencesHelper.saveStringValue(globalContext, PuTaoConstants.PREFERENC_WATERMARK_JSON, config_str);

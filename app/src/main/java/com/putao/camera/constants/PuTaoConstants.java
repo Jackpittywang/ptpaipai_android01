@@ -7,6 +7,7 @@ public class PuTaoConstants {
     public static final boolean isDebug = true;
     public static final int PHOTO_CONTENT_PROVIDER_REFRESH = 0x001;
     public static final int WATER_MARK_ICON_CHOICE_REFRESH = 0x002;
+    public static final int WATER_MARK_OLD_ICON_CHOICE_REFRESH = 0x022;
     // 从相片浏览页面跳转到摄像头页面关闭当中页面
     public static final int GALLERY_GO_TO_TAKE_PICTURE_CLOSE = 0x003;
     public static final int WATER_FILTER_EFFECT_CHOICE_REFRESH = 0x004;

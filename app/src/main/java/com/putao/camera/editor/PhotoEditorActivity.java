@@ -36,6 +36,7 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
+import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.dialog.WaterTextDialog;
@@ -53,6 +54,7 @@ import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
 import com.putao.camera.setting.watermark.management.MatterCenterActivity;
+import com.putao.camera.setting.watermark.management.StickerNativePicAdapter;
 import com.putao.camera.setting.watermark.management.StickerPicAdapter;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
@@ -89,6 +91,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_save;
     private ViewGroup title_bar_rl, option_bars;
     private BasicRecyclerView rv_articlesdetail_applyusers;
+    private BasicRecyclerView rv_nativ_mark;
     // 相片编辑状态
     private HorizontalScrollView filter_scrollview;
     //    private GridView water_mark_collection_icon_gv;
@@ -102,10 +105,11 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private String mTempFilter = GLEffectRender.DEFAULT_EFFECT_ID;
     private WaterMarkChoiceAdapter mWaterMarkChoiceAdapter;
     private StickerPicAdapter mStickerPicAdapter;
+    private StickerNativePicAdapter mStickerNativePicAdapter;
 
-    //    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
+    private WaterMarkCategoryInfo mWaterMarkCategoryInfo;
     private StickerCategoryInfo mStickerCategoryInfo;
-    //    private ArrayList<WaterMarkCategoryInfo> content = new ArrayList<WaterMarkCategoryInfo>();
+    private ArrayList<WaterMarkCategoryInfo> content1 = new ArrayList<WaterMarkCategoryInfo>();
     private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
     private int photoType;
@@ -166,6 +170,13 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         mStickerPicAdapter = new StickerPicAdapter(mContext, null);
         rv_articlesdetail_applyusers.setAdapter(mStickerPicAdapter);
         rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
+
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(mContext);
+        linearLayoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mStickerNativePicAdapter=new StickerNativePicAdapter(mContext,null);
+        rv_nativ_mark.setAdapter(mStickerNativePicAdapter);
+        rv_nativ_mark.setLayoutManager(linearLayoutManager1);
+
         loadWaterMarkCategories();
         rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -175,6 +186,19 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 StickerUnZipInfo info = mStickerPicAdapter.getItem(position);
                 bundle.putSerializable("iconRes", info);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.WATER_MARK_ICON_CHOICE_REFRESH, bundle));
+            }
+        });
+
+
+        rv_nativ_mark.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(Serializable serializable, int position) {
+                Bundle bundle = new Bundle();
+//                WaterMarkIconInfo info = mWaterMarkChoiceAdapter.getItem(position);
+                WaterMarkIconInfo info = mStickerNativePicAdapter.getItem(position);
+                bundle.putSerializable("iconRes", info);
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.WATER_MARK_OLD_ICON_CHOICE_REFRESH, bundle));
+
             }
         });
 
@@ -218,6 +242,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         mark_content = (LinearLayout) findViewById(R.id.mark_content);
         mark_list_pager = (LinearLayout) findViewById(R.id.mark_list_pager);
         rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
+        rv_nativ_mark= (BasicRecyclerView) findViewById(R.id.rv_nativ_mark);
         mark_cate_contanier = (LinearLayout) findViewById(R.id.mark_cate_contanier);
         tv_action = (TextView) findViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
@@ -244,6 +269,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 break;
             case R.id.choice_water_mark_ll:
                 choice_water_mark_ll.setClickable(false);
+                opt_button_bar.setVisibility(View.GONE);
                 showWaterMarkContent();
 //                opt_button_bar.setVisibility(View.GONE);
 //                hideTitleAni();
@@ -268,6 +294,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 cancelEditing();
                 break;
             case R.id.iv_hide_mark:
+                opt_button_bar.setVisibility(View.VISIBLE);
                 choice_water_mark_ll.setClickable(true);
                 opt_button_bar.setVisibility(View.VISIBLE);
                 rotate_contanier.setVisibility(View.GONE);
@@ -341,29 +368,32 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     }
 
     private int mSelectMarkCategoryIndex = -1;
+    List<WaterMarkCategoryInfo> camera_water_list1;
+    List<StickerCategoryInfo> camera_water_list;
 
     /**
      * 从数据库读取已有的水印素材
      */
     private void initMarkCategoryInfos() {
         content.clear();
-
+        content1.clear();
         Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map1 = new HashMap<String, String>();
+        map1.put("type", WaterMarkCategoryInfo.photo);
+        map1.put("isInner", "1");
+        camera_water_list1 = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map1, false);
+        content1.addAll(camera_water_list1);
+
         map.put("type", "sticker");
 //        map.put("isInner", "1");
 //        List<WaterMarkCategoryInfo> camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, false);
-        List<StickerCategoryInfo> camera_water_list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
+        camera_water_list = MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
         content.addAll(camera_water_list);
 
-        /*map = new HashMap<String, String>();
-        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("isInner", "0");
-        camera_water_list = MainApplication.getDBServer().getWaterMarkCategoryInfoByWhere(map, true);
-        if(camera_water_list.size()==0)return;
-        content.addAll(1, camera_water_list);*/
 
         //Loger.d("chen+++++content.size()="+content.size());
         WaterMarkHelper.getStickerUnZipInfos(content);
+        WaterMarkHelper.getWaterMarkIconInfos(content1);
     }
 
     private void loadWaterMarkCategories() {
@@ -372,6 +402,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
         mark_cate_contanier.removeAllViews();
         ImageView add = new ImageView(this);
+        add.layout(3, 0, 3, 0);
         add.setImageResource(R.drawable.icon_capture_20_34);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,48 +412,69 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             }
         });
 
+
         for (int i = 0; i < content.size(); i++) {
             final StickerCategoryInfo info_temp = content.get(i);
             final MyTextView textView = new MyTextView(mContext);
 //            textView.setText(info_temp.name);
             textView.setTag(info_temp);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            p.leftMargin = 30;
-            p.rightMargin = 30;
+            p.leftMargin = 0;
+            p.rightMargin = 0;
             p.gravity = Gravity.CENTER;
             textView.setLayoutParams(p);
             textView.mIndex = i;
-            if (0 == i)
+            if (0 == i){
+                rv_articlesdetail_applyusers.setVisibility(View.VISIBLE);
+                rv_nativ_mark.setVisibility(View.GONE);
                 mStickerPicAdapter.replaceAll(info_temp.elements);
+            }
+
             //            if (info_temp.updated.equals("1")) {
             //                textView.setShowRedPoint(true);
             //            }
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    rv_articlesdetail_applyusers.setVisibility(View.VISIBLE);
+                    rv_nativ_mark.setVisibility(View.GONE);
                     mStickerPicAdapter.replaceAll(info_temp.elements);
                     onWatermarkClicked(v, info_temp, textView);
                 }
             });
-            /*ImageView imageView=new ImageView(mActivity);
-            imageView.setTag(info_temp);
+            mark_cate_contanier.addView(textView);
+        }
+
+        for (int i = content.size(); i < content1.size()+content.size(); i++) {
+            final WaterMarkCategoryInfo info_temp = content1.get(i-content.size());
+            final MyTextView textView = new MyTextView(mContext);
+//            textView.setText(info_temp.name);
+            textView.setTag(info_temp);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            p.leftMargin = 30;
-            p.rightMargin = 30;
+            p.leftMargin = 0;
+            p.rightMargin = 0;
             p.gravity = Gravity.CENTER;
-            imageView.setLayoutParams(p);*/
-           /* textView.mIndex = i;
+            textView.setLayoutParams(p);
+            textView.mIndex = i;
+            if (0 == i){
+                rv_articlesdetail_applyusers.setVisibility(View.GONE);
+                rv_nativ_mark.setVisibility(View.VISIBLE);
+                mStickerNativePicAdapter.replaceAll(info_temp.elements);
+            }
+
             //            if (info_temp.updated.equals("1")) {
-            //                textView.setShowRedPoint(true);
+//                            textView.setShowRedPoint(true);
             //            }
-            imageView.setOnClickListener(new View.OnClickListener() {
+            textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onWatermarkClicked(v, info_temp, textView);
+                    rv_articlesdetail_applyusers.setVisibility(View.GONE);
+                    rv_nativ_mark.setVisibility(View.VISIBLE);
+                    mStickerNativePicAdapter.replaceAll(info_temp.elements);
+                    onOldWatermarkClicked(v, info_temp, textView);
                 }
-            });*/
+            });
 
-//            mark_cate_contanier.addView(imageView);
             mark_cate_contanier.addView(textView);
         }
         mark_cate_contanier.addView(add);
@@ -430,22 +482,47 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mStickerCategoryInfo = content.get(0);
             mSelectMarkCategoryIndex = 0;
             updateMarkSelectColor();
-            updateWaterList();
+//            updateWaterList();
         }
+        if (content1.size() > 0) {
+            mWaterMarkCategoryInfo = content1.get(0);
+            mSelectMarkCategoryIndex = 0;
+//            updateOldMarkSelectColor();
+            updateMarkSelectColor();
+
+//            updateOldWaterList();
+        }
+
     }
 
-    /*private void onWatermarkClicked(View v, WaterMarkCategoryInfo info_temp, MyTextView textView) {
-        mStickerCategoryInfo = (WaterMarkCategoryInfo) v.getTag();
-        updateWaterList();
+    private void onOldWatermarkClicked(View v, WaterMarkCategoryInfo info_temp, MyTextView textView) {
+        mWaterMarkCategoryInfo = (WaterMarkCategoryInfo) v.getTag();
+        upOlddateWaterList();
         mSelectMarkCategoryIndex = ((MyTextView) v).mIndex;
         updateMarkSelectColor();
-    }*/
+//        updateOldMarkSelectColor();
+    }
+
     private void onWatermarkClicked(View v, StickerCategoryInfo info_temp, MyTextView textView) {
         mStickerCategoryInfo = (StickerCategoryInfo) v.getTag();
         updateWaterList();
         mSelectMarkCategoryIndex = ((MyTextView) v).mIndex;
         updateMarkSelectColor();
     }
+
+    /*void updateOldMarkSelectColor() {
+        for (int i = camera_water_list.size(); i < mark_cate_contanier.getChildCount() - 1; i++) {
+            MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
+            if (mSelectMarkCategoryIndex == view.mIndex) {
+                view.setBackgroundResource(R.drawable.gray_btn_bg);
+                view.setTextColor(Color.RED);
+            } else {
+                view.setBackgroundResource(R.drawable.background_view_blake);
+                view.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+            }
+        }
+        updateOldMarkSelectIcon();
+    }*/
 
     void updateMarkSelectColor() {
         for (int i = 0; i < mark_cate_contanier.getChildCount() - 1; i++) {
@@ -459,10 +536,46 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             }
         }
         updateMarkSelectIcon();
+        updateOldMarkSelectIcon();
     }
 
+    void updateOldMarkSelectIcon() {
+        for (int i = camera_water_list.size(); i < mark_cate_contanier.getChildCount() - 1; i++) {
+            MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
+            final WaterMarkCategoryInfo info_temp = (WaterMarkCategoryInfo) view.getTag();
+            Drawable bm_icon = null;
+            if (!StringHelper.isEmpty(info_temp.icon) && !StringHelper.isEmpty(info_temp.icon_selected)) {
+                String image_path;
+                if (mSelectMarkCategoryIndex == i) {
+                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon_selected;
+                } else {
+                    image_path = WaterMarkHelper.getWaterMarkFilePath() + info_temp.icon;
+                }
+
+                Bitmap icon = BitmapHelper.getInstance().loadBitmap(image_path);
+//                Bitmap more_icon = ((BitmapDrawable) getResources().getDrawable(R.drawable.res_download_icon)).getBitmap();
+                Bitmap more_icon = BitmapFactory.decodeResource(getResources(), R.drawable.res_download_icon);
+                float scale = (float) more_icon.getWidth() / icon.getWidth();
+                bm_icon = new BitmapDrawable(icon);
+                bm_icon.setBounds(0, 0, (int) (bm_icon.getIntrinsicWidth() * scale * DisplayHelper.getDensity()), (int) (bm_icon.getIntrinsicHeight() * scale * DisplayHelper.getDensity()));
+            } else {
+                bm_icon = getResources().getDrawable(R.drawable.edit_button_filter);
+                bm_icon.setBounds(0, 0, bm_icon.getIntrinsicWidth(), bm_icon.getIntrinsicHeight());
+            }
+            if (bm_icon != null) {
+                view.setCompoundDrawables(bm_icon, null, null, null);
+            }
+            if (mSelectMarkCategoryIndex == view.mIndex) {
+                view.setTextColor(Color.RED);
+            } else {
+                view.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+            }
+        }
+    }
+
+
     void updateMarkSelectIcon() {
-        for (int i = 0; i < mark_cate_contanier.getChildCount() - 1; i++) {
+        for (int i = 0; i < camera_water_list.size(); i++) {
             MyTextView view = (MyTextView) mark_cate_contanier.getChildAt(i);
             final StickerCategoryInfo info_temp = (StickerCategoryInfo) view.getTag();
             Drawable bm_icon = null;
@@ -489,13 +602,22 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 bm_icon.setBounds(0, 0, bm_icon.getIntrinsicWidth(), bm_icon.getIntrinsicHeight());
             }
             if (bm_icon != null) {
-                view.setCompoundDrawables(null, bm_icon, null, null);
+                view.setCompoundDrawables(bm_icon, null, null, null);
             }
             if (mSelectMarkCategoryIndex == view.mIndex) {
                 view.setTextColor(Color.RED);
             } else {
                 view.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
             }
+        }
+    }
+
+    void upOlddateWaterList() {
+//        mWaterMarkChoiceAdapter.setData(mWaterMarkCategoryInfo);
+        setGridView();
+        mWaterMarkChoiceAdapter.notifyDataSetChanged();
+        if (!mFlagMarkShow) {
+            showMarkContent();
         }
     }
 
@@ -548,6 +670,33 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 }
             }
             break;
+            case PuTaoConstants.WATER_MARK_OLD_ICON_CHOICE_REFRESH: {
+                Bundle bundle = event.bundle;
+                String resName = "";
+                WaterMarkIconInfo iconInfo = null;
+                if (bundle != null) {
+                    iconInfo = (WaterMarkIconInfo) bundle.getSerializable("iconRes");
+                    resName = iconInfo.watermark_image;
+                }
+                try {
+                    String image_path = WaterMarkHelper.getWaterMarkFilePath() + resName;
+                    Bitmap bm = BitmapHelper.getInstance().loadBitmap(image_path);
+                    hideMarkContent();
+                    if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_Normal)) {
+                        addNormalWaterMarkView(iconInfo, bm);
+                    } else if (iconInfo.type.equals(WaterMarkView.WaterType.TYPE_DISTANCE)
+                            || iconInfo.type.equals(WaterMarkView.WaterType.TYPE_FESTIVAL)
+                            || iconInfo.type.equals(WaterMarkView.WaterType.TYPE_TEXTEDIT)) {
+                        addTextWaterMarkView(iconInfo, bm);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            break;
+
+
+
             case PuTaoConstants.WATER_FILTER_EFFECT_CHOICE_REFRESH: {
                 Bundle bundle = event.bundle;
                 String filterId = GLEffectRender.DEFAULT_EFFECT_ID;
