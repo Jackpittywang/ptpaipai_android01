@@ -72,7 +72,7 @@
             android:name=".camera.ActivityCamera"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+             />
         <activity
             android:name=".gallery.GalleryFileActivity"
             android:screenOrientation="portrait"

@@ -51,6 +51,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         this.cameraView = cameraView;
         this.mCameraHandler = new CameraHandler(this);
         this.mGLView = new GLSurfaceView(cameraView.getContext());
+
+
+
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.mGLView.setLayoutParams(params);
 //        this.cameraView.addView(this.mGLView, 0);
