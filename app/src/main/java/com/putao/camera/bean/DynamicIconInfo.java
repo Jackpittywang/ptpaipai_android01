@@ -47,14 +47,13 @@ public class DynamicIconInfo implements Serializable {
 
     private boolean showProgress;
 
-    public void setShowProgress(boolean show){
-        showProgress=show;
-    }
-    public boolean getShowProgress(){
+    public boolean isShowProgress() {
         return showProgress;
     }
 
-
+    public void setShowProgress(boolean showProgress) {
+        this.showProgress = showProgress;
+    }
 
     private boolean isChecked;
 

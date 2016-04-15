@@ -30,8 +30,6 @@ import butterknife.Bind;
 public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicAdapter.DynamicPicHolder> {
 
 
-
-
     public DynamicPicAdapter(Context context, ArrayList<DynamicIconInfo> pics) {
         super(context, pics);
     }
@@ -71,24 +69,32 @@ public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicA
             holder.photo_download_iv.setImageResource(R.drawable.btn_22_01);
         }
 
+        if (dynamicIconInfo.isShowProgress()) {
+            holder.photo_download_iv.setVisibility(View.GONE);
+            holder.pb_download.setVisibility(View.VISIBLE);
+        } else {
+            holder.pb_download.setVisibility(View.GONE);
+
+        }
 
         DisplayImageOptions options = new DisplayImageOptions.Builder().
                 showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
                 .considerExifParams(true)
                 .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.iv_user_icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        ImageLoader.getInstance().displayImage(path, holder.iv_user_icon, options);
+        ImageLoader.getInstance().
+
+                displayImage(path, holder.iv_user_icon, options);
     }
 
-   public static class DynamicPicHolder extends BasicViewHolder {
+    public static class DynamicPicHolder extends BasicViewHolder {
 
         @Bind(R.id.iv_user_icon)
         ImageDraweeView iv_user_icon;
         @Bind(R.id.photo_download_iv)
         ImageView photo_download_iv;
-       @Bind(R.id.pb_download)
-       ProgressBar pb_download;
-
+        @Bind(R.id.pb_download)
+        ProgressBar pb_download;
 
 
         public DynamicPicHolder(View itemView) {

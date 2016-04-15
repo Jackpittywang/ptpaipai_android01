@@ -142,8 +142,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     }).start();
 
                 } else {
-                    /*dynamicIconInfo.setShowProgress(true);
-                    mDynamicPicAdapter.notifyDataSetChanged();*/
+                    dynamicIconInfo.setShowProgress(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
 
                     String path = CollageHelper.getCollageUnzipFilePath();
                     startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
