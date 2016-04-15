@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,11 +29,8 @@ import butterknife.Bind;
 
 public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicAdapter.DynamicPicHolder> {
 
-    private UpdateCallback updateCallback;
 
-    public void setUpdateCallback(UpdateCallback updateCallback) {
-        this.updateCallback = updateCallback;
-    }
+
 
     public DynamicPicAdapter(Context context, ArrayList<DynamicIconInfo> pics) {
         super(context, pics);
@@ -56,6 +54,7 @@ public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicA
     @Override
     public void onBindItem(DynamicPicHolder holder, final DynamicIconInfo dynamicIconInfo, final int position) {
 
+
         String path = dynamicIconInfo.cover_pic;
         Map<String, String> map = new HashMap<String, String>();
         List<DynamicIconInfo> list = null;
@@ -71,21 +70,26 @@ public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicA
             holder.photo_download_iv.setVisibility(View.VISIBLE);
             holder.photo_download_iv.setImageResource(R.drawable.btn_22_01);
         }
+
+
         DisplayImageOptions options = new DisplayImageOptions.Builder().
                 showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())
                 .considerExifParams(true)
                 .cacheInMemory(true).bitmapConfig(Bitmap.Config.RGB_565).build();
         holder.iv_user_icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        holder.iv_user_icon.setTag(path);
         ImageLoader.getInstance().displayImage(path, holder.iv_user_icon, options);
     }
 
-    static class DynamicPicHolder extends BasicViewHolder {
+   public static class DynamicPicHolder extends BasicViewHolder {
 
         @Bind(R.id.iv_user_icon)
         ImageDraweeView iv_user_icon;
         @Bind(R.id.photo_download_iv)
         ImageView photo_download_iv;
+       @Bind(R.id.pb_download)
+       ProgressBar pb_download;
+
+
 
         public DynamicPicHolder(View itemView) {
             super(itemView);

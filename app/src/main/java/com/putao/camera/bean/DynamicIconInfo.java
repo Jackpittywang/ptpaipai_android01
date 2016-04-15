@@ -45,6 +45,15 @@ public class DynamicIconInfo implements Serializable {
     @Column(name = "zipName")
     public String zipName;
 
+    private boolean showProgress;
+
+    public void setShowProgress(boolean show){
+        showProgress=show;
+    }
+    public boolean getShowProgress(){
+        return showProgress;
+    }
+
 
 
     private boolean isChecked;

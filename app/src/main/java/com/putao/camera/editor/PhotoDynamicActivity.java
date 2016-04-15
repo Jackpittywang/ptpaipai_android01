@@ -47,6 +47,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
+import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -141,6 +142,9 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     }).start();
 
                 } else {
+                    /*dynamicIconInfo.setShowProgress(true);
+                    mDynamicPicAdapter.notifyDataSetChanged();*/
+
                     String path = CollageHelper.getCollageUnzipFilePath();
                     startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
                 }
@@ -238,6 +242,20 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         }
     };
 
+    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH+"")
+    public void downLoadFinish(Bundle bundle) {
+        final int percent = bundle.getInt("percent");
+        final int position =bundle.getInt("position");
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDynamicPicAdapter.getItem(position+nativeList.size()).setShowProgress(false);
+                mDynamicPicAdapter.notifyDataSetChanged();
+                ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
+            }
+        });
+
+    }
 
 
     public void onEvent(BasePostEvent event) {

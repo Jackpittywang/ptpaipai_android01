@@ -22,6 +22,7 @@ import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.camera.util.XmlUtils;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -385,15 +386,18 @@ public class DownloadFileService extends Service {
             bundle.putString("save_file_path", saveFile.getPath());
             bundle.putString("save_file_name", saveFile.getName());
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.DOWNLOAD_FILE_FINISH, bundle));
+            EventBusHelper.post(bundle, PuTaoConstants.DOWNLOAD_FILE_FINISH+"");
         } else if (type == TYPE_DOWNLOADING) {
             Loger.i("sendMsg TYPE_DOWNLOADING:percent" + newProgress + "position:" + mPosition);
             Bundle bundle = new Bundle();
             bundle.putInt("percent", newProgress);
             bundle.putInt("position", mPosition);
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.DOWNLOAD_FILE_DOWNLOADING, bundle));
+            EventBusHelper.post(bundle, PuTaoConstants.DOWNLOAD_FILE_DOWNLOADING+"");
         } else if (type == TYPE_UNZIP_FINISH) {
             Bundle bundle = new Bundle();
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.UNZIP_FILE_FINISH, bundle));
+            EventBusHelper.post(bundle, PuTaoConstants.UNZIP_FILE_FINISH+"");
         }
     }
 
