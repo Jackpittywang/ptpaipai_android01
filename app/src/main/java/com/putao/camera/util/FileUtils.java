@@ -205,6 +205,7 @@ public final class FileUtils {
             DynamicIconInfo item = new DynamicIconInfo();
             if(zipEntry.getName().contains(".xml")){
                 item.id="0";
+                item.zipName=assetName.substring(0,assetName.lastIndexOf(".zip"));
                 item.cover_pic="file://"+FileUtils.getARStickersPath()+assetName.substring(0,assetName.lastIndexOf(".zip"))+"_icon.png";
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("cover_pic", item.cover_pic);

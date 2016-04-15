@@ -30,6 +30,7 @@ public class AnimationUtils {
         String modelSetFile="";
         Map<String, String> map = new HashMap<String, String>();
         map.put("zipName", animationName);
+//        List<DynamicIconInfo>   list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
         List<StickerUnZipInfo> list= MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
         if(list.size()==0){
             modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";

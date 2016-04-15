@@ -28,7 +28,6 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
-import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.IntentARImageView;
 import com.putao.camera.collage.util.CollageHelper;
@@ -39,14 +38,12 @@ import com.putao.camera.event.EventBus;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.management.DynamicListInfo;
 import com.putao.camera.setting.watermark.management.DynamicPicAdapter;
-import com.putao.camera.setting.watermark.management.UpdateCallback;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
-import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
@@ -56,7 +53,6 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,11 +63,10 @@ import mobile.ReadFace.YMDetector;
 import mobile.ReadFace.YMFace;
 
 
-public class PhotoDynamicActivity extends BasicFragmentActivity implements
-        UpdateCallback<DynamicIconInfo>, View.OnClickListener {
-    private LinearLayout layout_sticker_list,left_btn_ll;
+public class PhotoDynamicActivity extends BasicFragmentActivity implements View.OnClickListener {
+    private LinearLayout left_btn_ll;
     private String TAG = PhotoARShowActivity.class.getName();
-//    private Button back_btn;
+    //    private Button back_btn;
     private TextView tv_save;
     private ImageView show_image;
     private Bitmap originImageBitmap;
@@ -92,6 +87,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
     private float[] landmarks;
     private DynamicPicAdapter mDynamicPicAdapter;
     private BasicRecyclerView rv_articlesdetail_applyusers;
+    private List<DynamicIconInfo> nativeList = null;
+    private int Viedheight;
 
     @Override
     protected int getLayoutId() {
@@ -107,22 +104,60 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
         mDynamicPicAdapter = new DynamicPicAdapter(mContext, null);
         rv_articlesdetail_applyusers.setAdapter(mDynamicPicAdapter);
         rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
-        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener() {
+        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener<DynamicIconInfo>() {
             @Override
-            public void onItemClick(Serializable serializable, int position) {
+            public void onItemClick(DynamicIconInfo dynamicIconInfo, int position) {
+                Map<String, String> map = new HashMap<String, String>();
+                List<DynamicIconInfo> list = null;
+                map.put("cover_pic", dynamicIconInfo.cover_pic);
+                try {
+                    list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (null != list && list.size() > 0) {
+                    Loger.d("click");
+                    ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+                    if (animation_view.isAnimationLoading()) {
+                        ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
+                        return;
+                    }
+                    animation_view.clearData();
+                    animation_view.setData(list.get(0).zipName, false);
+                    //检测人脸
+                    final YMDetector YMDetector = new YMDetector(PhotoDynamicActivity.this);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
+                            if (faces != null && faces.size() > 0) {
+                                YMFace face = faces.get(0);
+                                landmarks = face.getLandmarks();
+                                if (landmarks != null && landmarks.length > 0) {
+                                    mHandle.sendEmptyMessage(123);
+                                }
+                            }
+                        }
+                    }).start();
+
+                } else {
+                    String path = CollageHelper.getCollageUnzipFilePath();
+                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
+                }
+
 
             }
         });
         doInitData();
+
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", "0");
-        List<DynamicIconInfo> list = null;
         try {
-            list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+            nativeList = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mDynamicPicAdapter.addAll(list);
+        mDynamicPicAdapter.addAll(nativeList);
 
 
     }
@@ -130,8 +165,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
 
     public void doInitSubViews() {
         rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
-        layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
-        left_btn_ll= (LinearLayout) findViewById(R.id.left_btn_ll);
+//        layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
+        left_btn_ll = (LinearLayout) findViewById(R.id.left_btn_ll);
 //        back_btn = (Button) findViewById(R.id.back_btn);
         tv_save = (TextView) findViewById(R.id.tv_save);
         show_image = (ImageView) findViewById(R.id.show_image);
@@ -142,7 +177,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
 
     public void doInitData() {
         //加载动态贴图
-        loadARThumbnail();
+//        loadARThumbnail();
+        queryCollageList();
         Intent intent = this.getIntent();
         if (intent == null) return;
         String photo_data = intent.getStringExtra("photo_data");
@@ -176,28 +212,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
     }
 
 
-
-    @Override
-    public void startProgress(DynamicIconInfo info, int position) {
-
-    }
-
-    @Override
-    public void startActivity(DynamicIconInfo info, int position) {
-
-    }
-
-    @Override
-    public void delete(DynamicIconInfo info, int position) {
-
-    }
-
-    @Override
-    public void queryDetail(DynamicIconInfo info, int position) {
-
-    }
-
-    @OnClick({R.id.left_btn_ll,R.id.tv_save})
+    @OnClick({R.id.left_btn_ll, R.id.tv_save})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -212,9 +227,6 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
     }
 
 
-
-
-
     private Handler mHandle = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -226,11 +238,108 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
         }
     };
 
+
+
+    public void onEvent(BasePostEvent event) {
+        switch (event.eventCode) {
+            case PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE:
+                int with = event.bundle.getInt("backgroundWith");
+                int height = event.bundle.getInt("backgroundHight");
+                Viedheight = height * 480 / with;
+                imagesToVideo();
+                break;
+            case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
+                Loger.d("DOWNLOAD_FILE_FINISH");
+                final int percent = event.bundle.getInt("percent");
+                final int position = event.bundle.getInt("position");
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        doInitData();
+                        mDynamicPicAdapter.notifyDataSetChanged();
+                        ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
+
+//                        updateProgressPartly(percent, position);
+                    }
+                });
+                break;
+            }
+        }
+    }
+    private void startDownloadService(final String url, final String folderPath, final int position) {
+        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
+        if (isExistRunning) {
+            Loger.i("startDownloadService:exist");
+            return;
+        } else {
+            Loger.i("startDownloadService:run");
+        }
+        if (null == url || null == folderPath) return;
+        mDynamicIconInfo.get(position).type = "dynamic";
+        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
+        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
+        bindIntent.putExtra("position", position);
+        bindIntent.putExtra("url", url);
+        bindIntent.putExtra("floderPath", folderPath);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
+        mContext.startService(bindIntent);
+    }
+
+    //    private DynamicManagementAdapter mManagementAdapter;
+    private DynamicListInfo aDynamicListInfo;
+    ArrayList<DynamicIconInfo> mDynamicIconInfo;
+    String downUrl;
+    IntentARImageView arImageView2;
+
+    public void queryCollageList() {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+//                final DynamicListInfo aDynamicListInfo;
+                try {
+                    Gson gson = new Gson();
+                    aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
+                   /* for (int i = 0; i < aDynamicListInfo.data.size(); i++) {
+                        imagePath = aDynamicListInfo.data.get(i).cover_pic;
+                        if (StringHelper.isEmpty(imagePath)) continue;
+                        arImageView2 = new IntentARImageView(mContext);
+                        arImageView2.setDataFromInternt(imagePath);
+                        downUrl = aDynamicListInfo.data.get(i).download_url;
+//                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
+                        arImageView2.setTag(downUrl);
+                        arImageView2.setPosition(i);
+                        arImageView2.setOnClickListener(arIntentStickerOnclickListener);
+                        layout_sticker_list.addView(arImageView2);
+
+                    }*/
+                    Gson gson1 = new Gson();
+                    mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                    mDynamicPicAdapter.addAll(mDynamicIconInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
+        mCacheRequest.startGetRequest();
+    }
+
+
+
     /**
      * 加载相机拍照界面动态贴图缩略图
      */
-    private void loadARThumbnail() {
-        layout_sticker_list.removeAllViews();
+   /* private void loadARThumbnail() {
+//        layout_sticker_list.removeAllViews();
         // 第一版本数据写死，因为后台接口都没有通，以后的版本此处要包括随app打包的和从服务器上下载的所有ar贴纸
         ArrayList<String> elements = new ArrayList<String>();
         elements.add("cn");
@@ -255,7 +364,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
             arImageView.setTag(iconInfo);
             arImageView.setOnClickListener(arStickerOnclickListener);
 
-            layout_sticker_list.addView(arImageView);
+//            layout_sticker_list.addView(arImageView);
 
         }
 
@@ -263,9 +372,9 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
         queryCollageList();
 
 
-    }
+    }*/
 
-    // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
+  /*  // 点击动态贴图时候的处理逻辑，跟静态贴图分开处理
     View.OnClickListener arStickerOnclickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -295,9 +404,9 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
             }).start();
 
         }
-    };
+    };*/
 
-    View.OnClickListener arIntentStickerOnclickListener = new View.OnClickListener() {
+  /*  View.OnClickListener arIntentStickerOnclickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             IntentARImageView view = (IntentARImageView) v;
@@ -339,74 +448,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
 
             }
         }
-    };
+    };*/
 
-    private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
-        if (isExistRunning) {
-            Loger.i("startDownloadService:exist");
-            return;
-        } else {
-            Loger.i("startDownloadService:run");
-        }
-        if (null == url || null == folderPath) return;
-        mDynamicIconInfo.get(position).type = "dynamic";
-        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
-        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
-        bindIntent.putExtra("position", position);
-        bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
-        mContext.startService(bindIntent);
-    }
-
-    //    private DynamicManagementAdapter mManagementAdapter;
-    private DynamicListInfo aDynamicListInfo;
-    ArrayList<DynamicIconInfo> mDynamicIconInfo;
-    String downUrl;
-    IntentARImageView arImageView2;
-
-    public void queryCollageList() {
-        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
-            @Override
-            public void onSuccess(int whatCode, JSONObject json) {
-                super.onSuccess(whatCode, json);
-//                final DynamicListInfo aDynamicListInfo;
-                try {
-                    Gson gson = new Gson();
-                    aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
-                    for (int i = 0; i < aDynamicListInfo.data.size(); i++) {
-                        imagePath = aDynamicListInfo.data.get(i).cover_pic;
-                        if (StringHelper.isEmpty(imagePath)) continue;
-                        arImageView2 = new IntentARImageView(mContext);
-                        arImageView2.setDataFromInternt(imagePath);
-                        downUrl = aDynamicListInfo.data.get(i).download_url;
-//                        String tag= downUrl.substring(downUrl.indexOf("file/")+5, downUrl.lastIndexOf(".zip"));
-                        arImageView2.setTag(downUrl);
-                        arImageView2.setPosition(i);
-                        arImageView2.setOnClickListener(arIntentStickerOnclickListener);
-                        layout_sticker_list.addView(arImageView2);
-
-                    }
-                    Gson gson1 = new Gson();
-                    mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
-                    mDynamicPicAdapter.addAll(mDynamicIconInfo);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFail(int whatCode, int statusCode, String responseString) {
-                super.onFail(whatCode, statusCode, responseString);
-            }
-        };
-        HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
-        mCacheRequest.startGetRequest();
-    }
 
 
     @Override
@@ -417,34 +460,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements
         EventBus.getEventBus().unregister(this);
     }
 
-    private int Viedheight;
 
-    public void onEvent(BasePostEvent event) {
-        switch (event.eventCode) {
-            case PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE:
-                int with = event.bundle.getInt("backgroundWith");
-                int height = event.bundle.getInt("backgroundHight");
-                Viedheight = height * 480 / with;
-                imagesToVideo();
-                break;
-            case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
-                Loger.d("DOWNLOAD_FILE_FINISH");
-                final int percent = event.bundle.getInt("percent");
-                final int position = event.bundle.getInt("position");
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        doInitData();
-//                        mDynamicPicAdapter.notifyDataSetChanged();
-                        ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
-
-//                        updateProgressPartly(percent, position);
-                    }
-                });
-                break;
-            }
-        }
-    }
 
 
     public void save() {

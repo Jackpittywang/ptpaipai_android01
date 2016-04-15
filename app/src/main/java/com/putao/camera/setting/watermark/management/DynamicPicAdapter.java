@@ -67,12 +67,9 @@ public class DynamicPicAdapter extends BasicAdapter<DynamicIconInfo, DynamicPicA
         }
         if (null != list && list.size() > 0) {
             holder.photo_download_iv.setVisibility(View.GONE);
-
-
         } else {
+            holder.photo_download_iv.setVisibility(View.VISIBLE);
             holder.photo_download_iv.setImageResource(R.drawable.btn_22_01);
-
-
         }
         DisplayImageOptions options = new DisplayImageOptions.Builder().
                 showImageOnLoading(BitmapHelper.getLoadingDrawable()).showImageOnFail(BitmapHelper.getLoadingDrawable())

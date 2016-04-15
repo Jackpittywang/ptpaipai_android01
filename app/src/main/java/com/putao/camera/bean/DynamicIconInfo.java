@@ -42,6 +42,10 @@ public class DynamicIconInfo implements Serializable {
     @Column(name = "zipSize")
     public String zipSize;
 
+    @Column(name = "zipName")
+    public String zipName;
+
+
 
     private boolean isChecked;
 

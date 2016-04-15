@@ -232,6 +232,7 @@ public class DownloadFileService extends Service {
                     } else if (type == DOWNLOAD_TYPE_DYNAMIC) {
                         DynamicIconInfo item = (DynamicIconInfo) intent.getSerializableExtra("item");
                         item.zipSize = FileOperationHelper.double2String(saveFile);
+                        item.zipName=saveFile.getName().replace(".zip", "");
                         MainApplication.getDBServer().addDynamicIconInfo(item);
                         String parentId = item.id;
                         unZipDynamicFile(saveFile, parentId);
