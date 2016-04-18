@@ -163,6 +163,7 @@ public class PCameraFragment extends CameraFragment {
         drawingView = new DrawingFocusView(getActivity());
         cameraView = (CameraView) super.onCreateView(inflater, container, savedInstanceState);
         cameraView.setDrawingView(drawingView);
+
         cameraView.setOnCameraFocusChangeListener(cameraFocusChangeListener);
         View results = inflater.inflate(R.layout.fragment, container, false);
         camera_control = ((FrameLayout) results.findViewById(R.id.camera));
@@ -205,6 +206,10 @@ public class PCameraFragment extends CameraFragment {
             ObjectAnimator.ofFloat(tv_def, "alpha", 0, 1, 1, 1, 0).setDuration(2000).start();
         }
     }
+
+   /* public void switchFiler(final GPUImageFilter newFilter, int progress) {
+        cameraView.switchFiler(newFilter,progress);
+    }*/
 
     /**
      * 增加拍摄效果View

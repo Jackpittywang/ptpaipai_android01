@@ -1052,6 +1052,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 Loger.d("scanFile" + "-> uri=" + uri);
                 Bundle bundle = new Bundle();
                 bundle.putString("savefile", pictureFile.toString());
+                bundle.putString("imgpath","");
                 bundle.putString("from", "editor");
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_CONTENT_PROVIDER_REFRESH, bundle));
                 progressDialog.dismiss();

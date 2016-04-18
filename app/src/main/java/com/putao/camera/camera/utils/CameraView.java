@@ -74,6 +74,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     private Context mContext;
     // 是否需要显示AR贴纸
     private boolean isShowAR = false;
+//    private GPUImage mGPUImage;
+//    private GPUImageFilter filetr;
 
     private AutoFocusCallback myAutoFocusCallback = new AutoFocusCallback() {
         @Override
@@ -136,9 +138,24 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         if (glSurfacePreviewStrategy != null) glSurfacePreviewStrategy.setAnimationView(view);
     }
 
+
     public void clearAnmationView() {
         if (glSurfacePreviewStrategy != null) glSurfacePreviewStrategy.clearAnimationView();
     }
+
+   /* public void setGPUImage(GPUImage view) {
+       this.mGPUImage=view;
+    }
+
+    public void switchFiler(final GPUImageFilter newFilter, int progress) {
+        if (filetr == null || (newFilter != null && !filetr.getClass().equals(newFilter.getClass()))) {
+            filetr = newFilter;
+            mGPUImage.setFilter(filetr);
+            GPUImageFilterTools.FilterAdjuster mFilterAdjuster = new GPUImageFilterTools.FilterAdjuster(filetr);
+            mFilterAdjuster.adjust(progress);
+        }
+    }*/
+
 
     // must call this after constructor, before onResume()
     public void setHost(CameraHost host) {
@@ -490,6 +507,8 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
                 previewStrategy.setPreviewSize(previewSize.width, previewSize.height);
                 camera.setParameters(getHost().getExposureCompensation(parameters));
+
+//                mGPUImage.setUpCamera(camera, orientation, flipHorizontal, false);
                 camera.startPreview();
                 inPreview = true;
                 getHost().autoFocusAvailable();
@@ -508,6 +527,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         camera.setPreviewCallback(null);
         camera.stopPreview();
     }
+
+
+
 
     // based on
     // http://developer.android.com/reference/android/hardware/Camera.html#setDisplayOrientation(int)

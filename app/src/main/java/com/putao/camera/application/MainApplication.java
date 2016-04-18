@@ -40,6 +40,7 @@ import com.sunnybear.library.util.SDCardUtils;
 
 import java.io.File;
 
+import cn.sharesdk.framework.ShareSDK;
 
 
 public class MainApplication extends BasicApplication {
@@ -67,9 +68,8 @@ public class MainApplication extends BasicApplication {
 //        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
         AccountApi.install("1", app_id, "6a395698c5c243d0ba55ed2175c566ff");
 
-       /* //开启shareSDK
+        //开启shareSDK
         ShareSDK.initSDK(getApplicationContext());//开启shareSDK
-*/
         // Umeng更新参数设置
         UmengUpdateHelper.getInstance().setCommonConfig();
         // Umeng消息推送
@@ -377,5 +377,5 @@ public class MainApplication extends BasicApplication {
     public static final String PREFERENCE_KEY_REFRESH_TOKEN = "refresh_token";
     public static final String PREFERENCE_KEY_USER_INFO = "user_info";
     public static final String PREFERENCE_KEY_BABY_ID = "baby_id";
-
+    public static final String WX_APP_ID = "wx1f67f2c75acfaf0c";
 }

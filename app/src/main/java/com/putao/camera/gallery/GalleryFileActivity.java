@@ -18,12 +18,6 @@
 
 package com.putao.camera.gallery;
 
-import java.util.ArrayList;
-
-import com.putao.widget.touchgallery.GalleryWidget.BasePagerAdapter.OnItemChangeListener;
-import com.putao.widget.touchgallery.GalleryWidget.FilePagerAdapter;
-import com.putao.widget.touchgallery.GalleryWidget.GalleryViewPager;
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -34,13 +28,19 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.PhotoInfo;
 import com.putao.camera.camera.view.RedPointButton;
 import com.putao.camera.constants.PuTaoConstants;
-import com.putao.camera.constants.UmengAnalysisConstants;
 import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.PhotoLoaderHelper;
+import com.putao.widget.touchgallery.GalleryWidget.BasePagerAdapter.OnItemChangeListener;
+import com.putao.widget.touchgallery.GalleryWidget.FilePagerAdapter;
+import com.putao.widget.touchgallery.GalleryWidget.GalleryViewPager;
+
+import java.util.ArrayList;
+
+//import com.putao.camera.constants.UmengAnalysisConstants;
+//import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
 
 public class GalleryFileActivity extends BaseActivity implements View.OnClickListener {
     private GalleryViewPager mViewPager;
@@ -162,11 +162,11 @@ public class GalleryFileActivity extends BaseActivity implements View.OnClickLis
                  * Umeng事件统计
                  */
 //                UmengAnalysisHelper.onEvent(mActivity, UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_SHARE);
-                ThirdShareDialog dialog = new ThirdShareDialog();
+//                ThirdShareDialog dialog = new ThirdShareDialog();
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("url", getCurrentPath());
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                dialog.show(ft, bundle1);
+//                dialog.show(ft, bundle1);
                 //                sendMultiMessage(true, false, false, false, false, false);
                 break;
             default:

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.util.Loger;
 
@@ -34,6 +35,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private CameraSurfaceRenderer mRenderer;
     private Camera mCamera;
     private CameraHandler mCameraHandler;
+    private  GPUImage mGPUImage;
 
     private float mainRadio = 0;
     private int iw;
@@ -52,14 +54,17 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         this.mCameraHandler = new CameraHandler(this);
         this.mGLView = new GLSurfaceView(cameraView.getContext());
 
-
-
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.mGLView.setLayoutParams(params);
 //        this.cameraView.addView(this.mGLView, 0);
         this.mGLView.setEGLContextClientVersion(2);     // select GLES 2.0
         this.mRenderer = new CameraSurfaceRenderer(mCameraHandler);
         this.mGLView.setRenderer(mRenderer);
+
+       /* this. mGPUImage = new GPUImage(context);
+        this. mGPUImage.setGLSurfaceView(mGLView);
+        this. cameraView.setGPUImage(mGPUImage);*/
+
         this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {

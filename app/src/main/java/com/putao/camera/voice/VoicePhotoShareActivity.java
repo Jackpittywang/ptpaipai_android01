@@ -20,16 +20,14 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.thirdshare.view.ThirdShareItemView;
+//import com.putao.camera.thirdshare.view.ThirdShareItemView;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
-import com.sina.weibo.sdk.api.WeiboMultiMessage;
-import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
-import com.sina.weibo.sdk.api.share.SendMultiMessageToWeiboRequest;
+/*import com.sina.weibo.sdk.api.share.IWeiboShareAPI;
 import com.sina.weibo.sdk.api.share.WeiboShareSDK;
-import com.sina.weibo.sdk.utils.Utility;
+import com.sina.weibo.sdk.utils.Utility;*/
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
@@ -52,14 +50,14 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
     /**
      * 微博微博分享接口实例
      */
-    public static IWeiboShareAPI mWeiboShareAPI = null;
+//    public static IWeiboShareAPI mWeiboShareAPI = null;
     public static IWXAPI mWXAPIFactory = null;
     public static Tencent mTencent;
     private QzoneShare mQzoneShare;
-    public ThirdShareItemView third_share_weixin_btn;
+ /*   public ThirdShareItemView third_share_weixin_btn;
     public ThirdShareItemView third_share_pengyouquan_btn;
     public ThirdShareItemView third_share_sina_btn;
-    public ThirdShareItemView third_share_qzone_btn;
+    public ThirdShareItemView third_share_qzone_btn;*/
     public String card_url, local_photo_path;
     private final static String _title = "新年有声贺卡";
     private final static String _description = "今年过节不收礼，收礼只收萌娃娃！我家宝贝给您拜年啦，快来围观呀";
@@ -77,8 +75,8 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
         // TODO Auto-generated method stub
         // Bundle bundle = this.getArguments();
         // mCurrentUrl = bundle.getString("url");
-        mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(this, PuTaoConstants.WEIBO_APP_KEY);
-        mWeiboShareAPI.registerApp();
+       /* mWeiboShareAPI = WeiboShareSDK.createWeiboAPI(this, PuTaoConstants.WEIBO_APP_KEY);
+        mWeiboShareAPI.registerApp();*/
         // acquire wxapi
         mWXAPIFactory = WXAPIFactory.createWXAPI(this, PuTaoConstants.WEIXIN_APP_KEY);
         mWXAPIFactory.registerApp(PuTaoConstants.WEIXIN_APP_KEY);
@@ -104,15 +102,15 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
     public void doInitSubViews(View view) {
         voice_photo_body_wv = (WebView) this.findViewById(R.id.voice_photo_body_wv);
         cancel_btn = (Button) this.findViewById(R.id.cancel_btn);
-        third_share_weixin_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_weixin_btn);
+       /* third_share_weixin_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_weixin_btn);
         third_share_pengyouquan_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_pengyouquan_btn);
         third_share_sina_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_sina_btn);
-        third_share_qzone_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_qzone_btn);
+        third_share_qzone_btn = (ThirdShareItemView) this.findViewById(R.id.third_share_qzone_btn);*/
     }
 
     @Override
     public void doInitData() {
-        addOnClickListener(cancel_btn, third_share_weixin_btn, third_share_pengyouquan_btn, third_share_sina_btn, third_share_qzone_btn);
+//        addOnClickListener(cancel_btn, third_share_weixin_btn, third_share_pengyouquan_btn, third_share_sina_btn, third_share_qzone_btn);
         voice_photo_body_wv.getSettings().setJavaScriptEnabled(true);
         voice_photo_body_wv.setWebViewClient(new MyWebViewClient());
         voice_photo_body_wv.setWebChromeClient(new WebChromeClient() {
@@ -142,7 +140,7 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cancel_btn:
+          /*  case R.id.cancel_btn:
                 showCancelBtnConfirm();
                 break;
             case R.id.third_share_weixin_btn:
@@ -156,11 +154,11 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
             case R.id.third_share_sina_btn:
                 // doShareToWeibo();
                 // this.dismiss();
-                sendMultiMessage();
+//                sendMultiMessage();
                 break;
             case R.id.third_share_qzone_btn:
                 doShareToQzone();
-                break;
+                break;*/
         }
     }
 
@@ -253,7 +251,7 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
     /**
      * 分享网页控件
      */
-    private void sendMultiMessage() {
+   /* private void sendMultiMessage() {
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();// 初始化微博的分享消息
         weiboMessage.textObject = getTextObj();
         weiboMessage.mediaObject = getWebpageObj();
@@ -261,7 +259,7 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
         request.transaction = String.valueOf(System.currentTimeMillis());
         request.multiMessage = weiboMessage;
         mWeiboShareAPI.sendRequest(this, request); // 发送请求消息到微博,唤起微博分享界面
-    }
+    }*/
 
     /**
      * 创建文本消息对象。
@@ -278,7 +276,7 @@ public class VoicePhotoShareActivity extends BaseActivity implements View.OnClic
     private WebpageObject getWebpageObj() {
         WebpageObject mediaObject = new WebpageObject();
         try {
-            mediaObject.identify = Utility.generateGUID();
+//            mediaObject.identify = Utility.generateGUID();
             mediaObject.title = _title;
             mediaObject.description = _description;
             // 设置 Bitmap 类型的图片到视频对象里

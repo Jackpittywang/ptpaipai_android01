@@ -49,6 +49,7 @@ import com.putao.camera.camera.view.AlbumButton;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.editor.CitySelectActivity;
 import com.putao.camera.editor.FestivalSelectActivity;
 import com.putao.camera.editor.PhotoARShowActivity;
@@ -73,6 +74,7 @@ import com.putao.camera.setting.watermark.management.DynamicPicAdapter;
 import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
+import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DateUtil;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
@@ -83,6 +85,7 @@ import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
+import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -243,7 +246,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     mDynamicPicAdapter.notifyItemChanged(position);
 
                     String path = CollageHelper.getCollageUnzipFilePath();
-//                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
+                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
                 }
 
             }
@@ -260,6 +263,24 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         mDynamicPicAdapter.addAll(nativeList);
     }
 
+    private void startDownloadService(final String url, final String folderPath, final int position) {
+        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
+        if (isExistRunning) {
+            Loger.i("startDownloadService:exist");
+            return;
+        } else {
+            Loger.i("startDownloadService:run");
+        }
+        if (null == url || null == folderPath) return;
+        mDynamicIconInfo.get(position).type = "dynamic";
+        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
+        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
+        bindIntent.putExtra("position", position);
+        bindIntent.putExtra("url", url);
+        bindIntent.putExtra("floderPath", folderPath);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
+        mContext.startService(bindIntent);
+    }
 
     public void doInitSubViews() {
 //        fullScreen(true);
@@ -425,7 +446,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
                 super.onSuccess(whatCode, json);
-//                final DynamicListInfo aDynamicListInfo;
                 try {
                     Gson gson = new Gson();
                     aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
@@ -659,13 +679,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     mMarkViewList.add(last_mark_view);
                 }
                 saveAnimationImageData();
-                //
                 takePhoto();
-
-//                clearAnimationData();
-//                take_photo_btn.setEnabled(true);
-//                current.sendMessage();
-                break;
             case R.id.album_btn:
                 i = 0;
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
@@ -693,6 +707,14 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 break;
             case R.id.show_filter_ll:
+                /*GPUImageFilterTools.showDialog(this,
+                        new GPUImageFilterTools.OnGpuImageFilterChosenListener() {
+                            @Override
+                            public void onGpuImageFilterChosenListener(
+                                    final GPUImageFilter filter) {
+                                current.switchFiler(filter,50);
+                            }
+                        });*/
                 //显示滤镜
                 showFilter(true);
                /* if (!camera_watermark_setting) {
@@ -1111,56 +1133,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
         }
 
-
-
-
-
-
-     /*   LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View menuView = inflater.inflate(R.layout.layout_flash_mode_selector, null);
-        final PopupWindow pw = new PopupWindow(mContext);
-        pw.setContentView(menuView);
-        pw.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        pw.setAnimationStyle(R.style.popuStyle);
-        pw.setOutsideTouchable(false);
-        pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-        pw.setFocusable(true); // 如果把焦点设置为false，则其他部份是可以点击的，也就是说传递事件时，不会先走PopupWindow
-        int[] location = new int[2];
-        parent.getLocationOnScreen(location);
-//        pw.showAtLocation(parent, Gravity.NO_GRAVITY, location[0], location[1] - pw.getHeight() + 20 + camera_top_rl.getHeight());
-        pw.showAsDropDown(parent, -32, 62);
-        Button flash_auto_btn = (Button) menuView.findViewById(R.id.flash_auto_btn);
-        Button flash_on_btn = (Button) menuView.findViewById(R.id.flash_on_btn);
-        Button flash_off_btn = (Button) menuView.findViewById(R.id.flash_off_btn);
-        Button flash_light_btn = (Button) menuView.findViewById(R.id.flash_light_btn);
-        OnClickListener listener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.flash_auto_btn:
-                        current.setflashMode(flashModeCode.auto);
-                        setFlashResource(current.getCurrentModeCode());
-                        pw.dismiss();
-                        break;
-                    case R.id.flash_on_btn:
-                        current.setflashMode(flashModeCode.on);
-                        setFlashResource(current.getCurrentModeCode());
-                        pw.dismiss();
-                        break;
-                    case R.id.flash_off_btn:
-                        current.setflashMode(flashModeCode.off);
-                        setFlashResource(current.getCurrentModeCode());
-                        pw.dismiss();
-                        break;
-                    case R.id.flash_light_btn:
-                        current.setflashMode(flashModeCode.light);
-                        setFlashResource(current.getCurrentModeCode());
-                        pw.dismiss();
-                        break;
-                }
-            }
-        };*/
         if (current.getCurrentModeCode() == flashModeCode.auto) {
             flash_light_iv.setBackgroundResource(R.drawable.icon_capture_20_01);
         } else if (current.getCurrentModeCode() == flashModeCode.on) {
@@ -1175,6 +1147,24 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         flash_off_btn.setOnClickListener(listener);
         flash_light_btn.setOnClickListener(listener);*/
     }
+
+    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH+"")
+    public void downLoadFinish(Bundle bundle) {
+        final int percent = bundle.getInt("percent");
+        final int position = bundle.getInt("position");
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+//                dynamicIconInfo.setShowProgress(true);
+
+                mDynamicPicAdapter.getItem(position + nativeList.size()).setShowProgress(false);
+                mDynamicPicAdapter.notifyItemChanged(position + nativeList.size());
+//                mDynamicPicAdapter.notifyDataSetChanged();
+                ToasterHelper.showShort(ActivityCamera.this, "下载成功", R.drawable.img_blur_bg);
+            }
+        });
+    }
+
 
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
@@ -1272,9 +1262,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     ActivityHelper.startActivity(ActivityCamera.this, FestivalSelectActivity.class, bundle);
                 } else if (markIconInfo.type.equals(WaterMarkView.WaterType.TYPE_TEXTEDIT)) {
                     showWaterTextEditDialog(waterView.getWaterTextByType(WaterTextEventType.TYPE_EDIT_TEXT));
-                    //                    Bundle bundle = new Bundle();
-                    //                    bundle.putString("watermark_text", waterView.getWaterTextByType(WaterTextEventType.TYPE_EDIT_TEXT));
-                    //                    ActivityHelper.startActivity(mActivity, WatermarkTextEditActivity.class, bundle);
+
                 }
             }
 

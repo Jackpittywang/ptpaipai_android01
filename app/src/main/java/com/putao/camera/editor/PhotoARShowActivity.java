@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
@@ -194,6 +192,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     public void save() {
 
         videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/temp/";
+        clearImageList();
         File file = new File(videoImagePath);
         if (file.exists() == false) file.mkdir();
         progressDialog = new ProgressDialog(this);
@@ -265,11 +264,14 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                 MediaScannerConnection.scanFile(PhotoARShowActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
-
-                        ActivityHelper.startActivity(PhotoARShowActivity.this, PhotoShareActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("savefile", videoPath);
+                        bundle.putString("imgpath",videoImagePath+"image00.jpg");
+                        bundle.putString("from", "dynamic");
+                        ActivityHelper.startActivity(PhotoARShowActivity.this, PhotoShareActivity.class, bundle);
+                        finish();
                     }
                 });
-                finish();
                 // ToasterHelper.show(PhotoARShowActivity.this, "处理成功:" + s);
             }
 
@@ -288,7 +290,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                 // ToasterHelper.show(PhotoARShowActivity.this, "处理完成");
                 progressDialog.hide();
                 progressDialog = null;
-                clearImageList();
+//                clearImageList();
             }
         });
 
@@ -388,7 +390,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    @Override
+   /* @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -444,5 +446,5 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             e.printStackTrace();
         }
 
-    }
+    }*/
 }

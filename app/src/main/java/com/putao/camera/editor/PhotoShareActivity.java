@@ -19,8 +19,7 @@ import com.putao.camera.camera.ActivityCamera;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
 import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
-import com.putao.camera.thirdshare.ShareTools;
-import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
+import com.putao.camera.share.ShareTools;
 import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.ToasterHelper;
@@ -36,19 +35,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.OnClick;
+import cn.sharesdk.wechat.moments.WechatMoments;
+
+/*
+import com.putao.camera.thirdshare.ShareTools;
+import com.putao.camera.thirdshare.dialog.ThirdShareDialog;
+*/
 
 /**
  * Created by jidongdong on 15/3/3.
  */
-public class PhotoShareActivity extends PTXJActivity implements View.OnClickListener, ThirdShareDialog.ThirdShareDialogProcessListener {
+//public class PhotoShareActivity extends PTXJActivity implements View.OnClickListener, ThirdShareDialog.ThirdShareDialogProcessListener {
 
+public class PhotoShareActivity extends PTXJActivity implements View.OnClickListener {
 
     private String filepath;
-    public static ShareTools mShareTools;
+    //    public static ShareTools mShareTools;
     private String from;
-
-
-
+    private String imgpath;
 
 
     @Override
@@ -63,8 +67,9 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         if (bundle != null) {
             filepath = bundle.getString("savefile");
             from = bundle.getString("from");
+            imgpath=bundle.getString("imgpath");
         }
-        mShareTools = new ShareTools(this, filepath);
+//        mShareTools = new ShareTools(this, filepath);
         //loadShareImage();
         //showPathToast();
 
@@ -135,7 +140,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         super.onLeftAction();
     }
 
-    @OnClick({ R.id.share_btn_friend, R.id.share_btn_qq, R.id.share_btn_sina, R.id.share_btn_wechat,R.id.rl_beautify,R.id.rl_take_photo,R.id.rl_template})
+    @OnClick({R.id.share_btn_friend, R.id.share_btn_qq, R.id.share_btn_sina, R.id.share_btn_wechat, R.id.rl_beautify, R.id.rl_take_photo, R.id.rl_template})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -144,17 +149,21 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                     if (from.equals("dynamic")) {
                         if (!AccountHelper.isLogin()) {
                             ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
-                            Bundle bundle=new Bundle();
-                            bundle.putString("from","share");
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
-                        } else if ( AccountHelper.isLogin()) {
+                        } else if (AccountHelper.isLogin()) {
                             checkSha1(filepath);
-                            ShareTools vedioShareTools = new ShareTools(this, url);
-                            vedioShareTools.sendBitmapToWeixin(true);
+
+                            ShareTools.wechatWebShare(this, true,null,null, imgpath,url);
+//                            ShareTools vedioShareTools = new ShareTools(this, url);
+//                            vedioShareTools.sendBitmapToWeixin(true);
                         }
 
-                    }else {
-                        mShareTools.sendBitmapToWeixin(true);
+                    } else {
+//                        mShareTools.sendBitmapToWeixin(true);
+                        ShareTools.newInstance(WechatMoments.NAME).setImagePath(filepath).execute(mContext);
+//                        ShareTools.wechatWebShare(this, true,null,null, filepath,null);
                     }
 
                 } else {
@@ -163,9 +172,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
 //
                 break;
             case R.id.share_btn_qq:
-                if (isAppInstalled(mContext, "com.tencent.mobileqq"))
-                    mShareTools.doShareToQQ();
-                else {
+                if (isAppInstalled(mContext, "com.tencent.mobileqq")) {
+                    ShareTools.OnQQZShare(this, false, "", "", filepath,"");
+//                    mShareTools.doShareToQQ();
+                } else {
                     Toast.makeText(mContext, "未安装QQ", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -177,16 +187,18 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                 }
                 break;*/
             case R.id.share_btn_sina:
-                if (isAppInstalled(mContext, "com.sina.weibo"))
-                    mShareTools.doShareToWeibo();
-                else {
+                if (isAppInstalled(mContext, "com.sina.weibo")) {
+                    ShareTools.OnWeiboShare(this, "", filepath, "");
+//                    mShareTools.doShareToWeibo();
+                } else {
                     Toast.makeText(mContext, "未安装新浪微博", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.share_btn_wechat:
-                if (isAppInstalled(mContext, "com.tencent.mm"))
-                    mShareTools.sendBitmapToWeixin(false);
-                else {
+                if (isAppInstalled(mContext, "com.tencent.mm")) {
+                    ShareTools.wechatWebShare(this, false, "", "", filepath, "");
+                    //                    mShareTools.sendBitmapToWeixin(false);
+                } else {
                     Toast.makeText(mContext, "未安装微信", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -216,10 +228,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         }
     }
 
-    @Override
+ /*   @Override
     public File onSave() {
         return new File(filepath);
-    }
+    }*/
 
     public boolean isAppInstalled(Context context, String packageName) {
         final PackageManager packageManager = context.getPackageManager();
@@ -233,9 +245,6 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         }
         return pName.contains(packageName);
     }
-
-
-
 
 
     private String uploadToken;//上传token
@@ -307,16 +316,18 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             }
         }).start();
     }
-   private String url;
+
+    private String url;
+
     /**
      * 上传PHP服务器
      */
     private void upload(String ext, String filename, String filehash) {
-        networkRequest(UserApi.userMedia(ext, filename, filehash,"VIDEO"),
+        networkRequest(UserApi.userMedia(ext, filename, filehash, "VIDEO"),
                 new SimpleFastJsonCallback<String>(String.class, loading) {
                     @Override
                     public void onSuccess(String url, String result) {
-                        url=result;
+                        url = result;
                         Logger.i("保存用户信息");
 //                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
 //                        startActivity(IndexActivity.class);

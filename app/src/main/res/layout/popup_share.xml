@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:id="@+id/popup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <!--标题栏-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="更多操作"
+                android:textSize="@dimen/text_size_18sp" />
+        </RelativeLayout>
+
+        <!--按钮栏-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--第一行-->
+            <LinearLayout style="@style/style_share_row">
+
+                <!--微信-->
+                <LinearLayout
+                    android:id="@+id/ll_wechat"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_01" />
+
+                    <TextView
+                        style="@style/style_share_text"
+                        android:text="@string/wechat" />
+                </LinearLayout>
+
+                <!--微信朋友圈-->
+                <LinearLayout
+                    android:id="@+id/ll_wechat_friend_circle"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_02" />
+
+                    <TextView
+                        style="@style/style_share_text"
+                        android:text="@string/wechat_friend_circle" />
+                </LinearLayout>
+
+                <!--收藏-->
+                <LinearLayout
+                    android:id="@+id/ll_collection"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        android:src="@drawable/icon_40_02"
+                        android:id="@+id/iv_collection"
+                        style="@style/style_share_icon"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_collection"
+                        style="@style/style_share_text"
+                        android:text="@string/share_collection" />
+                </LinearLayout>
+
+                <!--QQ好友-->
+                <LinearLayout
+                    android:id="@+id/ll_qq_friend"
+                    style="@style/style_share_button"
+                    android:paddingRight="8dp"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/iv_qq"
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_03" />
+
+                    <TextView
+                        android:id="@+id/tv_qq"
+                        style="@style/style_share_text"
+                        android:text="@string/qq" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--第二排-->
+            <LinearLayout
+                android:id="@+id/ll_second"
+                style="@style/style_share_row">
+                <!--QQ空间-->
+                <LinearLayout
+                    android:id="@+id/ll_qq_zone"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/iv_qq_zone"
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_04" />
+
+                    <TextView
+                        android:id="@+id/tv_qq_zone"
+                        style="@style/style_share_text"
+                        android:text="@string/qq_zone" />
+                </LinearLayout>
+                <!--新浪微博-->
+                <LinearLayout
+                    android:id="@+id/ll_sina_weibo"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp">
+
+                    <ImageView
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_05" />
+
+                    <TextView
+                        style="@style/style_share_text"
+                        android:text="@string/sina_weibo" />
+                </LinearLayout>
+                <!--复制链接-->
+                <LinearLayout
+                    android:id="@+id/ll_copy_url"
+                    style="@style/style_share_button"
+                    android:paddingLeft="8dp"
+                    android:visibility="visible">
+
+                    <ImageView
+                        style="@style/style_share_icon"
+                        android:src="@drawable/icon_40_06" />
+
+                    <TextView
+                        style="@style/style_share_text"
+                        android:text="@string/copy_url" />
+                </LinearLayout>
+                <!--占位-->
+                <LinearLayout
+                    style="@style/style_share_button"
+                    android:visibility="invisible" />
+
+                <LinearLayout
+                    android:id="@+id/ll_share"
+                    style="@style/style_share_button"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!--间隔线-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="20dp"
+                />
+
+            <!--取消-->
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:textColor="@color/text_color_red"
+                android:textSize="@dimen/text_size_18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

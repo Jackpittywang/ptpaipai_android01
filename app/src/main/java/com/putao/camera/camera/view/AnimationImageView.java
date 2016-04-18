@@ -25,6 +25,7 @@ import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.BitmapHelper;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -522,6 +523,8 @@ public class AnimationImageView extends ImageView {
             isNeedSave = false;
             curSaveCount = 0;
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE, bundle));
+            EventBusHelper.post(bundle, PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE+"");
+
         }
     }
 
