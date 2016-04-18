@@ -342,7 +342,7 @@
         android:background="#252525"
         android:orientation="vertical">
 
-       <!-- <com.sunnybear.library.view.recycler.BasicRecyclerView
+        <com.sunnybear.library.view.recycler.BasicRecyclerView
             android:id="@+id/rv_articlesdetail_applyusers"
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -350,9 +350,9 @@
             android:visibility="visible"
             auto:divider_width="5dp"
             auto:has_rank_divider="true"
-            auto:layout_mode="horizontal" />-->
+            auto:layout_mode="horizontal" />
 
-        <HorizontalScrollView
+       <!-- <HorizontalScrollView
             android:id="@+id/scroll_sticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -365,7 +365,7 @@
                 android:background="#252525"
                 android:orientation="horizontal"></LinearLayout>
 
-        </HorizontalScrollView>
+        </HorizontalScrollView>-->
 
         <LinearLayout
             android:layout_width="match_parent"

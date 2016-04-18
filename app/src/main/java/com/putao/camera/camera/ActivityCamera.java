@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
@@ -30,9 +31,12 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.DynamicCategoryInfo;
+import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.bean.PhotoInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
@@ -43,6 +47,7 @@ import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
 import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.CitySelectActivity;
 import com.putao.camera.editor.FestivalSelectActivity;
@@ -61,7 +66,9 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
+import com.putao.camera.http.CacheRequest;
 import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.setting.watermark.management.DynamicListInfo;
 import com.putao.camera.setting.watermark.management.DynamicPicAdapter;
 import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.util.ActivityHelper;
@@ -77,11 +84,15 @@ import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
+import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.OnClick;
 
@@ -89,7 +100,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter, layout_sticker_list, layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter,  layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button take_photo_btn, btn_enhance_switch, btn_clear_ar, btn_clear_filter;
     private ImageButton btn_close_ar_list, btn_close_filter_list;
     //    private RedPointBaseButton show_material_ll;
@@ -112,6 +123,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private WaterMarkView last_mark_view;
     private DynamicPicAdapter mDynamicPicAdapter;
     private BasicRecyclerView rv_articlesdetail_applyusers;
+    private List<DynamicIconInfo> nativeList = null;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -196,7 +208,56 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         doInitSubViews();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mDynamicPicAdapter = new DynamicPicAdapter(mContext, null);
+        rv_articlesdetail_applyusers.setAdapter(mDynamicPicAdapter);
+        rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
+        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener<DynamicIconInfo>() {
+            @Override
+            public void onItemClick(DynamicIconInfo dynamicIconInfo, int position) {
+                Map<String, String> map = new HashMap<String, String>();
+                List<DynamicIconInfo> list = null;
+                map.put("cover_pic", dynamicIconInfo.cover_pic);
+                try {
+                    list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (null != list && list.size() > 0) {
+                    ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+                    if (current == null) return;
+                    if (animation_view.isAnimationLoading()) {
+                        ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
+
+                        return;
+                    }
+                    animation_view.clearData();
+                    animation_view.setData(list.get(0).zipName, false);
+                    std.setAnimationView(animation_view);
+                    ffc.setAnimationView(animation_view);
+
+
+                } else {
+                    dynamicIconInfo.setShowProgress(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
+
+                    String path = CollageHelper.getCollageUnzipFilePath();
+//                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
+                }
+
+            }
+        });
+
         doInitData();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "0");
+        try {
+            nativeList = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mDynamicPicAdapter.addAll(nativeList);
     }
 
 
@@ -207,6 +268,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
+        rv_articlesdetail_applyusers= (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
         flash_light_ll = (LinearLayout) findViewById(R.id.flash_light_ll);
         camera_timer_ll = (LinearLayout) findViewById(R.id.camera_timer_ll);
         camera_scale_ll = (LinearLayout) findViewById(R.id.camera_scale_ll);
@@ -234,7 +296,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         layout_filter = (LinearLayout) findViewById(R.id.layout_filter);
         layout_sticker = (LinearLayout) findViewById(R.id.layout_sticker);
         camera_activy = (RelativeLayout) findViewById(R.id.camera_activy);
-        layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
+//        layout_sticker_list = (LinearLayout) findViewById(R.id.layout_sticker_list);
         fill_blank_top = findViewById(R.id.fill_blank_top);
         fill_blank_bottom = findViewById(R.id.fill_blank_bottom);
         btn_enhance_switch = (Button) findViewById(R.id.btn_enhance_switch);
@@ -352,6 +414,39 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         doInitARFilter();
         // 加载动态贴图
         doInitARStick();
+        queryCollageList();
+    }
+
+    private DynamicListInfo aDynamicListInfo;
+    ArrayList<DynamicIconInfo> mDynamicIconInfo;
+
+    public void queryCollageList() {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+//                final DynamicListInfo aDynamicListInfo;
+                try {
+                    Gson gson = new Gson();
+                    aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
+                    Gson gson1 = new Gson();
+                    mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                    mDynamicPicAdapter.addAll(mDynamicIconInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
+        mCacheRequest.startGetRequest();
     }
 
     @Override
@@ -1425,7 +1520,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             arImageView.setData(imagePath);
             arImageView.setTag(iconInfo);
             arImageView.setOnClickListener(arStickerOnclickListener);
-            layout_sticker_list.addView(arImageView);
+//            layout_sticker_list.addView(arImageView);
 
         }
     }
@@ -1561,7 +1656,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     imageView.setTag(iconInfo);
                     imageView.setLayoutParams(params);
                     imageView.setOnClickListener(stickerOnclickListener);
-                    layout_sticker_list.addView(imageView);
+//                    layout_sticker_list.addView(imageView);
                 }
             }
         }
