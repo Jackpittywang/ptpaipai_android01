@@ -94,64 +94,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     private MenuIconInfo aMenuIconInfo;
     private boolean openCVLibraryLoaded = false;
 
-   /* @Override
-    public void doBefore() {
-        if (SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_CAMERA_ENTER_SETTING, false)) {
-            ActivityHelper.startActivity(this, ActivityCamera.class);
-//            finish();
-        }
-    }*/
-
-   /* @Override
-    public int doGetContentViewId() {
-        return R.layout.activity_menu;
-    }
-    @Override
-    public void doInitSubViews(View view) {
-        iv_header_icon=queryViewById(R.id.iv_header_icon);
-        user_name_tv=queryViewById(R.id.user_name_tv);
-
-        Loger.i("current time:" + System.currentTimeMillis());
-        menu_home_setting_btn = (Button) findViewById(R.id.menu_home_setting_btn);
-        menu_home_material_btn = (Button) findViewById(R.id.menu_home_material_btn);
-        menu_home_stickers_btn = (Button) findViewById(R.id.menu_home_stickers_btn);
-        menu_home_camera_btn = queryViewById(R.id.menu_home_camera_btn);
-        menu_home_jigsaw_btn = (Button) findViewById(R.id.menu_home_jigsaw_btn);
-        menu_home_movie_btn = (Button) findViewById(R.id.menu_home_movie_btn);
-        login_ll=queryViewById(R.id.login_ll);
-        name_tv=queryViewById(R.id.name_tv);
-        addOnClickListener(menu_home_material_btn, menu_home_stickers_btn, menu_home_camera_btn, menu_home_jigsaw_btn, menu_home_movie_btn,
-                menu_home_setting_btn,login_ll);
-        // Umeng更新
-        UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
-        initIconInfo();
-
-
-    }*/
-
-   /* @Override
-    public void doInitData() {
-//        initIconInfo();
-
-//        name_tv.setText();
-//        menu_home_camera_btn.setBackground();
-        //        initWaterMarkInfo();
-
-//        GifView kid_gif = (GifView) findViewById(R.id.kid_gif);
-//        kid_gif.setMovieResource(R.raw.kid);
-//        GifView yun_gif = (GifView) findViewById(R.id.yun_gif);
-//        yun_gif.setMovieResource(R.raw.yun);
-//        GifView wenzi_gif = (GifView) findViewById(R.id.wenzi_gif);
-//        wenzi_gif.setMovieResource(R.raw.wenzi);
-
-//        GifView longzhou_gif = (GifView) findViewById(R.id.longzhou_gif);
-//        longzhou_gif.setMovieResource(R.raw.longzhou);
-
-
-
-    }*/
-
-
 
 
     @Override
@@ -277,7 +219,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
     @OnClick({R.id.menu_home_material_btn, R.id.menu_home_stickers_btn, R.id.menu_home_camera_btn, R.id.menu_home_jigsaw_btn, R.id.menu_home_movie_btn,
-            R.id.menu_home_setting_btn, R.id.login_ll})
+            R.id.menu_home_setting_iv, R.id.login_ll})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -304,7 +246,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
             case R.id.menu_home_movie_btn:
                 ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
-            case R.id.menu_home_setting_btn://拍照--原设置界面
+            case R.id.menu_home_setting_iv://拍照--原设置界面
 //                ActivityHelper.startActivity(this, SettingActivity.class);
                 ActivityHelper.startActivity(this, ActivityCamera.class);
 //                ActivityHelper.startActivity(this, MovieCameraActivity.class);
@@ -318,11 +260,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 } else if ( AccountHelper.isLogin()) {
                     mSelectPopupWindow.show(fl_main);
                 }
-
-
-
-
                 break;
+
             //            case R.id.water_mark_btn:
             //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
             //                break;
@@ -390,35 +329,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 mIconInfoCallback);
         mCacheRequest.startGetRequest();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public void initWaterMarkInfo() {

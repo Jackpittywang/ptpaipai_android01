@@ -260,6 +260,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
                 bundle.putString("savefile", filePath);
                 bundle.putString("from", "collage");
                 ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
+                finish();
                 break;
           /*  case R.id.btn_fold:
                 int start = mIsExpand ? 0 : sl_sample_list.getHeight();
@@ -277,12 +278,51 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
                 ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class,bundle);
                 finish();
                 break;
-            case R.id.btn_replace:
+
+            case R.id.ll_replace:
                 bundle.putBoolean("from_collage_photo", true);
                 ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class, bundle);
                 dialog.dismiss();
                 break;
-            case R.id.btn_mirror:
+
+            case R.id.iv_replace:
+                bundle.putBoolean("from_collage_photo", true);
+                ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class, bundle);
+                dialog.dismiss();
+                break;
+            case R.id.iv_rotate:
+                if (mPhotoSelectIndex > -1) {
+                    CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
+                    Matrix matrix = new Matrix();
+                    matrix.set(set.matrix);
+                    matrix.setRotate(90);
+//                    matrix.postScale(-1, 1);
+                    mCollageView.changeSourcePhotoSet(Bitmap.createBitmap(set.Photo, 0, 0, set.Photo.getWidth(), set.Photo.getHeight(), matrix, true), mPhotoSelectIndex);
+                }
+                dialog.dismiss();
+                break;
+            case R.id.ll_rotate:
+                if (mPhotoSelectIndex > -1) {
+                    CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
+                    Matrix matrix = new Matrix();
+                    matrix.set(set.matrix);
+                    matrix.setRotate(90);
+//                    matrix.postScale(-1, 1);
+                    mCollageView.changeSourcePhotoSet(Bitmap.createBitmap(set.Photo, 0, 0, set.Photo.getWidth(), set.Photo.getHeight(), matrix, true), mPhotoSelectIndex);
+                }
+                dialog.dismiss();
+                break;
+            case R.id.iv_mirror:
+                if (mPhotoSelectIndex > -1) {
+                    CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
+                    Matrix matrix = new Matrix();
+                    matrix.set(set.matrix);
+                    matrix.postScale(-1, 1);
+                    mCollageView.changeSourcePhotoSet(Bitmap.createBitmap(set.Photo, 0, 0, set.Photo.getWidth(), set.Photo.getHeight(), matrix, true), mPhotoSelectIndex);
+                }
+                dialog.dismiss();
+                break;
+            case R.id.ll_mirror:
                 if (mPhotoSelectIndex > -1) {
                     CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
                     Matrix matrix = new Matrix();
@@ -337,13 +377,21 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         dialog = new AlertDialog.Builder(mContext).create();
         dialog.show();
         View parent = LayoutInflater.from(this).inflate(R.layout.layout_collage_image_opreate_dialog, null);
-        Button btn_replace = queryViewById(parent, R.id.btn_replace);
-        Button btn_mirror = queryViewById(parent, R.id.btn_mirror);
+        LinearLayout ll_replace= queryViewById(parent,R.id.ll_replace);
+        LinearLayout ll_rotate= queryViewById(parent,R.id.ll_rotate);
+        LinearLayout ll_mirror= queryViewById(parent,R.id.ll_mirror);
+        ImageView iv_replace = queryViewById(parent, R.id.iv_replace);
+        ImageView iv_rotate = queryViewById(parent, R.id.iv_rotate);
+        ImageView iv_mirror = queryViewById(parent, R.id.iv_mirror);
         Window window = dialog.getWindow();
         window.setContentView(parent);
         dialog.setCanceledOnTouchOutside(true);
-        btn_replace.setOnClickListener(this);
-        btn_mirror.setOnClickListener(this);
+        ll_replace.setOnClickListener(this);
+        ll_rotate.setOnClickListener(this);
+        ll_mirror.setOnClickListener(this);
+        iv_replace.setOnClickListener(this);
+        iv_rotate.setOnClickListener(this);
+        iv_mirror.setOnClickListener(this);
     }
 
 

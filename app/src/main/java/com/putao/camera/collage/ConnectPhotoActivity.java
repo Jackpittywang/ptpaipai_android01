@@ -251,13 +251,13 @@ public class ConnectPhotoActivity extends BaseActivity implements View.OnClickLi
         dialog = new AlertDialog.Builder(mContext).create();
         dialog.show();
         View parent = LayoutInflater.from(this).inflate(R.layout.layout_collage_image_opreate_dialog, null);
-        Button btn_replace = queryViewById(parent, R.id.btn_replace);
-        Button btn_mirror = queryViewById(parent, R.id.btn_mirror);
+        ImageView iv_replace = queryViewById(parent, R.id.iv_replace);
+        ImageView iv_mirror = queryViewById(parent, R.id.iv_mirror);
         Window window = dialog.getWindow();
         window.setContentView(parent);
         dialog.setCanceledOnTouchOutside(true);
-        btn_replace.setOnClickListener(this);
-        btn_mirror.setOnClickListener(this);
+        iv_replace.setOnClickListener(this);
+        iv_mirror.setOnClickListener(this);
     }
 
 
@@ -342,13 +342,13 @@ public class ConnectPhotoActivity extends BaseActivity implements View.OnClickLi
             case R.id.btn_new_res:
                 ActivityHelper.startActivity(mActivity, CollageManagementActivity.class);
                 break;
-            case R.id.btn_replace:
+            case R.id.iv_replace:
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("from_connect_photo", true);
                 ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class, bundle);
                 dialog.dismiss();
                 break;
-            case R.id.btn_mirror:
+            case R.id.iv_mirror:
                 if (mSelectImageView != null) {
                     Matrix matrix = new Matrix();
                     matrix.postScale(-1, 1);

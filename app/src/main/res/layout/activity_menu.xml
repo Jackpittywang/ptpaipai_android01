@@ -40,8 +40,8 @@
                 android:textSize="@dimen/dimens_20dp"
                 android:visibility="invisible" />
 
-            <Button
-                android:id="@+id/menu_home_setting_btn"
+            <ImageView
+                android:id="@+id/menu_home_setting_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -50,7 +50,7 @@
                 android:background="@drawable/selector_to_camera" />
 
             <ImageView
-                android:layout_below="@id/menu_home_setting_btn"
+                android:layout_below="@id/menu_home_setting_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
