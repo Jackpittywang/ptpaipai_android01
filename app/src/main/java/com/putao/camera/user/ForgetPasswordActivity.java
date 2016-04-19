@@ -133,7 +133,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
 
                 break;
             case R.id.image_graph_verify:
-                AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
+                AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_FORGET);
                 break;
         }
     }

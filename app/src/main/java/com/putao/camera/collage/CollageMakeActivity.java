@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -64,6 +65,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     private float sample_scale = 1.0f;
     private String filePath;
     private boolean mIsExpand = true;
+    private ImageView tips;
     AlertDialog dialog;
     String zipName;
     private int mPhotoSelectIndex = -1;
@@ -85,17 +87,19 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         mCollageView = queryViewById(R.id.collage_view);
         tv_save = queryViewById(R.id.tv_save);
         back_btn = queryViewById(R.id.back_btn);
+        tips=queryViewById(R.id.tips);
 
         cur_cate_samples = queryViewById(R.id.cur_cate_samples);
         panel_sample_list = queryViewById(R.id.panel_sample_list);
         sl_sample_list = queryViewById(R.id.sl_sample_list);
         ll_change_make = queryViewById(R.id.ll_change_make);
         mCollageView.setOnPhotoItemOnClick(mOnPhotoItemOnClick);
-        addOnClickListener(tv_save, back_btn, ll_change_make);
+        addOnClickListener(tv_save, back_btn, ll_change_make,tips);
         EventBus.getEventBus().register(this);
         if(isFirstUseMake){
-            //左右滑动显示
-            SharedPreferencesHelper.saveBooleanValue(this,"isFirstUseMake",false);
+            isFirstUseMake = false;
+            SharedPreferencesHelper.saveBooleanValue(this, "isFirstUseMake", false);
+            tips.setVisibility(View.VISIBLE);
         }
     }
 
@@ -178,6 +182,172 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     }
 
 
+    private CollageView.Area getImagePointsByCollageImageInfo(
+            PintuInfo.Mask mask) {
+        int count = mask.point.size();
+        float[] p_x = new float[count];
+        float[] p_y = new float[count];
+        for (int i = 0; i < count; i++) {
+            String pointNum = mask.point.get(i);
+            String[] pointXY = pointNum.split(",");
+            p_x[i] = Float.parseFloat(pointXY[0]);
+            p_y[i] = Float.parseFloat(pointXY[1]);
+        }
+
+        CollageView.Area area = mCollageView.new Area(
+                mCollageView.getScalePloyX(p_x, sample_scale),
+                mCollageView.getScalePloyY(p_y, sample_scale));
+        return area;
+    }
+
+
+    private File saveCollage() {
+        mCollageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = mCollageView.getDrawingCache();
+        File pictureFile = CommonUtils.getOutputMediaFile();
+        FileOutputStream outStream;
+        try {
+            outStream = new FileOutputStream(pictureFile);
+            // keep full quality of the image
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+            outStream.flush();
+            outStream.close();
+            // success = true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mCollageView.setDrawingCacheEnabled(false);
+        MediaScannerConnection.scanFile(this,
+                new String[]{pictureFile.toString()}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+
+                    }
+                });
+        filePath = pictureFile.getPath();
+        return pictureFile;
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        showQuitTip();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getEventBus().unregister(this);
+    }
+
+    @SuppressLint("CommitTransaction")
+    @Override
+    public void onClick(View v) {
+        Bundle bundle = new Bundle();
+        switch (v.getId()) {
+            case R.id.back_btn:
+                showQuitTip();
+                break;
+            case R.id.tv_save:
+                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_JIGSAW_SHARE_DONE);
+                if (StringHelper.isEmpty(filePath)) {
+                    saveCollage();
+                }
+                bundle.putString("savefile", filePath);
+                bundle.putString("from", "collage");
+                ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
+                break;
+          /*  case R.id.btn_fold:
+                int start = mIsExpand ? 0 : sl_sample_list.getHeight();
+                int end = mIsExpand ? sl_sample_list.getHeight() : 0;
+                int bg_res_id = mIsExpand ? R.drawable.template_button_fold2 : R.drawable.template_button_fold;
+                mIsExpand = !mIsExpand;
+                btn_fold.setBackgroundDrawable(getResources().getDrawable(bg_res_id));
+                ObjectAnimator.ofFloat(panel_sample_list, "translationY", start, end).setDuration(300).start();
+                break;*/
+            case R.id.ll_change_make:
+                bundle.putSerializable("sampleinfo",mTemplateIconInfo);
+                bundle.putSerializable("images",selectImages);
+                bundle.putInt("imgsum", selectImages.size());
+                bundle.putString("from", "collageMake");
+                ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class,bundle);
+                finish();
+                break;
+            case R.id.btn_replace:
+                bundle.putBoolean("from_collage_photo", true);
+                ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class, bundle);
+                dialog.dismiss();
+                break;
+            case R.id.btn_mirror:
+                if (mPhotoSelectIndex > -1) {
+                    CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
+                    Matrix matrix = new Matrix();
+                    matrix.set(set.matrix);
+                    matrix.postScale(-1, 1);
+                    mCollageView.changeSourcePhotoSet(Bitmap.createBitmap(set.Photo, 0, 0, set.Photo.getWidth(), set.Photo.getHeight(), matrix, true), mPhotoSelectIndex);
+                }
+                dialog.dismiss();
+                break;
+            case R.id.tips:
+                tips.setVisibility(View.GONE);
+            default:
+                break;
+        }
+    }
+
+    public void onEvent(BasePostEvent event) {
+        switch (event.eventCode) {
+            case PuTaoConstants.EVENT_COLLAGE_PHOTO_SELECT:
+                Bundle bundle = event.bundle;
+                String path = bundle.getString("photo_path");
+                if (!StringHelper.isEmpty(path)) {
+                    Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPath(path);
+                    if (bitmap != null && mPhotoSelectIndex > -1) {
+                        mCollageView.changeSourcePhotoSet(bitmap, mPhotoSelectIndex);
+                    }
+                }
+                break;
+
+            case PuTaoConstants.FINISH_TO_MENU_PAGE:
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
+
+    void showQuitTip() {
+        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).show();
+    }
+
+    void showPhotoOptdialog() {
+        dialog = new AlertDialog.Builder(mContext).create();
+        dialog.show();
+        View parent = LayoutInflater.from(this).inflate(R.layout.layout_collage_image_opreate_dialog, null);
+        Button btn_replace = queryViewById(parent, R.id.btn_replace);
+        Button btn_mirror = queryViewById(parent, R.id.btn_mirror);
+        Window window = dialog.getWindow();
+        window.setContentView(parent);
+        dialog.setCanceledOnTouchOutside(true);
+        btn_replace.setOnClickListener(this);
+        btn_mirror.setOnClickListener(this);
+    }
+
+
+
 
      /* private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
             CollageSampleItem info) {
@@ -203,23 +373,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         return photoSet;
     }*/
 
-    private CollageView.Area getImagePointsByCollageImageInfo(
-            PintuInfo.Mask mask) {
-        int count = mask.point.size();
-        float[] p_x = new float[count];
-        float[] p_y = new float[count];
-        for (int i = 0; i < count; i++) {
-            String pointNum = mask.point.get(i);
-            String[] pointXY = pointNum.split(",");
-            p_x[i] = Float.parseFloat(pointXY[0]);
-            p_y[i] = Float.parseFloat(pointXY[1]);
-        }
 
-        CollageView.Area area = mCollageView.new Area(
-                mCollageView.getScalePloyX(p_x, sample_scale),
-                mCollageView.getScalePloyY(p_y, sample_scale));
-        return area;
-    }
 
 
   /*  private CollageView.Area getImagePointsByCollageImageInfo(
@@ -285,39 +439,8 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         return list;
     }*/
 
-    private File saveCollage() {
-        mCollageView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = mCollageView.getDrawingCache();
-        File pictureFile = CommonUtils.getOutputMediaFile();
-        FileOutputStream outStream;
-        try {
-            outStream = new FileOutputStream(pictureFile);
-            // keep full quality of the image
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-            outStream.flush();
-            outStream.close();
-            // success = true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mCollageView.setDrawingCacheEnabled(false);
-        MediaScannerConnection.scanFile(this,
-                new String[]{pictureFile.toString()}, null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
 
-                    }
-                });
-        filePath = pictureFile.getPath();
-        return pictureFile;
-    }
-
-
-
-    /*private ArrayList<CollageConfigInfo.CollageText> getCollageTextList(
+     /*private ArrayList<CollageConfigInfo.CollageText> getCollageTextList(
             CollageSampleItem itemInfo) {
         ArrayList<CollageConfigInfo.CollageText> textlist = new ArrayList<CollageConfigInfo.CollageText>();
         if (itemInfo.textElements != null) {
@@ -347,114 +470,4 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     }*/
 
 
-    @Override
-    public void onBackPressed() {
-        showQuitTip();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getEventBus().unregister(this);
-    }
-
-    @SuppressLint("CommitTransaction")
-    @Override
-    public void onClick(View v) {
-        Bundle bundle = new Bundle();
-        switch (v.getId()) {
-            case R.id.back_btn:
-                showQuitTip();
-                break;
-            case R.id.tv_save:
-                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_JIGSAW_SHARE_DONE);
-                if (StringHelper.isEmpty(filePath)) {
-                    saveCollage();
-                }
-                bundle.putString("savefile", filePath);
-                bundle.putString("from", "collage");
-                ActivityHelper.startActivity(mActivity, PhotoShareActivity.class, bundle);
-                break;
-          /*  case R.id.btn_fold:
-                int start = mIsExpand ? 0 : sl_sample_list.getHeight();
-                int end = mIsExpand ? sl_sample_list.getHeight() : 0;
-                int bg_res_id = mIsExpand ? R.drawable.template_button_fold2 : R.drawable.template_button_fold;
-                mIsExpand = !mIsExpand;
-                btn_fold.setBackgroundDrawable(getResources().getDrawable(bg_res_id));
-                ObjectAnimator.ofFloat(panel_sample_list, "translationY", start, end).setDuration(300).start();
-                break;*/
-            case R.id.ll_change_make:
-                bundle.putSerializable("sampleinfo",mTemplateIconInfo);
-                bundle.putSerializable("images",selectImages);
-                bundle.putInt("imgsum", selectImages.size());
-                bundle.putString("from", "collageMake");
-                ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class,bundle);
-                finish();
-                break;
-            case R.id.btn_replace:
-                bundle.putBoolean("from_collage_photo", true);
-                ActivityHelper.startActivity(mActivity, AlbumPhotoSelectActivity.class, bundle);
-                dialog.dismiss();
-                break;
-            case R.id.btn_mirror:
-                if (mPhotoSelectIndex > -1) {
-                    CollageView.CollagePhotoSet set = mCollageView.getPhotoList().get(mPhotoSelectIndex);
-                    Matrix matrix = new Matrix();
-                    matrix.set(set.matrix);
-                    matrix.postScale(-1, 1);
-                    mCollageView.changeSourcePhotoSet(Bitmap.createBitmap(set.Photo, 0, 0, set.Photo.getWidth(), set.Photo.getHeight(), matrix, true), mPhotoSelectIndex);
-                }
-                dialog.dismiss();
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void onEvent(BasePostEvent event) {
-        switch (event.eventCode) {
-            case PuTaoConstants.EVENT_COLLAGE_PHOTO_SELECT:
-                Bundle bundle = event.bundle;
-                String path = bundle.getString("photo_path");
-                if (!StringHelper.isEmpty(path)) {
-                    Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPath(path);
-                    if (bitmap != null && mPhotoSelectIndex > -1) {
-                        mCollageView.changeSourcePhotoSet(bitmap, mPhotoSelectIndex);
-                    }
-                }
-                break;
-
-            case PuTaoConstants.FINISH_TO_MENU_PAGE:
-                finish();
-                break;
-            default:
-                break;
-        }
-    }
-
-    void showQuitTip() {
-        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        }).show();
-    }
-
-    void showPhotoOptdialog() {
-        dialog = new AlertDialog.Builder(mContext).create();
-        dialog.show();
-        View parent = LayoutInflater.from(this).inflate(R.layout.layout_collage_image_opreate_dialog, null);
-        Button btn_replace = queryViewById(parent, R.id.btn_replace);
-        Button btn_mirror = queryViewById(parent, R.id.btn_mirror);
-        Window window = dialog.getWindow();
-        window.setContentView(parent);
-        dialog.setCanceledOnTouchOutside(true);
-        btn_replace.setOnClickListener(this);
-        btn_mirror.setOnClickListener(this);
-    }
 }

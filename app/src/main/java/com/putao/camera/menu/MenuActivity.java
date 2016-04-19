@@ -373,7 +373,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 //                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
 //                    menu_home_camera_btn.setImageBitmap(pngBM);
 //                    url=aMenuIconInfo.data.android_link_url;
-                    url = aMenuIconInfo.data.ios_link_url;
+                    url = aMenuIconInfo.data.h5_link_url;
 
                 } catch (Exception e) {
                     e.printStackTrace();

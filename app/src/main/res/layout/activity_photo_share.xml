@@ -11,8 +11,8 @@
         android:background="#ff5859"
         auto:nav_left_icon="@drawable/btn_20_back_w_nor"
         auto:nav_main_title="分享"
-        auto:nav_main_title_color="@color/text_color_white"
-        auto:nav_right_icon="@drawable/icon_50_02" />
+        auto:nav_main_title_color="#eeeeee"
+        auto:nav_right_icon="@drawable/btn_20_capture_w_nor" />
 
     <LinearLayout
         android:layout_width="match_parent"

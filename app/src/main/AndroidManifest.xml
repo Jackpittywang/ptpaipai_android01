@@ -13,6 +13,29 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
+    <permission
+        android:name="com.putao.camera.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.putao.camera.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <!-- Optional. Required for location feature -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -305,7 +328,7 @@
     如果此过滤器不设置，则分享结束以后不能得到正确的回调
     -->
             <intent-filter android:priority="1000">
-                <data android:scheme="tencent100371282" />
+                <data android:scheme="tencent1104075952" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -325,7 +348,7 @@
 
 
         <!-- 微博分享配置 -->
-        <activity
+       <!-- <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"
@@ -336,7 +359,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <!-- umeng意见反馈 -->
         <activity android:name="com.umeng.fb.ConversationActivity" />
@@ -497,7 +520,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.putao.wd" />
+                <category android:name="com.putao.camera" />
             </intent-filter>
         </activity>
         <!-- Required  SDK核心功能 -->
@@ -529,7 +552,7 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
 
-                <category android:name="com.putao.wd" />
+                <category android:name="com.putao.camera" />
             </intent-filter>
         </service>
 
@@ -541,7 +564,7 @@
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
                 <!-- Required  显示通知栏 -->
-                <category android:name="com.putao.wd" />
+                <category android:name="com.putao.camera" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -579,7 +602,7 @@
                 <!--Optional 用户接受Rich Push Javascript 回调函数的intent-->
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="com.putao.wd" />
+                <category android:name="com.putao.camera" />
             </intent-filter>
         </receiver>
 
@@ -589,7 +612,7 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="afcc176ab3ef10fbae246563" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+            android:value="0b4eb607dea162cf9fb4db84" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.baidu.location.BDLocation;
@@ -32,6 +33,7 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.util.AppUtils;
@@ -40,6 +42,7 @@ import com.sunnybear.library.util.SDCardUtils;
 
 import java.io.File;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
 
 
@@ -93,6 +96,16 @@ public class MainApplication extends BasicApplication {
         intentFilter.addAction("com.putao.isNotFore.message");
         registerReceiver(new HomeBroadcastReceiver(), intentFilter);
         startRedDotService();
+
+//极光推送
+        JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);            // 初始化 JPush
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new JPushHeaper().setAlias(MainApplication.this, AccountHelper.getCurrentUid());
+            }
+        }, 3000);
     }
 
 
@@ -281,7 +294,7 @@ public class MainApplication extends BasicApplication {
      *
      * @return 是否开启
      */
-    public  boolean isDebug() {
+    public boolean isDebug() {
         return true;
     }
 

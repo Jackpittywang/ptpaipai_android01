@@ -1,5 +1,6 @@
 package com.putao.camera.editor;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -56,6 +57,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
     //    public static ShareTools mShareTools;
     private String from;
     private String imgpath;
+     ProgressDialog progressDialog;
 
 
     @Override
@@ -66,11 +68,20 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         addNavigation();
+        progressDialog = new ProgressDialog(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             filepath = bundle.getString("savefile");
             from = bundle.getString("from");
             imgpath = bundle.getString("imgpath");
+        }
+
+        if(from.equals("complete")){
+//            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("正在处理...");
+            progressDialog.show();
+            tag = 0;
+            checkSha1(filepath);
         }
 //        mShareTools = new ShareTools(this, filepath);
         //loadShareImage();
@@ -156,15 +167,17 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
                             Bundle bundle = new Bundle();
                             bundle.putString("from", "share");
+                            bundle.putString("path", filepath);
+                            bundle.putString("imgpath",imgpath);
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
+                            finish();
                         } else if (AccountHelper.isLogin()) {
+                            progressDialog.setMessage("正在处理...");
+                            progressDialog.show();
                             tag = 0;
                             checkSha1(filepath);
-
-
 //                            ShareTools.wechatWebShare(this, true,null,null, imgpath,url);
                         }
-
                     } else {
 //                        mShareTools.sendBitmapToWeixin(true);
                         ShareTools.newInstance(WechatMoments.NAME).setImagePath(filepath).execute(mContext);
@@ -184,6 +197,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            progressDialog.setMessage("正在处理...");
+                            progressDialog.show();
                             tag = 1;
                             checkSha1(filepath);
 
@@ -213,6 +228,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            progressDialog.setMessage("正在处理...");
+                            progressDialog.show();
                             tag = 2;
                             checkSha1(filepath);
                         }
@@ -235,6 +252,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            progressDialog.setMessage("正在处理...");
+                            progressDialog.show();
                             tag = 3;
                             checkSha1(filepath);
                         }
@@ -371,6 +390,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                     public void onSuccess(String url, String result) {
 //                        url = result;
                         String video_url = JSONObject.parseObject(result).getString("media_url");
+                        progressDialog.dismiss();
                         switch (tag) {
                             case 0:
                                 ShareTools.wechatWebShare(mContext, false, null, null, imgpath, video_url);
@@ -382,7 +402,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                                 ShareTools.OnWeiboShare(mContext, null, imgpath,video_url);
                                 break;
                             case 3:
-                                ShareTools.wechatWebShare(mContext, true, null, null, imgpath, video_url);
+                                ShareTools.wechatWebShare(mContext, true, "视频分享", null, imgpath, video_url);
                                 break;
                         }
 

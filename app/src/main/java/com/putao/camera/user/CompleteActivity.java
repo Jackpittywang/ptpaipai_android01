@@ -22,6 +22,7 @@ import com.putao.camera.base.SelectPopupWindow;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
+import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
@@ -77,6 +78,9 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
     private String filePath;//头像文件路径
     private String nick_name;//用户昵称
     private String profile;//个人简介
+    private String from;
+    private String path;
+    private String imgpath;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -112,19 +116,37 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
                 startActivityForResult(intent, ALBUM_REQCODE);
             }
         };
+
+        Intent intent = this.getIntent();
+        if (intent != null) {
+            from = intent.getStringExtra("from");
+            path = intent.getStringExtra("savefile");
+            imgpath = intent.getStringExtra("imgpath");
+        }
+
     }
 
     private void initInfo() {
         networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
-                String re=result.toString();
+                String re = result.toString();
 
                 iv_header_icon.setImageURL(result.getHead_img());
                 tv_nick_name.setText(result.getNick_name());
                 tv_user_info.setText(result.getProfile().isEmpty() ? "这个用户很懒" : result.getProfile());
                 AccountHelper.setUserInfo(result);
                 loading.dismiss();
+                if (from.equals("share")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("from", "complete");
+                    bundle.putString("savefile", path);
+                    bundle.putString("imgpath", imgpath);
+                    ActivityHelper.startActivity(CompleteActivity.this, PhotoShareActivity.class, bundle);
+                    finish();
+                }
+
+
             }
 
             @Override
@@ -147,7 +169,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         return new String[0];
     }
 
-    @OnClick({R.id.rl_header_icon, R.id.rl_nick_name,R.id.rl_user_info})
+    @OnClick({R.id.rl_header_icon, R.id.rl_nick_name, R.id.rl_user_info})
     @Override
     public void onClick(View v) {
         Bundle bundle = new Bundle();

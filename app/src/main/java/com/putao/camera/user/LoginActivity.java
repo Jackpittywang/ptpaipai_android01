@@ -18,7 +18,9 @@ import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
+import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
+import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.NetManager;
 import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
@@ -51,7 +53,10 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     CleanableEditText et_graph_verify;
     @Bind(R.id.image_graph_verify)
     ImageDraweeView image_graph_verify;
-    String from;
+    private String from;
+    private String path;
+    private String imgpath;
+
 
     private int mErrorCount = 0;
 
@@ -68,6 +73,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         btn_login.setClickable(false);
         Intent intent = this.getIntent();
         from = intent.getStringExtra("from");
+        path = intent.getStringExtra("path");
+        imgpath=  intent.getStringExtra("imgpath");
 
     }
 
@@ -107,10 +114,19 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         mContext.sendBroadcast(new Intent(MainApplication.Not_Fore_Message));
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
-                                        if(from.equals("share")){
+                                        if (from.equals("share")) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("from",from);
+                                            bundle.putString("savefile", path);
+                                            bundle.putString("imgpath", imgpath);
+                                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
                                             finish();
-                                        }else {
-                                            startActivity(CompleteActivity.class);
+                                        } else {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("from", "");
+                                            bundle.putString("savefile","");
+                                            bundle.putString("imgpath","");
+                                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
                                         }
 
 //                                        startActivity(CompleteActivity.class);
@@ -190,10 +206,19 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(MenuActivity.class);
+        if (from.equals("share")) {
+            Bundle bundle = new Bundle();
+            bundle.putString("from",from);
+            bundle.putString("savefile", path);
+            bundle.putString("imgpath", imgpath);
+            ActivityHelper.startActivity(LoginActivity.this, PhotoShareActivity.class, bundle);
+            finish();
+        }else {
+            startActivity(MenuActivity.class);
+        }
+
 
     }
-
 
 
     @Override
