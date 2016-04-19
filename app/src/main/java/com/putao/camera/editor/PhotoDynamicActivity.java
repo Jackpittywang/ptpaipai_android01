@@ -241,18 +241,18 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         }
     };
 
-    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH+"")
+    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH + "")
     public void downLoadFinish(Bundle bundle) {
         final int percent = bundle.getInt("percent");
-        final int position =bundle.getInt("position");
+        final int position = bundle.getInt("position");
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
 //                dynamicIconInfo.setShowProgress(true);
 
 
-                mDynamicPicAdapter.getItem(position+nativeList.size()).setShowProgress(false);
-                mDynamicPicAdapter.notifyItemChanged(position+nativeList.size());
+                mDynamicPicAdapter.getItem(position + nativeList.size()).setShowProgress(false);
+                mDynamicPicAdapter.notifyItemChanged(position + nativeList.size());
 //                mDynamicPicAdapter.notifyDataSetChanged();
                 ToasterHelper.showShort(PhotoDynamicActivity.this, "下载成功", R.drawable.img_blur_bg);
             }
@@ -260,7 +260,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
 
     }
 
-    @Subcriber(tag = PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE+"")
+    @Subcriber(tag = PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE + "")
     public void saveAR(Bundle bundle) {
         int with = bundle.getInt("backgroundWith");
         int height = bundle.getInt("backgroundHight");
@@ -296,6 +296,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             }
         }
     }
+
     private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
         if (isExistRunning) {
@@ -350,7 +351,6 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -358,8 +358,6 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         animation_view = null;
         EventBus.getEventBus().unregister(this);
     }
-
-
 
 
     public void save() {
@@ -411,7 +409,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     public void onScanCompleted(String path, Uri uri) {
                         Bundle bundle = new Bundle();
                         bundle.putString("savefile", videoPath);
-                        bundle.putString("imgpath",videoImagePath+"image00.jpg");
+                        bundle.putString("imgpath", videoImagePath + "image00.jpg");
                         bundle.putString("from", "dynamic");
                         ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
                         finish();
@@ -446,6 +444,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private void clearImageList() {
         File folder = new File(videoImagePath);
         File[] childFile = folder.listFiles();
+        if (null == childFile || childFile.length == 0) return;
         for (int i = 0; i < childFile.length; i++) {
             try {
                 File file = childFile[i];

@@ -756,6 +756,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 Bundle bundle = new Bundle();
                 bundle.putString("imagePath", imagePath);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.OPEN_AR_SHOW_ACTIVITY, bundle));
+//                EventBusHelper.post(bundle, PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"");
             } else if (msg.what == 0x002) {
                 Intent intent = new Intent(mContext, PhotoEditorActivity.class);
                 intent.putExtra("photo_data", imagePath);

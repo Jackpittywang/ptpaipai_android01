@@ -680,6 +680,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 saveAnimationImageData();
                 takePhoto();
+                break;
             case R.id.album_btn:
                 i = 0;
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
@@ -1164,6 +1165,16 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }
         });
     }
+
+ /*   @Subcriber(tag = PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"")
+    public void openARshowActivity(Bundle bundle) {
+        Intent intent = new Intent(mContext, PhotoARShowActivity.class);
+        intent.putExtra("imagePath",bundle.getString("imagePath"));
+        intent.putExtra("animationName", animation_view.getAnimtionName());
+        mContext.startActivity(intent);
+    }*/
+
+
 
 
     public void onEvent(BasePostEvent event) {

@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.OnClick;
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qq.QQ;
+import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 
 /*
@@ -67,7 +70,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         if (bundle != null) {
             filepath = bundle.getString("savefile");
             from = bundle.getString("from");
-            imgpath=bundle.getString("imgpath");
+            imgpath = bundle.getString("imgpath");
         }
 //        mShareTools = new ShareTools(this, filepath);
         //loadShareImage();
@@ -140,6 +143,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         super.onLeftAction();
     }
 
+    private int tag;
+
     @OnClick({R.id.share_btn_friend, R.id.share_btn_qq, R.id.share_btn_sina, R.id.share_btn_wechat, R.id.rl_beautify, R.id.rl_take_photo, R.id.rl_template})
     @Override
     public void onClick(View v) {
@@ -153,17 +158,16 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            tag = 0;
                             checkSha1(filepath);
 
-                            ShareTools.wechatWebShare(this, true,null,null, imgpath,url);
-//                            ShareTools vedioShareTools = new ShareTools(this, url);
-//                            vedioShareTools.sendBitmapToWeixin(true);
+
+//                            ShareTools.wechatWebShare(this, true,null,null, imgpath,url);
                         }
 
                     } else {
 //                        mShareTools.sendBitmapToWeixin(true);
                         ShareTools.newInstance(WechatMoments.NAME).setImagePath(filepath).execute(mContext);
-//                        ShareTools.wechatWebShare(this, true,null,null, filepath,null);
                     }
 
                 } else {
@@ -173,8 +177,22 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                 break;
             case R.id.share_btn_qq:
                 if (isAppInstalled(mContext, "com.tencent.mobileqq")) {
-                    ShareTools.OnQQZShare(this, false, "", "", filepath,"");
-//                    mShareTools.doShareToQQ();
+                    if (from.equals("dynamic")) {
+                        if (!AccountHelper.isLogin()) {
+                            ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", "share");
+                            ActivityHelper.startActivity(this, LoginActivity.class, bundle);
+                        } else if (AccountHelper.isLogin()) {
+                            tag = 1;
+                            checkSha1(filepath);
+
+                        }
+                    } else {
+                        ShareTools.newInstance(QQ.NAME)
+                                .setImagePath(filepath)
+                                .execute(mContext);
+                    }
                 } else {
                     Toast.makeText(mContext, "未安装QQ", Toast.LENGTH_SHORT).show();
                 }
@@ -188,16 +206,41 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                 break;*/
             case R.id.share_btn_sina:
                 if (isAppInstalled(mContext, "com.sina.weibo")) {
-                    ShareTools.OnWeiboShare(this, "", filepath, "");
+                    if (from.equals("dynamic")) {
+                        if (!AccountHelper.isLogin()) {
+                            ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", "share");
+                            ActivityHelper.startActivity(this, LoginActivity.class, bundle);
+                        } else if (AccountHelper.isLogin()) {
+                            tag = 2;
+                            checkSha1(filepath);
+                        }
+                    } else {
+                        ShareTools.newInstance(SinaWeibo.NAME)
+                                .setImagePath(filepath)
+                                .execute(mContext);
 //                    mShareTools.doShareToWeibo();
+                    }
                 } else {
                     Toast.makeText(mContext, "未安装新浪微博", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.share_btn_wechat:
                 if (isAppInstalled(mContext, "com.tencent.mm")) {
-                    ShareTools.wechatWebShare(this, false, "", "", filepath, "");
-                    //                    mShareTools.sendBitmapToWeixin(false);
+                    if (from.equals("dynamic")) {
+                        if (!AccountHelper.isLogin()) {
+                            ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", "share");
+                            ActivityHelper.startActivity(this, LoginActivity.class, bundle);
+                        } else if (AccountHelper.isLogin()) {
+                            tag = 3;
+                            checkSha1(filepath);
+                        }
+                    } else {
+                        ShareTools.newInstance(Wechat.NAME).setImagePath(filepath).execute(mContext);
+                    }
                 } else {
                     Toast.makeText(mContext, "未安装微信", Toast.LENGTH_SHORT).show();
                 }
@@ -226,6 +269,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             default:
                 break;
         }
+
     }
 
  /*   @Override
@@ -246,7 +290,6 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         return pName.contains(packageName);
     }
 
-
     private String uploadToken;//上传token
     private File uploadFile;//上传文件
     private String sha1;//上传文件sha1
@@ -264,7 +307,6 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                 else
                     upload("mp4", hash, hash);
             }
-
             @Override
             public void onCacheSuccess(String url, JSONObject result) {
 
@@ -317,7 +359,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         }).start();
     }
 
-    private String url;
+//    private String url;
 
     /**
      * 上传PHP服务器
@@ -327,11 +369,23 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                 new SimpleFastJsonCallback<String>(String.class, loading) {
                     @Override
                     public void onSuccess(String url, String result) {
-                        url = result;
-                        Logger.i("保存用户信息");
-//                        EventBusHelper.post(EVENT_USER_INFO_SAVE_SUCCESS, EVENT_USER_INFO_SAVE_SUCCESS);
-//                        startActivity(IndexActivity.class);
-//                        finish();
+//                        url = result;
+                        String video_url = JSONObject.parseObject(result).getString("media_url");
+                        switch (tag) {
+                            case 0:
+                                ShareTools.wechatWebShare(mContext, false, null, null, imgpath, video_url);
+                                break;
+                            case 1:
+                                ShareTools.OnQQZShare(mContext, true, null, null, imgpath, video_url);
+                                break;
+                            case 2:
+                                ShareTools.OnWeiboShare(mContext, null, imgpath,video_url);
+                                break;
+                            case 3:
+                                ShareTools.wechatWebShare(mContext, true, null, null, imgpath, video_url);
+                                break;
+                        }
+
                     }
 
                     @Override
@@ -347,6 +401,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             Bundle bundle = (Bundle) msg.obj;
             //上传PHP服务器
             upload(bundle.getString("ext"), bundle.getString("filename"), bundle.getString("hash"));
+
         }
     };
 
