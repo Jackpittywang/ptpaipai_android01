@@ -54,14 +54,15 @@ import java.util.List;
 public class CollagePhotoSelectActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout nonePhotoView;
     private Button back_btn, btn_ok, btn_gallery;
-    private LinearLayout select_image_contanier, jigsaw_photo_selected;
+    private LinearLayout select_image_contanier, jigsaw_photo_selected,ll_ok;
     private ListView layout_gallery_list;
     private ArrayList<String> selectImages = new ArrayList<String>();
     private final static int SetAlbumPhotos = 1;
     private final static int SetGalleryList = 2;
+    private final static int ImageSum = 3;
     private StickyGridHeadersGridView mGridView;
     private List<PhotoGridItem> mGirdList = new ArrayList<PhotoGridItem>();
-    private TextView tv_photo_num,back_tv;
+    private TextView tv_photo_num,back_tv,sum;
     private  ImageView iv_icon;
     private int maxnum = 1;
     private CollageSampleItem mSampleInfo;
@@ -84,6 +85,10 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
                 case SetGalleryList:
                     loadGalleryList();
                     break;
+                case ImageSum:
+                    sum.setText(selectImages.size()+"");
+//                    loadGalleryList();
+                    break;
                 default:
                     break;
             }
@@ -100,6 +105,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
 
     @Override
     public void doInitSubViews(View view) {
+        sum= queryViewById(R.id.sum);
         back_tv=queryViewById(R.id.back_tv);
         iv_icon=queryViewById(R.id.iv_icon);
         iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
@@ -118,7 +124,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         /*btn_gallery = queryViewById(R.id.right_btn);
         btn_gallery.setBackgroundResource(R.drawable.icon_album_group);*/
         grid_rl = (RelativeLayout) findViewById(R.id.grid_rl);
-        btn_ok = queryViewById(R.id.btn_ok);
+        ll_ok=queryViewById(R.id.ll_ok);
+//        btn_ok = queryViewById(R.id.btn_ok);
         tv_photo_num = queryViewById(R.id.tv_photo_num);
         select_image_contanier = queryViewById(R.id.select_image_contanier);
         jigsaw_photo_selected = queryViewById(R.id.jigsaw_photo_selected);
@@ -134,7 +141,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             }
         });
         gallery_list_panel.setVisibility(View.GONE);
-        addOnClickListener(back_btn, btn_ok, title_tv,back_tv);
+        addOnClickListener(back_btn, title_tv,back_tv,ll_ok);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -154,7 +161,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             }
         });
         mGridView.setHeadersIgnorePadding(true);
-        btn_ok.setEnabled(false);
+//        ll_ok.setEnabled(false);
+//        btn_ok.setEnabled(false);
     }
 
 
@@ -405,9 +413,19 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             case R.id.back_tv:
                 finish();
                 break;
-            case R.id.btn_ok:
+          /*  case R.id.btn_ok:
                 goMageCollage();
+                break;*/
+            case R.id.ll_ok:
+                if(selectImages.size()==0){
+                    ToasterHelper.showShort(this,"至少选一张照片",R.drawable.img_blur_bg);
+                }else {
+                    goMageCollage();
+                }
+
+
                 break;
+
             case R.id.title_tv:
                 if (mGalleryShow) {
                     iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
@@ -509,11 +527,13 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
 
     void enableCollageButton(boolean enable) {
         if (enable) {
-            btn_ok.setEnabled(true);
-            btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_view_eb5350));
+            ll_ok.setEnabled(true);
+           /* btn_ok.setEnabled(true);
+            btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_view_eb5350));*/
         } else {
-            btn_ok.setEnabled(false);
-            btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_view_grey));
+//            ll_ok.setEnabled(false);
+//            btn_ok.setEnabled(false);
+//            btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.background_view_grey));
         }
     }
 
@@ -562,6 +582,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
                 doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_JIGSAW_IMAGEPICKER_DELETE);
                 if (selectImages.contains(info1))
                     selectImages.remove(info1);
+
+                sendHandleMessage(ImageSum);
                 updateCollageButtonEnable();
             }
         });
@@ -580,6 +602,8 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
         viewItem.setTag(path);
         select_image_contanier.addView(viewItem);
         selectImages.add(path);
+        sendHandleMessage(ImageSum);
+//        sum.setText(selectImages.size());
         updateCollageButtonEnable();
     }
 }
