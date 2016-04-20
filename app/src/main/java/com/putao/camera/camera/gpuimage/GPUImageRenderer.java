@@ -38,6 +38,7 @@ import java.util.Queue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
 import static com.putao.camera.camera.gpuimage.util.TextureRotationUtil.TEXTURE_NO_ROTATION;
 
 @TargetApi(11)
@@ -123,6 +124,9 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
     @Override
     public void onPreviewFrame(final byte[] data, final Camera camera) {
         final Size previewSize = camera.getParameters().getPreviewSize();
+        if (previewCallback != null)
+            previewCallback.onPreviewFrame(data, camera);
+
         if (mGLRgbBuffer == null) {
             mGLRgbBuffer = IntBuffer.allocate(previewSize.width * previewSize.height);
         }
@@ -304,7 +308,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         mRotation = rotation;
         mFlipHorizontal = flipHorizontal;
         mFlipVertical = flipVertical;
-        adjustImageScaling();
+//        adjustImageScaling();
     }
 
     public Rotation getRotation() {
@@ -323,5 +327,16 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         synchronized (mRunOnDraw) {
             mRunOnDraw.add(runnable);
         }
+    }
+
+
+    public interface PreviewCallback {
+        void onPreviewFrame(byte[] data, Camera camera);
+    }
+
+    private PreviewCallback previewCallback = null;
+
+    public void setPreviewCallback(PreviewCallback previewCallback) {
+        this.previewCallback = previewCallback;
     }
 }

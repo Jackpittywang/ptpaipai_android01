@@ -28,6 +28,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.Parameters;
 import android.media.ExifInterface;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,7 +59,7 @@ import java.util.List;
 @SuppressLint("NewApi")
 public class CameraView extends FrameLayout implements AutoFocusCallback {
     static final String TAG = "Pt-Camera";
-    private PreviewStrategy previewStrategy;
+    private GlSurfacePreviewStrategy previewStrategy;
     public GlSurfacePreviewStrategy glSurfacePreviewStrategy;
     private Camera.Size previewSize;
     private Camera camera = null;
@@ -116,6 +117,22 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         }
     }
 
+    public GLSurfaceView getmGLView() {
+        return glSurfacePreviewStrategy.getmGLView();
+    }
+
+    public GlSurfacePreviewStrategy getPreviewStrategy() {
+        return previewStrategy;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public int getCameraId() {
+        return cameraId;
+    }
+
     public void setDrawingView(DrawingFocusView view) {
         drawingView = view;
     }
@@ -164,11 +181,15 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         previewStrategy = glSurfacePreviewStrategy;
     }
 
+    public void startCamera() {
+        openCamera();
+    }
+
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void onResume() {
         Loger.d("CameraView onResume!!!");
-        openCamera();
+//        openCamera();
         doAutoFocus();
     }
 
@@ -529,8 +550,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     }
 
 
-
-
     // based on
     // http://developer.android.com/reference/android/hardware/Camera.html#setDisplayOrientation(int)
     // and http://stackoverflow.com/a/10383164/115145
@@ -705,19 +724,9 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            // 加入动态贴纸之前的代码，直接保存到相册
-//            camera.setParameters(previewParams);
-//            if (data != null) {
-//                Loger.d("picture_camera_take_over------->" + SystemClock.currentThreadTimeMillis());
-//                new ImageCleanupTask(getContext(), data, cameraId, xact).start();
-//            }
-//            if (!xact.useSingleShotMode()) {
-//                startPreview();
-//            }
             // 动态贴纸之后，如果有动态贴纸就出动态贴纸的保存，否则出图像编辑的页面
             // 先保存临时文件
-            imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath()+ File.separator+"temp.jpg";
-//            imagePath = Environment.getExternalStorageDirectory() + File.separator + "temp.jpg";
+            imagePath = mContext.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
             Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
             Bitmap saveBitmap = null;
             if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
@@ -728,18 +737,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             BitmapHelper.saveBitmap(saveBitmap, imagePath);
             saveBitmap.recycle();
             tempBitmap.recycle();
-//            FileOutputStream fos;
-//            try {
-//                File file = new File(imagePath);
-//                if (!file.exists())
-//                    file.createNewFile();
-//                fos = new FileOutputStream(file);
-//                fos.write(data);
-//                fos.close();
-//
-//            } catch (Exception e) {
-//                return;
-//            }
             if (isShowAR == true) {
                 handler.sendEmptyMessageDelayed(0x001, 100);
             } else {

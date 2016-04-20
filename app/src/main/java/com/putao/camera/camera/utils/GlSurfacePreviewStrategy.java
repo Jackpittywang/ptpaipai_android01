@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImage;
+import com.putao.camera.camera.gpuimage.GPUImageRenderer;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.util.Loger;
 
@@ -27,15 +28,13 @@ import mobile.ReadFace.YMFace;
 /**
  * Created by jidongdong on 15/5/25.
  */
-public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture.OnFrameAvailableListener, Camera.PreviewCallback {
+public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture.OnFrameAvailableListener, GPUImageRenderer.PreviewCallback {
     private String TAG = GlSurfacePreviewStrategy.class.getSimpleName();
     private Context context;
     private CameraView cameraView;
     private GLSurfaceView mGLView;
-    private CameraSurfaceRenderer mRenderer;
     private Camera mCamera;
     private CameraHandler mCameraHandler;
-    private  GPUImage mGPUImage;
 
     private float mainRadio = 0;
     private int iw;
@@ -57,15 +56,10 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.mGLView.setLayoutParams(params);
 //        this.cameraView.addView(this.mGLView, 0);
-        this.mGLView.setEGLContextClientVersion(2);     // select GLES 2.0
-        this.mRenderer = new CameraSurfaceRenderer(mCameraHandler);
-        this.mGLView.setRenderer(mRenderer);
-
-       /* this. mGPUImage = new GPUImage(context);
-        this. mGPUImage.setGLSurfaceView(mGLView);
-        this. cameraView.setGPUImage(mGPUImage);*/
-
-        this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//        this.mGLView.setEGLContextClientVersion(2);     // select GLES 2.0
+//        this.mRenderer = new CameraSurfaceRenderer(mCameraHandler);
+//        this.mGLView.setRenderer(mRenderer);
+//        this.mGLView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             mDetector = new YMDetector(context, YMDetector.Config.FACE_270, YMDetector.Config.RESIZE_WIDTH_640);
@@ -75,6 +69,10 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         screenW = dm.widthPixels;
         screenH = dm.heightPixels;
+    }
+
+    public GLSurfaceView getmGLView() {
+        return mGLView;
     }
 
     public void setAnimationView(AnimationImageView view) {
@@ -89,7 +87,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         try {
             Loger.d("set PreviewTexture:" + st + "camera:" + mCamera);
             if (mCamera != null) {
-                mCamera.setPreviewCallback(this);
+//                mCamera.setPreviewCallback(this);
                 st.setOnFrameAvailableListener(this);
                 mCamera.setPreviewTexture(st);
             }
@@ -117,39 +115,6 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
 
     @Override
     public void onPreviewFrame(final byte[] data, Camera camera) {
-
-        // Loger.d("onPreviewFrame  ....   .... .. animationImageView is:"+animationImageView);
-//
-//        if (animationImageView == null) return;
-//
-//        long startTime = System.currentTimeMillis();
-//        long gap = 0;
-//        if (cameraSize == null)
-//            cameraSize = camera.getParameters().getPreviewSize();
-//
-//        int width = cameraSize.width;
-//        int height = cameraSize.height;
-//
-//        if(mYuv == null) mYuv = new Mat( height + height/2, width, CvType.CV_8UC1 );
-//        mYuv.put(0, 0, data);
-//
-//        if(previewMat == null) previewMat = new Mat();
-//        Imgproc.cvtColor(mYuv, previewMat, Imgproc.COLOR_YUV420sp2RGB, 4);
-//        Imgproc.cvtColor(previewMat, previewMat, Imgproc.COLOR_RGB2GRAY);
-//
-//        Core.flip(previewMat.t(), previewMat, 1);
-//        // Highgui.imwrite("/mnt/sdcard/test.jpg", previewMat);
-//
-////        gap = System.currentTimeMillis() -startTime;
-////        Log.i("PaiPai", "gap time 111111 is:" + gap);
-////        startTime = System.currentTimeMillis();
-//
-//        int [] points = NativeCode.FaceDetectAndFlandmarks(previewMat);
-//        Highgui.imwrite("/mnt/sdcard/test.jpg", previewMat);
-
-
-//        animationImageView.setPositionAndStartAnimation(points);
-
         if (animationImageView == null) return;
 
         if (mainRadio == 0) {
@@ -224,14 +189,14 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         mGLView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                mRenderer.setCameraPreviewSize(w, h);
+
             }
         });
     }
 
     @Override
     public void onPause() {
-        mRenderer.notifyPausing();
+
     }
 
     @Override
