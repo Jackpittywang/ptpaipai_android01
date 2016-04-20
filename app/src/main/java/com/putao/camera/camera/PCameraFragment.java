@@ -1,6 +1,6 @@
 /**
  * 7  Copyright (c) 2013 CommonsWare, LLC
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
  * a copy of the License at
@@ -15,12 +15,14 @@
 package com.putao.camera.camera;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,6 +37,7 @@ import com.putao.camera.JNIFUN;
 import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
+import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.camera.utils.CameraFragment;
 import com.putao.camera.camera.utils.CameraView;
 import com.putao.camera.camera.utils.CameraView.onCameraFocusChangeListener;
@@ -178,6 +181,25 @@ public class PCameraFragment extends CameraFragment {
         return (results);
     }
 
+    private GPUImage mGPUImage;
+
+    private void initFilter() {
+        mGPUImage = new GPUImage(getActivity());
+        mGPUImage.setGLSurfaceView(cameraView.getmGLView());
+        boolean flipHorizontal = false;
+        boolean flipVertical = false;
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        int degrees = 0;
+        if (Configuration.ORIENTATION_PORTRAIT == orientation) {
+            if (cameraView.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                degrees = 270;
+                flipHorizontal = true;
+            } else
+                degrees = 90;
+        }
+        mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
+        mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -187,6 +209,8 @@ public class PCameraFragment extends CameraFragment {
     @Override
     public void onStart() {
         super.onStart();
+        cameraView.startCamera();
+        initFilter();
         // sendMessage();
         // refreshHandler = new Handler();
         // refreshHandler.post(refreshRunable);
@@ -270,7 +294,6 @@ public class PCameraFragment extends CameraFragment {
     }
 
 
-
     public void takeSimplePicture() {
         if (!cameraView.isInPreview()) {
 //            Toast.makeText(getActivity(), "摄像头连接失败，请重试", Toast.LENGTH_LONG).show();
@@ -300,7 +323,7 @@ public class PCameraFragment extends CameraFragment {
     }
 
 
-    public void takeSimplePicture(List<WaterMarkView> wmList ) {
+    public void takeSimplePicture(List<WaterMarkView> wmList) {
         mWaterMarkImageViewsList = wmList;
         takeSimplePicture();
     }
