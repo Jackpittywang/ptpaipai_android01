@@ -53,6 +53,7 @@ import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -197,9 +198,38 @@ public class PCameraFragment extends CameraFragment {
             } else
                 degrees = 90;
         }
+        Camera.Parameters cameraParams=cameraView.getCamera().getParameters();
+        setOptimalPreviewSize(cameraParams,960,960);
+        cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
     }
+
+    private void setOptimalPreviewSize(Camera.Parameters cameraParams,
+                                       int targetWidth, int targetHeight) {
+        List<Camera.Size> supportedPreviewSizes = cameraParams
+                .getSupportedPreviewSizes();
+        if (null == supportedPreviewSizes) {
+        } else {
+            Camera.Size optimalSize = null;
+            double minDiff = 1.7976931348623157E308D;
+            Iterator mIterator = supportedPreviewSizes.iterator();
+
+            while (mIterator.hasNext()) {
+                Camera.Size size = (Camera.Size) mIterator.next();
+                if ((double) Math.abs(size.width - targetWidth) < minDiff) {
+                    optimalSize = size;
+                    minDiff = (double) Math.abs(size.width - targetWidth);
+                }
+            }
+
+            int iw = optimalSize.width;
+            int ih = optimalSize.height;
+
+            cameraParams.setPreviewSize(iw, ih);
+        }
+    }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
