@@ -105,6 +105,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         synchronized (mSurfaceChangedWaiter) {
             mSurfaceChangedWaiter.notifyAll();
         }
+
     }
 
     @Override

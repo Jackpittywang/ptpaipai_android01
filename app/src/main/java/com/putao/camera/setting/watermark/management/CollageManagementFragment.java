@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -18,6 +19,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
@@ -32,6 +34,8 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     private GridView mGridView;
     private CollageManagementAdapter mManagementAdapter;
     ArrayList<TemplateIconInfo> mTemplateIconInfo;
+    private int currentPage = 1;
+    private boolean isNull = false;
 
     @Override
     public int doGetContentViewId() {
@@ -57,17 +61,25 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     @Override
     public void doInitDataes() {
         mGridView = mPullRefreshGridView.getRefreshableView();
+        mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(CollageManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+                /*Toast.makeText(CollageManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
+                new GetDataTask().execute();*/
+//                Toast.makeText(getContext(), "Pull Down!", Toast.LENGTH_SHORT).show();
+                new FinishRefresh().execute();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+                if (!isNull) {
+                    currentPage = currentPage + 1;
+                    queryCollageList();
+                } else {
+                    ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                }
+                new FinishRefresh().execute();
             }
         });
         mManagementAdapter = new CollageManagementAdapter(mActivity);
@@ -76,6 +88,18 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         mGridView.setOnItemClickListener(this);
 
         queryCollageList();
+    }
+
+    private class FinishRefresh extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            mPullRefreshGridView.onRefreshComplete();
+        }
     }
 
     @Override
@@ -141,11 +165,14 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                 try {
                     Gson gson = new Gson();
                     aCollageInfo = (TemplateListInfo) gson.fromJson(json.toString(), TemplateListInfo.class);
-                    mManagementAdapter.setDatas(aCollageInfo.data);
-
-                    Gson gson1 = new Gson();
-                    mTemplateIconInfo = gson1.fromJson(json.toString(), TemplateCategoryInfo.class).data;
-
+                    if (aCollageInfo.data.size() == 0) {
+                        isNull = true;
+                        ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                    } else {
+                        mManagementAdapter.setDatas(aCollageInfo.data);
+                        Gson gson1 = new Gson();
+                        mTemplateIconInfo = gson1.fromJson(json.toString(), TemplateCategoryInfo.class).data;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -184,10 +211,10 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
+        if (null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-        mTemplateIconInfo.get(position).type="template";
-        bindIntent.putExtra("item",mTemplateIconInfo.get(position));
+        mTemplateIconInfo.get(position).type = "template";
+        bindIntent.putExtra("item", mTemplateIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
@@ -196,14 +223,14 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
         mActivity.startService(bindIntent);
     }
 
-//    @Subcriber(tag=)
+    //    @Subcriber(tag=)
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -215,7 +242,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                 //                String filePath = event.bundle.getString("percent");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -224,7 +251,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();

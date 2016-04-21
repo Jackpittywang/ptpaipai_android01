@@ -716,12 +716,12 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 break;
             case R.id.show_filter_ll:
-                /*GPUImageFilterTools.showDialog(this,
+               /* GPUImageFilterTools.showDialog(this,
                         new GPUImageFilterTools.OnGpuImageFilterChosenListener() {
                             @Override
                             public void onGpuImageFilterChosenListener(
                                     final GPUImageFilter filter) {
-                                current.switchFiler(filter,50);
+//                                current.switchFiler(filter,50);
                             }
                         });*/
                 //显示滤镜
@@ -882,6 +882,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
         // 是否要显示AR贴纸
         current.setShowAR(animation_view.isAnimationRunning());
+        current.isShowAR(animation_view.isAnimationRunning());
 
         if (mHdrState == HDRSTATE.ON) {
             current.takeSimplePicture(mMarkViewList, true);
@@ -889,6 +890,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             current.takeSimplePicture(mMarkViewList, true, true);
         } else {
             current.takeSimplePicture(mMarkViewList);
+
         }
 
     }

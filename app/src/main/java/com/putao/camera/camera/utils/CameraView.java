@@ -183,8 +183,19 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
     public void startCamera() {
         openCamera();
+//        doAutoFocus();
     }
 
+    public void releaseCamera() {
+
+        if (camera != null) {
+            camera.setPreviewCallback(null);
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+//            isPreviewing = false;
+        }
+    }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void onResume() {

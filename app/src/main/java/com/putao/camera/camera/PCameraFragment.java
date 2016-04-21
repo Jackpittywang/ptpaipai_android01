@@ -15,6 +15,7 @@
 package com.putao.camera.camera;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -24,7 +25,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.media.ExifInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +42,7 @@ import com.putao.camera.JNIFUN;
 import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
-import com.putao.camera.camera.filter.CustomerFilter;
 import com.putao.camera.camera.gpuimage.GPUImage;
-import com.putao.camera.camera.gpuimage.GPUImageColorInvertFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.utils.CameraFragment;
 import com.putao.camera.camera.utils.CameraView;
@@ -50,11 +53,16 @@ import com.putao.camera.camera.utils.SimpleCameraHost;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.DrawingFocusView;
 import com.putao.camera.camera.view.StarsView;
+import com.putao.camera.constants.PuTaoConstants;
+import com.putao.camera.editor.PhotoEditorActivity;
 import com.putao.camera.editor.view.WaterMarkView;
+import com.putao.camera.event.BasePostEvent;
+import com.putao.camera.event.EventBus;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.Loger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +87,7 @@ public class PCameraFragment extends CameraFragment {
     private FrameLayout camera_control;
     private View flash_view;
     private boolean isFaceDetecting = false;
+    private  boolean isFilterInited=false;
 
     public void setSaveLocalPhotoState(boolean aSaveLocalPhoto) {
         bSaveLocalPhoto = aSaveLocalPhoto;
@@ -188,6 +197,7 @@ public class PCameraFragment extends CameraFragment {
     private GPUImage mGPUImage;
 
     private void initFilter() {
+        isFilterInited=true;
         mGPUImage = new GPUImage(getActivity());
         mGPUImage.setGLSurfaceView(cameraView.getmGLView());
         boolean flipHorizontal = false;
@@ -203,6 +213,7 @@ public class PCameraFragment extends CameraFragment {
         }
         Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
         setOptimalPreviewSize(cameraParams, 960, 960);
+        setOptimalPictureSize(cameraParams, 1280);
         cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
@@ -239,21 +250,66 @@ public class PCameraFragment extends CameraFragment {
         }
     }
 
+    private void setOptimalPictureSize(Camera.Parameters cameraParams, int targetWidth) {
+        List<Camera.Size> supportedPictureSizes = cameraParams
+                .getSupportedPictureSizes();
+        if (null == supportedPictureSizes) return;
+        Camera.Size optimalSize = null;
+        Iterator mIterator = supportedPictureSizes.iterator();
+
+        while (mIterator.hasNext()) {
+            Camera.Size size = (Camera.Size) mIterator.next();
+            if (size.width - targetWidth < 100) {
+                optimalSize = size;
+                break;
+            }
+        }
+        if (optimalSize == null) return;
+        cameraParams.setPictureSize(optimalSize.width, optimalSize.height);
+    }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+     @Override
+     public void onStart() {
+         super.onStart();
+         cameraView.startCamera();
+         if(isFilterInited)return;
+         initFilter();
+         // sendMessage();
+         // refreshHandler = new Handler();
+         // refreshHandler.post(refreshRunable);
+
+     }
+   /* public  void initCamera(){
         cameraView.startCamera();
         initFilter();
-        // sendMessage();
-        // refreshHandler = new Handler();
-        // refreshHandler.post(refreshRunable);
+    }*/
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+//        cameraView.onPause();
+        releaseCamera();
+    }
+
+    /**
+     * 释放相机
+     */
+    private void releaseCamera() {
+        cameraView.releaseCamera();
+      /*  if (camera != null) {
+            camera.setPreviewCallback(null);
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+            isPreviewing = false;
+        }*/
     }
 
     void showGif() {
@@ -342,6 +398,72 @@ public class PCameraFragment extends CameraFragment {
         takeSimplePicture(new PictureTransaction(getHost()));
     }
 
+    private boolean isShowAR = false;
+
+    public void isShowAR(boolean isShowAR) {
+        this.isShowAR = isShowAR;
+    }
+
+    private File pic;
+    private GPUImage gpuImage;
+
+    public void takeSimplePhoto() {
+        if (mHdrEnable) {
+            if (mExposureLevel == ExposureLevel.NORMAL) {
+                setExposureLevel(ExposureLevel.LOW);
+            } else if (mExposureLevel == ExposureLevel.LOW) {
+                setExposureLevel(ExposureLevel.HIGH);
+            } else {
+                setExposureLevel(ExposureLevel.NORMAL);
+            }
+        } else {
+            setExposureLevel(ExposureLevel.NORMAL);
+        }
+
+
+        cameraView.getCamera().takePicture(null, null, new Camera.PictureCallback() {
+
+            @Override
+            public void onPictureTaken(byte[] data, final Camera camera) {
+                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
+                Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
+                Bitmap saveBitmap = null;
+                if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
+                    Log.e("onPictureTaken", "onPictureTaken: ");
+                    saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
+                } else saveBitmap = tempBitmap;
+
+                BitmapHelper.saveBitmap(saveBitmap, imagePath);
+                saveBitmap.recycle();
+                tempBitmap.recycle();
+                if (isShowAR == true) {
+                    handler.sendEmptyMessageDelayed(0x001, 100);
+                } else {
+                    handler.sendEmptyMessageDelayed(0x002, 0);
+                }
+            }
+
+        });
+    }
+
+    private String imagePath = "";
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 0x001) {
+                Bundle bundle = new Bundle();
+                bundle.putString("imagePath", imagePath);
+                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.OPEN_AR_SHOW_ACTIVITY, bundle));
+//                EventBusHelper.post(bundle, PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"");
+            } else if (msg.what == 0x002) {
+                Intent intent = new Intent(getActivity(), PhotoEditorActivity.class);
+                intent.putExtra("photo_data", imagePath);
+                getActivity().startActivity(intent);
+            }
+        }
+    };
+
+
     public void takeSimplePicture(PictureTransaction xact) {
         if (flashMode != null) {
             xact.flashMode(flashMode);
@@ -364,7 +486,8 @@ public class PCameraFragment extends CameraFragment {
 
     public void takeSimplePicture(List<WaterMarkView> wmList) {
         mWaterMarkImageViewsList = wmList;
-        takeSimplePicture();
+//        takeSimplePicture();
+        takeSimplePhoto();
     }
 
 

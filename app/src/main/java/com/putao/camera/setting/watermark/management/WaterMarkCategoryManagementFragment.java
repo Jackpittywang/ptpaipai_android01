@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,7 @@ import com.putao.camera.http.CacheRequest;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
@@ -37,8 +39,11 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private GridView mGridView;
     private WaterMarkManagementAdapter mManagementAdapter;
     private StickerListInfo aWaterMarkRequestInfo;
-    ArrayList<StickerCategoryInfo> mStickerCategoryInfos;
+    private ArrayList<StickerCategoryInfo> mStickerCategoryInfos;
     private LoadingHUD mLoading;
+    private int currentPage = 1;
+    private boolean isNull = false;
+    ArrayList<StickerListInfo.PackageInfo> datas;
 
     @Override
     public int doGetContentViewId() {
@@ -62,17 +67,24 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     @Override
     public void doInitDataes() {
         mGridView = mPullRefreshGridView.getRefreshableView();
+        mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(WaterMarkCategoryManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+                ToasterHelper.showShort(getActivity(), "下拉", R.drawable.img_blur_bg);
+                new FinishRefresh().execute();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+                if (!isNull) {
+                    currentPage = currentPage + 1;
+                    queryWaterMarkList();
+                } else {
+                    ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                }
+                new FinishRefresh().execute();
+
             }
         });
         mManagementAdapter = new WaterMarkManagementAdapter(mActivity);
@@ -81,6 +93,18 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         mGridView.setOnItemClickListener(this);
 
         queryWaterMarkList();
+    }
+
+    private class FinishRefresh extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            mPullRefreshGridView.onRefreshComplete();
+        }
     }
 
     @Override
@@ -159,10 +183,16 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 try {
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
-                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
-                    Gson gson1 = new Gson();
-                    mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconInfo.class).data;
-
+                    datas=aWaterMarkRequestInfo.data;
+//                    datas.addAll(aWaterMarkRequestInfo.data);
+                    if (datas.size() == 0) {
+                        isNull = true;
+                        ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                    } else {
+                        mManagementAdapter.setDatas(datas);
+                        Gson gson1 = new Gson();
+                        mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconInfo.class).data;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -178,7 +208,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         };
         HashMap<String, String> map = new HashMap<String, String>();
 //        CacheRequest mCacheRequest = new CacheRequest("watermark/watermark/list", map, mWaterMarkUpdateCallback);
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=sticker_pic&page=1", map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=sticker_pic&page=" + currentPage, map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 

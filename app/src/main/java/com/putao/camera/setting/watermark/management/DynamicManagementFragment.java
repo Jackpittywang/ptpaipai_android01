@@ -2,6 +2,7 @@
 package com.putao.camera.setting.watermark.management;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -19,6 +20,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.http.CacheRequest;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
@@ -35,6 +37,8 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
     private TextView title_tv;
+    private int currentPage=1;
+    private boolean isNull=false;
 
     @Override
     public int doGetContentViewId() {
@@ -55,17 +59,24 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     @Override
     public void doInitDataes() {
         mGridView = mPullRefreshGridView.getRefreshableView();
+        mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(CollageManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+//                Toast.makeText(getContext(), "Pull Down!", Toast.LENGTH_SHORT).show();
+                new FinishRefresh().execute();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-                //                new GetDataTask().execute();
+
+                if(!isNull){
+                    currentPage=currentPage+1;
+                    queryCollageList();
+                }else {
+                    ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                }
+                new FinishRefresh().execute();
             }
         });
 
@@ -75,6 +86,19 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
         mGridView.setOnItemClickListener(this);
         queryCollageList();
     }
+
+    private class FinishRefresh extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            mPullRefreshGridView.onRefreshComplete();
+        }
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -137,10 +161,15 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 try {
                     Gson gson = new Gson();
                     aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
-                    mManagementAdapter.setDatas(aDynamicListInfo.data);
+                    if(aDynamicListInfo.data.size()==0){
+                        isNull=true;
+                        ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                    }else {
+                        mManagementAdapter.setDatas(aDynamicListInfo.data);
 
-                    Gson gson1 = new Gson();
-                    mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                        Gson gson1 = new Gson();
+                        mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -153,7 +182,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page="+currentPage, map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 

@@ -60,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         switch (newVersion) {
             // 安装新版本,必要时,扩展数据库或者清除数据
             case 14:
-                TableUtils.dropTable(db, WaterMarkIconInfo.class);
+               /* TableUtils.dropTable(db, WaterMarkIconInfo.class);
                 TableUtils.dropTable(db, WaterMarkCategoryInfo.class);
                 TableUtils.dropTable(db, CollageItemInfo.class);
                 TableUtils.dropTable(db, ConnectImageInfo.class);
@@ -70,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TableUtils.dropTable(db, DynamicCategoryInfo.class);
                 TableUtils.dropTable(db, TemplateCategoryInfo.class);
                 TableUtils.dropTable(db, TemplateIconInfo.class);
-                TableUtils.dropTable(db, StickerUnZipInfo.class);
+                TableUtils.dropTable(db, StickerUnZipInfo.class);*/
                 onCreate(db);
                 // 不需要 break
             case 7:
