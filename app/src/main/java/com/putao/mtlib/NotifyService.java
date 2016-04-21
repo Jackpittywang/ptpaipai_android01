@@ -40,6 +40,9 @@ public class NotifyService extends Service {
     private String mThreadName = NotifyService.class.getSimpleName();
     private PTSenderManager mPTSenderManager;
     private Thread thread;
+
+    private boolean isAlive = true;
+
     private Handler mThreadHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -82,18 +85,25 @@ public class NotifyService extends Service {
                 @Override
                 public void run() {
                     super.run();
-                    InetAddress ip = null;
-                    try {
-                        ip = InetAddress.getByName(HOST);
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                    while (isAlive) {
+                        InetAddress ip = null;
+                        try {
+                            ip = InetAddress.getByName(HOST);
+                            if (null != ip) {
+                                HOST = ip.getHostAddress();
+                                mThreadHandler.sendEmptyMessage(0);
+                                break;
+                            }
+                            Thread.sleep(3000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    if (null != ip)
-                        HOST = ip.getHostAddress();
-                    mThreadHandler.sendEmptyMessage(0);
                 }
             };
             thread.start();
+        } else {
+            mThreadHandler.sendEmptyMessage(0);
         }
     }
 
@@ -116,6 +126,7 @@ public class NotifyService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mPTSenderManager.stopThreads();
+        isAlive = false;
     }
 
     @Nullable
