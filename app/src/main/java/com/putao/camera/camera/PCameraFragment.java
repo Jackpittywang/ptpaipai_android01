@@ -203,7 +203,7 @@ public class PCameraFragment extends CameraFragment {
         if (Configuration.ORIENTATION_PORTRAIT == orientation) {
             if (cameraView.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 degrees = 270;
-//                flipHorizontal = true;
+                flipHorizontal = true;
             } else
                 degrees = 90;
         }
@@ -211,7 +211,7 @@ public class PCameraFragment extends CameraFragment {
         setOptimalPreviewSize(cameraParams, 960, 960);
         setOptimalPictureSize(cameraParams, 1280);
         cameraView.getCamera().setParameters(cameraParams);
-        mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
+        mGPUImage.setUpCamera(cameraView.getCamera(), degrees, flipHorizontal, flipVertical);
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
     }
 
