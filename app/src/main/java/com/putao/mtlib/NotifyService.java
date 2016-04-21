@@ -19,6 +19,7 @@ import com.putao.mtlib.tcp.PTRecMessage;
 import com.putao.mtlib.tcp.PTSenderManager;
 import com.putao.mtlib.util.MD5Util;
 import com.putao.mtlib.util.MsgPackUtil;
+import com.putao.mtlib.util.PTLoger;
 import com.sunnybear.library.util.Logger;
 
 import java.net.InetAddress;
@@ -88,17 +89,17 @@ public class NotifyService extends Service {
                         while (isAlive) {
                             InetAddress ip = null;
                             try {
-                                Logger.d("ptl------", "尝试获取ip");
+                                PTLoger.d("尝试获取ip");
                                 ip = InetAddress.getByName(HOST);
                                 if (null != ip) {
                                     HOST = ip.getHostAddress();
                                     mThreadHandler.sendEmptyMessage(0);
-                                    Logger.d("ptl------", "获取ip成功");
+                                    PTLoger.d("获取ip成功");
                                     break;
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Logger.d("ptl------", "获取ip失败");
+                                Logger.d("获取ip失败----" + e);
                             }
                             try {
                                 Thread.sleep(3000);
