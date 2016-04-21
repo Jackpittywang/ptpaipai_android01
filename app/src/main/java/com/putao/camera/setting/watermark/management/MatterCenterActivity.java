@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.putao.camera.R;
@@ -16,16 +14,18 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.setting.watermark.download.DownloadFinishMaterialCenterActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.widget.view.UnScrollableViewPager;
+import com.sunnybear.library.view.select.TitleBar;
+import com.sunnybear.library.view.select.TitleItem;
 
 /**
  * Created by yanglun on 15/4/10.
  */
-public class MatterCenterActivity extends BaseActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class MatterCenterActivity extends BaseActivity implements View.OnClickListener {
     private Button back_btn, right_btn;
     private TextView title_tv;
-    private RadioButton matter_paster_btn, matter_dynamic_pasting_btn, matter_jigsaw_btn;
+    private TitleItem matter_paster_btn, matter_dynamic_pasting_btn, matter_jigsaw_btn;
     private UnScrollableViewPager vp_content;
-    private RadioGroup rg_matter;
+    private TitleBar rg_matter;
     private SparseArray<Fragment> mFragments;
 
     private boolean mIspaster = false;
@@ -50,9 +50,26 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
         rg_matter = queryViewById(R.id.rg_matter);
 
         addFragments();
-        rg_matter.check(R.id.matter_paster_btn);
         vp_content.setCurrentItem(0, false);
-        rg_matter.setOnCheckedChangeListener(this);
+        rg_matter.setOnTitleItemSelectedListener(new TitleBar.OnTitleItemSelectedListener() {
+            @Override
+            public void onTitleItemSelected(TitleItem item, int position) {
+                switch (position) {
+                    case 0:
+                        matter_paster_btn.hide();
+                        vp_content.setCurrentItem(0, false);
+                        break;
+                    case 1:
+                        matter_dynamic_pasting_btn.hide();
+                        vp_content.setCurrentItem(1, false);
+                        break;
+                    case 2:
+                        matter_jigsaw_btn.hide();
+                        vp_content.setCurrentItem(2, false);
+                        break;
+                }
+            }
+        });
         vp_content.setOffscreenPageLimit(3);
     }
 
@@ -99,7 +116,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
                 break;
         }
     }
-
+/*
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
@@ -113,7 +130,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
                 vp_content.setCurrentItem(2, false);
                 break;
         }
-    }
+    }*/
 
 
     @Override

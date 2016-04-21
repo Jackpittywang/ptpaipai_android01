@@ -59,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         switch (newVersion) {
             // 安装新版本,必要时,扩展数据库或者清除数据
-            case 6:
+            case 14:
                 TableUtils.dropTable(db, WaterMarkIconInfo.class);
                 TableUtils.dropTable(db, WaterMarkCategoryInfo.class);
                 TableUtils.dropTable(db, CollageItemInfo.class);

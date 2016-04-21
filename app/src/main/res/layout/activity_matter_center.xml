@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,57 +9,109 @@
 
     <include layout="@layout/layout_title_bar" />
 
-    <RadioGroup
-        android:id="@+id/rg_matter"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#ffffff"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp">
-
-        <RadioButton
-            android:id="@+id/matter_paster_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:button="@null"
-            android:drawableBottom="@drawable/label_matter_selector"
-            android:drawablePadding="4dp"
+<!--        <RadioGroup
+            android:id="@+id/rg_matter"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#ffffff"
             android:gravity="center"
-            android:text="贴纸"
-            android:textColor="#ff5859" />
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
-        <RadioButton
-            android:id="@+id/matter_dynamic_pasting_btn"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/matter_paster_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:button="@null"
+                android:drawableBottom="@drawable/label_matter_selector"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="贴纸"
+                android:textColor="#ff5859" />
+
+            <RadioButton
+                android:id="@+id/matter_dynamic_pasting_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:button="@null"
+                android:checked="true"
+                android:drawableBottom="@drawable/label_matter_selector"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="动态贴图"
+                android:textColor="#ff5859" />
+
+
+            <RadioButton
+                android:id="@+id/matter_jigsaw_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:button="@null"
+                android:drawableBottom="@drawable/label_matter_selector"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="拼图模板"
+                android:textColor="#ff5859" />
+
+
+        </RadioGroup>-->
+    <!--标题栏-->
+    <com.sunnybear.library.view.NavigationBar
+        style="@style/style_navigation_bar"
+        auto:nav_has_divider="true">
+
+        <com.sunnybear.library.view.select.TitleBar
+            android:id="@+id/rg_matter"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:button="@null"
-            android:checked="true"
-            android:drawableBottom="@drawable/label_matter_selector"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="动态贴图"
-            android:textColor="#ff5859" />
+            android:layout_centerVertical="true"
+            android:layout_weight="3"
+            android:orientation="horizontal"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp">
 
-        <RadioButton
-            android:id="@+id/matter_jigsaw_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:button="@null"
-            android:drawableBottom="@drawable/label_matter_selector"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="拼图模板"
-            android:textColor="#ff5859" />
+            <com.sunnybear.library.view.select.TitleItem
+                android:id="@+id/matter_paster_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                auto:active_color="#ff5859"
+                auto:inactive_color="@color/text_color_gray"
+                auto:indicator_color="#ff5859"
+                auto:is_active="true"
+                auto:title_text="贴纸" />
 
-    </RadioGroup>
+            <com.sunnybear.library.view.select.TitleItem
+                android:id="@+id/matter_dynamic_pasting_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                auto:active_color="#ff5859"
+                auto:inactive_color="@color/text_color_gray"
+                auto:indicator_color="#ff5859"
+                auto:title_text="动态贴图" />
+
+            <com.sunnybear.library.view.select.TitleItem
+                android:id="@+id/matter_jigsaw_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                auto:active_color="#ff5859"
+                auto:inactive_color="@color/text_color_gray"
+                auto:indicator_color="#ff5859"
+                auto:title_text="拼图模板" />
+        </com.sunnybear.library.view.select.TitleBar>
+    </com.sunnybear.library.view.NavigationBar>
 
     <View
         android:layout_width="wrap_content"
@@ -69,6 +122,6 @@
     <com.putao.widget.view.UnScrollableViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

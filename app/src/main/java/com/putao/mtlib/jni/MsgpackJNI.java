@@ -1,5 +1,10 @@
 package com.putao.mtlib.jni;
 
+import com.putao.mtlib.model.MessagePackData;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author jidongdong
  *         <p/>
@@ -25,6 +30,9 @@ public class MsgpackJNI {
      * @return
      */
     public static native String UnPackMessage(byte[] bytes, int length);
+
+
+    public static native int UnpackNoticeData(byte[] bytes, int length);
 
     /**
      * @param data
@@ -58,4 +66,29 @@ public class MsgpackJNI {
     static {
         System.loadLibrary("putaomt");
     }
+
+
+    /**
+     * messagepack 转成messagepackdata
+     * @param bytes
+     * @param length
+     * @return
+     */
+    public static MessagePackData unpackMessageData(byte[] bytes, int length){
+        MessagePackData msgData = new MessagePackData();
+        try {
+            msgData.setMsgId(UnpackNoticeData(bytes,length));
+            String data = new String(bytes, "UTF-8");
+            Pattern p1 = Pattern.compile(data.endsWith("]}") ? "\\{.+?\\]\\}" : "\\{.+?null\\}");
+            Matcher match  = p1.matcher(data);
+            if (match.find()) {
+                msgData.setMsg(match.group(0));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msgData;
+    }
+
+
 }

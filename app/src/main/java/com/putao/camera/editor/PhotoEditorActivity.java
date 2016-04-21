@@ -1011,6 +1011,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                     }
                 }
             }
+
+
         });
         filter_contanier.addView(view);
         filterEffectViews.add(view);

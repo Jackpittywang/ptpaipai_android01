@@ -1,10 +1,8 @@
 
 package com.putao.camera.application;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -55,7 +53,7 @@ public class MainApplication extends BasicApplication {
     private LocationMode tempMode = LocationMode.Battery_Saving;
     private String tempcoor = "gcj02";
     public static boolean isServiceClose;
-
+    public static Intent redServiceIntent;
 
     @Override
     public void onCreate() {
@@ -65,7 +63,6 @@ public class MainApplication extends BasicApplication {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(globalContext));
         // Umeng统计参数设置
 //        UmengAnalysisHelper.setCommonConfig();
-
         //app_id配置
         app_id = AppUtils.getMetaData(getApplicationContext(), KEY_APP_ID);
 //        AccountApi.install("1", app_id, "515d7213721042a5ac31c2de95d2c7a7");
@@ -92,9 +89,11 @@ public class MainApplication extends BasicApplication {
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(getApplicationContext());
         //启动内部推送
+       /* startRedDotService();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.putao.isNotFore.message");
-        registerReceiver(new HomeBroadcastReceiver(), intentFilter);
+        intentFilter.addAction(Fore_Message);
+        intentFilter.addAction(Not_Fore_Message);
+        registerReceiver(new HomeBroadcastReceiver(), intentFilter);*/
         startRedDotService();
 
 //极光推送
@@ -182,6 +181,12 @@ public class MainApplication extends BasicApplication {
     public WaterMarkConfigInfo getWaterMarkConfigInfo() {
         return mWaterMarkConfigInfo;
     }
+
+
+    /*private void installDataBase() {
+
+    }*/
+
 
     /**
      * 获取数据库服务
@@ -350,9 +355,9 @@ public class MainApplication extends BasicApplication {
         return sdCardPath + File.separator + "http_cache";
     }
 
-    /**
+   /* *//**
      * 监听程序已经在后台
-     */
+     *//*
     private class HomeBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -362,16 +367,17 @@ public class MainApplication extends BasicApplication {
                 isServiceClose = false;
             }
         }
-    }
+    }*/
 
     /**
      * 启动内部推送
      */
     private void startRedDotService() {
         if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
-        Intent intent = new Intent(ACTION_PUSH_SERVICE);
-        intent.setPackage(getPackageName());
-        startService(intent);
+        redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
+        redServiceIntent.setPackage(getPackageName());
+        startService(redServiceIntent);
+        isServiceClose = true;
     }
 
     /**

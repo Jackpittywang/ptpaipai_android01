@@ -1,10 +1,8 @@
 package com.putao.mtlib;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -22,9 +20,6 @@ import com.putao.mtlib.util.MD5Util;
 import com.putao.mtlib.util.MsgPackUtil;
 import com.sunnybear.library.util.Logger;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * 通知服务
  * Created by Administrator on 2015/12/28.
@@ -33,7 +28,7 @@ public class NotifyService extends Service {
     private static final String HOST = MainApplication.isDebug ? "10.1.11.31" : "122.226.100.152";
     private static final int PORT = MainApplication.isDebug ? 8083 : 8040;
     private static final String secret = "499478a81030bb177e578f86410cda8641a22799";
-    private static final int appid = 611;
+    private static final int appid = 613;
 
     private Context mContext;
     private HandlerThread mStartThread;
@@ -56,10 +51,11 @@ public class NotifyService extends Service {
         mPTSenderManager.setReceiveMessageListener(new OnReceiveMessageListener() {
             @Override
             public void onResponse(PTRecMessage response) {
-                Logger.d("-------------------++++++++++++++++++", response.getMessage());
+                Logger.d("ptl-----------Message", response.getMessage());
+                Logger.d("ptl-----------Type", response.getType() + "");
                 switch (response.getType()) {
                     case 2:
-                        Logger.d(mThreadName, "连接成功");
+                        Logger.d("ptl-----------", "连接成功");
                         break;
                    /* case 3:
                         String message = response.getMessage();
@@ -70,10 +66,7 @@ public class NotifyService extends Service {
             }
         });
         sendConnectValidate();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MainApplication.Fore_Message);
-        intentFilter.addAction(MainApplication.Not_Fore_Message);
-        mContext.getApplicationContext().registerReceiver(new HomeBroadcastReceiver(), intentFilter);
+
     }
 
     /**
@@ -91,6 +84,11 @@ public class NotifyService extends Service {
         return MD5Util.getMD5Str(deviceid + appid + secret).toUpperCase();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPTSenderManager.stopThreads();
+    }
 
     @Nullable
     @Override
@@ -98,35 +96,4 @@ public class NotifyService extends Service {
         return null;
     }
 
-    /**
-     * 监听程序已经在后台
-     */
-    private class HomeBroadcastReceiver extends BroadcastReceiver {
-        Timer timer;
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            switch (intent.getAction()) {
-                case MainApplication.Fore_Message:
-                    if (null == timer)
-                        timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            stopSelf();
-                            MainApplication.isServiceClose = true;
-                            Logger.d("---------++++", "停止服务");
-                        }
-                    }, 30 * 1000);
-                    break;
-                case MainApplication.Not_Fore_Message:
-                    if (null != timer) {
-                        timer.cancel();
-                        timer = null;
-                    }
-                    break;
-            }
-        }
-    }
 }

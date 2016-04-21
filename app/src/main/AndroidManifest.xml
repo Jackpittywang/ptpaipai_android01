@@ -390,6 +390,23 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <!--红点推送-->
+        <service
+            android:name="com.putao.mtlib.NotifyService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.putao.camera.PUSH" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".RedDotReceiver">
+            <intent-filter>
+                <action android:name="com.putao.mtlib.message"></action>
+            </intent-filter>
+        </receiver>
+
+
         <!-- Umeng消息推送组件 -->
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
@@ -605,6 +622,7 @@
                 <category android:name="com.putao.camera" />
             </intent-filter>
         </receiver>
+
 
         <!-- Required  . Enable it you can get statistics data with channel -->
         <meta-data

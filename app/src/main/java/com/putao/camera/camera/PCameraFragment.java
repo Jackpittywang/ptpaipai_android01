@@ -38,6 +38,7 @@ import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
 import com.putao.camera.camera.gpuimage.GPUImage;
+import com.putao.camera.camera.gpuimage.GPUImageColorInvertFilter;
 import com.putao.camera.camera.utils.CameraFragment;
 import com.putao.camera.camera.utils.CameraView;
 import com.putao.camera.camera.utils.CameraView.onCameraFocusChangeListener;
@@ -184,6 +185,8 @@ public class PCameraFragment extends CameraFragment {
 
     private GPUImage mGPUImage;
 
+
+
     private void initFilter() {
         mGPUImage = new GPUImage(getActivity());
         mGPUImage.setGLSurfaceView(cameraView.getmGLView());
@@ -203,6 +206,8 @@ public class PCameraFragment extends CameraFragment {
         cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
+        mGPUImage.setFilter(new GPUImageColorInvertFilter());
+
     }
 
     private void setOptimalPreviewSize(Camera.Parameters cameraParams,

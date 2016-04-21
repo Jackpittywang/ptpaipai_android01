@@ -13,15 +13,13 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
-    </FrameLayout>
+        android:layout_centerInParent="true"></FrameLayout>
 
     <com.putao.camera.camera.view.AnimationImageView
         android:id="@+id/animation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
-
 
 
     <LinearLayout
@@ -39,17 +37,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/back_home_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_back_index"/>
+                android:background="@drawable/icon_back_index" />
 
-           <!-- <Button
-                android:id="@+id/back_home_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_back_index" />-->
+            <View
+                android:id="@+id/red_dot"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_gravity="top"
+                android:layout_marginLeft="-8dp"
+                android:background="@drawable/red_dot_shape"
+                android:visibility="visible" />
+            <!-- <Button
+                 android:id="@+id/back_home_btn"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/icon_back_index" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -58,17 +65,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/flash_light_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_02"/>
+                android:background="@drawable/icon_capture_20_02" />
 
-           <!-- <Button
-                android:id="@+id/flash_light_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_02" />-->
+            <!-- <Button
+                 android:id="@+id/flash_light_btn"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/icon_capture_20_02" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -82,7 +90,7 @@
                 android:id="@+id/camera_scale_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_05"/>
+                android:background="@drawable/icon_capture_20_05" />
 
             <!--<Button
                 android:id="@+id/camera_scale_btn"
@@ -97,17 +105,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/camera_timer_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_08"/>
+                android:background="@drawable/icon_capture_20_08" />
 
-        <!--    <Button
-                android:id="@+id/camera_timer_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_08" />-->
+            <!--    <Button
+                    android:id="@+id/camera_timer_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_capture_20_08" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -116,17 +125,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/camera_set_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_12"/>
+                android:background="@drawable/icon_capture_20_12" />
 
-          <!--  <Button
-                android:id="@+id/camera_set_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_12" />-->
+            <!--  <Button
+                  android:id="@+id/camera_set_btn"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/icon_capture_20_12" />-->
         </LinearLayout>
 
         <LinearLayout
@@ -135,17 +145,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center">
+
             <ImageView
                 android:id="@+id/switch_camera_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_14"/>
+                android:background="@drawable/icon_capture_20_14" />
 
-           <!-- <Button
-                android:id="@+id/switch_camera_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/icon_capture_20_14" />-->
+            <!-- <Button
+                 android:id="@+id/switch_camera_btn"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/icon_capture_20_14" />-->
         </LinearLayout>
     </LinearLayout>
 
@@ -277,7 +288,7 @@
         </LinearLayout>
     </LinearLayout>
 
-  <!--  滤镜滚动-->
+    <!--  滤镜滚动-->
     <LinearLayout
         android:id="@+id/layout_filter"
         android:layout_width="match_parent"
@@ -352,20 +363,20 @@
             auto:has_rank_divider="true"
             auto:layout_mode="horizontal" />
 
-       <!-- <HorizontalScrollView
-            android:id="@+id/scroll_sticker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
+        <!-- <HorizontalScrollView
+             android:id="@+id/scroll_sticker"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:scrollbars="none">
 
-            <LinearLayout
-                android:id="@+id/layout_sticker_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#252525"
-                android:orientation="horizontal"></LinearLayout>
+             <LinearLayout
+                 android:id="@+id/layout_sticker_list"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="#252525"
+                 android:orientation="horizontal"></LinearLayout>
 
-        </HorizontalScrollView>-->
+         </HorizontalScrollView>-->
 
         <LinearLayout
             android:layout_width="match_parent"

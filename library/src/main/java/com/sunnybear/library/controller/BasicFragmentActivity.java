@@ -484,12 +484,12 @@ public abstract class BasicFragmentActivity<App extends BasicApplication> extend
         for (String url : urls) {
             OkHttpRequestHelper.newInstance().cancelRequest(url);
         }
-        if (ActivityManager.getInstance().isAppFore()) {
+/*        if (ActivityManager.getInstance().isAppFore()) {
             Logger.d("ActivityManager-------", "应用到后台了");
             isRunningForeground = true;
             Intent intent = new Intent("com.putao.isFore.message");
             mContext.sendBroadcast(intent);
-        }
+        }*/
     }
 
     /**
@@ -498,13 +498,13 @@ public abstract class BasicFragmentActivity<App extends BasicApplication> extend
     protected void onResume() {
         super.onResume();
         isResume = true;
-        if (isRunningForeground) {
+     /*   if (isRunningForeground) {
             Logger.d("ActivityManager", "应用恢复到前台了");
-            /*Intent intent = new Intent("com.putao.mtlib.message");
-            mContext.sendBroadcast(intent);*/
+            *//*Intent intent = new Intent("com.putao.mtlib.message");
+            mContext.sendBroadcast(intent);*//*
             isRunningForeground = false;
             Intent intent = new Intent("com.putao.isNotFore.message");
             mContext.sendBroadcast(intent);
-        }
+        }*/
     }
 }

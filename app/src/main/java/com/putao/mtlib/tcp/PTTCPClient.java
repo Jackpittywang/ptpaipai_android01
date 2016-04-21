@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.putao.mtlib.util.PTLoger;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
@@ -96,9 +95,12 @@ public class PTTCPClient {
                     done = true;
                 }
             }
-        } catch (ConnectException e) {
+        } catch (IOException e){
+             PTLoger.e("connect to server failed");
+        }
+       /* catch (ConnectException e) {
             PTLoger.e("connect to server failed");
-        } catch (Exception ex) {
+        }*/ catch (Exception ex) {
             ex.printStackTrace();
         } finally {
             if (!done && selector != null) {
