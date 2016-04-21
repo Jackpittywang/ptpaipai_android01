@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
+import com.putao.camera.RedDotReceiver;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.DynamicCategoryInfo;
@@ -86,6 +87,7 @@ import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
+import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -103,12 +105,12 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private String TAG = ActivityCamera.class.getName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter,  layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter, layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button take_photo_btn, btn_enhance_switch, btn_clear_ar, btn_clear_filter;
     private ImageButton btn_close_ar_list, btn_close_filter_list;
     //    private RedPointBaseButton show_material_ll;
     private ImageView Tips, back_home_iv, flash_light_iv, camera_scale_iv, camera_timer_iv, camera_set_iv, switch_camera_iv;
-    private View fill_blank_top, fill_blank_bottom;
+    private View fill_blank_top, fill_blank_bottom, v_red_dot;
     private AlbumButton album_btn;
     private FrameLayout container;
     private RelativeLayout camera_activy;
@@ -289,7 +291,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
-        rv_articlesdetail_applyusers= (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
+        rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
         flash_light_ll = (LinearLayout) findViewById(R.id.flash_light_ll);
         camera_timer_ll = (LinearLayout) findViewById(R.id.camera_timer_ll);
         camera_scale_ll = (LinearLayout) findViewById(R.id.camera_scale_ll);
@@ -325,6 +327,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         btn_close_filter_list = (ImageButton) findViewById(R.id.btn_close_filter_list);
         btn_clear_ar = (Button) findViewById(R.id.btn_clear_ar);
         btn_clear_filter = (Button) findViewById(R.id.btn_clear_filter);
+        v_red_dot = (View) findViewById(R.id.v_red_dot);
 
         animation_view = (AnimationImageView) findViewById(R.id.animation_view);
         // 必须设置图片的文件夹，否则显示不出图片
@@ -1149,7 +1152,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         flash_light_btn.setOnClickListener(listener);*/
     }
 
-    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH+"")
+    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH + "")
     public void downLoadFinish(Bundle bundle) {
         final int percent = bundle.getInt("percent");
         final int position = bundle.getInt("position");
@@ -1173,8 +1176,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         intent.putExtra("animationName", animation_view.getAnimtionName());
         mContext.startActivity(intent);
     }*/
-
-
 
 
     public void onEvent(BasePostEvent event) {
@@ -1780,4 +1781,31 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         ActivityHelper.startActivity(this, MenuActivity.class);
         this.finish();
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        v_red_dot.setVisibility(View.GONE);
+        //获取缓存红点数据
+        boolean[] dots = new boolean[3];
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
+        for (int i = 0; i < 3; i++) {
+            if (dots[i]) {
+                v_red_dot.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 红点显示接收通知
+     *
+     * @param dot
+     */
+    @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATERIAL)
+    private void setRed_dot(String dot) {
+        v_red_dot.setVisibility(View.VISIBLE);
+    }
+
 }

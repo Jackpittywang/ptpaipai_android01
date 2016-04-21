@@ -92,7 +92,7 @@ public class PTSocketInputThread extends Thread {
      * @param msg
      */
     void handlePTMessage(PTMessage msg) {
-        Logger.d("收到消息,type=" + msg.type);
+        Logger.d("ptl----收到消息,type=" + msg.type);
         if (msg.length > 0) {
             printBuffer(msg.data, msg.data.length);
         }

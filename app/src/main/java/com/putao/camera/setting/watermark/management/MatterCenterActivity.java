@@ -10,10 +10,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.putao.camera.R;
+import com.putao.camera.RedDotReceiver;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.setting.watermark.download.DownloadFinishMaterialCenterActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.widget.view.UnScrollableViewPager;
+import com.sunnybear.library.controller.eventbus.Subcriber;
+import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.view.select.TitleBar;
 import com.sunnybear.library.view.select.TitleItem;
 
@@ -27,6 +30,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     private UnScrollableViewPager vp_content;
     private TitleBar rg_matter;
     private SparseArray<Fragment> mFragments;
+    boolean[] mDots = new boolean[3];
 
     private boolean mIspaster = false;
 
@@ -58,19 +62,27 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
                     case 0:
                         matter_paster_btn.hide();
                         vp_content.setCurrentItem(0, false);
+                        matter_paster_btn.hide();
                         break;
                     case 1:
                         matter_dynamic_pasting_btn.hide();
                         vp_content.setCurrentItem(1, false);
+                        matter_dynamic_pasting_btn.hide();
                         break;
                     case 2:
                         matter_jigsaw_btn.hide();
                         vp_content.setCurrentItem(2, false);
+                        matter_jigsaw_btn.hide();
                         break;
                 }
+                mDots[position] = false;
+                PreferenceUtils.save(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
             }
         });
         vp_content.setOffscreenPageLimit(3);
+        //获取缓存红点数据
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
+        setRedDot();
     }
 
     /**
@@ -136,5 +148,22 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void doInitData() {
         addOnClickListener(right_btn, back_btn);
+    }
+
+    /**
+     * 红点显示接收通知
+     *
+     * @param dots
+     */
+    @Subcriber(tag = RedDotReceiver.EVENT_DOT_INDEX)
+    private void setRed_dot(boolean[] dots) {
+        mDots = dots;
+        setRedDot();
+    }
+
+    private void setRedDot() {
+        if (mDots[0]) matter_paster_btn.show();
+        if (mDots[1]) matter_dynamic_pasting_btn.show();
+        if (mDots[2]) matter_jigsaw_btn.show();
     }
 }

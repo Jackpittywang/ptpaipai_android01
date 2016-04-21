@@ -17,6 +17,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
+import com.putao.camera.RedDotReceiver;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.SelectPopupWindow;
 import com.putao.camera.bean.MenuIconInfo;
@@ -43,6 +44,7 @@ import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
+import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.view.image.FastBlur;
 import com.sunnybear.library.view.image.ImageDraweeView;
 
@@ -89,11 +91,12 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
     @Bind(R.id.fl_main)
     FrameLayout fl_main;
+    @Bind(R.id.v_red_dot)
+    View v_red_dot;
 
     private SelectPopupWindow mSelectPopupWindow;
     private MenuIconInfo aMenuIconInfo;
     private boolean openCVLibraryLoaded = false;
-
 
 
     @Override
@@ -104,7 +107,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         }*/
         return R.layout.activity_menu;
     }
-
 
 
     @Override
@@ -118,24 +120,23 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 //        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
         if (!AccountHelper.isLogin()) {
             setDefaultBlur();
-        } else if ( AccountHelper.isLogin()) {
+        } else if (AccountHelper.isLogin()) {
             getUserInfo();
         }
-        mSelectPopupWindow = new SelectPopupWindow(mContext,"注销账户",R.color.blue,"修改用户信息",R.color.text_color_red) {
+        mSelectPopupWindow = new SelectPopupWindow(mContext, "注销账户", R.color.blue, "修改用户信息", R.color.text_color_red) {
             @Override
             public void onFirstClick(View v) {
                 AccountHelper.logout();
                 setDefaultBlur();
                 user_name_tv.setText("登录葡萄账户");
             }
+
             @Override
             public void onSecondClick(View v) {
                 ActivityHelper.startActivity(MenuActivity.this, CompleteActivity.class);
                 finish();
             }
         };
-
-
 
     }
 
@@ -150,7 +151,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         //        EventBus.getEventBus().unregister(this);
         MainApplication.stopLocationClient();
     }
-
 
 
     public static boolean ONREFRESH = true;
@@ -196,8 +196,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
 
-
-
     private String setSmallImageUrl(String str) {
         return str.substring(0, str.length() - 4) + "_120x120" + str.substring(str.length() - 4);
     }
@@ -227,7 +225,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 //                ActivityHelper.startActivity(this, MaterialCenterActivity.class);
 
                 ActivityHelper.startActivity(this, MatterCenterActivity.class);
-
                 break;
             case R.id.menu_home_stickers_btn://意见反馈--童趣美化
 //                ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
@@ -253,11 +250,11 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 break;
             case R.id.login_ll:
                 if (!AccountHelper.isLogin()) {
-                    Bundle bundle=new Bundle();
-                    bundle.putString("from","menu");
-                    ActivityHelper.startActivity(this, LoginActivity.class,bundle);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("from", "menu");
+                    ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                     finish();
-                } else if ( AccountHelper.isLogin()) {
+                } else if (AccountHelper.isLogin()) {
                     mSelectPopupWindow.show(fl_main);
                 }
                 break;
@@ -376,5 +373,29 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         mCacheRequest.startGetRequest();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        v_red_dot.setVisibility(View.GONE);
+        //获取缓存红点数据
+        boolean[] dots = new boolean[3];
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
+        for (int i = 0; i < 3; i++) {
+            if (dots[i]) {
+                v_red_dot.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 红点显示接收通知
+     *
+     * @param dot
+     */
+    @Subcriber(tag = RedDotReceiver.EVENT_DOT_INDEX)
+    private void setRed_dot(String dot) {
+        v_red_dot.setVisibility(View.VISIBLE);
+    }
 
 }

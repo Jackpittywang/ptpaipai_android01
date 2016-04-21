@@ -70,17 +70,19 @@ public class MsgpackJNI {
 
     /**
      * messagepack 转成messagepackdata
+     *
      * @param bytes
      * @param length
      * @return
      */
-    public static MessagePackData unpackMessageData(byte[] bytes, int length){
+    public static MessagePackData unpackMessageData(byte[] bytes, int length) {
         MessagePackData msgData = new MessagePackData();
         try {
-            msgData.setMsgId(UnpackNoticeData(bytes,length));
+            msgData.setMsgId(UnpackNoticeData(bytes, length));
             String data = new String(bytes, "UTF-8");
-            Pattern p1 = Pattern.compile(data.endsWith("]}") ? "\\{.+?\\]\\}" : "\\{.+?null\\}");
-            Matcher match  = p1.matcher(data);
+//            Pattern p1 = Pattern.compile(data.endsWith("]}") ? "\\{.+?\\]\\}" : "\\{.+?null\\}");
+            Pattern p1 = Pattern.compile("\\{.+?\\}\\}");
+            Matcher match = p1.matcher(data);
             if (match.find()) {
                 msgData.setMsg(match.group(0));
             }

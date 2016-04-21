@@ -45,13 +45,13 @@
                 android:background="@drawable/icon_back_index" />
 
             <View
-                android:id="@+id/red_dot"
+                android:id="@+id/v_red_dot"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_gravity="top"
                 android:layout_marginLeft="-8dp"
                 android:background="@drawable/red_dot_shape"
-                android:visibility="visible" />
+                android:visibility="gone" />
             <!-- <Button
                  android:id="@+id/back_home_btn"
                  android:layout_width="wrap_content"
