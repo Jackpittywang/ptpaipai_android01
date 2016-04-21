@@ -37,8 +37,10 @@ import com.putao.camera.JNIFUN;
 import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
+import com.putao.camera.camera.filter.CustomerFilter;
 import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.camera.gpuimage.GPUImageColorInvertFilter;
+import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.utils.CameraFragment;
 import com.putao.camera.camera.utils.CameraView;
 import com.putao.camera.camera.utils.CameraView.onCameraFocusChangeListener;
@@ -185,8 +187,6 @@ public class PCameraFragment extends CameraFragment {
 
     private GPUImage mGPUImage;
 
-
-
     private void initFilter() {
         mGPUImage = new GPUImage(getActivity());
         mGPUImage.setGLSurfaceView(cameraView.getmGLView());
@@ -201,13 +201,17 @@ public class PCameraFragment extends CameraFragment {
             } else
                 degrees = 90;
         }
-        Camera.Parameters cameraParams=cameraView.getCamera().getParameters();
-        setOptimalPreviewSize(cameraParams,960,960);
+        Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
+        setOptimalPreviewSize(cameraParams, 960, 960);
         cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), 90, flipHorizontal, flipVertical);
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
-        mGPUImage.setFilter(new GPUImageColorInvertFilter());
+    }
 
+    public void setFilter(GPUImageFilter filter) {
+        if (filter == null)
+            filter = new GPUImageFilter();
+        mGPUImage.setFilter(filter);
     }
 
     private void setOptimalPreviewSize(Camera.Parameters cameraParams,

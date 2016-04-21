@@ -11,10 +11,13 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
+import android.media.effect.Effect;
+import android.media.effect.EffectFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.OrientationEventListener;
 import android.view.View;
@@ -43,6 +46,8 @@ import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.camera.PCameraFragment.TakePictureListener;
 import com.putao.camera.camera.PCameraFragment.flashModeCode;
+import com.putao.camera.camera.filter.CustomerFilter;
+import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.view.ARImageView;
 import com.putao.camera.camera.view.AlbumButton;
@@ -100,10 +105,10 @@ import java.util.Map;
 import butterknife.OnClick;
 
 public class ActivityCamera extends BasicFragmentActivity implements OnClickListener {
-    private String TAG = ActivityCamera.class.getName();
+    private String TAG = ActivityCamera.class.getSimpleName();
     private TextView tv_takephoto;
     private PCameraFragment std, ffc, current;
-    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter,  layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
+    private LinearLayout camera_top_rl, bar, layout_sticker, layout_filter, layout_filter_list, show_sticker_ll, show_filter_ll, show_material_ll, camera_scale_ll, camera_timer_ll, flash_light_ll, switch_camera_ll, back_home_ll, camera_set_ll;
     private Button take_photo_btn, btn_enhance_switch, btn_clear_ar, btn_clear_filter;
     private ImageButton btn_close_ar_list, btn_close_filter_list;
     //    private RedPointBaseButton show_material_ll;
@@ -289,7 +294,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         screenDensity = metric.density;  // 屏幕密度（0.75 (120) / 1.0(160) / 1.5 (240)）
 
         EventBus.getEventBus().register(this);
-        rv_articlesdetail_applyusers= (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
+        rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
         flash_light_ll = (LinearLayout) findViewById(R.id.flash_light_ll);
         camera_timer_ll = (LinearLayout) findViewById(R.id.camera_timer_ll);
         camera_scale_ll = (LinearLayout) findViewById(R.id.camera_scale_ll);
@@ -1149,7 +1154,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         flash_light_btn.setOnClickListener(listener);*/
     }
 
-    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH+"")
+    @Subcriber(tag = PuTaoConstants.DOWNLOAD_FILE_FINISH + "")
     public void downLoadFinish(Bundle bundle) {
         final int percent = bundle.getInt("percent");
         final int position = bundle.getInt("position");
@@ -1173,8 +1178,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         intent.putExtra("animationName", animation_view.getAnimtionName());
         mContext.startActivity(intent);
     }*/
-
-
 
 
     public void onEvent(BasePostEvent event) {
@@ -1547,7 +1550,10 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
     }
 
-    private void AddFilterView(String item, Bitmap bitmap_sample) {
+    private CustomerFilter filters = new CustomerFilter();
+
+    private void AddFilterView(final String item, Bitmap bitmap_sample) {
+        Log.e(TAG, "AddFilterView: " + item);
         View view = LayoutInflater.from(this).inflate(R.layout.filter_item, null);
         FilterEffectThumbnailView simple_image = (FilterEffectThumbnailView) view.findViewById(R.id.filter_preview);
         simple_image.setImageBitmap(bitmap_sample);
@@ -1591,6 +1597,38 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
                     }
                 }
+
+                //设置当前滤镜
+                GPUImageFilter filter = null;
+                if (item.equals(EffectCollection.none)) {
+                    //原画
+                    filter = new GPUImageFilter();
+                } else if (item.equals(EffectCollection.brightness)) {
+                    //白亮晨曦
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX);
+                } else if (item.equals(EffectCollection.crossprocess)) {
+                    //陌上花开
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK);
+                } else if (item.equals(EffectCollection.filllight)) {
+                    //白白嫩嫩
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN);
+                } else if (item.equals(EffectCollection.saturate)) {
+                    // 秋日私语
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY);
+                } else if (item.equals(EffectCollection.sepia)) {
+                    //指尖流年
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN);
+                } else if (item.equals(EffectCollection.temperature)) {
+                    //一米阳关
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG);
+                } else if (item.equals(EffectCollection.tint)) {
+                    //蔚蓝海岸
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA);
+                } else if (item.equals(EffectCollection.vignette)) {
+                    //闪亮登场
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC);
+                }
+                current.setFilter(filter);
             }
         });
         layout_filter_list.addView(view);
