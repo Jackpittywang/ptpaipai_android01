@@ -22,7 +22,6 @@ import com.putao.mtlib.util.MsgPackUtil;
 import com.sunnybear.library.util.Logger;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * 通知服务
@@ -81,26 +80,27 @@ public class NotifyService extends Service {
     public void onCreate() {
         super.onCreate();
         if (!MainApplication.isDebug) {
-            thread = new Thread("realhost") {
-                @Override
-                public void run() {
-                    super.run();
-                    while (isAlive) {
-                        InetAddress ip = null;
-                        try {
-                            ip = InetAddress.getByName(HOST);
-                            if (null != ip) {
-                                HOST = ip.getHostAddress();
-                                mThreadHandler.sendEmptyMessage(0);
-                                break;
+            if (null == thread)
+                thread = new Thread("realhost") {
+                    @Override
+                    public void run() {
+                        super.run();
+                        while (isAlive) {
+                            InetAddress ip = null;
+                            try {
+                                ip = InetAddress.getByName(HOST);
+                                if (null != ip) {
+                                    HOST = ip.getHostAddress();
+                                    mThreadHandler.sendEmptyMessage(0);
+                                    break;
+                                }
+                                Thread.sleep(3000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            Thread.sleep(3000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
-                }
-            };
+                };
             thread.start();
         } else {
             mThreadHandler.sendEmptyMessage(0);
