@@ -87,7 +87,6 @@ public class PCameraFragment extends CameraFragment {
     private FrameLayout camera_control;
     private View flash_view;
     private boolean isFaceDetecting = false;
-    private  boolean isFilterInited=false;
 
     public void setSaveLocalPhotoState(boolean aSaveLocalPhoto) {
         bSaveLocalPhoto = aSaveLocalPhoto;
@@ -135,7 +134,6 @@ public class PCameraFragment extends CameraFragment {
     public AnimationImageView animationView;
     // 没检测到脸的次数。累计到一定个数才会清除屏幕上门的动画
     private int noDetectFaceCount = 0;
-
 
     /**
      * 设置faceview
@@ -189,7 +187,6 @@ public class PCameraFragment extends CameraFragment {
         starsView = (StarsView) results.findViewById(R.id.stars_view);
         tv_def = (TextView) results.findViewById(R.id.tv_def);
 //        setPtCameraPreviewCallback(ptCameraPreviewCallback);
-        //TODO:DEBUG PRINT THE LIBRARY VERSION
         JNIFUN.getHdrLibraryVersion();
         return (results);
     }
@@ -197,7 +194,6 @@ public class PCameraFragment extends CameraFragment {
     private GPUImage mGPUImage;
 
     private void initFilter() {
-        isFilterInited=true;
         mGPUImage = new GPUImage(getActivity());
         mGPUImage.setGLSurfaceView(cameraView.getmGLView());
         boolean flipHorizontal = false;
@@ -207,7 +203,7 @@ public class PCameraFragment extends CameraFragment {
         if (Configuration.ORIENTATION_PORTRAIT == orientation) {
             if (cameraView.getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 degrees = 270;
-                flipHorizontal = true;
+//                flipHorizontal = true;
             } else
                 degrees = 90;
         }
@@ -274,27 +270,22 @@ public class PCameraFragment extends CameraFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-     @Override
-     public void onStart() {
-         super.onStart();
-         cameraView.startCamera();
-         if(isFilterInited)return;
-         initFilter();
-         // sendMessage();
-         // refreshHandler = new Handler();
-         // refreshHandler.post(refreshRunable);
+    @Override
+    public void onStart() {
+        super.onStart();
 
-     }
-   /* public  void initCamera(){
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         cameraView.startCamera();
         initFilter();
-    }*/
-
+    }
 
     @Override
     public void onPause() {
         super.onPause();
-//        cameraView.onPause();
         releaseCamera();
     }
 
@@ -303,13 +294,6 @@ public class PCameraFragment extends CameraFragment {
      */
     private void releaseCamera() {
         cameraView.releaseCamera();
-      /*  if (camera != null) {
-            camera.setPreviewCallback(null);
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-            isPreviewing = false;
-        }*/
     }
 
     void showGif() {
@@ -326,9 +310,6 @@ public class PCameraFragment extends CameraFragment {
         }
     }
 
-   /* public void switchFiler(final GPUImageFilter newFilter, int progress) {
-        cameraView.switchFiler(newFilter,progress);
-    }*/
 
     /**
      * 增加拍摄效果View

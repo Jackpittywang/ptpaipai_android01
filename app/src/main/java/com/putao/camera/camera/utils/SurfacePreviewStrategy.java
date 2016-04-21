@@ -117,7 +117,7 @@ class SurfacePreviewStrategy implements Camera.PreviewCallback,
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Loger.d("surfaceDestroyed");
-        cameraView.previewDestroyed();
+        cameraView.releaseCamera();
         mRenderer.half();
     }
 

@@ -160,18 +160,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         if (glSurfacePreviewStrategy != null) glSurfacePreviewStrategy.clearAnimationView();
     }
 
-   /* public void setGPUImage(GPUImage view) {
-       this.mGPUImage=view;
-    }
-
-    public void switchFiler(final GPUImageFilter newFilter, int progress) {
-        if (filetr == null || (newFilter != null && !filetr.getClass().equals(newFilter.getClass()))) {
-            filetr = newFilter;
-            mGPUImage.setFilter(filetr);
-            GPUImageFilterTools.FilterAdjuster mFilterAdjuster = new GPUImageFilterTools.FilterAdjuster(filetr);
-            mFilterAdjuster.adjust(progress);
-        }
-    }*/
 
 
     // must call this after constructor, before onResume()
@@ -183,17 +171,16 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
 
     public void startCamera() {
         openCamera();
-//        doAutoFocus();
+        doAutoFocus();
     }
 
     public void releaseCamera() {
-
         if (camera != null) {
-            camera.setPreviewCallback(null);
             camera.stopPreview();
+            camera.setPreviewCallback(null);
+            camera.setPreviewCallbackWithBuffer(null);
             camera.release();
             camera = null;
-//            isPreviewing = false;
         }
     }
 
@@ -220,7 +207,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                 Rect rect = new Rect(left, top, right, bottom);
                 doSpecialRectFocus(rect);
             }
-        }, 500);
+        }, 2000);
     }
 
     /**
@@ -254,8 +241,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     public void onPause() {
         if (camera != null) {
             previewStrategy.onPause();
-//            previewStrategy.invalidateHandler();
-            previewDestroyed();
         }
         removeView(previewStrategy.getWidget());
         onOrientationChange.disable();
@@ -509,15 +494,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         }
     }
 
-    void previewDestroyed() {
-        if (camera != null) {
-            previewStopped();
-            camera.release();
-            camera = null;
-        }
-    }
-
-
     /**
      * 停止预览
      */
@@ -533,14 +509,11 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
      */
     public void startPreview() {
         try {
-            // Loger.d("start preview..........." + previewSize.width + "," + previewSize.height);
             if (camera != null) {
                 Parameters parameters = camera.getParameters();
                 parameters.setPreviewSize(previewSize.width, previewSize.height);
                 previewStrategy.setPreviewSize(previewSize.width, previewSize.height);
                 camera.setParameters(getHost().getExposureCompensation(parameters));
-
-//                mGPUImage.setUpCamera(camera, orientation, flipHorizontal, false);
                 camera.startPreview();
                 inPreview = true;
                 getHost().autoFocusAvailable();
@@ -561,9 +534,6 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     }
 
 
-    // based on
-    // http://developer.android.com/reference/android/hardware/Camera.html#setDisplayOrientation(int)
-    // and http://stackoverflow.com/a/10383164/115145
     private void setCameraDisplayOrientation() {
         Camera.CameraInfo info = new Camera.CameraInfo();
         int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
