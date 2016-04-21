@@ -29,6 +29,10 @@ android {
             assets.srcDirs = ['src/main/assets']
         }
     }
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     signingConfigs {
         release {
             storeFile file("../putao_paipai_keystore.jks")

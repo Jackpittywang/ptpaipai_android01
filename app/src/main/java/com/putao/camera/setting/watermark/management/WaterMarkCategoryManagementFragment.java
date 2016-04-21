@@ -43,7 +43,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private LoadingHUD mLoading;
     private int currentPage = 1;
     private boolean isNull = false;
-    ArrayList<StickerListInfo.PackageInfo> datas;
+    private ArrayList<StickerListInfo.PackageInfo> datas;
 
     @Override
     public int doGetContentViewId() {
@@ -52,6 +52,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 
     @Override
     public void doInitSubViews(View view) {
+        datas = new ArrayList<>();
         mLoading = LoadingHUD.getInstance(getActivity());
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         /*right_btn = (Button) view.findViewById(R.id.right_btn);
@@ -102,7 +103,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         }
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onPostExecute(Void result) {
             mPullRefreshGridView.onRefreshComplete();
         }
     }
@@ -183,9 +184,9 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                 try {
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
-                    datas=aWaterMarkRequestInfo.data;
-//                    datas.addAll(aWaterMarkRequestInfo.data);
-                    if (datas.size() == 0) {
+//                    datas = aWaterMarkRequestInfo.data;
+                    datas.addAll(aWaterMarkRequestInfo.data);
+                    if (aWaterMarkRequestInfo.data.size() == 0) {
                         isNull = true;
                         ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
                     } else {
