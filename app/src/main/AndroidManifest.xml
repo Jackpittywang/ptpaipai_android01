@@ -13,6 +13,7 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
+
     <permission
         android:name="com.putao.camera.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
@@ -38,19 +39,19 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!--蓝牙权限  -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -110,7 +111,7 @@
             android:name=".camera.ActivityCamera"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-             />
+            android:theme="@style/ActivityCameraTheme" />
         <activity
             android:name=".gallery.GalleryFileActivity"
             android:screenOrientation="portrait"
@@ -348,18 +349,18 @@
 
 
         <!-- 微博分享配置 -->
-       <!-- <activity
-            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
-            android:configChanges="keyboardHidden|orientation"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".thirdshare.activity.WeiboEntryActivity">
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+        <!-- <activity
+             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+             android:configChanges="keyboardHidden|orientation"
+             android:exported="false"
+             android:windowSoftInputMode="adjustResize" />
+         <activity android:name=".thirdshare.activity.WeiboEntryActivity">
+             <intent-filter>
+                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>-->
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+         </activity>-->
 
         <!-- umeng意见反馈 -->
         <activity android:name="com.umeng.fb.ConversationActivity" />
@@ -630,8 +631,9 @@
             android:value="developer-default" />
         <meta-data
             android:name="JPUSH_APPKEY"
-            android:value="0b4eb607dea162cf9fb4db84" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:value="0b4eb607dea162cf9fb4db84" />
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
