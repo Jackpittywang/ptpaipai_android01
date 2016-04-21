@@ -26,6 +26,8 @@ import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -60,6 +62,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 
 import java.io.File;
@@ -386,7 +389,6 @@ public class PCameraFragment extends CameraFragment {
     }
 
     private File pic;
-    private GPUImage gpuImage;
 
     public void takeSimplePhoto() {
         if (mHdrEnable) {
@@ -406,22 +408,39 @@ public class PCameraFragment extends CameraFragment {
 
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
-                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
+//                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
+                imagePath = FileUtils.getSdcardPath()+ File.separator+ "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
-                Bitmap saveBitmap = null;
+                  Bitmap saveBitmap = null;
                 if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
 
+                cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+                mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath()+ File.separator, "temp.jpg",
+                        new GPUImage.OnPictureSavedListener() {
+                            @Override
+                            public void onPictureSaved(final Uri uri) {
+//                            pic.delete();
+//                                camera.startPreview();
+                                cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                                if (isShowAR == true) {
+                                    handler.sendEmptyMessageDelayed(0x001, 100);
+                                } else {
+                                    handler.sendEmptyMessageDelayed(0x002, 0);
+                                }
+                            }
+                        });
+
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();
                 tempBitmap.recycle();
-                if (isShowAR == true) {
+               /* if (isShowAR == true) {
                     handler.sendEmptyMessageDelayed(0x001, 100);
                 } else {
                     handler.sendEmptyMessageDelayed(0x002, 0);
-                }
+                }*/
             }
 
         });
