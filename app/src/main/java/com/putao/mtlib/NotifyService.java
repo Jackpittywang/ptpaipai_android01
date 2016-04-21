@@ -88,14 +88,21 @@ public class NotifyService extends Service {
                         while (isAlive) {
                             InetAddress ip = null;
                             try {
+                                Logger.d("ptl------", "尝试获取ip");
                                 ip = InetAddress.getByName(HOST);
                                 if (null != ip) {
                                     HOST = ip.getHostAddress();
                                     mThreadHandler.sendEmptyMessage(0);
+                                    Logger.d("ptl------", "获取ip成功");
                                     break;
                                 }
-                                Thread.sleep(3000);
                             } catch (Exception e) {
+                                e.printStackTrace();
+                                Logger.d("ptl------", "获取ip失败");
+                            }
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
