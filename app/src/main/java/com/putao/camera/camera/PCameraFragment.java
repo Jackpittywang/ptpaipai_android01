@@ -219,6 +219,7 @@ public class PCameraFragment extends CameraFragment {
                 degrees = 90;
         }
         Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
+//        cameraParams.setFlashMode();
         setOptimalPreviewSize(cameraParams, 960, 960);
         setOptimalPictureSize(cameraParams, 1280);
         cameraView.getCamera().setParameters(cameraParams);

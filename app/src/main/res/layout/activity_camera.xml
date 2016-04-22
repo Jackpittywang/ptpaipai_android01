@@ -13,7 +13,8 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"></FrameLayout>
+        android:layout_centerInParent="true">
+    </FrameLayout>
 
     <com.putao.camera.camera.view.AnimationImageView
         android:id="@+id/animation_view"
@@ -407,6 +408,7 @@
                 android:text="清除"
                 android:textColor="#dddddd" />
         </LinearLayout>
+
     </LinearLayout>
 
     <ImageView

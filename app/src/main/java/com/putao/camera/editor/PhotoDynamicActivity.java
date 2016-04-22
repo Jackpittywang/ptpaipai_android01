@@ -89,6 +89,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
     private int Viedheight;
+    private int currentSelectDynamic = 0;
 
     @Override
     protected int getLayoutId() {
@@ -116,6 +117,13 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     e.printStackTrace();
                 }
                 if (null != list && list.size() > 0) {
+
+                    mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
+                    mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
+
+                    mDynamicPicAdapter.getItem(position).setSelect(true);
+//                    dynamicIconInfo.setSelect(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
                     Loger.d("click");
                     ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (animation_view.isAnimationLoading()) {
@@ -136,10 +144,12 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                                 if (landmarks != null && landmarks.length > 0) {
                                     mHandle.sendEmptyMessage(123);
                                 }
+                            }else {
+                                ToasterHelper.showShort(PhotoDynamicActivity.this, "检测不到人脸,请换一张试试吧", R.drawable.img_blur_bg);
                             }
                         }
                     }).start();
-
+                    currentSelectDynamic = position;
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);

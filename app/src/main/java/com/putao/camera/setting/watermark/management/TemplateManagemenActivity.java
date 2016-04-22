@@ -234,6 +234,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                mLoading.dismiss();
                 ToasterHelper.showShort(TemplateManagemenActivity.this, "网络不太给力", R.drawable.img_blur_bg);
                 rl_empty.setVisibility(View.VISIBLE);
                 mPullRefreshGridView.setVisibility(View.GONE);

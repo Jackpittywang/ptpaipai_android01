@@ -5,10 +5,9 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,7 +15,9 @@ import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImageRenderer;
 import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.Loger;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -149,6 +150,10 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                         points[i * 2] = x;
                         points[i * 2 + 1] = y;
                     }
+                }else {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("noface", true);
+                    EventBusHelper.post(bundle, PuTaoConstants.HAVE_NO_FACE+"");
                 }
                 detecting = false;
             }

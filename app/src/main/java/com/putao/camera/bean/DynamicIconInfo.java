@@ -47,6 +47,8 @@ public class DynamicIconInfo implements Serializable {
 
     private boolean showProgress;
 
+    private boolean isSelect;
+
     public boolean isShowProgress() {
         return showProgress;
     }
@@ -70,4 +72,11 @@ public class DynamicIconInfo implements Serializable {
 
     }
 
+    public boolean getSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
 }

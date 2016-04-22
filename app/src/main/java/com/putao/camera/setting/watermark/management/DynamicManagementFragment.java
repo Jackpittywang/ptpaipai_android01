@@ -24,6 +24,7 @@ import com.putao.camera.util.Loger;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
+import com.sunnybear.library.view.LoadingHUD;
 
 import org.json.JSONObject;
 
@@ -42,6 +43,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     private boolean isNull = false;
     private ArrayList<DynamicListInfo.PackageInfo> datas;
     private RelativeLayout rl_empty;
+    private LoadingHUD mLoading;
 
     @Override
     public int doGetContentViewId() {
@@ -50,6 +52,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void doInitSubViews(View view) {
+        mLoading = LoadingHUD.getInstance(getActivity());
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         rl_empty= (RelativeLayout) view.findViewById(R.id.rl_empty);
 
@@ -158,6 +161,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 
 
     public void queryCollageList() {
+        mLoading.show();
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -180,11 +184,13 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                     e.printStackTrace();
                 }
                 mManagementAdapter.notifyDataSetChanged();
+                mLoading.dismiss();
             }
 
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                mLoading.dismiss();
                 ToasterHelper.showShort(getActivity(), "网络不太给力", R.drawable.img_blur_bg);
                 rl_empty.setVisibility(View.VISIBLE);
                 mPullRefreshGridView.setVisibility(View.GONE);

@@ -134,7 +134,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         doInitSubViews();
-        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 2);
         GPUImage mGPUImage=new GPUImage(mContext);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");

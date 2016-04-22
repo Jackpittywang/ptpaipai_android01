@@ -132,6 +132,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private DynamicPicAdapter mDynamicPicAdapter;
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
+    private int currentSelectDynamic = 0;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -233,23 +234,26 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     e.printStackTrace();
                 }
                 if (null != list && list.size() > 0) {
+                    mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
+                    mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
+
+                    mDynamicPicAdapter.getItem(position).setSelect(true);
+//                    dynamicIconInfo.setSelect(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
                     ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (current == null) return;
                     if (animation_view.isAnimationLoading()) {
                         ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
-
                         return;
                     }
                     animation_view.clearData();
                     animation_view.setData(list.get(0).zipName, false);
                     std.setAnimationView(animation_view);
                     ffc.setAnimationView(animation_view);
-
-
+                    currentSelectDynamic = position;
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
-
                     String path = CollageHelper.getCollageUnzipFilePath();
                     startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
                 }
@@ -605,7 +609,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-    public int photoSize = 0;//0为全屏,1为1比1,2为4比3
+    public int photoSize = 2;//0为全屏,1为1比1,2为4比3
 
     @OnClick({
             R.id.camera_scale_iv, R.id.camera_timer_iv, R.id.flash_light_iv, R.id.switch_camera_iv, R.id.back_home_iv, R.id.camera_set_iv,
@@ -694,8 +698,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 takePhoto();
                 break;
             case R.id.album_btn:
-                photoSize = 0;
-                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
+                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 2);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
                 break;
@@ -720,14 +723,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 break;
             case R.id.show_filter_ll:
-               /* GPUImageFilterTools.showDialog(this,
-                        new GPUImageFilterTools.OnGpuImageFilterChosenListener() {
-                            @Override
-                            public void onGpuImageFilterChosenListener(
-                                    final GPUImageFilter filter) {
-//                                current.switchFiler(filter,50);
-                            }
-                        });*/
+
                 //显示滤镜
                 showFilter(true);
                /* if (!camera_watermark_setting) {
@@ -747,11 +743,12 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 setEnhanceButton();
                 break;*/
             case R.id.btn_clear_ar:
-                current.setFilter(new GPUImageFilter());
-
+                mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
+                mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
                 clearAnimationData();
                 break;
             case R.id.btn_clear_filter:
+                current.setFilter(new GPUImageFilter());
 //                new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
                 break;
             case R.id.btn_close_ar_list:
@@ -1182,13 +1179,16 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         });
     }
 
- /*   @Subcriber(tag = PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"")
-    public void openARshowActivity(Bundle bundle) {
-        Intent intent = new Intent(mContext, PhotoARShowActivity.class);
-        intent.putExtra("imagePath",bundle.getString("imagePath"));
-        intent.putExtra("animationName", animation_view.getAnimtionName());
-        mContext.startActivity(intent);
-    }*/
+    @Subcriber(tag = PuTaoConstants.HAVE_NO_FACE+"")
+    public void haveNoFace(Bundle bundle) {
+      boolean haveface =  bundle.getBoolean("noface");
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String dd="lail";
+            }
+        });
+    }
 
 
     public void onEvent(BasePostEvent event) {

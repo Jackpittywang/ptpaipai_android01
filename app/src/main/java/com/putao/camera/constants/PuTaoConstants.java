@@ -30,6 +30,8 @@ public class PuTaoConstants {
     public static final int PHOTO_EDIT_CUT_FINISH = 0x00F;
     public static final int PHOTO_FROM_CAMERA = 0x01F;
 
+    public static final int HAVE_NO_FACE = 0x01E;
+
 
     //翻译Event
     public static final int MOVIE_CAPTION_TRANSLATE = 0x10;
