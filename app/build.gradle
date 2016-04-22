@@ -58,12 +58,12 @@ android {
         //        local_release { versionName = "V" + defaultConfig.versionName }
 //        local_debug { versionName = "D" + defaultConfig.versionName }
 
-//        channel_putao {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
-//        }
-        channel_baiduzhushou {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
+        channel_putao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
         }
+       /* channel_baiduzhushou {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
+        }*/
 //        channel_360 {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
 //        }

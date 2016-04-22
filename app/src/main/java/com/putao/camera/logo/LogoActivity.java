@@ -1,11 +1,14 @@
 
 package com.putao.camera.logo;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.constants.PuTaoConstants;
@@ -23,7 +26,9 @@ import java.util.TimerTask;
 public class LogoActivity extends BaseActivity {
 
     private ImageView baidu_icon_iv, image_loading;
-
+    public static Intent redServiceIntent;
+    public static boolean isServiceClose;
+    public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
     @Override
     public int doGetContentViewId() {
         return R.layout.activity_logo;
@@ -31,7 +36,7 @@ public class LogoActivity extends BaseActivity {
 
     @Override
     public void doInitSubViews(View view) {
-
+        startRedDotService();
         baidu_icon_iv = queryViewById(R.id.baidu_icon_iv);
         image_loading = queryViewById(R.id.image_loading);
         baidu_icon_iv.setVisibility(View.INVISIBLE);
@@ -68,6 +73,17 @@ public class LogoActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+    /**
+     * 启动内部推送
+     */
+    private void startRedDotService() {
+        if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
+        redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
+        redServiceIntent.setPackage(getPackageName());
+        startService(redServiceIntent);
+        isServiceClose = true;
+    }
+
 
     @Override
     public void doInitData() {

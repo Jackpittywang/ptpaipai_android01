@@ -94,7 +94,7 @@ public class MainApplication extends BasicApplication {
         intentFilter.addAction(Fore_Message);
         intentFilter.addAction(Not_Fore_Message);
         registerReceiver(new HomeBroadcastReceiver(), intentFilter);*/
-        startRedDotService();
+//        startRedDotService();
 
 //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
