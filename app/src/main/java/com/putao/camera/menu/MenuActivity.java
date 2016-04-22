@@ -126,6 +126,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         mSelectPopupWindow = new SelectPopupWindow(mContext, "注销账户", R.color.blue, "修改用户信息", R.color.text_color_red) {
             @Override
             public void onFirstClick(View v) {
+                if (MainApplication.isServiceStart(mContext))
+                    stopService(MainApplication.redServiceIntent);
                 AccountHelper.logout();
                 setDefaultBlur();
                 user_name_tv.setText("登录葡萄账户");
