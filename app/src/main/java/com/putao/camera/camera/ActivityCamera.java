@@ -1615,7 +1615,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 GPUImageFilter filter = null;
                 if (item.equals(EffectCollection.none)) {
                     //原画
-                    filter = new GPUImageFilter();
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.NONE);
                 } else if (item.equals(EffectCollection.brightness)) {
                     //白亮晨曦
                     filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX);
