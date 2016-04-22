@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
+import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.event.BasePostEvent;
@@ -29,6 +30,7 @@ public class LogoActivity extends BaseActivity {
     public static Intent redServiceIntent;
     public static boolean isServiceClose;
     public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
+
     @Override
     public int doGetContentViewId() {
         return R.layout.activity_logo;
@@ -73,15 +75,13 @@ public class LogoActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+
     /**
      * 启动内部推送
      */
     private void startRedDotService() {
         if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
-        redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
-        redServiceIntent.setPackage(getPackageName());
-        startService(redServiceIntent);
-        isServiceClose = true;
+        startService(MainApplication.redServiceIntent);
     }
 
 
@@ -91,7 +91,7 @@ public class LogoActivity extends BaseActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                 ActivityHelper.startActivity(mActivity, CircleSwitchActivity.class);
+                ActivityHelper.startActivity(mActivity, CircleSwitchActivity.class);
                 finish();
             }
         }, 2000);

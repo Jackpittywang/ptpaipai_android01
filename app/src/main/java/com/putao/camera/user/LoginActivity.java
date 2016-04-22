@@ -74,7 +74,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         Intent intent = this.getIntent();
         from = intent.getStringExtra("from");
         path = intent.getStringExtra("path");
-        imgpath=  intent.getStringExtra("imgpath");
+        imgpath = intent.getStringExtra("imgpath");
 
     }
 
@@ -116,7 +116,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
                                         if (from.equals("share")) {
                                             Bundle bundle = new Bundle();
-                                            bundle.putString("from",from);
+                                            bundle.putString("from", from);
                                             bundle.putString("savefile", path);
                                             bundle.putString("imgpath", imgpath);
                                             ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
@@ -124,8 +124,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         } else {
                                             Bundle bundle = new Bundle();
                                             bundle.putString("from", "");
-                                            bundle.putString("savefile","");
-                                            bundle.putString("imgpath","");
+                                            bundle.putString("savefile", "");
+                                            bundle.putString("imgpath", "");
                                             ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
                                         }
 
@@ -134,6 +134,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                                         }
+                                        if (!MainApplication.isServiceStart(mContext))
+                                            startService(MainApplication.redServiceIntent);
                                         finish();
                                     }
 
@@ -208,12 +210,12 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         super.onBackPressed();
         if (from.equals("share")) {
             Bundle bundle = new Bundle();
-            bundle.putString("from",from);
+            bundle.putString("from", from);
             bundle.putString("savefile", path);
             bundle.putString("imgpath", imgpath);
             ActivityHelper.startActivity(LoginActivity.this, PhotoShareActivity.class, bundle);
             finish();
-        }else {
+        } else {
             startActivity(MenuActivity.class);
         }
 

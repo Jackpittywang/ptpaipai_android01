@@ -39,6 +39,7 @@ import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.SDCardUtils;
 
 import java.io.File;
+import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
@@ -105,6 +106,8 @@ public class MainApplication extends BasicApplication {
                 new JPushHeaper().setAlias(MainApplication.this, AccountHelper.getCurrentUid());
             }
         }, 3000);
+        redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
+        redServiceIntent.setPackage(getPackageName());
     }
 
 
@@ -369,15 +372,15 @@ public class MainApplication extends BasicApplication {
         }
     }*/
 
-    /**
-     * 启动内部推送
-     */
-    private void startRedDotService() {
-        if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
-        redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
-        redServiceIntent.setPackage(getPackageName());
-        startService(redServiceIntent);
-        isServiceClose = true;
+    public static boolean isServiceStart(Context context) {
+        android.app.ActivityManager systemService = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
+        for (android.app.ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
+            if ("com.putao.mtlib.CameraNotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

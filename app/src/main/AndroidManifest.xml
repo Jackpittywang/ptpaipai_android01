@@ -393,7 +393,7 @@
 
         <!--红点推送-->
         <service
-            android:name="com.putao.mtlib.NotifyService"
+            android:name="com.putao.mtlib.CameraNotifyService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
