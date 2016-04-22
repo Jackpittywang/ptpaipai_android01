@@ -352,8 +352,10 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             switch_camera_iv.setVisibility(View.GONE);
             std.setPhotoSaveListener(photoListener);
         }
+
+
         switchCamera();
-        getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
+//        getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
         if (isFristUse || lastVersionCode != curVersionCode) {
             SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.PREFERENC_VERSION_CODE, curVersionCode);
@@ -563,6 +565,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     @Override
     public void onResume() {
         super.onResume();
+//        switchCamera();
+        getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
         mOrientationEvent.enable();
@@ -579,6 +583,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     @Override
     public void onPause() {
+        getFragmentManager().beginTransaction().remove(current).commit();
         super.onPause();
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", true);
         mOrientationEvent.disable();
