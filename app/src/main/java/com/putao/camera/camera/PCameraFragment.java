@@ -92,6 +92,7 @@ public class PCameraFragment extends CameraFragment {
     private View flash_view;
     private boolean isFaceDetecting = false;
     private int screenW, screenH;
+    private static boolean isFFC;
 
     public void setSaveLocalPhotoState(boolean aSaveLocalPhoto) {
         bSaveLocalPhoto = aSaveLocalPhoto;
@@ -424,20 +425,28 @@ public class PCameraFragment extends CameraFragment {
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
 
+                if (isFFC) {
+                    saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+                }
+
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
-                        new GPUImage.OnPictureSavedListener() {
-                            @Override
-                            public void onPictureSaved(final Uri uri) {
+                if(isShowAR == false) {
+                    mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+                            new GPUImage.OnPictureSavedListener() {
+                                @Override
+                                public void onPictureSaved(final Uri uri) {
 //                            pic.delete();
 //                                camera.startPreview();
-                                cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-                                Bundle bundle = new Bundle();
-                                bundle.putString("ImagePath", imagePath);
-                                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_FROM_CAMERA, bundle));
+                                    cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("ImagePath", imagePath);
+                                    EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_FROM_CAMERA, bundle));
+                                }
 
-                            }
-                        });
+
+
+                            });
+                }
 
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();
@@ -490,8 +499,9 @@ public class PCameraFragment extends CameraFragment {
     }
 
 
-    public void takeSimplePicture(List<WaterMarkView> wmList) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean isFC) {
         mWaterMarkImageViewsList = wmList;
+        isFFC = isFC;
 //        takeSimplePicture();
         takeSimplePhoto();
     }
@@ -503,13 +513,14 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isFC) {
         mHdrEnable = hdrenable;
         if (mHdrEnable) {
             mHdrBitmaps.clear();
             mCountHdr = 0;
         }
-        takeSimplePicture(wmList);
+        isFFC = isFC;
+        takeSimplePicture(wmList, isFFC);
     }
 
     /**
@@ -518,9 +529,10 @@ public class PCameraFragment extends CameraFragment {
      * @param wmList
      * @param hdrenable
      */
-    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto) {
+    public void takeSimplePicture(List<WaterMarkView> wmList, boolean hdrenable, boolean isAuto, boolean isFC) {
         mHdrAuto = isAuto;
-        takeSimplePicture(wmList, hdrenable);
+        isFFC = isFC;
+        takeSimplePicture(wmList, hdrenable, isFFC);
     }
 
     /**

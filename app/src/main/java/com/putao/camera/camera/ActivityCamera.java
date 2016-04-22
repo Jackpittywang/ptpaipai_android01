@@ -133,6 +133,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
     private int currentSelectDynamic = 0;
+    boolean isFFC=false;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -888,13 +889,18 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         // 是否要显示AR贴纸
         current.setShowAR(animation_view.isAnimationRunning());
         current.isShowAR(animation_view.isAnimationRunning());
+        if(current==ffc){
+           isFFC=true;
+        }else {
+            isFFC=false;
+        }
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true);
+            current.takeSimplePicture(mMarkViewList, true,isFFC);
         } else if (mHdrState == HDRSTATE.AUTO) {
-            current.takeSimplePicture(mMarkViewList, true, true);
+            current.takeSimplePicture(mMarkViewList, true, true,isFFC);
         } else {
-            current.takeSimplePicture(mMarkViewList);
+            current.takeSimplePicture(mMarkViewList,isFFC);
 
         }
 
@@ -1208,6 +1214,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
                 Intent intent = new Intent(mContext, PhotoARShowActivity.class);
+                intent.putExtra("isFFC",isFFC+"");
                 intent.putExtra("imagePath", event.bundle.getString("imagePath"));
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);

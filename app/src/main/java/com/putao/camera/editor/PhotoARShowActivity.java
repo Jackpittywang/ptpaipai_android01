@@ -3,6 +3,7 @@ package com.putao.camera.editor;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -47,7 +48,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private String imagePath = "";
     private String animationName = "";
     private String videoImagePath = "";
-    private  String PATH="Android/data/com.putao.camera/files/";
+    private String PATH = "Android/data/com.putao.camera/files/";
     // 保存视频时候图片的张数
     private int imageCount = 36;
 
@@ -84,6 +85,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         Intent intent = this.getIntent();
         if (intent == null) return;
         imagePath = intent.getStringExtra("imagePath");
+        String isFFC = intent.getStringExtra("isFFC");
 
         animationName = intent.getStringExtra("animationName");
 
@@ -92,12 +94,15 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
             Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+            if (isFFC.equals("true")) {
+                tempBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+            }
 
             Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
 //            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);
             tempBitmap.recycle();
-           // Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getBitmapFromPath(imagePath, null);
-            Log.i(TAG, "image path is:"+imagePath);
+            // Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getBitmapFromPath(imagePath, null);
+            Log.i(TAG, "image path is:" + imagePath);
             // 背景脸图片在屏幕上的缩放
             int screenW = DisplayHelper.getScreenWidth();
             int screenH = DisplayHelper.getScreenHeight();
@@ -144,7 +149,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 123) {
-                if(animation_view == null) return;
+                if (animation_view == null) return;
                 animation_view.setPositionAndStartAnimation(landmarks);
             }
         }
@@ -177,12 +182,13 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
     private int Viedheight;
+
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {
             case PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE:
-              int with= event.bundle.getInt("backgroundWith");
-              int height = event.bundle.getInt("backgroundHight");
-                Viedheight = height*480/with;
+                int with = event.bundle.getInt("backgroundWith");
+                int height = event.bundle.getInt("backgroundHight");
+                Viedheight = height * 480 / with;
                 imagesToVideo();
                 break;
         }
@@ -199,8 +205,8 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         progressDialog.setMessage("正在保存视频请稍后...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        Bitmap tip=BitmapHelper.decodeSampledBitmapFromResource(getResources(),R.drawable.tips,220,60);
-        originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, tip,originImageBitmap.getWidth()-tip.getWidth()-5,originImageBitmap.getHeight()-tip.getHeight()-2);
+        Bitmap tip = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.tips, 220, 60);
+        originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, tip, originImageBitmap.getWidth() - tip.getWidth() - 5, originImageBitmap.getHeight() - tip.getHeight() - 2);
 
         animation_view.setSave(originImageBitmap, videoImagePath, imageCount);
 //        imagesToVideo();
@@ -232,13 +238,13 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
     private void imagesToVideo() {
         // 保存视频
-        String sizeStr ="480x"+Viedheight;
+        String sizeStr = "480x" + Viedheight;
 
 //         String videoFileName = "VID_" + System.currentTimeMillis() / 1000 + ".mp4";
         String model = android.os.Build.MODEL.toLowerCase();
         String brand = Build.BRAND.toLowerCase();
-        final  String   videoPath;
-        if (model.contains("meizu") || brand.contains("meizu") || model.contains("mx5")||model.contains("mx4") ) {
+        final String videoPath;
+        if (model.contains("meizu") || brand.contains("meizu") || model.contains("mx5") || model.contains("mx4")) {
             videoPath = CommonUtils.getOutputVideoFileMX().getAbsolutePath();
         } else {
             videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath();
@@ -266,7 +272,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                     public void onScanCompleted(String path, Uri uri) {
                         Bundle bundle = new Bundle();
                         bundle.putString("savefile", videoPath);
-                        bundle.putString("imgpath",videoImagePath+"image00.jpg");
+                        bundle.putString("imgpath", videoImagePath + "image00.jpg");
                         bundle.putString("from", "dynamic");
                         ActivityHelper.startActivity(PhotoARShowActivity.this, PhotoShareActivity.class, bundle);
                         finish();
@@ -301,8 +307,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
      * 清除生成视频用的临时文件
      */
     private void clearImageList() {
+
         File folder = new File(videoImagePath);
         File[] childFile = folder.listFiles();
+        if (childFile == null) return;
         for (int i = 0; i < childFile.length; i++) {
             try {
                 File file = childFile[i];
@@ -357,7 +365,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
     void showQuitTip() {
-        if(progressDialog!=null){
+        if (progressDialog != null) {
             progressDialog.hide();
             progressDialog = null;
         }
