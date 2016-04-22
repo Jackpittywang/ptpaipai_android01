@@ -418,20 +418,19 @@ public class PCameraFragment extends CameraFragment {
                 } else saveBitmap = tempBitmap;
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-//                mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath()+ File.separator, "temp.jpg",
-//                        new GPUImage.OnPictureSavedListener() {
-//                            @Override
-//                            public void onPictureSaved(final Uri uri) {
-////                            pic.delete();
-////                                camera.startPreview();
-//                                cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-//                                if (isShowAR == true) {
-//                                    handler.sendEmptyMessageDelayed(0x001, 100);
-//                                } else {
-//                                    handler.sendEmptyMessageDelayed(0x002, 0);
-//                                }
-//                            }
-//                        });
+                mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+                        new GPUImage.OnPictureSavedListener() {
+                            @Override
+                            public void onPictureSaved(final Uri uri) {
+//                            pic.delete();
+//                                camera.startPreview();
+                                cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("ImagePath", imagePath);
+                                EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_FROM_CAMERA, bundle));
+
+                            }
+                        });
 
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();

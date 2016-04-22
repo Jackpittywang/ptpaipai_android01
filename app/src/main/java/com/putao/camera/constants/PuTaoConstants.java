@@ -28,6 +28,7 @@ public class PuTaoConstants {
     public static final int DOWNLOAD_FILE_FINISH = 0x00E;
     public static final int UNZIP_FILE_FINISH = 0x012;
     public static final int PHOTO_EDIT_CUT_FINISH = 0x00F;
+    public static final int PHOTO_FROM_CAMERA = 0x01F;
 
 
     //翻译Event

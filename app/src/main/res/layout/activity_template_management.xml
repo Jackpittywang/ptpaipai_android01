@@ -8,21 +8,50 @@
 
     <!--<include layout="@layout/layout_title_bar"></include>-->
     <!-- The PullToRefreshGridView replaces a standard GridView widget. -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.putao.widget.pulltorefresh.PullToRefreshGridView xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pull_refresh_grid"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:gravity="fill"
-        android:horizontalSpacing="10dp"
-        android:listSelector="@android:color/transparent"
-        android:numColumns="2"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp"
-        ptr:ptrDrawable="@drawable/default_ptr_rotate"
-        ptr:ptrMode="disabled" />
+        <com.putao.widget.pulltorefresh.PullToRefreshGridView xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pull_refresh_grid"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="fill"
+            android:horizontalSpacing="10dp"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="2"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dp"
+            ptr:ptrDrawable="@drawable/default_ptr_rotate"
+            ptr:ptrMode="disabled" />
+
+        <RelativeLayout
+            android:id="@+id/rl_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/iv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_page_empty"/>
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="空空如也"
+                android:layout_below="@id/iv_empty"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>

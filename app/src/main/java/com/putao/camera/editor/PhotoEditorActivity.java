@@ -38,6 +38,7 @@ import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
+import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.dialog.WaterTextDialog;
 import com.putao.camera.editor.filtereffect.EffectCollection;
@@ -133,11 +134,24 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         doInitSubViews();
+        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+        GPUImage mGPUImage=new GPUImage(mContext);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
+              /* mGPUImage.saveToPictures(originImageBitmap, FileUtils.getSdcardPath()+ File.separator, "temp.jpg",
+                        new GPUImage.OnPictureSavedListener() {
+                            @Override
+                            public void onPictureSaved(final Uri uri) {
+                                ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
+                                show_image.setImageBitmap(ImageCropBitmap);
+
+
+                            }
+                        });*/
+
 
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
@@ -728,11 +742,25 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 }
                 is_edited = true;
                 break;
+            case PuTaoConstants.PHOTO_FROM_CAMERA:
+                photo_data=event.bundle.getString("ImagePath");
+                if (!StringHelper.isEmpty(photo_data)) {
+                    originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+                            DisplayHelper.getScreenHeight());
+                    int filter_origin_size = DisplayHelper.getValueByDensity(120);
+                    filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
+                }
+
+                ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
+                show_image.setImageBitmap(ImageCropBitmap);
+                break;
 
 
             case PuTaoConstants.FINISH_TO_MENU_PAGE:
                 finish();
                 break;
+
+
             case PuTaoConstants.UNZIP_FILE_FINISH:
                 runOnUiThread(new Runnable() {
                     @Override

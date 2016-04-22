@@ -11,8 +11,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
-import android.media.effect.Effect;
-import android.media.effect.EffectFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -560,6 +558,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         bar.getBackground().setAlpha(255);
         setStickerStatus();
         setFilterStatus();
+
     }
 
     @Override
@@ -606,7 +605,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-    public int i = 0;//0为全屏,1为1比1,2为4比3
+    public int photoSize = 0;//0为全屏,1为1比1,2为4比3
 
     @OnClick({
             R.id.camera_scale_iv, R.id.camera_timer_iv, R.id.flash_light_iv, R.id.switch_camera_iv, R.id.back_home_iv, R.id.camera_set_iv,
@@ -695,8 +694,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 takePhoto();
                 break;
             case R.id.album_btn:
-                i = 0;
-                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
+                photoSize = 0;
+                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
                 break;
@@ -748,6 +747,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 setEnhanceButton();
                 break;*/
             case R.id.btn_clear_ar:
+                current.setFilter(new GPUImageFilter());
+
                 clearAnimationData();
                 break;
             case R.id.btn_clear_filter:
@@ -822,7 +823,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
     private void takePhoto() {
-        SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, i);
+        SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
         camera_set_ll.setEnabled(false);
         camera_set_iv.setEnabled(false);
         take_photo_btn.setEnabled(false);
@@ -1746,7 +1747,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 scaleType = SCALETYPE_FULL;
                 mPictureRatio = PictureRatio.RATIO_DEFAULT;
                 setCameraRatioFull();
-                i = 0;
+                photoSize = 0;
                 ToasterHelper.showShort(this, "FULL", R.drawable.img_blur_bg);
                 break;
             case SCALETYPE_THREE:
@@ -1754,7 +1755,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 scaleType = SCALETYPE_ONE;
                 mPictureRatio = PictureRatio.RATIO_ONE_TO_ONE;
                 setCameraRatioOneToOne();
-                i = PhotoEditorActivity.CROP_11;
+                photoSize = PhotoEditorActivity.CROP_11;
                 ToasterHelper.showShort(this, "1:1", R.drawable.img_blur_bg);
                 break;
             case SCALETYPE_FULL:
@@ -1762,7 +1763,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 scaleType = SCALETYPE_THREE;
                 mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                 setCameraRatioThreeToFour();
-                i = PhotoEditorActivity.CROP_43;
+                photoSize = PhotoEditorActivity.CROP_43;
                 ToasterHelper.showShort(this, "3:4", R.drawable.img_blur_bg);
                 break;
         }

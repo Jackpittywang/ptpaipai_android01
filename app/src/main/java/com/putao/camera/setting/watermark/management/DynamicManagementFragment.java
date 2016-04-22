@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -37,8 +38,10 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
     private TextView title_tv;
-    private int currentPage=1;
-    private boolean isNull=false;
+    private int currentPage = 1;
+    private boolean isNull = false;
+    private ArrayList<DynamicListInfo.PackageInfo> datas;
+    private RelativeLayout rl_empty;
 
     @Override
     public int doGetContentViewId() {
@@ -48,6 +51,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
     @Override
     public void doInitSubViews(View view) {
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
+        rl_empty= (RelativeLayout) view.findViewById(R.id.rl_empty);
 
     }
 
@@ -58,6 +62,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void doInitDataes() {
+        datas = new ArrayList<>();
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
@@ -70,10 +75,10 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
 
-                if(!isNull){
-                    currentPage=currentPage+1;
+                if (!isNull) {
+                    currentPage = currentPage + 1;
                     queryCollageList();
-                }else {
+                } else {
                     ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
                 }
                 new FinishRefresh().execute();
@@ -94,7 +99,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
         }
 
         @Override
-        protected void onPostExecute(Void result){
+        protected void onPostExecute(Void result) {
             mPullRefreshGridView.onRefreshComplete();
         }
     }
@@ -161,12 +166,13 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 try {
                     Gson gson = new Gson();
                     aDynamicListInfo = (DynamicListInfo) gson.fromJson(json.toString(), DynamicListInfo.class);
-                    if(aDynamicListInfo.data.size()==0){
-                        isNull=true;
-                        ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
-                    }else {
-                        mManagementAdapter.setDatas(aDynamicListInfo.data);
 
+                    if (aDynamicListInfo.data.size() == 0) {
+                        isNull = true;
+                        ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
+                    } else {
+                        datas.addAll(aDynamicListInfo.data);
+                        mManagementAdapter.setDatas(datas);
                         Gson gson1 = new Gson();
                         mDynamicIconInfo = gson1.fromJson(json.toString(), DynamicCategoryInfo.class).data;
                     }
@@ -179,10 +185,15 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                ToasterHelper.showShort(getActivity(), "网络不太给力", R.drawable.img_blur_bg);
+                rl_empty.setVisibility(View.VISIBLE);
+                mPullRefreshGridView.setVisibility(View.GONE);
+
+
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page="+currentPage, map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=" + currentPage, map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 
@@ -214,10 +225,10 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
-        mDynamicIconInfo.get(position).type="dynamic";
+        if (null == url || null == folderPath) return;
+        mDynamicIconInfo.get(position).type = "dynamic";
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-        bindIntent.putExtra("item",mDynamicIconInfo.get(position));
+        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
         bindIntent.putExtra("floderPath", folderPath);
@@ -231,7 +242,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -243,7 +254,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 //                String filePath = event.bundle.getString("percent");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -252,7 +263,7 @@ public final class DynamicManagementFragment extends BaseFragment implements Ada
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();

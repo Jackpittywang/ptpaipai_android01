@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
@@ -37,6 +38,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
+    private RelativeLayout rl_empty;
     private WaterMarkManagementAdapter mManagementAdapter;
     private StickerListInfo aWaterMarkRequestInfo;
     private ArrayList<StickerCategoryInfo> mStickerCategoryInfos;
@@ -55,6 +57,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         datas = new ArrayList<>();
         mLoading = LoadingHUD.getInstance(getActivity());
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
+        rl_empty= (RelativeLayout) view.findViewById(R.id.rl_empty);
         /*right_btn = (Button) view.findViewById(R.id.right_btn);
         right_btn.setText("已下载");
         back_btn = (Button) view.findViewById(R.id.back_btn);*/
@@ -67,6 +70,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
 
     @Override
     public void doInitDataes() {
+
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
@@ -185,11 +189,11 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
                     Gson gson = new Gson();
                     aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
 //                    datas = aWaterMarkRequestInfo.data;
-                    datas.addAll(aWaterMarkRequestInfo.data);
                     if (aWaterMarkRequestInfo.data.size() == 0) {
                         isNull = true;
                         ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
                     } else {
+                        datas.addAll(aWaterMarkRequestInfo.data);
                         mManagementAdapter.setDatas(datas);
                         Gson gson1 = new Gson();
                         mStickerCategoryInfos = gson1.fromJson(json.toString(), StickerIconInfo.class).data;
@@ -205,6 +209,11 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
                 mLoading.dismiss();
+                ToasterHelper.showShort(getActivity(), "网络不太给力", R.drawable.img_blur_bg);
+                rl_empty.setVisibility(View.VISIBLE);
+                mPullRefreshGridView.setVisibility(View.GONE);
+
+
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();

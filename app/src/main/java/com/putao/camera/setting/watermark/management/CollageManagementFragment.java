@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.putao.camera.R;
@@ -36,6 +37,8 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     ArrayList<TemplateIconInfo> mTemplateIconInfo;
     private int currentPage = 1;
     private boolean isNull = false;
+    private  ArrayList<TemplateListInfo.PackageInfo> datas;
+    private RelativeLayout rl_empty;
 
     @Override
     public int doGetContentViewId() {
@@ -45,6 +48,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
     @Override
     public void doInitSubViews(View view) {
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
+        rl_empty= (RelativeLayout) view.findViewById(R.id.rl_empty);
     }
 
     @Override
@@ -60,6 +64,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
 
     @Override
     public void doInitDataes() {
+        datas = new ArrayList<>();
         mGridView = mPullRefreshGridView.getRefreshableView();
         mPullRefreshGridView.setMode(PullToRefreshBase.Mode.BOTH);
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
@@ -169,7 +174,8 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
                         isNull = true;
                         ToasterHelper.showShort(getActivity(), "沒有更多內容了", R.drawable.img_blur_bg);
                     } else {
-                        mManagementAdapter.setDatas(aCollageInfo.data);
+                        datas.addAll(aCollageInfo.data);
+                        mManagementAdapter.setDatas(datas);
                         Gson gson1 = new Gson();
                         mTemplateIconInfo = gson1.fromJson(json.toString(), TemplateCategoryInfo.class).data;
                     }
@@ -182,6 +188,9 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                ToasterHelper.showShort(getActivity(), "网络不太给力", R.drawable.img_blur_bg);
+                rl_empty.setVisibility(View.VISIBLE);
+                mPullRefreshGridView.setVisibility(View.GONE);
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();

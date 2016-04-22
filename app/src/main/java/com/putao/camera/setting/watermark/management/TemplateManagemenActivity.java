@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import com.putao.camera.http.CacheRequest;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.ToasterHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshBase;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 import com.sunnybear.library.view.LoadingHUD;
@@ -47,6 +49,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     TemplateIconInfo templateIconInfo;
     private int imageTotal = 0;
     private LoadingHUD mLoading;
+    private RelativeLayout rl_empty;
 
     @Override
     public int doGetContentViewId() {
@@ -57,6 +60,7 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
     public void doInitSubViews(View view) {
         mLoading = LoadingHUD.getInstance(this);
         EventBus.getEventBus().register(this);
+        rl_empty= (RelativeLayout) view.findViewById(R.id.rl_empty);
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
         right_btn=queryViewById(R.id.right_btn);
         back_btn = queryViewById(R.id.back_btn);
@@ -230,6 +234,10 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
             @Override
             public void onFail(int whatCode, int statusCode, String responseString) {
                 super.onFail(whatCode, statusCode, responseString);
+                ToasterHelper.showShort(TemplateManagemenActivity.this, "网络不太给力", R.drawable.img_blur_bg);
+                rl_empty.setVisibility(View.VISIBLE);
+                mPullRefreshGridView.setVisibility(View.GONE);
+
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();

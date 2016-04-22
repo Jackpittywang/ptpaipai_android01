@@ -153,6 +153,14 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
             public void onFailure(String url, int statusCode, String msg) {
                 super.onFailure(url, statusCode, msg);
                 ToastUtils.showToastLong(mContext, "登录失败请重新登录");
+                if (from.equals("share")) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("from", "complete");
+                    bundle.putString("savefile", path);
+                    bundle.putString("imgpath", imgpath);
+                    ActivityHelper.startActivity(CompleteActivity.this, PhotoShareActivity.class, bundle);
+                    finish();
+                }
             }
         });
     }
