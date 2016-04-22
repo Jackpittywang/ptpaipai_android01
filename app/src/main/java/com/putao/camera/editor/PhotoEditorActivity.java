@@ -128,37 +128,26 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     @Override
     protected int getLayoutId() {
+        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
         return R.layout.activity_photo_editor;
     }
 
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         doInitSubViews();
-        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 2);
         GPUImage mGPUImage=new GPUImage(mContext);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
-              /* mGPUImage.saveToPictures(originImageBitmap, FileUtils.getSdcardPath()+ File.separator, "temp.jpg",
-                        new GPUImage.OnPictureSavedListener() {
-                            @Override
-                            public void onPictureSaved(final Uri uri) {
-                                ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
-                                show_image.setImageBitmap(ImageCropBitmap);
-
-
-                            }
-                        });*/
-
 
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
 
-        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
-        show_image.setImageBitmap(ImageCropBitmap);
+//        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);
+        show_image.setImageBitmap(originImageBitmap);
         loadFilters();
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
@@ -750,7 +739,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                     int filter_origin_size = DisplayHelper.getValueByDensity(120);
                     filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
                 }
-
                 ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
                 show_image.setImageBitmap(ImageCropBitmap);
                 break;
