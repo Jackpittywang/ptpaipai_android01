@@ -609,7 +609,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-    public int photoSize = 2;//0为全屏,1为1比1,2为4比3
+    public int photoSize = 0;//0为全屏,1为1比1,2为4比3
 
     @OnClick({
             R.id.camera_scale_iv, R.id.camera_timer_iv, R.id.flash_light_iv, R.id.switch_camera_iv, R.id.back_home_iv, R.id.camera_set_iv,
@@ -698,7 +698,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 takePhoto();
                 break;
             case R.id.album_btn:
-                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 2);
+                //相册图片不进行裁剪
+                photoSize=0;
+                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
                 break;
