@@ -69,7 +69,7 @@ public class GPUImage {
         }
 
         mContext = context;
-        mFilter = new GPUImageFilter();
+        mFilter = new GPUImageBilateralFilter(8.0f);
         mRenderer = new GPUImageRenderer(mFilter);
     }
 
