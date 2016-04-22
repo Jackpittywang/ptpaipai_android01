@@ -8,8 +8,10 @@ import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImageRenderer;
@@ -36,6 +38,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private CameraHandler mCameraHandler;
 
     private float mainRadio = 0;
+    private float mainRadioY = 0;
     private int iw;
     private int ih;
     private int screenW, screenH;
@@ -65,9 +68,10 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         } else {
             mDetector = new YMDetector(context, YMDetector.Config.FACE_90, YMDetector.Config.RESIZE_WIDTH_640);
         }
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        screenW = dm.widthPixels;
-        screenH = dm.heightPixels;
+        WindowManager manager = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        screenW = manager.getDefaultDisplay().getWidth();
+        screenH = manager.getDefaultDisplay().getHeight();
     }
 
     public GLSurfaceView getmGLView() {
@@ -116,11 +120,11 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     public void onPreviewFrame(final byte[] data, Camera camera) {
         if (animationImageView == null) return;
 
-        if (mainRadio == 0) {
+        if (mainRadio == 0 || mainRadioY == 0) {
             iw = camera.getParameters().getPreviewSize().width;
             ih = camera.getParameters().getPreviewSize().height;
-            float hh = ih;
-            mainRadio = screenW / hh;
+            mainRadio = (float) screenW / (float) ih;
+            mainRadioY = (float) screenH / (float) iw;
         }
 
         if (detecting) return;
@@ -141,7 +145,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                         if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                             x = screenW - x;
                         }
-                        float y = landmarks[i * 2 + 1] * mainRadio;
+                        float y = landmarks[i * 2 + 1] * mainRadioY;
                         points[i * 2] = x;
                         points[i * 2 + 1] = y;
                     }

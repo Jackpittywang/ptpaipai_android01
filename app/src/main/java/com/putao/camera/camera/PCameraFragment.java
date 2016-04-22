@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,7 +74,7 @@ import java.util.List;
 
 public class PCameraFragment extends CameraFragment {
 
-    private String TAG = PCameraFragment.class.getName();
+    private String TAG = PCameraFragment.class.getSimpleName();
 
     private static final String KEY_USE_FFC = "com.putao.camera.PCameraFragment.USE_FFC";
     private String flashMode = Parameters.FLASH_MODE_OFF;
@@ -90,6 +91,7 @@ public class PCameraFragment extends CameraFragment {
     private FrameLayout camera_control;
     private View flash_view;
     private boolean isFaceDetecting = false;
+    private int screenW, screenH;
 
     public void setSaveLocalPhotoState(boolean aSaveLocalPhoto) {
         bSaveLocalPhoto = aSaveLocalPhoto;
@@ -194,6 +196,11 @@ public class PCameraFragment extends CameraFragment {
         mGPUImage = new GPUImage(getActivity());
         mGPUImage.setGLSurfaceView(cameraView.getmGLView());
         mGPUImage.setPreviewCallback(cameraView.getPreviewStrategy());
+
+        WindowManager manager = (WindowManager) getActivity()
+                .getSystemService(Context.WINDOW_SERVICE);
+        screenW = manager.getDefaultDisplay().getWidth();
+        screenH = manager.getDefaultDisplay().getHeight();
         return (results);
     }
 
@@ -244,7 +251,6 @@ public class PCameraFragment extends CameraFragment {
 
             int iw = optimalSize.width;
             int ih = optimalSize.height;
-
             cameraParams.setPreviewSize(iw, ih);
         }
     }
@@ -409,9 +415,9 @@ public class PCameraFragment extends CameraFragment {
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
-                imagePath = FileUtils.getSdcardPath()+ File.separator+ "temp.jpg";
+                imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
-                  Bitmap saveBitmap = null;
+                Bitmap saveBitmap = null;
                 if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);

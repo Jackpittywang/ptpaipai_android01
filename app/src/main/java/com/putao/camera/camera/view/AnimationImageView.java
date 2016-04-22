@@ -6,7 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
@@ -81,7 +85,7 @@ public class AnimationImageView extends ImageView {
     private String animationName = "";
 
     private int buttomGap = 80;
-
+    private Paint paint;
     private static final int START_ANIMATION = 0;
 
     // 数据过滤,移动更平滑
@@ -120,6 +124,12 @@ public class AnimationImageView extends ImageView {
     private void init(Context context) {
         this.context = context;
         screenH = context.getResources().getDisplayMetrics().heightPixels;
+
+        paint = new Paint(Color.rgb(57, 138, 243));
+        paint.setStrokeWidth(8);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
     }
 
     public void setSave(Bitmap backgroundBitmap, String savePath, int saveCount) {
@@ -356,9 +366,11 @@ public class AnimationImageView extends ImageView {
      *
      * @param points
      */
+    private float[] points;
 
     public void setPositionAndStartAnimation(float[] points) {
         if (animationModel == null) return;
+        this.points = points;
         float scale = 0f;
         float angle = 0f;
         //hezhiyun修改
@@ -513,23 +525,26 @@ public class AnimationImageView extends ImageView {
         BitmapHelper.saveBitmap(saveBitmap, savePath + "image" + countString + ".jpg");
         setDrawingCacheEnabled(false);
         curSaveCount = curSaveCount + 1;
-       int width= backgroundBitmap.getWidth();
-        int height=backgroundBitmap.getHeight();
-       Bundle bundle=new Bundle();
-        bundle.putInt("backgroundWith",width);
-        bundle.putInt("backgroundHight",height);
+        int width = backgroundBitmap.getWidth();
+        int height = backgroundBitmap.getHeight();
+        Bundle bundle = new Bundle();
+        bundle.putInt("backgroundWith", width);
+        bundle.putInt("backgroundHight", height);
         if (curSaveCount > saveCount - 1) {
             // 保存文件结束
             isNeedSave = false;
             curSaveCount = 0;
             EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE, bundle));
-            EventBusHelper.post(bundle, PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE+"");
+            EventBusHelper.post(bundle, PuTaoConstants.SAVE_AR_SHOW_IMAGE_COMPELTE + "");
 
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+//        for (int i = 0; i < points.length / 2; i++) {
+//            canvas.drawPoint(points[i * 2], points[i * 2 + 1], paint);
+//        }
         canvas.save();
         if (isAnimationReady == true && animationModel != null) {
             if (animationModel.getEye() != null && animationPosition < eyesBitmapArr.size()) {
