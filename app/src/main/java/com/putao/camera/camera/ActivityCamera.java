@@ -1179,7 +1179,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         });
     }
 
-    @Subcriber(tag = PuTaoConstants.HAVE_NO_FACE+"")
+   /* @Subcriber(tag = PuTaoConstants.HAVE_NO_FACE+"")
     public void haveNoFace(Bundle bundle) {
       boolean haveface =  bundle.getBoolean("noface");
         this.runOnUiThread(new Runnable() {
@@ -1188,7 +1188,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 String dd="lail";
             }
         });
-    }
+    }*/
 
 
     public void onEvent(BasePostEvent event) {
