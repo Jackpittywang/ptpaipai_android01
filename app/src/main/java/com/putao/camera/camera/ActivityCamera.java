@@ -46,6 +46,7 @@ import com.putao.camera.bean.WaterMarkIconInfo;
 import com.putao.camera.camera.PCameraFragment.TakePictureListener;
 import com.putao.camera.camera.PCameraFragment.flashModeCode;
 import com.putao.camera.camera.filter.CustomerFilter;
+import com.putao.camera.camera.gpuimage.GPUImageBilateralFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.utils.OrientationUtil;
 import com.putao.camera.camera.view.ARImageView;
@@ -750,7 +751,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 clearAnimationData();
                 break;
             case R.id.btn_clear_filter:
-                current.setFilter(new GPUImageFilter());
+                current.setFilter(new GPUImageBilateralFilter(8.0f));
 //                new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
                 break;
             case R.id.btn_close_ar_list:
