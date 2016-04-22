@@ -3,7 +3,6 @@ package com.putao.camera.editor;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -94,9 +93,9 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
             Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
-            if (isFFC.equals("true")) {
+           /* if (isFFC.equals("true")) {
                 tempBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_180);
-            }
+            }*/
 
             Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
 //            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);

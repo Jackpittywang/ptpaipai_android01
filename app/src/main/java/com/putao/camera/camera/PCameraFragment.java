@@ -430,7 +430,7 @@ public class PCameraFragment extends CameraFragment {
                 }
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-                if(isShowAR == false) {
+
                     mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
                             new GPUImage.OnPictureSavedListener() {
                                 @Override
@@ -439,20 +439,22 @@ public class PCameraFragment extends CameraFragment {
 //                                camera.startPreview();
                                     cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
                                     Bundle bundle = new Bundle();
+                                    if (isShowAR == false) {
                                     bundle.putString("ImagePath", imagePath);
                                     EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_FROM_CAMERA, bundle));
+                                    }else {
+                                        handler.sendEmptyMessageDelayed(0x001, 100);
+                                    }
+
                                 }
-
-
-
                             });
-                }
+
 
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();
                 tempBitmap.recycle();
                 if (isShowAR == true) {
-                    handler.sendEmptyMessageDelayed(0x001, 100);
+//                    handler.sendEmptyMessageDelayed(0x001, 100);
                 } else {
                     handler.sendEmptyMessageDelayed(0x002, 0);
                 }
