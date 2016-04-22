@@ -2,6 +2,7 @@ package com.putao.camera.camera.filter;
 
 import android.graphics.PointF;
 
+import com.putao.camera.camera.gpuimage.GPUImageBilateralFilter;
 import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
 import com.putao.camera.camera.gpuimage.GPUImageContrastFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
@@ -23,10 +24,10 @@ import java.util.Map;
  */
 public class CustomerFilter {
     public enum FilterType {
-        BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC
+        NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC
     }
 
-    private final String[] filterNmae = {"白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场"};
+    private final String[] filterNmae = {"原图", "白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场"};
     private Map<String, FilterType> filterTypeMap = new HashMap<>();
 
     public CustomerFilter() {
@@ -34,14 +35,15 @@ public class CustomerFilter {
     }
 
     private void initFilterTypeMap() {
-        filterTypeMap.put(filterNmae[0], FilterType.BLCX);
-        filterTypeMap.put(filterNmae[1], FilterType.MSHK);
-        filterTypeMap.put(filterNmae[2], FilterType.BBNN);
-        filterTypeMap.put(filterNmae[3], FilterType.QRSY);
-        filterTypeMap.put(filterNmae[4], FilterType.ZJLN);
-        filterTypeMap.put(filterNmae[5], FilterType.YMYG);
-        filterTypeMap.put(filterNmae[6], FilterType.WLHA);
-        filterTypeMap.put(filterNmae[7], FilterType.SLDC);
+        filterTypeMap.put(filterNmae[0], FilterType.NONE);
+        filterTypeMap.put(filterNmae[1], FilterType.BLCX);
+        filterTypeMap.put(filterNmae[2], FilterType.MSHK);
+        filterTypeMap.put(filterNmae[3], FilterType.BBNN);
+        filterTypeMap.put(filterNmae[4], FilterType.QRSY);
+        filterTypeMap.put(filterNmae[5], FilterType.ZJLN);
+        filterTypeMap.put(filterNmae[6], FilterType.YMYG);
+        filterTypeMap.put(filterNmae[7], FilterType.WLHA);
+        filterTypeMap.put(filterNmae[8], FilterType.SLDC);
     }
 
     public Map<String, FilterType> getFilterTypeMap() {
@@ -50,6 +52,8 @@ public class CustomerFilter {
 
     public GPUImageFilter getFilterByType(FilterType type) {
         switch (type) {
+            case NONE:
+                return getYuTu();
             case BLCX:
                 return getBaiLiangChenXi();
             case MSHK:
@@ -76,8 +80,12 @@ public class CustomerFilter {
      * 白亮晨曦
      */
     private GPUImageFilter getBaiLiangChenXi() {
-        //-1.0f-1.0f
-        return new GPUImageBrightnessFilter(0.25f);
+        List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
+        //亮度 0.0f, 2.0f
+        filters.add(new GPUImageBrightnessFilter(0.25f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
+        return new GPUImageFilterGroup(filters);
     }
 
 
@@ -92,6 +100,8 @@ public class CustomerFilter {
         filters.add(new GPUImageSepiaFilter(0.5f));
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.0f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -106,6 +116,8 @@ public class CustomerFilter {
         filters.add(new GPUImageBrightnessFilter(0.20f));
         //饱和度 0.0f, 2.0f
         filters.add(new GPUImageSaturationFilter(1.2f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -124,6 +136,8 @@ public class CustomerFilter {
         filters.add(new GPUImageSepiaFilter(0.1f));
         //对比度 0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.1f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -138,6 +152,8 @@ public class CustomerFilter {
         filters.add(new GPUImageSepiaFilter(1.0f));
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.25f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -152,6 +168,8 @@ public class CustomerFilter {
         filters.add(new GPUImageWhiteBalanceFilter(5000.0f, 0.0f));
         //对比度 0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.3f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -166,6 +184,8 @@ public class CustomerFilter {
         filters.add(new GPUImageSaturationFilter(1.2f));
         //rgb
         filters.add(new GPUImageRGBFilter(0.75f, 0.75f, 1.0f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 
@@ -180,9 +200,20 @@ public class CustomerFilter {
         PointF centerPoint = new PointF();
         centerPoint.x = 0.5f;
         centerPoint.y = 0.5f;
-        filters.add(new GPUImageVignetteFilter(centerPoint, new float[]{0.0f, 0.0f, 0.0f}, 0.3f, 0.75f));
+        filters.add(new GPUImageVignetteFilter(centerPoint, new float[]{0.0f, 0.0f, 0.0f}, 0.2f, 0.75f));
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.0f));
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
+        return new GPUImageFilterGroup(filters);
+    }
+
+    private float progress = 8.0f;
+
+    private GPUImageFilterGroup getYuTu() {
+        List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
+        //高斯模糊0.0f, 15.0f
+        filters.add(new GPUImageBilateralFilter(progress));
         return new GPUImageFilterGroup(filters);
     }
 }
