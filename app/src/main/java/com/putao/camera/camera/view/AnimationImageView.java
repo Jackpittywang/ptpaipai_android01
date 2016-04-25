@@ -600,4 +600,18 @@ public class AnimationImageView extends ImageView {
     private boolean isMatrixComplete = false;
     ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
     private List<Bitmap> bottomScaleBitmapArr = new ArrayList<Bitmap>();
+
+
+    public List<Bitmap> getBottomBitmapArr() {
+        return bottomBitmapArr;
+    }
+
+    public List<Bitmap> getEyesBitmapArr() {
+        return eyesBitmapArr;
+    }
+
+    public List<Bitmap> getMouthBitmapArr() {
+        return mouthBitmapArr;
+    }
+
 }
