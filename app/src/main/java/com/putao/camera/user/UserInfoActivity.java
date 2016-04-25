@@ -71,6 +71,10 @@ public class UserInfoActivity extends PTXJActivity {
             ToastUtils.showToastShort(mContext, "没有更改无需保存");
             return;
         }
+        if(userInfo.equals("")){
+            ToastUtils.showToastShort(mContext, "个人简介不能为空");
+            return;
+        }
         upload();
     }
 
