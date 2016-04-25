@@ -3,6 +3,7 @@ package com.putao.mtlib.tcp;
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.putao.mtlib.jni.MsgpackJNI;
 import com.putao.mtlib.util.MD5Util;
@@ -142,6 +143,7 @@ public class PTSenderManager {
 	}
 
 	void sendMsg(byte[] buffer, Handler handler) {
+		Log.i("ptl", "send socket message     !!!!!!:" + buffer[0]);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < buffer.length; i++) {
 			sb.append(i + 1 + "=" + buffer[i] + " ");
