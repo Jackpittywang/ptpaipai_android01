@@ -311,6 +311,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private void clearImageList() {
         File folder = new File(videoImagePath);
         File[] childFile = folder.listFiles();
+        if(childFile==null)return;
         for (int i = 0; i < childFile.length; i++) {
             try {
                 File file = childFile[i];

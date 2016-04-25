@@ -146,8 +146,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
 
-//        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);
-        show_image.setImageBitmap(originImageBitmap);
+        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);
+        show_image.setImageBitmap(ImageCropBitmap);
         loadFilters();
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
@@ -723,11 +723,11 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 updateTextEditViewText(event.bundle);
                 break;
             case PuTaoConstants.PHOTO_EDIT_CUT_FINISH:
-                corpOriginImageBitmap = event.bundle.getParcelable("corpImage");
+                ImageCropBitmap = event.bundle.getParcelable("corpImage");
                 if (mCurrentFilter == GLEffectRender.DEFAULT_EFFECT_ID) {
-                    show_image.setImageBitmap(corpOriginImageBitmap);
+                    show_image.setImageBitmap(ImageCropBitmap);
                 } else {
-                    new EffectImageTask(corpOriginImageBitmap, mCurrentFilter, mFilterEffectListener).execute();
+                    new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
                 }
                 is_edited = true;
                 break;

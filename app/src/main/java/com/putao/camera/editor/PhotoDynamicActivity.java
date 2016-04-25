@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +30,8 @@ import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
+import com.putao.camera.camera.model.FaceModel;
+import com.putao.camera.camera.utils.RecorderManager;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.camera.view.IntentARImageView;
 import com.putao.camera.collage.util.CollageHelper;
@@ -40,6 +44,7 @@ import com.putao.camera.setting.watermark.management.DynamicListInfo;
 import com.putao.camera.setting.watermark.management.DynamicPicAdapter;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
+import com.putao.camera.util.BitmapToVideoUtil;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
@@ -48,6 +53,7 @@ import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
+import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -58,6 +64,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.OnClick;
 import mobile.ReadFace.YMDetector;
@@ -275,7 +283,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         int with = bundle.getInt("backgroundWith");
         int height = bundle.getInt("backgroundHight");
         Viedheight = height * 480 / with;
-        imagesToVideo();
+        saveASVideo(originImageBitmap);
+//        imagesToVideo();
 
     }
 
@@ -286,7 +295,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                 int with = event.bundle.getInt("backgroundWith");
                 int height = event.bundle.getInt("backgroundHight");
                 Viedheight = height * 480 / with;
-                imagesToVideo();
+                saveASVideo(originImageBitmap);
+//                imagesToVideo();
                 break;
             case PuTaoConstants.DOWNLOAD_FILE_FINISH: {
                 Loger.d("DOWNLOAD_FILE_FINISH");
@@ -494,6 +504,92 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     protected String[] getRequestUrls() {
         return new String[0];
     }
+
+
+    /**
+     * 保存有动态贴纸的视频
+     *
+     * @param bitmap
+     */
+    private ProgressDialog saveDialog;
+    private boolean videoSaving = false;
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private String videoPath;
+
+    private void saveASVideo(final Bitmap bitmap) {
+        videoSaving = true;
+        final YMDetector detector = new YMDetector(mContext);
+        singleThreadExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FaceModel faceModel;
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 2;
+                    options.inJustDecodeBounds = false;
+                    byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
+                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                    List<YMFace> faces = detector.onDetector(scaleImageBmp);
+                    if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+                        YMFace face = faces.get(0);
+                        faceModel = new FaceModel();
+                        faceModel.landmarks = face.getLandmarks();
+                        faceModel.emotions = face.getEmotions();
+                        RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+                        faceModel.rectf = rect;
+                    } else {
+                        handler.sendEmptyMessage(0x201);
+                        return;
+                    }
+                    String model = android.os.Build.MODEL.toLowerCase();
+                    String brand = Build.BRAND.toLowerCase();
+                    if (model.contains("meizu") || brand.contains("meizu") || model.contains("mx5") || model.contains("mx4")) {
+                        videoPath = CommonUtils.getOutputVideoFileMX().getAbsolutePath();
+                    } else {
+                        videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath();
+                    }
+                    RecorderManager recorderManager = new RecorderManager(3 * 1000, scaleImageBmp.getWidth(), scaleImageBmp.getHeight(), videoPath);
+                    final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, animation_view.getAnimationModel(), scaleImageBmp, animation_view.getEyesBitmapArr(), animation_view.getMouthBitmapArr(), animation_view.getBottomBitmapArr());
+
+                    //停止预览页面动态贴纸的显示
+                    recorderManager.combineVideo(combineBmps);
+                    handler.sendEmptyMessage(0x200);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    handler.sendEmptyMessage(0x201);
+                }
+            }
+        });
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0x200) {
+                if (saveDialog != null && saveDialog.isShowing()) {
+                    saveDialog.dismiss();
+                }
+
+                videoSaving = false;
+                ToastUtils.showToastShort(mContext, "视频保存成功");
+
+                Bundle bundle = new Bundle();
+                bundle.putString("savefile", videoPath);
+                bundle.putString("imgpath", videoImagePath + "image00.jpg");
+                bundle.putString("from", "dynamic");
+                ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
+                finish();
+            } else if (msg.what == 0x201) {
+                if (saveDialog != null && saveDialog.isShowing()) {
+                    saveDialog.dismiss();
+                }
+                videoSaving = false;
+                ToastUtils.showToastShort(mContext, "视频保存失败");
+            }
+        }
+    };
+
 
 
 }

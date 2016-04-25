@@ -1,6 +1,7 @@
 
 package com.putao.camera.setting.watermark.management;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
     private int position;
     private String id;
     StickerCategoryInfo mStickerCategoryInfos;
-    LoadingHUD loading;
+    private LoadingHUD mLoading;
 
     @Override
     public int doGetContentViewId() {
@@ -63,6 +64,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     @Override
     public void doInitSubViews(View view) {
+        mLoading = LoadingHUD.getInstance(mContext);
         name_tv = (TextView) this.findViewById(R.id.name_tv);
         back_btn = (Button) this.findViewById(R.id.back_btn);
         title_tv = (TextView) this.findViewById(R.id.title_tv);
@@ -76,7 +78,6 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
         mGridView = (GridView) this.findViewById(R.id.grid_view);
         addOnClickListener(download_btn, back_btn);
         EventBus.getEventBus().register(this);
-        loading= LoadingHUD.getInstance(this);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
 
     }
 
-
+    private ProgressDialog saveDialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -138,6 +139,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     showToast("存储卡不可用!");
                     return;
                 }
+
                 if (isDownloaded()) {
                    /* Map<String, String> map = new HashMap<String, String>();
                     map.put("id", id+"");
@@ -150,6 +152,12 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                     Bundle bundle = new Bundle();
                     EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));*/
                 } else {
+//                    mLoading.show();
+                    saveDialog = new ProgressDialog(this);
+                    saveDialog.setMessage("正在下载...");
+                    saveDialog.setCancelable(false);
+                    saveDialog.show();
+
                     String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
                     if(mStickerPackageDetailInfo == null || path == null || mStickerPackageDetailInfo.data.download_url ==null) return;
                     startDownloadService(mStickerPackageDetailInfo.data.download_url, path, position);
@@ -281,6 +289,7 @@ public class WaterMarkCategoryDetailActivity extends BaseActivity implements Vie
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        saveDialog.dismiss();
                         updateProgressPartly(percent, position);
                     }
                 });
