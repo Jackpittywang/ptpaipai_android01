@@ -200,7 +200,7 @@ public final class CollageManagementFragment extends BaseFragment implements Ada
             }
         };
         HashMap<String, String> map = new HashMap<String, String>();
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=template_pic&page=1", map, mWaterMarkUpdateCallback);
+        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=template_pic&page="+currentPage, map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
 

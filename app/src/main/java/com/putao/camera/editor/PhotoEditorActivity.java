@@ -88,8 +88,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private TextView tv_action, tv_save;
     //    private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
-    private LinearLayout ll_picture_filter, choice_water_mark_ll, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager,
-            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_save;
+    private LinearLayout ll_picture_filter, choice_water_mark_ll, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager, opt_button_bar3,
+            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_rotate_cancel,edit_ll_ratate_save, edit_ll_save;
     private ViewGroup title_bar_rl, option_bars;
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private BasicRecyclerView rv_nativ_mark;
@@ -128,14 +128,14 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     @Override
     protected int getLayoutId() {
-        photoType= SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
         return R.layout.activity_photo_editor;
     }
 
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
         doInitSubViews();
-        GPUImage mGPUImage=new GPUImage(mContext);
+        GPUImage mGPUImage = new GPUImage(mContext);
         Intent intent = this.getIntent();
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
@@ -145,9 +145,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
         }
-
+        ImageCropBitmap=originImageBitmap;
 //        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);
-        show_image.setImageBitmap(originImageBitmap);
+        show_image.setImageBitmap(ImageCropBitmap);
         loadFilters();
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
@@ -176,7 +176,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(mContext);
         linearLayoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mStickerNativePicAdapter=new StickerNativePicAdapter(mContext,null);
+        mStickerNativePicAdapter = new StickerNativePicAdapter(mContext, null);
         rv_nativ_mark.setAdapter(mStickerNativePicAdapter);
         rv_nativ_mark.setLayoutManager(linearLayoutManager1);
 
@@ -229,9 +229,12 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         rotate_image_ll = (LinearLayout) findViewById(R.id.rotate_image_ll);
         photo_area_rl = (FrameLayout) findViewById(R.id.photo_area_rl);
         opt_button_bar2 = (LinearLayout) findViewById(R.id.opt_button_bar2);
+        opt_button_bar3 = (LinearLayout) findViewById(R.id.opt_button_bar3);
         opt_button_bar = (LinearLayout) findViewById(R.id.opt_button_bar);
         edit_ll_cancel = (LinearLayout) findViewById(R.id.edit_ll_cancel);
         edit_ll_save = (LinearLayout) findViewById(R.id.edit_ll_save);
+        edit_ll_ratate_save= (LinearLayout) findViewById(R.id.edit_ll_ratate_save);
+        edit_ll_rotate_cancel = (LinearLayout) findViewById(R.id.edit_ll_rotate_cancel);
         backBtn = (Button) findViewById(R.id.back_btn);
         tv_save = (TextView) findViewById(R.id.tv_save);
         show_image = (ImageView) findViewById(R.id.show_image);
@@ -245,7 +248,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         mark_content = (LinearLayout) findViewById(R.id.mark_content);
         mark_list_pager = (LinearLayout) findViewById(R.id.mark_list_pager);
         rv_articlesdetail_applyusers = (BasicRecyclerView) findViewById(R.id.rv_articlesdetail_applyusers);
-        rv_nativ_mark= (BasicRecyclerView) findViewById(R.id.rv_nativ_mark);
+        rv_nativ_mark = (BasicRecyclerView) findViewById(R.id.rv_nativ_mark);
         mark_cate_contanier = (LinearLayout) findViewById(R.id.mark_cate_contanier);
         tv_action = (TextView) findViewById(R.id.tv_action);
         filter_scrollview.setVisibility(View.GONE);
@@ -253,8 +256,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     }
 
-    @OnClick({R.id.ll_picture_filter, R.id.choice_water_mark_ll, R.id.tv_save, R.id.edit_ll_cancel,
-            R.id.edit_ll_save, R.id.ll_cut_image, R.id.rotate_image_ll, R.id.anti_clockwise,
+    @OnClick({R.id.ll_picture_filter, R.id.choice_water_mark_ll, R.id.tv_save, R.id.edit_ll_cancel, R.id.edit_ll_ratate_save,
+            R.id.edit_ll_save, R.id.ll_cut_image, R.id.rotate_image_ll, R.id.anti_clockwise, R.id.edit_ll_rotate_cancel,
             R.id.clockwise_spin, R.id.horizontal_flip, R.id.vertical_flip, R.id.ll_dynamic_filter, R.id.iv_hide_mark,
             R.id.left_btn_ll})
     @Override
@@ -296,6 +299,10 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             case R.id.edit_ll_cancel:
                 cancelEditing();
                 break;
+            case R.id.edit_ll_rotate_cancel:
+                cancelEditing();
+                break;
+
             case R.id.iv_hide_mark:
                 opt_button_bar.setVisibility(View.VISIBLE);
                 choice_water_mark_ll.setClickable(true);
@@ -304,6 +311,12 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 filter_scrollview.setVisibility(View.GONE);
                 mark_content.setVisibility(View.GONE);
                 break;
+
+
+            case R.id.edit_ll_ratate_save:
+                saveEditing();
+                break;
+
             case R.id.edit_ll_save:
                 saveEditing();
                 break;
@@ -427,7 +440,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             p.gravity = Gravity.CENTER;
             textView.setLayoutParams(p);
             textView.mIndex = i;
-            if (0 == i){
+            if (0 == i) {
                 rv_articlesdetail_applyusers.setVisibility(View.VISIBLE);
                 rv_nativ_mark.setVisibility(View.GONE);
                 mStickerPicAdapter.replaceAll(info_temp.elements);
@@ -448,8 +461,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mark_cate_contanier.addView(textView);
         }
 
-        for (int i = content.size(); i < content1.size()+content.size(); i++) {
-            final WaterMarkCategoryInfo info_temp = content1.get(i-content.size());
+        for (int i = content.size(); i < content1.size() + content.size(); i++) {
+            final WaterMarkCategoryInfo info_temp = content1.get(i - content.size());
             final MyTextView textView = new MyTextView(mContext);
 //            textView.setText(info_temp.name);
             textView.setTag(info_temp);
@@ -459,7 +472,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             p.gravity = Gravity.CENTER;
             textView.setLayoutParams(p);
             textView.mIndex = i;
-            if (0 == i){
+            if (0 == i) {
                 rv_articlesdetail_applyusers.setVisibility(View.GONE);
                 rv_nativ_mark.setVisibility(View.VISIBLE);
                 mStickerNativePicAdapter.replaceAll(info_temp.elements);
@@ -699,7 +712,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             break;
 
 
-
             case PuTaoConstants.WATER_FILTER_EFFECT_CHOICE_REFRESH: {
                 Bundle bundle = event.bundle;
                 String filterId = GLEffectRender.DEFAULT_EFFECT_ID;
@@ -723,16 +735,16 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 updateTextEditViewText(event.bundle);
                 break;
             case PuTaoConstants.PHOTO_EDIT_CUT_FINISH:
-                corpOriginImageBitmap = event.bundle.getParcelable("corpImage");
+                ImageCropBitmap = event.bundle.getParcelable("corpImage");
                 if (mCurrentFilter == GLEffectRender.DEFAULT_EFFECT_ID) {
-                    show_image.setImageBitmap(corpOriginImageBitmap);
+                    show_image.setImageBitmap(ImageCropBitmap);
                 } else {
-                    new EffectImageTask(corpOriginImageBitmap, mCurrentFilter, mFilterEffectListener).execute();
+                    new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
                 }
                 is_edited = true;
                 break;
             case PuTaoConstants.PHOTO_FROM_CAMERA:
-                photo_data=event.bundle.getString("ImagePath");
+                photo_data = event.bundle.getString("ImagePath");
                 if (!StringHelper.isEmpty(photo_data)) {
                     originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                             DisplayHelper.getScreenHeight());
@@ -1070,7 +1082,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 Loger.d("scanFile" + "-> uri=" + uri);
                 Bundle bundle = new Bundle();
                 bundle.putString("savefile", pictureFile.toString());
-                bundle.putString("imgpath","");
+                bundle.putString("imgpath", "");
                 bundle.putString("from", "editor");
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_CONTENT_PROVIDER_REFRESH, bundle));
                 progressDialog.dismiss();
@@ -1216,13 +1228,19 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             }
             mMarkViewTempList.clear();
         } else if (mEditAction == EditAction.ACTION_FILTER) {
+
+        }else if(mEditAction == EditAction.ACTION_ROTATE){
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }
+
+
+
         if (mEditAction == EditAction.ACTION_Mark) {
 //            doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_BACKOUT);
         } else if (mEditAction == EditAction.ACTION_FILTER) {
 //            doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_FILTER_BACKOUT);
         }
+
         mEditAction = EditAction.NONE;
     }
 
@@ -1232,7 +1250,14 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         filter_scrollview.setVisibility(View.GONE);
         mark_content.setVisibility(View.GONE);
         mMarkViewTempList.clear();
-        mCurrentFilter = mTempFilter;
+        if(mEditAction == EditAction.ACTION_ROTATE){
+
+        }else if(mEditAction == EditAction.ACTION_FILTER) {
+            mCurrentFilter = mTempFilter;
+            new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
+        }
+
+
         if (mEditAction == EditAction.ACTION_Mark) {
 //            doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_CONFIRM);
         } else if (mEditAction == EditAction.ACTION_FILTER) {
@@ -1279,10 +1304,35 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         ObjectAnimator.ofFloat(opt_button_bar2, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
     }
 
+    void showRotateTitleAni() {
+        photo_area_rl.setLayoutParams(new RelativeLayout.LayoutParams(photo_area_rl.getWidth(), photo_area_rl.getHeight()));
+        title_bar_rl.setLayoutParams(new RelativeLayout.LayoutParams(title_bar_rl.getWidth(), title_bar_rl.getHeight()));
+        opt_button_bar.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
+        opt_button_bar3.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
+        ObjectAnimator.ofFloat(title_bar_rl, "translationY", -(title_bar_rl.getHeight()), 0).setDuration(500).start();
+        ObjectAnimator.ofFloat(photo_area_rl, "translationY", 0, title_bar_rl.getHeight()).setDuration(500).start();
+        ObjectAnimator.ofFloat(opt_button_bar, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
+        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", 0, option_bars.getHeight()).setDuration(500).start();
+    }
+
+    void hideRotateTitleAni() {
+        photo_area_rl.setLayoutParams(new RelativeLayout.LayoutParams(photo_area_rl.getWidth(), photo_area_rl.getHeight()));
+        title_bar_rl.setLayoutParams(new RelativeLayout.LayoutParams(title_bar_rl.getWidth(), title_bar_rl.getHeight()));
+        opt_button_bar.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
+        opt_button_bar3.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
+        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", 0, option_bars.getHeight()).setDuration(10).start();
+        opt_button_bar3.setVisibility(View.VISIBLE);
+        ObjectAnimator.ofFloat(title_bar_rl, "translationY", 0, -(title_bar_rl.getHeight())).setDuration(500).start();
+        ObjectAnimator.ofFloat(photo_area_rl, "translationY", title_bar_rl.getHeight(), 0).setDuration(500).start();
+        ObjectAnimator.ofFloat(opt_button_bar, "translationY", 0, option_bars.getHeight()).setDuration(500).start();
+        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
+    }
+
     EffectImageTask.FilterEffectListener mFilterEffectListener = new EffectImageTask.FilterEffectListener() {
         @Override
         public void rendered(Bitmap bitmap) {
             if (bitmap != null) {
+                ImageCropBitmap=bitmap;
                 show_image.setImageBitmap(bitmap);
             }
         }

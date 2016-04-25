@@ -266,6 +266,62 @@
                     android:background="@drawable/edit_button_save" />-->
             </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/opt_button_bar3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/edit_ll_rotate_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_button_cancel" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="旋转"
+                    android:textColor="@color/text_color_dark_626262"
+                    android:textSize="@dimen/activity_title_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/edit_ll_ratate_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_button_save" />
+
+                <!--  <Button
+                      android:id="@+id/edit_button_save"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:background="@drawable/edit_button_save" />-->
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <FrameLayout

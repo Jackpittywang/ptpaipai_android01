@@ -28,6 +28,7 @@ import android.hardware.Camera.Parameters;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -396,10 +397,11 @@ public class PCameraFragment extends CameraFragment {
         this.isShowAR = isShowAR;
     }
 
-    private File pic;
+    private Parameters previewParams = null;
 
     public void takeSimplePhoto() {
-        if (mHdrEnable) {
+        flashScreen();
+       /* if (mHdrEnable) {
             if (mExposureLevel == ExposureLevel.NORMAL) {
                 setExposureLevel(ExposureLevel.LOW);
             } else if (mExposureLevel == ExposureLevel.LOW) {
@@ -409,10 +411,34 @@ public class PCameraFragment extends CameraFragment {
             }
         } else {
             setExposureLevel(ExposureLevel.NORMAL);
+        }*/
+       Camera camera=cameraView.getCamera();
+//        previewParams = camera.getParameters();
+        Parameters pictureParams = camera.getParameters();
+      /*  if(mHdrEnable){
+            if(mHdrAuto){
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
+            }else {
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
+            }
+        }else{
+            pictureParams.setFlashMode(Parameters.FLASH_MODE_ON);
+        }*/
+        if(mHdrEnable){
+            pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
+        }else {
+            pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
         }
 
+        String model = android.os.Build.MODEL.toLowerCase();
+        String brand = Build.BRAND.toLowerCase();
+        // 所有华为的机器不要做set处理,
+        if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+        } else {
+            camera.setParameters(pictureParams);
+        }
 
-        cameraView.getCamera().takePicture(null, null, new Camera.PictureCallback() {
+        camera.takePicture(null, null, new Camera.PictureCallback() {
 
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
@@ -485,7 +511,7 @@ public class PCameraFragment extends CameraFragment {
         if (flashMode != null) {
             xact.flashMode(flashMode);
         }
-        if (mHdrEnable) {
+     /*   if (mHdrEnable) {
             if (mExposureLevel == ExposureLevel.NORMAL) {
                 setExposureLevel(ExposureLevel.LOW);
             } else if (mExposureLevel == ExposureLevel.LOW) {
@@ -495,7 +521,7 @@ public class PCameraFragment extends CameraFragment {
             }
         } else {
             setExposureLevel(ExposureLevel.NORMAL);
-        }
+        }*/
         Loger.d("exposure level:" + mExposureLevel);
         takePicture(xact);
     }

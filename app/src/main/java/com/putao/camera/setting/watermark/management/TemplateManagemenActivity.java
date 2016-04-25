@@ -179,11 +179,12 @@ public final class TemplateManagemenActivity extends BaseActivity implements Ada
                 CollageManagementAdapter.ViewHolder vh = (CollageManagementAdapter.ViewHolder) view.getTag();
                 if (progress > 0 && progress < 100) {
                     vh.pb_download.setVisibility(View.VISIBLE);
-                    vh.collage_photo_download_iv.setVisibility(View.GONE);
+                    vh.collage_photo_download_iv.setImageResource(R.drawable.btn_22_02);
                     vh.collage_photo_download_iv.setOnClickListener(null);
                 } else if (progress == 100) {
                     vh.pb_download.setVisibility(View.GONE);
-                    vh.collage_photo_download_iv.setVisibility(View.VISIBLE);
+                    vh.collage_photo_download_iv.setImageResource(R.drawable.btn_22_03);
+
                 }
             }
         }

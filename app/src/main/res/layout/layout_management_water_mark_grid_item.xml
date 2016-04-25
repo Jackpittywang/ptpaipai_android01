@@ -104,7 +104,7 @@
             android:layout_alignParentRight="true"
             android:paddingBottom="10dp"
             android:paddingRight="10dp"
-            android:src="@drawable/btn_22_01"
+            android:src="@drawable/btn_22_02"
             android:visibility="gone" />
 
     </RelativeLayout>

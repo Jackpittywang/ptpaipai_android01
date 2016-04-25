@@ -139,7 +139,7 @@ public class PuTaoConstants {
     public static final String PAIPAI_DYNAMIC_UPDATE_PACKAGE_PATH = "/Dynamic_unzip/";
 
     // 资源更新服务器Host
-    public static final String PAIPAI_SERVER_HOST = MainApplication.isDebug ? "http://api-paipai.ptdev.cn" : "http://api-camera.putao.com ";//api-camera.putao.com    http://api.camera.putao.com
+    public static final String PAIPAI_SERVER_HOST = MainApplication.isDebug ? "http://api-paipai.ptdev.cn" : "http://api-camera.putao.com";//api-camera.putao.com    http://api.camera.putao.com
     //素材中心
     public static final String PAIPAI_MATTER_CENTER_PATH = "/material/type";
     //素材列表
