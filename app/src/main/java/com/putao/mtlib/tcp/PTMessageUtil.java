@@ -46,7 +46,7 @@ public class PTMessageUtil {
 	public static int getMessageType(byte[] header) {
 		if (header == null || header.length < 2)
 			return -1;
-		return ByteUtil.ByteArraytoInt(new byte[] { header[0], header[1] });
+		return ByteUtil.ByteArraytoInt(new byte[]{header[0], header[1]});
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class PTMessageUtil {
 	public static int getPacketBodySize(byte[] header) {
 		if (header.length < 6)
 			return -1;
-		return ByteUtil.ByteArraytoInt(new byte[] { header[2], header[3], header[4], header[5] });
+		return ByteUtil.ByteArraytoInt(new byte[]{header[2], header[3], header[4], header[5]});
 	}
 	
 }

@@ -17,6 +17,7 @@ import com.putao.mtlib.tcp.PTMessageConfig;
 import com.putao.mtlib.tcp.PTMessageType;
 import com.putao.mtlib.tcp.PTRecMessage;
 import com.putao.mtlib.tcp.PTSenderManager;
+import com.putao.mtlib.tcp.PTSocketOutputThread;
 import com.putao.mtlib.util.MD5Util;
 import com.putao.mtlib.util.MsgPackUtil;
 import com.putao.mtlib.util.PTLoger;
@@ -63,6 +64,7 @@ public class CameraNotifyService extends Service {
                     switch (response.getType()) {
                         case 2:
                             Logger.d("ptl-----------", "连接成功");
+                            PTSocketOutputThread.isConnected = true;
                             break;
                    /* case 3:
                         String message = response.getMessage();

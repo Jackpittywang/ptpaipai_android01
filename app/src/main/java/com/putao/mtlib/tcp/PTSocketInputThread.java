@@ -92,7 +92,7 @@ public class PTSocketInputThread extends Thread {
      * @param msg
      */
     void handlePTMessage(PTMessage msg) {
-        Logger.d("ptl----收到消息,type=" + msg.type);
+        Logger.d("收到消息,type=" + msg.type);
         if (msg.length > 0) {
             printBuffer(msg.data, msg.data.length);
         }
@@ -100,6 +100,7 @@ public class PTSocketInputThread extends Thread {
         switch (msg.type) {
             case PTMessageType.SC_CONNECTACK:
                 data = MsgpackJNI.UnPackMessage(msg.data, msg.length);
+
                 break;
             case PTMessageType.SC_NOTICE:
                 MessagePackData msgData = new MessagePackData();
@@ -113,6 +114,7 @@ public class PTSocketInputThread extends Thread {
                 redActionBundle.putString(PTMessageReceiver.KeyMessage, msgData.getMsg());
                 intent.putExtras(redActionBundle);
                 mContext.sendBroadcast(intent);
+                PTSocketOutputThread.isConnected = true;
                /* PTSenderManager.sharedInstance().sendMsg(PTMessageUtil.getMesageByteArray(PTMessageType.CS_NOTICEACK, null),
                         null);*/
                 sendConnectValidate(msgData.getMsgId());
@@ -201,6 +203,7 @@ public class PTSocketInputThread extends Thread {
                         } catch (SocketException e) {
                             PTLoger.e("socket exception");
                             PTTCPClient.instance().setConnectState(false);
+//                            PTSocketOutputThread.isConnected = false;
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -218,7 +221,9 @@ public class PTSocketInputThread extends Thread {
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+//            PTSocketOutputThread.isConnected = false;
         } catch (ClosedSelectorException e2) {
+//            PTSocketOutputThread.isConnected = false;
         }
     }
 }

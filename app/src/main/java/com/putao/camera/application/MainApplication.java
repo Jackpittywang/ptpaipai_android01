@@ -389,6 +389,7 @@ public class MainApplication extends BasicApplication {
     public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
     public static final String Fore_Message = "com.putao.isFore.message";
     public static final String Not_Fore_Message = "com.putao.isNotFore.message";
+    public static final String Not_Fore_Message_Soon = "Not_Fore_Message_Soon";
     //===================preference key===========================
     public static String app_id;
     public static final String PREFERENCE_KEY_UID = "uid";
