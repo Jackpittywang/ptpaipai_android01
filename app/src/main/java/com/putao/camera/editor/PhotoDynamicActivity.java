@@ -98,6 +98,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private List<DynamicIconInfo> nativeList = null;
     private int Viedheight;
     private int currentSelectDynamic = 0;
+    private boolean haveNoFace=false;
 
     @Override
     protected int getLayoutId() {
@@ -147,12 +148,14 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                         public void run() {
                             List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
                             if (faces != null && faces.size() > 0) {
+                                haveNoFace=false;
                                 YMFace face = faces.get(0);
                                 landmarks = face.getLandmarks();
                                 if (landmarks != null && landmarks.length > 0) {
                                     mHandle.sendEmptyMessage(123);
                                 }
                             }else {
+                                haveNoFace=true;
                                 ToasterHelper.showShort(PhotoDynamicActivity.this, "检测不到人脸,请换一张试试吧", R.drawable.img_blur_bg);
                             }
                         }
@@ -242,7 +245,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             }
             break;
             case R.id.tv_save:
-                save();
+                if(haveNoFace){
+                    ToasterHelper.showShort(PhotoDynamicActivity.this, "检测不到人脸,请换一张试试吧", R.drawable.img_blur_bg);
+                }else {
+                    save();
+                }
                 break;
         }
     }

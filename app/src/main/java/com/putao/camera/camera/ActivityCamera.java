@@ -825,6 +825,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private void takePhoto() {
         SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
+        tv_takephoto.setEnabled(false);
         camera_set_ll.setEnabled(false);
         camera_set_iv.setEnabled(false);
         take_photo_btn.setEnabled(false);
@@ -863,8 +864,13 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         @Override
                         public void run() {
                             execTakePhoto();
-                            take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.film_camera_btn));
-                            take_photo_btn.setText("");
+                            tv_takephoto.setEnabled(true);
+                            take_photo_btn.setEnabled(true);
+                            camera_set_iv.setEnabled(true);
+                            camera_set_ll.setEnabled(true);
+//                            take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.film_camera_btn));
+                            take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_capture_nor));
+//                            take_photo_btn.setText("");
                         }
                     });
                 }
@@ -872,6 +878,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             finalTime_thread.start();
         } else {
             execTakePhoto();
+            tv_takephoto.setEnabled(true);
             take_photo_btn.setEnabled(true);
             camera_set_iv.setEnabled(true);
             camera_set_ll.setEnabled(true);

@@ -1,6 +1,8 @@
 
 package com.putao.camera.menu;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -128,9 +130,19 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
             public void onFirstClick(View v) {
                 if (MainApplication.isServiceStart(mContext))
                     stopService(MainApplication.redServiceIntent);
-                AccountHelper.logout();
-                setDefaultBlur();
-                user_name_tv.setText("登录葡萄账户");
+                new AlertDialog.Builder(mContext).setTitle("提示").setMessage("是否退出登录?").setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AccountHelper.logout();
+                        setDefaultBlur();
+                        user_name_tv.setText("登录葡萄账户");
+                    }
+                }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+
             }
 
             @Override
@@ -219,7 +231,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
     @OnClick({R.id.menu_home_material_btn, R.id.menu_home_stickers_btn, R.id.menu_home_camera_btn, R.id.menu_home_jigsaw_btn, R.id.menu_home_movie_btn,
-            R.id.menu_home_setting_iv, R.id.login_ll})
+            R.id.menu_home_setting_iv, R.id.iv_header_icon})
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -250,7 +262,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, ActivityCamera.class);
 //                ActivityHelper.startActivity(this, MovieCameraActivity.class);
                 break;
-            case R.id.login_ll:
+            case R.id.iv_header_icon:
                 if (!AccountHelper.isLogin()) {
                     Bundle bundle = new Bundle();
                     bundle.putString("from", "menu");
