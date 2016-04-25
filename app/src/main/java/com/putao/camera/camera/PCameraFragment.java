@@ -429,9 +429,11 @@ public class PCameraFragment extends CameraFragment {
         }else {
             pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
         }
-
-        String model = android.os.Build.MODEL.toLowerCase();
-        String brand = Build.BRAND.toLowerCase();
+       if( pictureParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)){
+           pictureParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+       }
+       final String model = android.os.Build.MODEL.toLowerCase();
+        final String brand = Build.BRAND.toLowerCase();
         // 所有华为的机器不要做set处理,
         if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
         } else {
@@ -454,7 +456,9 @@ public class PCameraFragment extends CameraFragment {
                 if (isFFC) {
                     saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                 }
-
+              /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+                    saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+                }*/
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
                     mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
