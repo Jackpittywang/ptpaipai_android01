@@ -80,8 +80,7 @@ public class LogoActivity extends BaseActivity {
      * 启动内部推送
      */
     private void startRedDotService() {
-        if (TextUtils.isEmpty(AccountHelper.getCurrentUid())) return;
-        startService(MainApplication.redServiceIntent);
+        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
     }
 
 

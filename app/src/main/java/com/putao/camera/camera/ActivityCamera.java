@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.RedDotReceiver;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
@@ -134,7 +135,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
     private int currentSelectDynamic = 0;
-    boolean isFFC=false;
+    boolean isFFC = false;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -701,7 +702,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case R.id.album_btn:
                 //相册图片不进行裁剪
-                photoSize=0;
+                photoSize = 0;
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
@@ -897,18 +898,18 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         // 是否要显示AR贴纸
         current.setShowAR(animation_view.isAnimationRunning());
         current.isShowAR(animation_view.isAnimationRunning());
-        if(current==ffc){
-           isFFC=true;
-        }else {
-            isFFC=false;
+        if (current == ffc) {
+            isFFC = true;
+        } else {
+            isFFC = false;
         }
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true,isFFC);
+            current.takeSimplePicture(mMarkViewList, true, isFFC);
         } else if (mHdrState == HDRSTATE.AUTO) {
-            current.takeSimplePicture(mMarkViewList, true, true,isFFC);
+            current.takeSimplePicture(mMarkViewList, true, true, isFFC);
         } else {
-            current.takeSimplePicture(mMarkViewList,isFFC);
+            current.takeSimplePicture(mMarkViewList, isFFC);
 
         }
 
@@ -1222,7 +1223,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
                 Intent intent = new Intent(mContext, PhotoARShowActivity.class);
-                intent.putExtra("isFFC",isFFC+"");
+                intent.putExtra("isFFC", isFFC + "");
                 intent.putExtra("imagePath", event.bundle.getString("imagePath"));
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);
@@ -1851,10 +1852,10 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        v_red_dot.setVisibility(View.GONE);
+//        v_red_dot.setVisibility(View.GONE);
         //获取缓存红点数据
         boolean[] dots = new boolean[3];
-        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
         for (int i = 0; i < 3; i++) {
             if (dots[i]) {
                 v_red_dot.setVisibility(View.VISIBLE);
