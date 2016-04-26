@@ -18,12 +18,15 @@ import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
+import com.putao.camera.bean.UserInfo;
+import com.putao.camera.constants.UserApi;
 import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.NetManager;
 import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
 import com.sunnybear.library.view.image.ImageDraweeView;
@@ -111,8 +114,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         AccountHelper.setCurrentUid(result.getString("uid"));
                                         AccountHelper.setCurrentToken(result.getString("token"));
                                         new JPushHeaper().setAlias(mContext, result.getString("uid"));
-                                        //启动红点推送
-                                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+                                        //验证登陆后的连接发送
+                                        checkLogin(mobile);
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
                                         if (from.equals("share")) {
@@ -137,7 +140,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         }
                                         if (!MainApplication.isServiceStart(mContext))
                                             startService(MainApplication.redServiceIntent);
-                                        finish();
                                     }
 
                                     @Override
@@ -173,19 +175,22 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         }
     }
 
+
     /**
      * 验证登录
-     *//*
-    private void checkLogin() {
-        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
-        networkRequest(UserApi.getUserInfo(),
+     */
+    private void checkLogin(final String mobile) {
+        networkRequest(AccountApi.login(),
                 new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
                     @Override
                     public void onSuccess(String url, UserInfo result) {
                         AccountHelper.setUserInfo(result);
-                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
-                        loading.dismiss();
-                        finish();
+                        //启动红点推送
+                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+                        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
+                        if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
+                            mDiskFileCacheHelper.remove(NEED_CODE + mobile);
+                        }
                     }
 
                     @Override
@@ -200,7 +205,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         btn_login.setClickable(true);
                     }
                 });
-    }*/
+    }
+
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

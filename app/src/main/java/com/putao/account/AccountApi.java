@@ -2,6 +2,7 @@ package com.putao.account;
 
 import com.putao.base.RequestHelper;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.base.PTWDRequestHelper;
 import com.squareup.okhttp.Request;
 import com.sunnybear.library.model.http.request.FormEncodingRequestBuilder;
 import com.sunnybear.library.model.http.request.RequestMethod;
@@ -185,6 +186,19 @@ public class AccountApi {
                 .build(RequestMethod.POST, URL_LOGIN);
     }
 
+    /**
+     * 登陆后验证
+     */
+    public static final String URL_LOGIN_AFTER = BASE_URL + AccountConstants.Url.URL_LOGIN;
+
+    /**
+     * 登录后的验证
+     */
+    public static Request login() {
+        return PTWDRequestHelper.start()
+                .build(RequestMethod.POST, URL_LOGIN_AFTER);
+
+    }
 
     /**
      * 图形验证码的登录
