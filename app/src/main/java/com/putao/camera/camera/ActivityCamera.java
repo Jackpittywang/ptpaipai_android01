@@ -571,6 +571,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     public void onResume() {
         super.onResume();
 //        switchCamera();
+        tv_takephoto.setEnabled(true);
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
@@ -768,6 +769,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case R.id.tv_takephoto:
                 if (flag) {
+                    tv_takephoto.setEnabled(false);
                     take_photo_btn.setEnabled(false);
                     takePhoto();
                 }
@@ -825,7 +827,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private void takePhoto() {
         SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
-        tv_takephoto.setEnabled(false);
+
         camera_set_ll.setEnabled(false);
         camera_set_iv.setEnabled(false);
         take_photo_btn.setEnabled(false);
@@ -864,7 +866,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         @Override
                         public void run() {
                             execTakePhoto();
-                            tv_takephoto.setEnabled(true);
                             take_photo_btn.setEnabled(true);
                             camera_set_iv.setEnabled(true);
                             camera_set_ll.setEnabled(true);
@@ -878,7 +879,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             finalTime_thread.start();
         } else {
             execTakePhoto();
-            tv_takephoto.setEnabled(true);
             take_photo_btn.setEnabled(true);
             camera_set_iv.setEnabled(true);
             camera_set_ll.setEnabled(true);
@@ -1017,6 +1017,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             ToasterHelper.showShort(this, "打开", R.drawable.img_blur_bg);
         } else {
             camera_set_iv.setBackgroundResource(R.drawable.icon_capture_20_12);
+            tv_takephoto.setVisibility(View.GONE);
 //            ToasterHelper.show(this, "关闭");
             ToasterHelper.showShort(this, "关闭", R.drawable.img_blur_bg);
 

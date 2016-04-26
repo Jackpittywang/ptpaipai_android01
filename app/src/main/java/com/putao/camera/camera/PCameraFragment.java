@@ -419,7 +419,7 @@ public class PCameraFragment extends CameraFragment {
         Parameters pictureParams = camera.getParameters();
         if(mHdrEnable){
             if(mHdrAuto){
-                pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
             }else {
                 pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
             }
