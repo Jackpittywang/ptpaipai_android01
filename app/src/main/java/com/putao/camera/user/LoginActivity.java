@@ -111,7 +111,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         AccountHelper.setCurrentUid(result.getString("uid"));
                                         AccountHelper.setCurrentToken(result.getString("token"));
                                         new JPushHeaper().setAlias(mContext, result.getString("uid"));
-                                        mContext.sendBroadcast(new Intent(MainApplication.Not_Fore_Message));
+                                        //启动红点推送
+                                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
                                         if (from.equals("share")) {

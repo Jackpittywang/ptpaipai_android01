@@ -166,7 +166,7 @@ public class RegisterActivity extends PTXJActivity implements View.OnClickListen
                 if (mErrorCount >= 3) {
                     mDiskFileCacheHelper.put(REGISTER_CODE + value, REGISTER_CODE);
                 }
-                AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
+                AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_REGISTER);
                 et_graph_verify.setText("");
             }
         });

@@ -1,5 +1,6 @@
 package com.putao.camera.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import com.putao.account.AccountCallback;
 import com.putao.account.AccountConstants;
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
+import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UserApi;
@@ -203,6 +205,8 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
                 AccountHelper.setUserInfo(result);
                 EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
 //                startActivity(IndexActivity.class);
+                //启动红点推送
+                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                 finish();
                 loading.dismiss();
             }

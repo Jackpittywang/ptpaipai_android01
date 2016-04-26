@@ -30,7 +30,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         final boolean isServiceStart = isServiceStart(context);
         switch (intent.getAction()) {
-            case MainApplication.Fore_Message:
+            case MainApplication.IN_FORE_MESSAGE:
 //                inFore();
                 Logger.d("ptl---------------", "应用恢复到前台了");
                 if (!AccountHelper.isLogin()) return;
@@ -44,7 +44,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
                     Logger.d("ptl-----------", "启动服务");
                 }
                 break;
-            case MainApplication.Not_Fore_Message:
+            case MainApplication.OUT_FORE_MESSAGE:
 //                outFore();
                 if (null == timer)
                     timer = new Timer();
@@ -58,7 +58,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
                     }
                 }, 60 * 1000);
                 break;
-            case MainApplication.Not_Fore_Message_Soon:
+            case MainApplication.OUT_FORE_MESSAGE_SOON:
                 context.stopService(MainApplication.redServiceIntent);
                 Logger.d("ptl---------------", "停止服务");
                 break;
@@ -70,7 +70,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
         for (android.app.ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
             Logger.d("service-----", runningServiceInfo.service.getClassName().toString());
-            if ("com.putao.mtlib.NotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
+            if ("com.putao.mtlib.CameraNotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
                 return true;
             }
         }

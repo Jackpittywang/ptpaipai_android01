@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.RedDotReceiver;
 import com.putao.camera.base.BaseActivity;
@@ -80,8 +81,14 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
             }
         });
         vp_content.setOffscreenPageLimit(3);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         //获取缓存红点数据
-        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), mDots);
         setRedDot();
     }
 
@@ -155,7 +162,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
      *
      * @param dots
      */
-    @Subcriber(tag = RedDotReceiver.EVENT_DOT_INDEX)
+    @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATTER_CENTER)
     private void setRed_dot(boolean[] dots) {
         mDots = dots;
         setRedDot();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.alibaba.fastjson.JSONObject;
+import com.putao.account.AccountHelper;
 import com.putao.mtlib.tcp.PTMessageReceiver;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.util.Logger;
@@ -59,15 +60,12 @@ public class RedDotReceiver extends PTMessageReceiver {
             dots[2] = template_pic;
             EventBusHelper.post(dots, EVENT_DOT_MATTER_CENTER);
             //缓存红点数据
-            boolean[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER, dots);
-            if (value == dots)
-                PreferenceUtils.save(EVENT_DOT_MATTER_CENTER, dots);
-            else {
+            boolean[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
+            if (value != dots)
                 for (int i = 0; i < 3; i++) {
                     dots[i] = value[i] || dots[i];
                 }
-                PreferenceUtils.save(EVENT_DOT_MATTER_CENTER, dots);
-            }
+            PreferenceUtils.save(EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
         }
     }
 }

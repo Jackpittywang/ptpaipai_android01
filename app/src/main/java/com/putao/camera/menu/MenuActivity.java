@@ -128,14 +128,14 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         mSelectPopupWindow = new SelectPopupWindow(mContext, "注销账户", R.color.blue, "修改用户信息", R.color.text_color_red) {
             @Override
             public void onFirstClick(View v) {
-                if (MainApplication.isServiceStart(mContext))
-                    stopService(MainApplication.redServiceIntent);
                 new AlertDialog.Builder(mContext).setTitle("提示").setMessage("是否退出登录?").setPositiveButton("是", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AccountHelper.logout();
                         setDefaultBlur();
                         user_name_tv.setText("登录葡萄账户");
+                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE_SOON));
+                        v_red_dot.setVisibility(View.GONE);
                     }
                 }).setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
@@ -393,7 +393,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         v_red_dot.setVisibility(View.GONE);
         //获取缓存红点数据
         boolean[] dots = new boolean[3];
-        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
         for (int i = 0; i < 3; i++) {
             if (dots[i]) {
                 v_red_dot.setVisibility(View.VISIBLE);

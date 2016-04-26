@@ -3,6 +3,7 @@ package com.putao.camera.application;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -107,6 +108,10 @@ public class MainApplication extends BasicApplication {
         }, 3000);
         redServiceIntent = new Intent(ACTION_PUSH_SERVICE);
         redServiceIntent.setPackage(getPackageName());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(IN_FORE_MESSAGE);
+        intentFilter.addAction(OUT_FORE_MESSAGE);
+        intentFilter.addAction(OUT_FORE_MESSAGE_SOON);
     }
 
 
@@ -387,9 +392,9 @@ public class MainApplication extends BasicApplication {
      */
     private static final String KEY_APP_ID = "app_id";
     public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
-    public static final String Fore_Message = "com.putao.isFore.message";
-    public static final String Not_Fore_Message = "com.putao.isNotFore.message";
-    public static final String Not_Fore_Message_Soon = "Not_Fore_Message_Soon";
+    public static final String IN_FORE_MESSAGE = "in_fore_message";
+    public static final String OUT_FORE_MESSAGE = "out_fore_message";
+    public static final String OUT_FORE_MESSAGE_SOON = "out_fore_message_soon";
     //===================preference key===========================
     public static String app_id;
     public static final String PREFERENCE_KEY_UID = "uid";

@@ -1,5 +1,7 @@
 package com.putao.mtlib.tcp;
 
+import android.content.Intent;
+
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.util.AppUtils;
 import com.putao.mtlib.util.PTLoger;
@@ -44,14 +46,15 @@ class PTSocketHeartThread extends Thread {
         return PTTCPClient.instance().reConnect();
     }
 
+
     public void run() {
-//        isStop = false;
         while (!isStop) {
             boolean canConnectToServer = false;
-            // if (PTTCPClient.instance().isConnect()) {
-           /* if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
-                isStop = true;
-            }*/
+            if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
+                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+            } else {
+                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
+            }
             if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
                 PTLoger.d("SocketConnect--is---------true, send heart message/");
                 PTSenderManager.sharedInstance().sendMsg(PingBytes, null);
