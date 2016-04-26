@@ -131,7 +131,7 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         if (mGLRgbBuffer == null) {
             mGLRgbBuffer = IntBuffer.allocate(previewSize.width * previewSize.height);
         }
-        if (mRunOnDraw.isEmpty()) {
+        if (mRunOnDraw.isEmpty()&&camera!=null) {
             runOnDraw(new Runnable() {
                 @Override
                 public void run() {

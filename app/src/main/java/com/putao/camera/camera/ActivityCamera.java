@@ -904,11 +904,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true,isFFC);
+            current.takeSimplePicture(mMarkViewList, true,false,isFFC);
         } else if (mHdrState == HDRSTATE.AUTO) {
             current.takeSimplePicture(mMarkViewList, true, true,isFFC);
         } else {
-            current.takeSimplePicture(mMarkViewList,isFFC);
+            current.takeSimplePicture(mMarkViewList,false,isFFC);
 
         }
 
