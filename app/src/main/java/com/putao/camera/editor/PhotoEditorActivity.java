@@ -118,6 +118,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
     private Bundle bundle;
+    private Intent intent;
     public static final int CROP_11 = 1;
     public static final int CROP_43 = 2;
 
@@ -271,6 +272,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             case R.id.ll_cut_image:
                 bundle = new Bundle();
                 bundle.putString("photo_data", photo_data);
+               /* intent=  new Intent(this,PhotoEditorCutActivity.class);
+                intent.putExtra("photo_data",ImageCropBitmap);
+                startActivity(intent);*/
                 ActivityHelper.startActivity(this, PhotoEditorCutActivity.class, bundle);
                 break;
             case R.id.choice_water_mark_ll:
@@ -337,10 +341,12 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             case R.id.anti_clockwise:
                 ImageCropBitmap = BitmapHelper.orientBitmap(ImageCropBitmap, ExifInterface.ORIENTATION_ROTATE_270);
                 show_image.setImageBitmap(ImageCropBitmap);
+                BitmapHelper.saveBitmap(ImageCropBitmap, photo_data);
                 break;
             case R.id.clockwise_spin:
                 ImageCropBitmap = BitmapHelper.orientBitmap(ImageCropBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 show_image.setImageBitmap(ImageCropBitmap);
+                BitmapHelper.saveBitmap(ImageCropBitmap, photo_data);
                 break;
             case R.id.horizontal_flip:
                 matrix = new Matrix();
@@ -349,6 +355,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 height = ImageCropBitmap.getHeight();
                 ImageCropBitmap = Bitmap.createBitmap(ImageCropBitmap, 0, 0, width, height, matrix, true);
                 show_image.setImageBitmap(ImageCropBitmap);
+                BitmapHelper.saveBitmap(ImageCropBitmap, photo_data);
                 break;
             case R.id.vertical_flip:
                 matrix = new Matrix();
@@ -357,6 +364,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 height = ImageCropBitmap.getHeight();
                 ImageCropBitmap = Bitmap.createBitmap(ImageCropBitmap, 0, 0, width, height, matrix, true);
                 show_image.setImageBitmap(ImageCropBitmap);
+                BitmapHelper.saveBitmap(ImageCropBitmap, photo_data);
 
                 break;
             default:
@@ -1304,29 +1312,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         ObjectAnimator.ofFloat(opt_button_bar2, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
     }
 
-    void showRotateTitleAni() {
-        photo_area_rl.setLayoutParams(new RelativeLayout.LayoutParams(photo_area_rl.getWidth(), photo_area_rl.getHeight()));
-        title_bar_rl.setLayoutParams(new RelativeLayout.LayoutParams(title_bar_rl.getWidth(), title_bar_rl.getHeight()));
-        opt_button_bar.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
-        opt_button_bar3.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
-        ObjectAnimator.ofFloat(title_bar_rl, "translationY", -(title_bar_rl.getHeight()), 0).setDuration(500).start();
-        ObjectAnimator.ofFloat(photo_area_rl, "translationY", 0, title_bar_rl.getHeight()).setDuration(500).start();
-        ObjectAnimator.ofFloat(opt_button_bar, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
-        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", 0, option_bars.getHeight()).setDuration(500).start();
-    }
-
-    void hideRotateTitleAni() {
-        photo_area_rl.setLayoutParams(new RelativeLayout.LayoutParams(photo_area_rl.getWidth(), photo_area_rl.getHeight()));
-        title_bar_rl.setLayoutParams(new RelativeLayout.LayoutParams(title_bar_rl.getWidth(), title_bar_rl.getHeight()));
-        opt_button_bar.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
-        opt_button_bar3.setLayoutParams(new RelativeLayout.LayoutParams(option_bars.getWidth(), option_bars.getHeight()));
-        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", 0, option_bars.getHeight()).setDuration(10).start();
-        opt_button_bar3.setVisibility(View.VISIBLE);
-        ObjectAnimator.ofFloat(title_bar_rl, "translationY", 0, -(title_bar_rl.getHeight())).setDuration(500).start();
-        ObjectAnimator.ofFloat(photo_area_rl, "translationY", title_bar_rl.getHeight(), 0).setDuration(500).start();
-        ObjectAnimator.ofFloat(opt_button_bar, "translationY", 0, option_bars.getHeight()).setDuration(500).start();
-        ObjectAnimator.ofFloat(opt_button_bar3, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
-    }
 
     EffectImageTask.FilterEffectListener mFilterEffectListener = new EffectImageTask.FilterEffectListener() {
         @Override

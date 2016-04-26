@@ -113,7 +113,7 @@
             android:background="@drawable/background_view_eb5350"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"

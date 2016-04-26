@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.putao.camera.application.MainApplication;
-import com.sunnybear.library.util.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class JPushHeaper {
                 default:
                     logs = "Failed with errorCode = " + code;
             }
-            Logger.d("TagAliasCallback------------", logs);
+//            Logger.d("TagAliasCallback------------", logs);
         }
     };
     private static final int MSG_SET_ALIAS = 1001;

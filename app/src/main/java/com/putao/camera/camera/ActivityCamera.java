@@ -33,7 +33,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.RedDotReceiver;
 import com.putao.camera.album.AlbumPhotoSelectActivity;
@@ -243,7 +242,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     mDynamicPicAdapter.getItem(position).setSelect(true);
 //                    dynamicIconInfo.setSelect(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
-                    ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+//                    ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (current == null) return;
                     if (animation_view.isAnimationLoading()) {
                         ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);

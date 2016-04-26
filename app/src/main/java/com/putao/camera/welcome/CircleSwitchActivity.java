@@ -46,7 +46,7 @@ public class CircleSwitchActivity extends BaseActivity {
             fromAbout = getIntent().getBooleanExtra("fromAbout", false);
         }
         isFristUse = false;
-        fromAbout = false;
+//        fromAbout = false;
         if (isFristUse || lastVersionCode != curVersionCode) {
             SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.PREFERENC_VERSION_CODE, curVersionCode);
         } else if (!fromAbout) {

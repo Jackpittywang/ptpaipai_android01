@@ -134,7 +134,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
 //                    dynamicIconInfo.setSelect(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
                     Loger.d("click");
-                    ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
+//                    ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (animation_view.isAnimationLoading()) {
                         ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
                         return;
@@ -557,7 +557,12 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     }
                     RecorderManager recorderManager = new RecorderManager(3 * 1000, scaleImageBmp.getWidth(), scaleImageBmp.getHeight(), videoPath);
                     final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, animation_view.getAnimationModel(), scaleImageBmp, animation_view.getEyesBitmapArr(), animation_view.getMouthBitmapArr(), animation_view.getBottomBitmapArr());
+                    MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
 
+                        }
+                    });
                     //停止预览页面动态贴纸的显示
                     recorderManager.combineVideo(combineBmps);
                     handler.sendEmptyMessage(0x200);
@@ -577,8 +582,20 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                 if (saveDialog != null && saveDialog.isShowing()) {
                     saveDialog.dismiss();
                 }
-
                 videoSaving = false;
+                /*MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        ToastUtils.showToastShort(mContext, "视频保存成功");
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("savefile", videoPath);
+                        bundle.putString("imgpath", videoImagePath + "image00.jpg");
+                        bundle.putString("from", "dynamic");
+                        ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
+                        finish();
+                    }
+                });*/
                 ToastUtils.showToastShort(mContext, "视频保存成功");
 
                 Bundle bundle = new Bundle();
