@@ -3,6 +3,7 @@ package com.putao.account;
 import com.putao.base.RequestHelper;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTWDRequestHelper;
+import com.putao.camera.constants.PuTaoConstants;
 import com.squareup.okhttp.Request;
 import com.sunnybear.library.model.http.request.FormEncodingRequestBuilder;
 import com.sunnybear.library.model.http.request.RequestMethod;
@@ -26,6 +27,7 @@ public class AccountApi {
     public static final String CLIENT_TYPE = "2";  //设备类型
 
     public static final String BASE_URL = MainApplication.isDebug ? "https://account-api-dev.putao.com/" : "https://account-api.putao.com/";
+
     public static String APP_ID;//app_id
     public static String VERSION;//版本号
     public static String SECRETKEY;
@@ -189,7 +191,7 @@ public class AccountApi {
     /**
      * 登陆后验证
      */
-    public static final String URL_LOGIN_AFTER = BASE_URL + AccountConstants.Url.URL_LOGIN;
+    public static final String URL_LOGIN_AFTER = PuTaoConstants.PAIPAI_SERVER_HOST + AccountConstants.Url.URL_LOGIN;
 
     /**
      * 登录后的验证

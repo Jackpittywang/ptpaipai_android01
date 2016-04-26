@@ -118,28 +118,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         checkLogin(mobile);
                                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
-                                        if (from.equals("share")) {
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString("from", from);
-                                            bundle.putString("savefile", path);
-                                            bundle.putString("imgpath", imgpath);
-                                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
-                                            finish();
-                                        } else {
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString("from", "");
-                                            bundle.putString("savefile", "");
-                                            bundle.putString("imgpath", "");
-                                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
-                                        }
-
-//                                        startActivity(CompleteActivity.class);
-//                                        startActivity(MenuActivity.class);
-                                        if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
-                                            mDiskFileCacheHelper.remove(NEED_CODE + mobile);
-                                        }
-                                        if (!MainApplication.isServiceStart(mContext))
-                                            startService(MainApplication.redServiceIntent);
                                     }
 
                                     @Override
@@ -188,6 +166,26 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         //启动红点推送
                         sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
+                        if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
+                            mDiskFileCacheHelper.remove(NEED_CODE + mobile);
+                        }
+                        if (from.equals("share")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", from);
+                            bundle.putString("savefile", path);
+                            bundle.putString("imgpath", imgpath);
+                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
+                            finish();
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("from", "");
+                            bundle.putString("savefile", "");
+                            bundle.putString("imgpath", "");
+                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
+                        }
+
+//                                        startActivity(CompleteActivity.class);
+//                                        startActivity(MenuActivity.class);
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
