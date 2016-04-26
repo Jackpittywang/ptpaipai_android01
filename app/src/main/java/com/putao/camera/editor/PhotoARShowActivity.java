@@ -443,7 +443,12 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                     }
                     RecorderManager recorderManager = new RecorderManager(3 * 1000, scaleImageBmp.getWidth(), scaleImageBmp.getHeight(), videoPath);
                     final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, animation_view.getAnimationModel(), scaleImageBmp, animation_view.getEyesBitmapArr(), animation_view.getMouthBitmapArr(), animation_view.getBottomBitmapArr());
+                    MediaScannerConnection.scanFile(PhotoARShowActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
 
+                        }
+                    });
                     //停止预览页面动态贴纸的显示
                     recorderManager.combineVideo(combineBmps);
                     handler.sendEmptyMessage(0x200);

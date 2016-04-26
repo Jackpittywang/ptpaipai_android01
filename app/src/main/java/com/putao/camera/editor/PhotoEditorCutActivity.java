@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.putao.widget.cropper.CropImageView;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
@@ -22,6 +21,7 @@ import com.putao.camera.event.EventBus;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.StringHelper;
+import com.putao.widget.cropper.CropImageView;
 
 /**
  * Created by yanglun on 15/3/11.
@@ -69,12 +69,14 @@ public class PhotoEditorCutActivity extends BaseActivity implements View.OnClick
     @Override
     public void doInitData() {
         Intent intent = this.getIntent();
+//        originImageBitmap= intent.getParcelableExtra("photo_data");
         String photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
             crop_image_view.setImageBitmap(originImageBitmap);
         }
+        crop_image_view.setImageBitmap(originImageBitmap);
         Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -98,6 +100,9 @@ public class PhotoEditorCutActivity extends BaseActivity implements View.OnClick
         ObjectAnimator.ofFloat(opt_button_bar, "translationY", 0, option_bars.getHeight()).setDuration(500).start();
         ObjectAnimator.ofFloat(opt_button_bar2, "translationY", -option_bars.getHeight(), 0).setDuration(500).start();
     }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -150,5 +155,6 @@ public class PhotoEditorCutActivity extends BaseActivity implements View.OnClick
     private void showWaterMarkContent() {
         mark_content.setVisibility(View.VISIBLE);
     }
+
 
 }

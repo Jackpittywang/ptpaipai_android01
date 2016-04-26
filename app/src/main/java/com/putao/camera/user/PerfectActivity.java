@@ -143,7 +143,8 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                     @Override
                     public void onSuccess(String url, String result) {
                         ToasterHelper.show(mContext,"成功");
-                        perfect();
+                        initInfo();
+
                     }
 
                     @Override
@@ -154,6 +155,22 @@ public class PerfectActivity extends PTXJActivity implements View.OnClickListene
                             ToastUtils.showToastShort(mContext, msg);
                     }
                 });
+    }
+
+
+    private void initInfo() {
+        networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
+            @Override
+            public void onSuccess(String url, UserInfo result) {
+                AccountHelper.setUserInfo(result);
+                perfect();
+            }
+            @Override
+            public void onFailure(String url, int statusCode, String msg) {
+                super.onFailure(url, statusCode, msg);
+
+            }
+        });
     }
 
     private void perfect() {

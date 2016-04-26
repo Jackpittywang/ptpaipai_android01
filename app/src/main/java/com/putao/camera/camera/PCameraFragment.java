@@ -419,7 +419,7 @@ public class PCameraFragment extends CameraFragment {
         Parameters pictureParams = camera.getParameters();
         if(mHdrEnable){
             if(mHdrAuto){
-                pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
             }else {
                 pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
             }
@@ -442,7 +442,7 @@ public class PCameraFragment extends CameraFragment {
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
                 imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
-                Bitmap saveBitmap = null;
+               Bitmap saveBitmap = null;
                 if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
@@ -451,7 +451,7 @@ public class PCameraFragment extends CameraFragment {
                 /*if (isFFC) {
                     saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                 }*/
-                if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+                if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00")|| model.contains("L09")  || model.contains("honor")||model.contains("oppo") || brand.contains("oppo")) {
                 }else {
                     if (isFFC) {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
@@ -474,8 +474,8 @@ public class PCameraFragment extends CameraFragment {
                                     }else {
                                         handler.sendEmptyMessageDelayed(0x001, 100);
                                     }
-
                                 }
+
                             });
 
 

@@ -1,5 +1,6 @@
 package com.putao.camera.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
+import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.ToastUtils;
@@ -96,12 +98,13 @@ public class RegisterActivity extends PTXJActivity implements View.OnClickListen
                 }
                 break;
             case R.id.btn_next://下一步
-                String password = et_password.getText().toString();
-                String sms_verify = et_sms_verify.getText().toString();
+                final  String password = et_password.getText().toString();
+                final String sms_verify = et_sms_verify.getText().toString();
                 networkRequest(AccountApi.register(phone, password, sms_verify, graph_verify), new AccountCallback(loading) {
                     @Override
                     public void onSuccess(JSONObject result) {
                         AccountHelper.login(result);
+                        initInfo(phone,password,"");
                         ActivityManager.getInstance().removeCurrentActivity();
                         ActivityManager.getInstance().finishCurrentActivity();
                         startActivity(PerfectActivity.class);
@@ -124,6 +127,38 @@ public class RegisterActivity extends PTXJActivity implements View.OnClickListen
                 break;
         }
     }
+
+
+    private void initInfo(String phone,String passWord ,String verify) {
+        networkRequest(AccountApi.safeLogin(phone, passWord, verify),
+                new AccountCallback(loading) {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        AccountHelper.setCurrentUid(result.getString("uid"));
+                        AccountHelper.setCurrentToken(result.getString("token"));
+                        new JPushHeaper().setAlias(mContext, result.getString("uid"));
+                        //启动红点推送
+                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+                    }
+
+                    @Override
+                    public void onError(String error_msg) {
+                        ToastUtils.showToastShort(mContext, error_msg);
+
+                    }
+
+                    @Override
+                    public void onFinish(String url, boolean isSuccess, String msg) {
+                        super.onFinish(url, isSuccess, msg);
+
+                    }
+                });
+    }
+
+
+
+
+
 
     @Override
     public void onSwitchClick(View v, boolean isSelect) {

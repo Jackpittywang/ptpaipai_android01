@@ -121,6 +121,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
 //        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
         if (!AccountHelper.isLogin()) {
+//            iv_header_icon.setImageResource(R.drawable.img_head_signup);
             setDefaultBlur();
         } else if (AccountHelper.isLogin()) {
             getUserInfo();
@@ -215,7 +216,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
     private void setDefaultBlur() {
-        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 50, false);
+        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup),1, false);
         EventBusHelper.post(apply, ME_BLUR);
     }
 
