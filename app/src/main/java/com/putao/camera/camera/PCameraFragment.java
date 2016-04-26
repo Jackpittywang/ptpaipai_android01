@@ -221,6 +221,9 @@ public class PCameraFragment extends CameraFragment {
                 degrees = 90;
         }
         Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
+        if( cameraParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)){
+            cameraParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        }
 //        cameraParams.setFlashMode();
         setOptimalPreviewSize(cameraParams, 960, 960);
         setOptimalPictureSize(cameraParams, 1280);
@@ -413,25 +416,17 @@ public class PCameraFragment extends CameraFragment {
             setExposureLevel(ExposureLevel.NORMAL);
         }*/
        Camera camera=cameraView.getCamera();
-//        previewParams = camera.getParameters();
         Parameters pictureParams = camera.getParameters();
-      /*  if(mHdrEnable){
-            if(mHdrAuto){
-                pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
-            }else {
-                pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
-            }
-        }else{
-            pictureParams.setFlashMode(Parameters.FLASH_MODE_ON);
-        }*/
         if(mHdrEnable){
-            pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            if(mHdrAuto){
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
+            }else {
+                pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            }
         }else {
             pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
         }
-       if( pictureParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)){
-           pictureParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-       }
+
        final String model = android.os.Build.MODEL.toLowerCase();
         final String brand = Build.BRAND.toLowerCase();
         // 所有华为的机器不要做set处理,
@@ -453,12 +448,16 @@ public class PCameraFragment extends CameraFragment {
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
 
-                if (isFFC) {
-                    saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
-                }
-              /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+                /*if (isFFC) {
                     saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                 }*/
+                if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
+                }else {
+                    if (isFFC) {
+                        saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+                    }
+                }
+
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
                     mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
