@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.putao.account.AccountHelper;
 import com.putao.camera.application.MainApplication;
+import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.util.Logger;
 
 import java.util.List;
@@ -32,9 +33,9 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case MainApplication.IN_FORE_MESSAGE:
 //                inFore();
-                Logger.d("ptl---------------", "应用恢复到前台了");
+                if (BasicApplication.isInBack) Logger.d("ptl---------------", "应用恢复到前台了");
+                BasicApplication.isInBack = false;
                 if (!AccountHelper.isLogin()) return;
-
                 if (null != timer) {
                     timer.cancel();
                     timer = null;
@@ -48,6 +49,8 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
 //                outFore();
                 if (null == timer)
                     timer = new Timer();
+                Logger.d("ptl-----------", "检测程序进入后台");
+                BasicApplication.isInBack = true;
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {

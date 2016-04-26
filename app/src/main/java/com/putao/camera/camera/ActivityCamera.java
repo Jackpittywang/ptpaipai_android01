@@ -1855,8 +1855,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         super.onStart();
 //        v_red_dot.setVisibility(View.GONE);
         //获取缓存红点数据
-        boolean[] dots = new boolean[3];
-        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
+        Boolean[] dots = new Boolean[]{false, false, false};
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
         for (int i = 0; i < 3; i++) {
             if (dots[i]) {
                 v_red_dot.setVisibility(View.VISIBLE);

@@ -54,18 +54,19 @@ public class RedDotReceiver extends PTMessageReceiver {
 
         //贴纸红点
         if (sticker_pic || dynamic_pic || template_pic) {
-            boolean[] dots = new boolean[3];
+            Boolean[] dots = new Boolean[3];
             dots[0] = sticker_pic;
             dots[1] = dynamic_pic;
             dots[2] = template_pic;
-            EventBusHelper.post(dots, EVENT_DOT_MATTER_CENTER);
             //缓存红点数据
-            boolean[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
-            if (value != dots)
+            Boolean[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER, dots);
+            if (value != dots) {
                 for (int i = 0; i < 3; i++) {
                     dots[i] = value[i] || dots[i];
                 }
-            PreferenceUtils.save(EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
+            }
+            PreferenceUtils.save(EVENT_DOT_MATTER_CENTER, dots);
+            EventBusHelper.post("", EVENT_DOT_MATTER_CENTER);
         }
     }
 }

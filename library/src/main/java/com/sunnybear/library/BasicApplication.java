@@ -32,6 +32,7 @@ public abstract class BasicApplication extends MultiDexApplication {
     private static Context mContext;
     private static OkHttpClient mOkHttpClient;//OkHttpClient
     private static int maxAge;//网络缓存最大时间
+    public static boolean isInBack;
 
     private static DiskFileCacheHelper mDiskFileCacheHelper;//磁盘文件缓存器
 

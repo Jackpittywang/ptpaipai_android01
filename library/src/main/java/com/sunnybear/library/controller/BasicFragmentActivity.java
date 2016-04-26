@@ -473,6 +473,11 @@ public abstract class BasicFragmentActivity<App extends BasicApplication> extend
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (BasicApplication.isInBack) sendBroadcast(new Intent("in_fore_message"));
+    }
 
     @Override
     protected void onStop() {

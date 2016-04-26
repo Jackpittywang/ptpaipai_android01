@@ -134,8 +134,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                         AccountHelper.logout();
                         setDefaultBlur();
                         user_name_tv.setText("登录葡萄账户");
-                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE_SOON));
                         v_red_dot.setVisibility(View.GONE);
+                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
                     }
                 }).setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
@@ -392,8 +392,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         super.onStart();
         v_red_dot.setVisibility(View.GONE);
         //获取缓存红点数据
-        boolean[] dots = new boolean[3];
-        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), dots);
+        Boolean[] dots = new Boolean[]{false, false, false};
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
         for (int i = 0; i < 3; i++) {
             if (dots[i]) {
                 v_red_dot.setVisibility(View.VISIBLE);
