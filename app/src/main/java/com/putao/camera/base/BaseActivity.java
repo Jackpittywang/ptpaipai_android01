@@ -2,6 +2,7 @@ package com.putao.camera.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.putao.camera.base.interfaces.IActivityInterface;
+import com.sunnybear.library.BasicApplication;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 
@@ -29,6 +32,7 @@ public abstract class BaseActivity extends FragmentActivity implements IActivity
         doInitData();
         fullScreen(true);
         setMobclickAgent();
+        EventBusHelper.register(this);//注册EventBus
     }
 
     @Override
@@ -122,5 +126,17 @@ public abstract class BaseActivity extends FragmentActivity implements IActivity
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
         isFullScreen = enable;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (BasicApplication.isInBack) sendBroadcast(new Intent("in_fore_message"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBusHelper.unregister(this);//反注册EventBus
     }
 }

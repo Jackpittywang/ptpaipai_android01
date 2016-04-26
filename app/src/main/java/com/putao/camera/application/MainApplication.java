@@ -32,6 +32,7 @@ import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.jpush.JPushHeaper;
+import com.putao.mtlib.HomeBroadcastReceiver;
 import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.util.AppUtils;
@@ -53,7 +54,6 @@ public class MainApplication extends BasicApplication {
     private static DatabaseServer dbServer;
     private LocationMode tempMode = LocationMode.Battery_Saving;
     private String tempcoor = "gcj02";
-    public static boolean isServiceClose;
     public static Intent redServiceIntent;
 
     @Override
@@ -112,6 +112,7 @@ public class MainApplication extends BasicApplication {
         intentFilter.addAction(IN_FORE_MESSAGE);
         intentFilter.addAction(OUT_FORE_MESSAGE);
         intentFilter.addAction(OUT_FORE_MESSAGE_SOON);
+        registerReceiver(HomeBroadcastReceiver.getInstance(), intentFilter);
     }
 
 
@@ -362,7 +363,9 @@ public class MainApplication extends BasicApplication {
         return sdCardPath + File.separator + "http_cache";
     }
 
-   /* *//**
+   /* */
+
+    /**
      * 监听程序已经在后台
      *//*
     private class HomeBroadcastReceiver extends BroadcastReceiver {
@@ -375,7 +378,6 @@ public class MainApplication extends BasicApplication {
             }
         }
     }*/
-
     public static boolean isServiceStart(Context context) {
         android.app.ActivityManager systemService = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);

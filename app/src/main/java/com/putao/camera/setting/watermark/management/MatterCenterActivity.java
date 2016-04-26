@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.RedDotReceiver;
 import com.putao.camera.base.BaseActivity;
@@ -31,7 +30,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     private UnScrollableViewPager vp_content;
     private TitleBar rg_matter;
     private SparseArray<Fragment> mFragments;
-    boolean[] mDots = new boolean[3];
+    Boolean[] mDots = new Boolean[]{false, false, false};
 
     private boolean mIspaster = false;
 
@@ -88,7 +87,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     protected void onStart() {
         super.onStart();
         //获取缓存红点数据
-        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER + AccountHelper.getCurrentUid(), mDots);
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
         setRedDot();
     }
 
@@ -160,11 +159,10 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     /**
      * 红点显示接收通知
      *
-     * @param dots
      */
     @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATTER_CENTER)
-    private void setRed_dot(boolean[] dots) {
-        mDots = dots;
+    private void setRed_dot(String dot) {
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);;
         setRedDot();
     }
 

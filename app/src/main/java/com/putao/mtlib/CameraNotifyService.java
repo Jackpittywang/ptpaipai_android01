@@ -33,7 +33,7 @@ public class CameraNotifyService extends Service {
     private static String HOST = MainApplication.isDebug ? "10.1.11.31" : "notice.putao.com";
     private static final int PORT = MainApplication.isDebug ? 8083 : 8040;
     private static final String secret = "499478a81030bb177e578f86410cda8641a22799";
-    private static final int appid = 613;
+    public static final int appid = 613;
 
     private Context mContext;
     private HandlerThread mStartThread;
@@ -119,7 +119,7 @@ public class CameraNotifyService extends Service {
     /**
      * 发送连接验证
      */
-    public void sendConnectValidate() {
+    public static void sendConnectValidate() {
         CS_CONNECT connect = new CS_CONNECT();
         connect.setDeviceid(AccountHelper.getCurrentUid());
         connect.setAppid(appid);
@@ -127,7 +127,7 @@ public class CameraNotifyService extends Service {
         PTSenderManager.sharedInstance().sendMsg(MsgPackUtil.Pack(connect, PTMessageType.CS_CONNECT));
     }
 
-    public String getSign(String deviceid, String secret) {
+    public static String getSign(String deviceid, String secret) {
         return MD5Util.getMD5Str(deviceid + appid + secret).toUpperCase();
     }
 

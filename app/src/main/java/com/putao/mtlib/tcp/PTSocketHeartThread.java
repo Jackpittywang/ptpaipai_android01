@@ -2,8 +2,12 @@ package com.putao.mtlib.tcp;
 
 import android.content.Intent;
 
+import com.putao.account.AccountHelper;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.util.AppUtils;
+import com.putao.mtlib.CameraNotifyService;
+import com.putao.mtlib.model.CS_CONNECT;
+import com.putao.mtlib.util.MsgPackUtil;
 import com.putao.mtlib.util.PTLoger;
 
 /**
@@ -51,11 +55,12 @@ class PTSocketHeartThread extends Thread {
         while (!isStop) {
             boolean canConnectToServer = false;
             if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
-                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
-            } else {
                 MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
-            }
+            }/* else {
+                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+            }*/
             if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
+
                 PTLoger.d("SocketConnect--is---------true, send heart message/");
                 PTSenderManager.sharedInstance().sendMsg(PingBytes, null);
                 canConnectToServer = true;
@@ -63,7 +68,7 @@ class PTSocketHeartThread extends Thread {
                 PTLoger.d("SocketConnect--is---------false, no send /");
             }
             if (!canConnectToServer && PTSocketOutputThread.isConnected) {
-                reConnect();
+                if (reConnect()) CameraNotifyService.sendConnectValidate();
             }
             try {
                 Thread.sleep(PTSenderManager.sharedInstance().getConfig().getHeartSecond() * 1000);
