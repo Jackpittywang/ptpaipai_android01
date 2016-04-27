@@ -7,18 +7,39 @@
         android:id="@+id/iv_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY" />
+        android:layout_alignParentBottom="true"
+        android:scaleType="centerCrop" />
 
     <Button
         android:id="@+id/bt_go"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvTip"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="480dp"
-        android:gravity="center"
-        android:background="#00ff0000"
+        android:background="@drawable/iv_logo"
+        android:gravity="center" />
 
-        />
+    <ProgressBar
+        android:id="@+id/pbInit"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/tvTip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_bar" />
+
+    <TextView
+        android:id="@+id/tvTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="正在准备进入相机" />
 
 </RelativeLayout>

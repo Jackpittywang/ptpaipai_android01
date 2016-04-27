@@ -1,5 +1,6 @@
 package com.putao.camera.welcome.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,13 +9,24 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.putao.camera.R;
 import com.putao.camera.camera.ActivityCamera;
+import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.ActivityHelper;
+import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.welcome.CircleSwitchActivity;
 
 public class SwitchFragment extends Fragment {
+    private final long WAIT_TIME = 3 * 1000;
+    int position;
+    ProgressBar pbInit;
+    Button bt_go;
+    TextView tvTip;
+    boolean fromAbout = false;
+
     public static SwitchFragment newInstance(Bundle bundle) {
         SwitchFragment fragment = new SwitchFragment();
         if (bundle != null) {
@@ -27,9 +39,11 @@ public class SwitchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = LayoutInflater.from(getActivity()).inflate(R.layout.layout_switch_item, null);
         ImageView iv_logo = (ImageView) layout.findViewById(R.id.iv_logo);
-        Button bt_go = (Button) layout.findViewById(R.id.bt_go);
-        int position = getArguments().getInt("position");
-        final boolean fromAbout = getArguments().getBoolean("fromAbout");
+        bt_go = (Button) layout.findViewById(R.id.bt_go);
+        pbInit = (ProgressBar) layout.findViewById(R.id.pbInit);
+        tvTip = (TextView) layout.findViewById(R.id.tvTip);
+        position = getArguments().getInt("position");
+        fromAbout = getArguments().getBoolean("fromAbout");
         iv_logo.setImageResource(CircleSwitchActivity.logos[position]);
         if ((position == CircleSwitchActivity.logos.length - 1)) {
             bt_go.setVisibility(View.VISIBLE);
@@ -37,61 +51,66 @@ public class SwitchFragment extends Fragment {
             bt_go.setVisibility(View.GONE);
         }
 
-//        if(fromAbout&&position == CircleSwitchActivity.logos.length - 1){
-//            iv_logo.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    
-//                    GestureDetector mGestureDetector = new GestureDetector(getActivity(),new SimpleOnGestureListener(){
-//                        @Override
-//                        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//                            Loger.d("chen,mGestureDetector:onFling -----" + (e2.getAction()) + ",(" + e1.getX() + "," + e1.getY() + ") ,("
-//                                    + e2.getX() + "," + e2.getY() + ")");
-//                            return super.onFling(e1, e2, velocityX, velocityY);
-//                        }
-//                      
-//                        @Override
-//                        public boolean onDown(MotionEvent e) {
-//                            Loger.i("chen,mGestureDetector:onDown-----" + e.toString());
-//                            Bundle bundle = new Bundle();
-//                            EventBus.getEventBus().post(
-//                                  new BasePostEvent(PuTaoConstants.WELCOME_FINISH_EVENT, bundle));
-//                            return false;
-//                        }   
-//                        public boolean onSingleTapUp(MotionEvent e) {
-//                            Loger.i("chen,mGestureDetector:onSingleTapUp-----" + e.toString());
-//                            return false;
-//                        }
-//                        
-//                        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//                            Loger.i("chen,mGestureDetector:onScroll-----" + e1.toString()+",,,,,"+e2.toString());
-//                          return false;  
-//                        }
-//                        
-//                    });
-//                    
-//                    mGestureDetector.onTouchEvent(event);
-//                    return false;
-//                }
-//            });   
-//            
-//        }
-
-
         bt_go.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 if(!fromAbout){
-                    Bundle bundle = new Bundle();
-                    ActivityHelper.startActivity(getActivity(), ActivityCamera.class, bundle);
+                    ActivityHelper.startActivity(getActivity(), ActivityCamera.class, new Bundle());
                     getActivity().finish();
                 }else {
                     getActivity().finish();
                 }
-
             }
         });
+
+        initRes();
         return layout;
+    }
+
+    private void initRes() {
+        boolean isFristUse = SharedPreferencesHelper.readBooleanValue(getActivity(), PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, true);
+        if (isFristUse && (position == CircleSwitchActivity.logos.length - 1)) {
+            pbInit.setVisibility(View.VISIBLE);
+            tvTip.setVisibility(View.VISIBLE);
+            bt_go.setVisibility(View.GONE);
+        } else {
+            pbInit.setVisibility(View.GONE);
+            tvTip.setVisibility(View.INVISIBLE);
+            bt_go.setVisibility(View.VISIBLE);
+            return;
+        }
+        new AsyncTask<Void, Integer, Void>() {
+            int count = 0;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                while (count <= 100) {
+                    count++;
+                    try {
+                        Thread.sleep(WAIT_TIME / 100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    publishProgress(count);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                if (values[0] <= 100) {
+                    pbInit.setProgress(values[0]);
+                } else {
+                    pbInit.setProgress(values[0]);
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                bt_go.setVisibility(View.VISIBLE);
+                pbInit.setVisibility(View.GONE);
+                tvTip.setVisibility(View.INVISIBLE);
+            }
+        }.execute();
     }
 }
