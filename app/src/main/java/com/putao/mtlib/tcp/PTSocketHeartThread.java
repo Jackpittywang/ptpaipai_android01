@@ -2,8 +2,8 @@ package com.putao.mtlib.tcp;
 
 import android.content.Intent;
 
+import com.putao.camera.application.MainApplication;
 import com.putao.mtlib.util.PTLoger;
-import com.putao.wd.GlobalApplication;
 
 /**
  * @author jidongdong
@@ -59,7 +59,7 @@ class PTSocketHeartThread extends Thread {
             } else {
                 PTLoger.d("SocketConnect--is---------false, no send /");
 //                reConnect();
-                GlobalApplication.getInstance().sendBroadcast(new Intent(GlobalApplication.RESTART_MESSAGE));
+                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.RESTART_MESSAGE));
             }
         }
     }
