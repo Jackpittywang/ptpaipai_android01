@@ -117,7 +117,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
     private CustomerFilter.FilterType filterName=CustomerFilter.FilterType.NONE;
-    private int photoType;
+    private int photoType=0;
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
@@ -158,6 +158,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                         public void onPictureSaved(final Uri uri) {
                             try {
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                                bitmap = BitmapHelper.imageCrop(bitmap, photoType);
                                 show_image.setImageBitmap(bitmap);
                                 ImageCropBitmap=bitmap;
                             } catch (IOException e) {
@@ -170,9 +171,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
 
         }
-        ImageCropBitmap=originImageBitmap;
-//        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);
-        show_image.setImageBitmap(ImageCropBitmap);
+//        ImageCropBitmap=originImageBitmap;
+       /* ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, photoType);
+        show_image.setImageBitmap(ImageCropBitmap);*/
         loadFilters();
         mMarkViewList = new ArrayList<WaterMarkView>();
         mMarkViewTempList = new ArrayList<WaterMarkView>();
@@ -1260,7 +1261,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             }
             mMarkViewTempList.clear();
         } else if (mEditAction == EditAction.ACTION_FILTER) {
-
+            new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
+//            show_image.setImageBitmap();
         }else if(mEditAction == EditAction.ACTION_ROTATE){
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }

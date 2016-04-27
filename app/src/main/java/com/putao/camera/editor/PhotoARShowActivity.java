@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.putao.camera.R;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.camera.filter.CustomerFilter;
+import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.camera.model.FaceModel;
 import com.putao.camera.camera.utils.RecorderManager;
 import com.putao.camera.camera.view.AnimationImageView;
@@ -40,6 +43,7 @@ import com.putao.video.VideoHelper;
 import com.sunnybear.library.util.ToastUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,12 +59,14 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private String imagePath = "";
     private String animationName = "";
     private String videoImagePath = "";
+    private CustomerFilter.FilterType filterName=CustomerFilter.FilterType.NONE;
     private String PATH = "Android/data/com.putao.camera/files/";
     // 保存视频时候图片的张数
     private int imageCount = 36;
 
     private AnimationImageView animation_view;
     private int photoType;
+    private Bitmap  saveOriginImageBitmap ;
 
     private ProgressDialog progressDialog = null;
     /**
@@ -86,26 +92,50 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         EventBus.getEventBus().register(this);
         photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
     }
-
+    Bitmap  bgImageBitmap;
     @Override
     public void doInitData() {
         Intent intent = this.getIntent();
         if (intent == null) return;
         imagePath = intent.getStringExtra("imagePath");
-
+        filterName= (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         animationName = intent.getStringExtra("animationName");
-
         if (StringHelper.isEmpty(imagePath)) return;
+        GPUImage mGPUImage = new GPUImage(mContext);
         try {
 
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
             Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
 
-            Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
+           bgImageBitmap= originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
+//            tempBitmap.recycle();
+
+            CustomerFilter filter=new CustomerFilter();
+            mGPUImage.setFilter(filter.getFilterByType(filterName));
+            mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+                    new GPUImage.OnPictureSavedListener() {
+                        @Override
+                        public void onPictureSaved(final Uri uri) {
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                                originImageBitmap=bitmap;
+                                show_image.setImageBitmap(originImageBitmap);
+                                showPreview(originImageBitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    });
+
+
+
+
 //            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);
-            tempBitmap.recycle();
+
             // Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.getBitmapFromPath(imagePath, null);
-            Log.i(TAG, "image path is:" + imagePath);
+           /* Log.i(TAG, "image path is:" + imagePath);
             // 背景脸图片在屏幕上的缩放
             int screenW = DisplayHelper.getScreenWidth();
             int screenH = DisplayHelper.getScreenHeight();
@@ -136,14 +166,52 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                         }
                     }
                 }
-            }).start();
-
-            bgImageBitmap.recycle();
-            resizedBgImage.recycle();
+            }).start();*/
+//            bgImageBitmap.recycle();
+//            resizedBgImage.recycle();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void showPreview( Bitmap newOriginImageBitmap ){
+        int screenW = DisplayHelper.getScreenWidth();
+        int screenH = DisplayHelper.getScreenHeight();
+        float imageScaleW = (float) screenW / (float) newOriginImageBitmap.getWidth();
+        float imageScaleH = (float) screenH / (float) newOriginImageBitmap.getHeight();
+        float imageScale = imageScaleW;
+        if (imageScaleH < imageScaleW) imageScale = imageScaleH;
+
+        int bgImageOffsetX = (int) (DisplayHelper.getScreenWidth() - imageScale * newOriginImageBitmap.getWidth()) / 2;
+        int bgImageOffsetY = (int) (DisplayHelper.getScreenHeight() - imageScale * newOriginImageBitmap.getHeight()) / 2;
+        newOriginImageBitmap = Bitmap.createBitmap(screenW, screenH, Bitmap.Config.ARGB_8888);
+        Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
+        newOriginImageBitmap = BitmapHelper.combineBitmap(newOriginImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
+        animation_view.setData(animationName, false);
+        saveOriginImageBitmap=newOriginImageBitmap;
+//        show_image.setImageBitmap(newOriginImageBitmap);
+
+        //检测人脸
+        final YMDetector YMDetector = new YMDetector(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<YMFace> faces = YMDetector.onDetector(saveOriginImageBitmap);
+                if (faces != null && faces.size() > 0) {
+                    YMFace face = faces.get(0);
+                    landmarks = face.getLandmarks();
+                    if (landmarks != null && landmarks.length > 0) {
+                        mHandle.sendEmptyMessage(123);
+                    }
+                }
+            }
+        }).start();
+
+        bgImageBitmap.recycle();
+        resizedBgImage.recycle();
+
 
     }
 
@@ -208,9 +276,9 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         saveDialog.setCancelable(false);
         saveDialog.show();
         Bitmap tip = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.tips, 220, 60);
-        originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, tip, originImageBitmap.getWidth() - tip.getWidth() - 5, originImageBitmap.getHeight() - tip.getHeight() - 2);
+        saveOriginImageBitmap = BitmapHelper.combineBitmap(saveOriginImageBitmap, tip, saveOriginImageBitmap.getWidth() - tip.getWidth() - 5, saveOriginImageBitmap.getHeight() - tip.getHeight() - 2);
 
-        animation_view.setSave(originImageBitmap, videoImagePath, imageCount);
+        animation_view.setSave(saveOriginImageBitmap, videoImagePath, imageCount);
 //        imagesToVideo();
 
 //        // 先处理成图片存到sd卡

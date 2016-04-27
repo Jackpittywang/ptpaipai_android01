@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.putao.camera.R;
 import com.putao.camera.album.adapter.AlbumGridAdapter;
 import com.putao.camera.base.BaseActivity;
+import com.putao.camera.camera.filter.CustomerFilter;
 import com.putao.camera.collage.adapter.GalleryListAdapter;
 import com.putao.camera.collage.mode.GalleryEntity;
 import com.putao.camera.collage.mode.PhotoGridItem;
@@ -196,6 +197,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             finish();
         } else {// 图片编辑
             Intent intent = new Intent(this, PhotoEditorActivity.class);
+            intent.putExtra("filterName", CustomerFilter.FilterType.NONE);
             intent.putExtra("photo_data", path);
             this.startActivity(intent);
         }

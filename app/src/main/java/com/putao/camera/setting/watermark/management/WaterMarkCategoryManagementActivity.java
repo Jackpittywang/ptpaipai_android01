@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
@@ -21,14 +20,11 @@ import com.putao.camera.db.DatabaseServer;
 import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.download.DownloadFinishStickerAdapter;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -145,15 +141,9 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
+
+
         mManagementAdapter.notifyDataSetChanged();
-        Map<String, String> map2 = new HashMap<String, String>();
-//        map.put("type", WaterMarkCategoryInfo.photo);
-        map.put("type", "sticker");
-        list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map2);
-        if(list.size()==0){
-            rl_empty.setVisibility(View.VISIBLE);
-            choice_ll.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -184,7 +174,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     }
 
     //请求水印列表
-    public void queryWaterMarkList() {
+   /* public void queryWaterMarkList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -210,7 +200,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=sticker_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
-
+*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -233,6 +223,13 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
                 }
                 Bundle bundle = new Bundle();
                 mManagementAdapter.setDatas(datas);
+                Map<String, String> map2 = new HashMap<String, String>();
+                map2.put("type", "sticker");
+                list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map2);
+                if(list.size()==0){
+                    rl_empty.setVisibility(View.VISIBLE);
+                    choice_ll.setVisibility(View.GONE);
+                }
                 mManagementAdapter.notifyDataSetChanged();
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_WATERMARK_MANAGEMENT_ACTIVITY, bundle));
 //                MainApplication.getDBServer().deleteStickerCategoryInfo(mDatas.get(position));

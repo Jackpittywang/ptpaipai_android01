@@ -90,6 +90,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
     @Bind(R.id.iv_header_icon)
     ImageDraweeView iv_header_icon;
+    @Bind(R.id.iv_main)
+    ImageView iv_main;
 
     @Bind(R.id.fl_main)
     FrameLayout fl_main;
@@ -216,7 +218,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
     private void setDefaultBlur() {
-        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 1, false);
+        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup),1, false);
         EventBusHelper.post(apply, ME_BLUR);
     }
 
@@ -246,10 +248,12 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
-                Uri uri = Uri.parse(url);
-//                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                if(skipUrl!=null){
+                    Uri uri = Uri.parse(skipUrl);
+//                Uri uri = Uri.parse(skipUrl);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
                 break;
             case R.id.menu_home_jigsaw_btn://关于我们--原萌萌拼图
                 // ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
@@ -301,7 +305,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         }
     }
 
-    private String url;
+    private String skipUrl;
 
     public void initIconInfo() {
         CacheRequest.ICacheRequestCallBack mIconInfoCallback = new CacheRequest.ICacheRequestCallBack() {
@@ -320,11 +324,11 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                             .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
                     menu_home_camera_btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                     ImageLoader.getInstance().displayImage(aMenuIconInfo.data.app_icon, menu_home_camera_btn, options);
-//                    URL picUrl = new URL(aMenuIconInfo.data.app_icon);
-//                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
-//                    menu_home_camera_btn.setImageBitmap(pngBM);
-//                    url=aMenuIconInfo.data.android_link_url;
-                    url = aMenuIconInfo.data.h5_link_url;
+
+                    iv_main.setScaleType(ImageView.ScaleType.FIT_XY);
+                    ImageLoader.getInstance().displayImage(aMenuIconInfo.data.bg_url, iv_main, options);
+
+                    skipUrl = aMenuIconInfo.data.h5_link_url;
 
                 } catch (Exception e) {
                     e.printStackTrace();

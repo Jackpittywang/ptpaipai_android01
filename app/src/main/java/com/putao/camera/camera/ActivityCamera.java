@@ -1227,7 +1227,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
                 Intent intent = new Intent(mContext, PhotoARShowActivity.class);
                 intent.putExtra("isFFC", isFFC + "");
-//                intent.put
+                intent.putExtra("filterName",filterName);
                 intent.putExtra("imagePath", event.bundle.getString("imagePath"));
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);

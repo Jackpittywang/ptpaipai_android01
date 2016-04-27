@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -37,10 +39,12 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
-//    private DynamicManagementAdapter mManagementAdapter;
-private DownloadFinishedDynamicAdapter mManagementAdapter;
-    private TextView title_tv,tv_delect_selected,tv_select_all;
+    //    private DynamicManagementAdapter mManagementAdapter;
+    private DownloadFinishedDynamicAdapter mManagementAdapter;
+    private TextView title_tv, tv_delect_selected, tv_select_all;
     private ArrayList<DynamicIconInfo> list;
+    private RelativeLayout rl_empty;
+    private LinearLayout choice_ll;
 
     @Override
     public int doGetContentViewId() {
@@ -50,8 +54,10 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
     @Override
     public void doInitSubViews(View view) {
         EventBus.getEventBus().register(this);
-        tv_select_all=queryViewById(R.id.tv_select_all);
-        tv_delect_selected=queryViewById(R.id.tv_delect_selected);
+        choice_ll=queryViewById(R.id.choice_ll);
+        rl_empty=queryViewById(R.id.rl_empty);
+        tv_select_all = queryViewById(R.id.tv_select_all);
+        tv_delect_selected = queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
         title_tv.setText("动态贴图");
         mPullRefreshGridView = (PullToRefreshGridView) view.findViewById(R.id.pull_refresh_grid);
@@ -65,6 +71,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
         super.onDestroy();
         EventBus.getEventBus().unregister(this);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -78,6 +85,10 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 //        map.put("type", "1");
         list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
         mManagementAdapter.setDatas(list);
+        if (list.size() == 0) {
+            rl_empty.setVisibility(View.VISIBLE);
+            choice_ll.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -102,7 +113,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
 //        mManagementAdapter.setUpdateCallback(this);
 //        mGridView.setAdapter(mManagementAdapter);
 //        mGridView.setOnItemClickListener(this);
-        addOnClickListener(back_btn,tv_delect_selected,tv_select_all);
+        addOnClickListener(back_btn, tv_delect_selected, tv_select_all);
 //        queryCollageList();
     }
 
@@ -207,6 +218,13 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                 }
                 Bundle bundle = new Bundle();
                 mManagementAdapter.setDatas(datas);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("type", "dynamic");
+                list = (ArrayList<DynamicIconInfo>) MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+                if (list.size() == 0) {
+                    rl_empty.setVisibility(View.VISIBLE);
+                    choice_ll.setVisibility(View.GONE);
+                }
                 mManagementAdapter.notifyDataSetChanged();
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY, bundle));
 
@@ -222,7 +240,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
         } else {
             Loger.i("startDownloadService:run");
         }
-        if(null == url || null == folderPath) return;
+        if (null == url || null == folderPath) return;
         Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
         bindIntent.putExtra("position", position);
         bindIntent.putExtra("url", url);
@@ -237,7 +255,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                 Loger.d("DOWNLOAD_FILE_FINISH");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -249,7 +267,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                 //                String filePath = event.bundle.getString("percent");
                 final int percent = event.bundle.getInt("percent");
                 final int position = event.bundle.getInt("position");
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         updateProgressPartly(percent, position);
@@ -258,7 +276,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                 break;
             }
             case PuTaoConstants.UNZIP_FILE_FINISH:
-                mActivity. runOnUiThread(new Runnable() {
+                mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mManagementAdapter.notifyDataSetChanged();
@@ -266,7 +284,7 @@ private DownloadFinishedDynamicAdapter mManagementAdapter;
                 });
                 break;
             case PuTaoConstants.REFRESH_DYNAMIC_MANAGEMENT_ACTIVITY:
-                        mManagementAdapter.notifyDataSetChanged();
+                mManagementAdapter.notifyDataSetChanged();
 
                 break;
         }

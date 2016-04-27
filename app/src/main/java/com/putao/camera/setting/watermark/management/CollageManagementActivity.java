@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -40,6 +42,8 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
     private DownloadFinishedTemplateAdapter mManagementAdapter;
     private TextView title_tv,tv_delect_selected,tv_select_all;
     private ArrayList<TemplateIconInfo> list;
+    private RelativeLayout rl_empty;
+    private LinearLayout choice_ll;
 
     @Override
     public int doGetContentViewId() {
@@ -48,6 +52,8 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
     @Override
     public void doInitSubViews(View view) {
+        choice_ll=queryViewById(R.id.choice_ll);
+        rl_empty=queryViewById(R.id.rl_empty);
         tv_select_all=queryViewById(R.id.tv_select_all);
         tv_delect_selected=queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
@@ -68,6 +74,10 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
           map.put("type", "template");
         list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
         mManagementAdapter.setDatas(list);
+        if(list.size()==0){
+            rl_empty.setVisibility(View.VISIBLE);
+            choice_ll.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -212,6 +222,13 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
                 }
                 Bundle bundle = new Bundle();
                 mManagementAdapter.setDatas(datas);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("type", "template");
+                list = (ArrayList<TemplateIconInfo>) MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
+                if(list.size()==0){
+                    rl_empty.setVisibility(View.VISIBLE);
+                    choice_ll.setVisibility(View.GONE);
+                }
                 mManagementAdapter.notifyDataSetChanged();
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.REFRESH_COLLAGE_MANAGEMENT_ACTIVITY, bundle));
 

@@ -222,7 +222,7 @@ public class PCameraFragment extends CameraFragment {
                 degrees = 90;
         }
         Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
-        if( cameraParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)){
+        if (cameraParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             cameraParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 //        cameraParams.setFlashMode();
@@ -239,7 +239,7 @@ public class PCameraFragment extends CameraFragment {
     }
 
     public void setFilterName(CustomerFilter.FilterType filterName) {
-       this.filterName=filterName;
+        this.filterName = filterName;
     }
 
     private void setOptimalPreviewSize(Camera.Parameters cameraParams,
@@ -420,19 +420,19 @@ public class PCameraFragment extends CameraFragment {
         } else {
             setExposureLevel(ExposureLevel.NORMAL);
         }*/
-       Camera camera=cameraView.getCamera();
+        Camera camera = cameraView.getCamera();
         Parameters pictureParams = camera.getParameters();
-        if(mHdrEnable){
-            if(mHdrAuto){
+        if (mHdrEnable) {
+            if (mHdrAuto) {
                 pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
-            }else {
+            } else {
                 pictureParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
             }
-        }else {
+        } else {
             pictureParams.setFlashMode(Parameters.FLASH_MODE_OFF);
         }
 
-       final String model = android.os.Build.MODEL.toLowerCase();
+        final String model = android.os.Build.MODEL.toLowerCase();
         final String brand = Build.BRAND.toLowerCase();
         // 所有华为的机器不要做set处理,
         if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
@@ -447,21 +447,23 @@ public class PCameraFragment extends CameraFragment {
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
                 imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
-               Bitmap saveBitmap = null;
+                Bitmap saveBitmap = null;
                 if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
-
-                /*if (isFFC) {
-                    saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
-                }*/
-                if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00")|| model.contains("L09")  || model.contains("honor")||model.contains("oppo") || brand.contains("oppo")) {
-                }else {
+                if (model.contains("oppo") || brand.contains("oppo")) {
                     if (isFFC) {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
                 }
+
+              /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("L09") || model.contains("honor") || model.contains("oppo") || brand.contains("oppo")) {
+                } else {
+                    if (isFFC) {
+//                        saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+                    }
+                }*/
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
@@ -508,7 +510,7 @@ public class PCameraFragment extends CameraFragment {
 //                EventBusHelper.post(bundle, PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"");
             } else if (msg.what == 0x002) {
                 Intent intent = new Intent(getActivity(), PhotoEditorActivity.class);
-                intent.putExtra("filterName",filterName);
+                intent.putExtra("filterName", filterName);
                 intent.putExtra("photo_data", imagePath);
                 getActivity().startActivity(intent);
             }

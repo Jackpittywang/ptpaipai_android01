@@ -11,9 +11,32 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rl_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/iv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_page_empty"/>
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="还未下载任何贴图模板哦"
+                android:layout_below="@id/iv_empty"/>
+        </RelativeLayout>
+
+
     <com.putao.widget.pulltorefresh.PullToRefreshGridView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:background="@color/background"
         android:id="@+id/pull_refresh_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

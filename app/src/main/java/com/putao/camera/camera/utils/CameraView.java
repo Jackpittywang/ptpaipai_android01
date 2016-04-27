@@ -315,7 +315,12 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         if (mOnCameraFocusChangeListener != null)
             mOnCameraFocusChangeListener.onFocusStart();
         isAutoFocusing = true;
-        camera.autoFocus(myAutoFocusCallback);
+        try {
+            camera.autoFocus(myAutoFocusCallback);
+        }catch (Exception e){
+
+        }
+
         if (drawingView != null) {
             drawingView.setHaveTouch(true, tfocusRect);
             drawingView.startAnimal();

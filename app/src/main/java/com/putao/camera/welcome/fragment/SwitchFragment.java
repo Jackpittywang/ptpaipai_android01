@@ -31,7 +31,7 @@ public class SwitchFragment extends Fragment {
         int position = getArguments().getInt("position");
         final boolean fromAbout = getArguments().getBoolean("fromAbout");
         iv_logo.setImageResource(CircleSwitchActivity.logos[position]);
-        if (!fromAbout && (position == CircleSwitchActivity.logos.length - 1)) {
+        if ((position == CircleSwitchActivity.logos.length - 1)) {
             bt_go.setVisibility(View.VISIBLE);
         } else {
             bt_go.setVisibility(View.GONE);
@@ -82,9 +82,14 @@ public class SwitchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Bundle bundle = new Bundle();
-                ActivityHelper.startActivity(getActivity(), ActivityCamera.class, bundle);
-                getActivity().finish();
+                if(!fromAbout){
+                    Bundle bundle = new Bundle();
+                    ActivityHelper.startActivity(getActivity(), ActivityCamera.class, bundle);
+                    getActivity().finish();
+                }else {
+                    getActivity().finish();
+                }
+
             }
         });
         return layout;

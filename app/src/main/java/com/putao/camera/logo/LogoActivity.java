@@ -62,7 +62,6 @@ public class LogoActivity extends BaseActivity {
             // FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
             String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
             FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
-
             FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
             FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
             FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
