@@ -17,6 +17,7 @@ import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
 import com.putao.camera.bean.WaterMarkIconInfo;
+import com.putao.camera.camera.filter.CustomerFilter;
 import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.editor.dialog.WaterTextDialog;
@@ -73,6 +75,7 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,6 +116,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private ArrayList<WaterMarkCategoryInfo> content1 = new ArrayList<WaterMarkCategoryInfo>();
     private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
+    private CustomerFilter.FilterType filterName=CustomerFilter.FilterType.NONE;
     private int photoType;
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
@@ -138,6 +142,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         doInitSubViews();
         GPUImage mGPUImage = new GPUImage(mContext);
         Intent intent = this.getIntent();
+        filterName= (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
@@ -145,6 +150,25 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
+            CustomerFilter filter=new CustomerFilter();
+            mGPUImage.setFilter(filter.getFilterByType(filterName));
+            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+                    new GPUImage.OnPictureSavedListener() {
+                        @Override
+                        public void onPictureSaved(final Uri uri) {
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                                show_image.setImageBitmap(bitmap);
+                                ImageCropBitmap=bitmap;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    });
+
+
         }
         ImageCropBitmap=originImageBitmap;
 //        ImageCropBitmap = BitmapHelper.imageCrop(originImageBitmap, 0);

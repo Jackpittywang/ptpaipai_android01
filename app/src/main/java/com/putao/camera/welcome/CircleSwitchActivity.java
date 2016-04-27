@@ -34,7 +34,6 @@ public class CircleSwitchActivity extends BaseActivity {
     public static int[] logos = new int[]{R.drawable.img_wt_01, R.drawable.img_wt_02,
             R.drawable.img_wt_03, R.drawable.img_wt_04};
     private boolean isFristUse;
-
     @Override
     public void doBefore() {
         super.doBefore();

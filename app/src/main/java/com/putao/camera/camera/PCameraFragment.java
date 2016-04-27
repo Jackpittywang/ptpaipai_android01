@@ -26,7 +26,6 @@ import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.ExifInterface;
-import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ import com.putao.camera.JNIFUN;
 import com.putao.camera.R;
 import com.putao.camera.camera.enhance.HdrBitmap;
 import com.putao.camera.camera.enhance.PtHdrMergeTask;
+import com.putao.camera.camera.filter.CustomerFilter;
 import com.putao.camera.camera.gpuimage.GPUImage;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.utils.CameraFragment;
@@ -94,6 +94,7 @@ public class PCameraFragment extends CameraFragment {
     private boolean isFaceDetecting = false;
     private int screenW, screenH;
     private static boolean isFFC;
+    private CustomerFilter.FilterType filterName;
 
     public void setSaveLocalPhotoState(boolean aSaveLocalPhoto) {
         bSaveLocalPhoto = aSaveLocalPhoto;
@@ -235,6 +236,10 @@ public class PCameraFragment extends CameraFragment {
         if (filter == null)
             filter = new GPUImageFilter();
         mGPUImage.setFilter(filter);
+    }
+
+    public void setFilterName(CustomerFilter.FilterType filterName) {
+       this.filterName=filterName;
     }
 
     private void setOptimalPreviewSize(Camera.Parameters cameraParams,
@@ -460,7 +465,7 @@ public class PCameraFragment extends CameraFragment {
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
-                    mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+                   /* mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
                             new GPUImage.OnPictureSavedListener() {
                                 @Override
                                 public void onPictureSaved(final Uri uri) {
@@ -476,14 +481,14 @@ public class PCameraFragment extends CameraFragment {
                                     }
                                 }
 
-                            });
+                            });*/
 
 
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();
                 tempBitmap.recycle();
                 if (isShowAR == true) {
-//                    handler.sendEmptyMessageDelayed(0x001, 100);
+                    handler.sendEmptyMessageDelayed(0x001, 100);
                 } else {
                     handler.sendEmptyMessageDelayed(0x002, 0);
                 }
@@ -503,6 +508,7 @@ public class PCameraFragment extends CameraFragment {
 //                EventBusHelper.post(bundle, PuTaoConstants.OPEN_AR_SHOW_ACTIVITY+"");
             } else if (msg.what == 0x002) {
                 Intent intent = new Intent(getActivity(), PhotoEditorActivity.class);
+                intent.putExtra("filterName",filterName);
                 intent.putExtra("photo_data", imagePath);
                 getActivity().startActivity(intent);
             }

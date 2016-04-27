@@ -7,13 +7,13 @@ import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
 import com.putao.camera.camera.gpuimage.GPUImageContrastFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilterGroup;
-import com.putao.camera.camera.gpuimage.GPUImageMonochromeFilter;
 import com.putao.camera.camera.gpuimage.GPUImageRGBFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSaturationFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSepiaFilter;
 import com.putao.camera.camera.gpuimage.GPUImageVignetteFilter;
 import com.putao.camera.camera.gpuimage.GPUImageWhiteBalanceFilter;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
  * 使用GPUImage自定义滤镜
  */
 public class CustomerFilter {
-    public enum FilterType {
+    public enum FilterType implements Serializable {
         NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC
     }
 
