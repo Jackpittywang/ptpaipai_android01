@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -41,6 +43,8 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     private DownloadFinishStickerAdapter mManagementAdapter;
     private ArrayList<StickerCategoryInfo> list;
     private TextView title_tv, tv_delect_selected,tv_select_all;
+    private RelativeLayout rl_empty;
+    private LinearLayout choice_ll;
 
     @Override
     public int doGetContentViewId() {
@@ -49,6 +53,8 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void doInitSubViews(View view) {
+        choice_ll=queryViewById(R.id.choice_ll);
+        rl_empty=queryViewById(R.id.rl_empty);
         tv_select_all=queryViewById(R.id.tv_select_all);
         tv_delect_selected = queryViewById(R.id.tv_delect_selected);
         title_tv = (TextView) view.findViewById(R.id.title_tv);
@@ -107,6 +113,10 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         map.put("type", "sticker");
         list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map);
         mManagementAdapter.setDatas(list);
+        if(list.size()==0){
+            rl_empty.setVisibility(View.VISIBLE);
+            choice_ll.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -136,6 +146,14 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         map.put("id", String.valueOf(info.id));
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
         mManagementAdapter.notifyDataSetChanged();
+        Map<String, String> map2 = new HashMap<String, String>();
+//        map.put("type", WaterMarkCategoryInfo.photo);
+        map.put("type", "sticker");
+        list = (ArrayList<StickerCategoryInfo>) MainApplication.getDBServer().getStickerCategoryInfoByWhere(map2);
+        if(list.size()==0){
+            rl_empty.setVisibility(View.VISIBLE);
+            choice_ll.setVisibility(View.GONE);
+        }
     }
 
     @Override
