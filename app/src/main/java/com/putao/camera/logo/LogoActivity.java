@@ -38,42 +38,33 @@ public class LogoActivity extends BaseActivity {
 
     @Override
     public void doInitSubViews(View view) {
+        EventBus.getEventBus().register(this);
         startRedDotService();
         baidu_icon_iv = queryViewById(R.id.baidu_icon_iv);
         image_loading = queryViewById(R.id.image_loading);
         baidu_icon_iv.setVisibility(View.INVISIBLE);
-//        try {
-//            //            ActivityInfo info = this.getPackageManager().getActivityInfo(getComponentName(), PackageManager.GET_META_DATA);
-//            //            String msg = info.metaData.getString("UMENG_CHANNEL");
-//            String msg = getMetaDataValue("UMENG_CHANNEL");
-//            if (msg.equals("channel_baidu")) {
-//                baidu_icon_iv.setVisibility(View.VISIBLE);
-//            } else if (msg.equals("channel_jinli")) {
-//                image_loading.setImageResource(R.drawable.loading_jinli);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        EventBus.getEventBus().register(this);
 
-        try {
-            File folder = new File(FileUtils.getARStickersPath());
-            if (folder.exists() == false) folder.mkdir();
-            // FileUtils.unZipInAsset(mContext, "axfl.zip", FileUtils.FILE_PARENT_NAME, false);
-            String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
-            FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
-
-            FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "icon.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "kq.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "mhl.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "xhx.zip", folderName, false);
-            FileUtils.unZipInAsset(mContext, "xm.zip", folderName, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    File folder = new File(FileUtils.getARStickersPath());
+                    if (folder.exists() == false) folder.mkdir();
+                    String folderName = FileUtils.FILE_PARENT_NAME + File.separator + FileUtils.FILE_AR_PARENT_NAME;
+                    FileUtils.unZipInAsset(mContext, "cn.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "fd.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "hy.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "hz.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "icon.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "kq.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "mhl.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "xhx.zip", folderName, false);
+                    FileUtils.unZipInAsset(mContext, "xm.zip", folderName, false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -86,7 +77,6 @@ public class LogoActivity extends BaseActivity {
 
     @Override
     public void doInitData() {
-//        Loger.i("current time:" + System.currentTimeMillis());
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -94,13 +84,6 @@ public class LogoActivity extends BaseActivity {
                 finish();
             }
         }, 2000);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
-//                mActivity.finish();
-//            }
-//        }, 2000);
     }
 
     @Override
