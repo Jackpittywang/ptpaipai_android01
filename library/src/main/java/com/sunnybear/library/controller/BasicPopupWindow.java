@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 import com.squareup.okhttp.Callback;
@@ -62,6 +63,8 @@ public abstract class BasicPopupWindow extends PopupWindow implements View.OnTou
         mRootView.setOnTouchListener(this);
         //响应返回键
         mRootView.setOnKeyListener(this);
+        //华为手机虚拟按键挡住window
+        setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     @Override

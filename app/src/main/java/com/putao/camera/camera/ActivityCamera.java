@@ -810,7 +810,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private void switchCamera() {
 
         if (current == null) {
-            current = std;
+            current = ffc;
+            flash_light_iv.setVisibility(View.GONE);
         } else {
             current = ((current == std) ? ffc : std);
             flash_light_iv.setVisibility((current == std) ? View.VISIBLE : View.GONE);
@@ -1795,7 +1796,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 scaleType = SCALETYPE_THREE;
                 mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                 setCameraRatioThreeToFour();
-                photoSize = PhotoEditorActivity.CROP_43;
+//                photoSize = PhotoEditorActivity.CROP_43;
+                photoSize=0;
                 ToasterHelper.showShort(this, "3:4", R.drawable.img_blur_bg);
                 break;
         }

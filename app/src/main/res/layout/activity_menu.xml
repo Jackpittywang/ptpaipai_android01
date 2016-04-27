@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <ImageView
         android:id="@+id/iv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:src="@drawable/img_index_bg"
-        />
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_index_bg" />
 
     <!--<com.putao.widget.gif.GifView-->
     <!--android:id="@+id/longzhou_gif"-->
@@ -129,11 +129,22 @@
                 android:layout_marginLeft="30dp"
                 android:padding="10dp">
 
-                <ImageView
+                <!--            <ImageView
+                                android:id="@+id/menu_home_camera_btn"
+                                android:layout_width="88dp"
+                                android:layout_height="88dp"
+                                android:src="@drawable/img_index_05_176" />-->
+
+                <com.sunnybear.library.view.image.ImageDraweeView
                     android:id="@+id/menu_home_camera_btn"
                     android:layout_width="88dp"
                     android:layout_height="88dp"
-                    android:src="@drawable/img_index_05_176" />
+                    auto:placeholderImage="@drawable/img_index_05_176"
+                    auto:roundBottomLeft="true"
+                    auto:roundBottomRight="true"
+                    auto:roundTopLeft="true"
+                    auto:roundTopRight="true"
+                    auto:roundedCornerRadius="20dp" />
 
                 <TextView
                     android:id="@+id/name_tv"

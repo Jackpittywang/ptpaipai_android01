@@ -92,19 +92,20 @@ public class BitmapHelper {
         return instance;
     }
 
-        // 从Resources中加载图片
-        public static Bitmap decodeSampledBitmapFromResource(Resources res,
-                                                             int resId, int reqWidth, int reqHeight) {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeResource(res, resId, options); // 读取图片长款
-            options.inSampleSize = calculateInSampleSize(options, reqWidth,
-                    reqHeight); // 计算inSampleSize
-            options.inJustDecodeBounds = false;
-            Bitmap src = BitmapFactory.decodeResource(res, resId, options); // 载入一个稍大的缩略图
+    // 从Resources中加载图片
+    public static Bitmap decodeSampledBitmapFromResource(Resources res,
+                                                         int resId, int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options); // 读取图片长款
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight); // 计算inSampleSize
+        options.inJustDecodeBounds = false;
+        Bitmap src = BitmapFactory.decodeResource(res, resId, options); // 载入一个稍大的缩略图
 //            return Bitmap(src, reqWidth, reqHeight); // 进一步得到目标大小的缩略图
-            return src;
-        }
+        return src;
+    }
+
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -484,16 +485,27 @@ public class BitmapHelper {
 
         int startWidth = bitmap.getWidth(); // 得到图片的宽，高
         int startHeight = bitmap.getHeight();
+        boolean b = startWidth > startHeight;
+       /* if (b) {
+            bitmap = BitmapHelper.orientBitmap(bitmap, ExifInterface.ORIENTATION_ROTATE_90);
+            startWidth = bitmap.getWidth(); // 得到图片的宽，高
+            startHeight = bitmap.getHeight();
+        }*/
 
         int retX = 0;
         int endWidth = startWidth;
-        boolean b = startWidth > startHeight;
+
         switch (cropType) {
             case CROP_11:
                 retX = Math.abs(startWidth - startHeight) / 2;
                 endWidth = b ? startHeight : startWidth;
                 break;
             case CROP_43:
+                /*if (b) {
+                    endWidth = startHeight * 3 / 4;
+                } else {
+                    endWidth = startWidth * 4 / 3;
+                }*/
                 endWidth = (b ? startHeight : startWidth) * 4 / 3;
                 retX = Math.abs(startWidth - endWidth) / 2;
                 break;

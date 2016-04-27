@@ -200,7 +200,8 @@
         <activity
             android:name=".menu.MenuActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityCameraTheme"/>
         <activity
             android:name=".movie.MovieCameraActivity"
             android:launchMode="singleTask"
