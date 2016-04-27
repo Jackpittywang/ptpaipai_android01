@@ -33,40 +33,38 @@ public class RedDotReceiver extends PTMessageReceiver {
         JSONObject location_dot = jsonObject.getJSONObject("location_dot");
         boolean index = false;
         boolean material = false;
-        boolean sticker_pic = false;
-        boolean dynamic_pic = false;
-        boolean template_pic = false;
+        int sticker_pic = 0;
+        int dynamic_pic = 0;
+        int template_pic = 0;
         if (null != location_dot) {
             index = location_dot.getBoolean("index");
             material = location_dot.getBoolean("material");
-            sticker_pic = location_dot.getBoolean("sticker_pic");
-            dynamic_pic = location_dot.getBoolean("dynamic_pic");
-            template_pic = location_dot.getBoolean("template_pic");
-        }
-        //首页红点
-        if (index) {
-            EventBusHelper.post("", EVENT_DOT_INDEX);
+            sticker_pic = location_dot.getInteger("sticker_pic");
+            dynamic_pic = location_dot.getInteger("dynamic_pic");
+            template_pic = location_dot.getInteger("template_pic");
         }
         //相机红点
         if (material) {
             EventBusHelper.post("", EVENT_DOT_MATERIAL);
         }
 
+        int[] dots = new int[3];
         //贴纸红点
-        if (sticker_pic || dynamic_pic || template_pic) {
-            Boolean[] dots = new Boolean[3];
+        if (0 != sticker_pic)
             dots[0] = sticker_pic;
+        if (0 != dynamic_pic)
             dots[1] = dynamic_pic;
+        if (0 != template_pic)
             dots[2] = template_pic;
-            //缓存红点数据
-            Boolean[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER, dots);
-            if (value != dots) {
-                for (int i = 0; i < 3; i++) {
-                    dots[i] = value[i] || dots[i];
-                }
+        //缓存红点数据
+        int[] value = PreferenceUtils.getValue(EVENT_DOT_MATTER_CENTER, dots);
+        if (value != dots) {
+            for (int i = 0; i < 3; i++) {
+                dots[i] = value[i] + dots[i];
             }
-            PreferenceUtils.save(EVENT_DOT_MATTER_CENTER, dots);
-            EventBusHelper.post("", EVENT_DOT_MATTER_CENTER);
         }
+        PreferenceUtils.save(EVENT_DOT_MATTER_CENTER, dots);
+        EventBusHelper.post("", EVENT_DOT_MATTER_CENTER);
     }
+
 }

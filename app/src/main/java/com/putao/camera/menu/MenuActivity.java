@@ -93,8 +93,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
     @Bind(R.id.fl_main)
     FrameLayout fl_main;
-    @Bind(R.id.v_red_dot)
-    View v_red_dot;
+    @Bind(R.id.tv_red_number)
+    TextView tv_red_number;
 
     private SelectPopupWindow mSelectPopupWindow;
     private MenuIconInfo aMenuIconInfo;
@@ -135,7 +135,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                         AccountHelper.logout();
                         setDefaultBlur();
                         user_name_tv.setText("登录葡萄账户");
-                        v_red_dot.setVisibility(View.GONE);
+                        tv_red_number.setVisibility(View.GONE);
                         sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
                     }
                 }).setNegativeButton("否", new DialogInterface.OnClickListener() {
@@ -216,7 +216,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     }
 
     private void setDefaultBlur() {
-        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup),1, false);
+        Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 1, false);
         EventBusHelper.post(apply, ME_BLUR);
     }
 
@@ -391,16 +391,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     @Override
     protected void onStart() {
         super.onStart();
-        v_red_dot.setVisibility(View.GONE);
-        //获取缓存红点数据
-        Boolean[] dots = new Boolean[]{false, false, false};
-        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
-        for (int i = 0; i < 3; i++) {
-            if (dots[i]) {
-                v_red_dot.setVisibility(View.VISIBLE);
-                break;
-            }
-        }
+        setNum();
     }
 
     /**
@@ -408,9 +399,23 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
      *
      * @param dot
      */
-    @Subcriber(tag = RedDotReceiver.EVENT_DOT_INDEX)
+    @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATTER_CENTER)
     private void setRed_dot(String dot) {
-        v_red_dot.setVisibility(View.VISIBLE);
+        setNum();
     }
 
+
+    private void setNum() {
+        //获取缓存红点数据
+        int[] dots = new int[3];
+        int num = 0;
+        dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
+        for (int i = 0; i < 3; i++) {
+            num = num + dots[i];
+        }
+        if (num > 0) {
+            tv_red_number.setText(num + "");
+            tv_red_number.setVisibility(View.VISIBLE);
+        } else tv_red_number.setVisibility(View.GONE);
+    }
 }

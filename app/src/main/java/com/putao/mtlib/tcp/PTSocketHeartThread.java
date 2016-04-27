@@ -2,17 +2,12 @@ package com.putao.mtlib.tcp;
 
 import android.content.Intent;
 
-import com.putao.account.AccountHelper;
-import com.putao.camera.application.MainApplication;
-import com.putao.camera.util.AppUtils;
-import com.putao.mtlib.CameraNotifyService;
-import com.putao.mtlib.model.CS_CONNECT;
-import com.putao.mtlib.util.MsgPackUtil;
 import com.putao.mtlib.util.PTLoger;
+import com.putao.wd.GlobalApplication;
 
 /**
  * @author jidongdong
- *         <p/>
+ *         <p>
  *         2015年7月27日 下午6:20:08
  */
 class PTSocketHeartThread extends Thread {
@@ -50,30 +45,21 @@ class PTSocketHeartThread extends Thread {
         return PTTCPClient.instance().reConnect();
     }
 
-
     public void run() {
+//        isStop = false;
         while (!isStop) {
-            boolean canConnectToServer = false;
-            if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
-                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
-            }/* else {
-                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
-            }*/
-            if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
-
-                PTLoger.d("SocketConnect--is---------true, send heart message/");
-                PTSenderManager.sharedInstance().sendMsg(PingBytes, null);
-                canConnectToServer = true;
-            } else {
-                PTLoger.d("SocketConnect--is---------false, no send /");
-            }
-            if (!canConnectToServer && PTSocketOutputThread.isConnected) {
-                if (reConnect()) CameraNotifyService.sendConnectValidate();
-            }
             try {
                 Thread.sleep(PTSenderManager.sharedInstance().getConfig().getHeartSecond() * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
+                PTLoger.d("SocketConnect--is---------true, send heart message/");
+                PTSenderManager.sharedInstance().sendMsg(PingBytes, null);
+            } else {
+                PTLoger.d("SocketConnect--is---------false, no send /");
+//                reConnect();
+                GlobalApplication.getInstance().sendBroadcast(new Intent(GlobalApplication.RESTART_MESSAGE));
             }
         }
     }

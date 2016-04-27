@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.putao.account.AccountHelper;
 import com.putao.camera.application.MainApplication;
-import com.sunnybear.library.BasicApplication;
+import com.putao.mtlib.tcp.PTSenderManager;
 import com.sunnybear.library.util.Logger;
 
 import java.util.List;
@@ -19,6 +19,8 @@ import java.util.TimerTask;
 public class HomeBroadcastReceiver extends BroadcastReceiver {
     Timer timer;
     private static HomeBroadcastReceiver mHomeBroadcastReceiver;
+    private boolean isServiceStart;
+    private boolean isServiceRealClose;
 
     public static HomeBroadcastReceiver getInstance() {
         if (null == mHomeBroadcastReceiver) {
@@ -29,19 +31,20 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        final boolean isServiceStart = isServiceStart(context);
+        isServiceStart = isServiceStart(context);
         switch (intent.getAction()) {
             case MainApplication.IN_FORE_MESSAGE:
 //                inFore();
-                if (BasicApplication.isInBack) Logger.d("ptl---------------", "应用恢复到前台了");
-                BasicApplication.isInBack = false;
+                Logger.d("ptl---------------", "应用恢复到前台了");
                 if (!AccountHelper.isLogin()) return;
+
                 if (null != timer) {
                     timer.cancel();
                     timer = null;
                 }
                 if (!isServiceStart) {
                     context.startService(MainApplication.redServiceIntent);
+                    isServiceRealClose = false;
                     Logger.d("ptl-----------", "启动服务");
                 }
                 break;
@@ -49,23 +52,44 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
 //                outFore();
                 if (null == timer)
                     timer = new Timer();
-                Logger.d("ptl-----------", "检测程序进入后台");
-                BasicApplication.isInBack = true;
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         if (isServiceStart) {
                             context.stopService(MainApplication.redServiceIntent);
+                            isServiceRealClose = true;
                             Logger.d("ptl-----------", "停止服务");
                         }
                     }
                 }, 60 * 1000);
                 break;
             case MainApplication.OUT_FORE_MESSAGE_SOON:
-                context.stopService(MainApplication.redServiceIntent);
-                Logger.d("ptl---------------", "停止服务");
+                if (isServiceStart) {
+                    context.stopService(MainApplication.redServiceIntent);
+                    isServiceRealClose = true;
+                    Logger.d("ptl---------------", "停止服务");
+                }
+                break;
+            case MainApplication.RESTART_MESSAGE:
+                if (isServiceStart) {
+                    context.stopService(MainApplication.redServiceIntent);
+                    isServiceStart = false;
+                    Logger.d("ptl---------------", "停止服务");
+                }
+                if (null == timer)
+                    timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (!isServiceStart && !isServiceRealClose) {
+                            Logger.d("ptl---------------", "重启");
+                            context.startService(MainApplication.redServiceIntent);
+                        }
+                    }
+                }, (PTSenderManager.sharedInstance().getConfig().getHeartSecond() + 5) * 1000);
                 break;
         }
+
     }
 
     private boolean isServiceStart(Context context) {
@@ -73,7 +97,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
         for (android.app.ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
             Logger.d("service-----", runningServiceInfo.service.getClassName().toString());
-            if ("com.putao.mtlib.CameraNotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
+            if ("com.putao.mtlib.NotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
                 return true;
             }
         }

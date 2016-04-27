@@ -72,7 +72,7 @@
                 android:padding="10dp">
 
 
-                <Button
+                <ImageView
                     android:id="@+id/menu_home_material_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     android:layout_centerHorizontal="true"
                     android:text="素材中心"
                     android:textColor="@color/text_color_dark_626262"
-                    android:textSize="@dimen/dimens_16dp"/>
+                    android:textSize="@dimen/dimens_16dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -95,12 +95,23 @@
                     android:src="@drawable/home_tips_new"
                     android:visibility="gone" />
 
-                <View
+                <!--<View
                     android:id="@+id/v_red_dot"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:layout_alignRight="@+id/menu_home_material_btn"
                     android:background="@drawable/red_dot_shape"
+                    android:visibility="gone" />-->
+                <TextView
+                    android:id="@+id/tv_red_number"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_alignRight="@+id/menu_home_material_btn"
+                    android:background="@drawable/btn_red_num_shape"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_10sp"
                     android:visibility="gone" />
 
             </RelativeLayout>

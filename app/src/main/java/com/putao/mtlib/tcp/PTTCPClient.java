@@ -95,8 +95,8 @@ public class PTTCPClient {
                     done = true;
                 }
             }
-        } catch (IOException e){
-             PTLoger.e("connect to server failed");
+        } catch (IOException e) {
+            PTLoger.e("connect to server failed");
         }
        /* catch (ConnectException e) {
             PTLoger.e("connect to server failed");
@@ -184,8 +184,9 @@ public class PTTCPClient {
     public boolean reConnect() {
         closeTCPSocket();
         PTLoger.i("client reconnect to server");
-        try {
-            initialize();
+        instance();
+     /*   try {
+//            initialize();
             isInitialized = true;
         } catch (IOException e) {
             isInitialized = false;
@@ -194,6 +195,7 @@ public class PTTCPClient {
             isInitialized = false;
             e.printStackTrace();
         }
+        return isInitialized;*/
         return isInitialized;
     }
 
@@ -220,10 +222,10 @@ public class PTTCPClient {
      */
     public void closeTCPSocket() {
         try {
-            if (socketChannel != null) {
+            if (socketChannel != null)
                 socketChannel.close();
-            }
-
+            if (null != s_Tcp)
+                s_Tcp = null;
         } catch (IOException e) {
 
         }

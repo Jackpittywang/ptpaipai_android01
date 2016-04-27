@@ -397,6 +397,7 @@ public class MainApplication extends BasicApplication {
     public static final String IN_FORE_MESSAGE = "in_fore_message";
     public static final String OUT_FORE_MESSAGE = "out_fore_message";
     public static final String OUT_FORE_MESSAGE_SOON = "out_fore_message_soon";
+    public static final String RESTART_MESSAGE = "restart_message";
     //===================preference key===========================
     public static String app_id;
     public static final String PREFERENCE_KEY_UID = "uid";

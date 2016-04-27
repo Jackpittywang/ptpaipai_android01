@@ -30,7 +30,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
     private UnScrollableViewPager vp_content;
     private TitleBar rg_matter;
     private SparseArray<Fragment> mFragments;
-    Boolean[] mDots = new Boolean[]{false, false, false};
+    int[] mDots = new int[3];
 
     private boolean mIspaster = false;
 
@@ -75,7 +75,7 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
                         matter_jigsaw_btn.hide();
                         break;
                 }
-                mDots[position] = false;
+                mDots[position] = 0;
                 PreferenceUtils.save(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
             }
         });
@@ -158,17 +158,16 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
 
     /**
      * 红点显示接收通知
-     *
      */
     @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATTER_CENTER)
     private void setRed_dot(String dot) {
-        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);;
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
         setRedDot();
     }
 
     private void setRedDot() {
-        if (mDots[0]) matter_paster_btn.show();
-        if (mDots[1]) matter_dynamic_pasting_btn.show();
-        if (mDots[2]) matter_jigsaw_btn.show();
+        if (0 != mDots[0]) matter_paster_btn.show();
+        if (0 != mDots[1]) matter_dynamic_pasting_btn.show();
+        if (0 != mDots[2]) matter_jigsaw_btn.show();
     }
 }

@@ -135,7 +135,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private List<DynamicIconInfo> nativeList = null;
     private int currentSelectDynamic = 0;
     boolean isFFC = false;
-   private CustomerFilter.FilterType filterName  = CustomerFilter.FilterType.NONE;
+    private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -572,7 +572,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     public void onResume() {
         super.onResume();
 //        switchCamera();
-        filterName  = CustomerFilter.FilterType.NONE;
+        filterName = CustomerFilter.FilterType.NONE;
         tv_takephoto.setEnabled(true);
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
@@ -1636,39 +1636,39 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 if (item.equals(EffectCollection.none)) {
                     //原画
                     filter = filters.getFilterByType(CustomerFilter.FilterType.NONE);
-                    filterName=CustomerFilter.FilterType.NONE;
+                    filterName = CustomerFilter.FilterType.NONE;
                 } else if (item.equals(EffectCollection.brightness)) {
                     //白亮晨曦
                     filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX);
-                    filterName=CustomerFilter.FilterType.BLCX;
+                    filterName = CustomerFilter.FilterType.BLCX;
                 } else if (item.equals(EffectCollection.crossprocess)) {
                     //陌上花开
                     filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK);
-                    filterName=CustomerFilter.FilterType.MSHK;
+                    filterName = CustomerFilter.FilterType.MSHK;
                 } else if (item.equals(EffectCollection.filllight)) {
                     //白白嫩嫩
                     filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN);
-                    filterName=CustomerFilter.FilterType.BBNN;
+                    filterName = CustomerFilter.FilterType.BBNN;
                 } else if (item.equals(EffectCollection.saturate)) {
                     // 秋日私语
                     filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY);
-                    filterName=CustomerFilter.FilterType.QRSY;
+                    filterName = CustomerFilter.FilterType.QRSY;
                 } else if (item.equals(EffectCollection.sepia)) {
                     //指尖流年
                     filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN);
-                    filterName=CustomerFilter.FilterType.ZJLN;
+                    filterName = CustomerFilter.FilterType.ZJLN;
                 } else if (item.equals(EffectCollection.temperature)) {
                     //一米阳关
                     filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG);
-                    filterName=CustomerFilter.FilterType.YMYG;
+                    filterName = CustomerFilter.FilterType.YMYG;
                 } else if (item.equals(EffectCollection.tint)) {
                     //蔚蓝海岸
                     filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA);
-                    filterName=CustomerFilter.FilterType.WLHA;
+                    filterName = CustomerFilter.FilterType.WLHA;
                 } else if (item.equals(EffectCollection.vignette)) {
                     //闪亮登场
                     filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC);
-                    filterName=CustomerFilter.FilterType.SLDC;
+                    filterName = CustomerFilter.FilterType.SLDC;
                 }
                 current.setFilter(filter);
                 current.setFilterName(filterName);
@@ -1868,11 +1868,12 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         super.onStart();
 //        v_red_dot.setVisibility(View.GONE);
         //获取缓存红点数据
-        Boolean[] dots = new Boolean[]{false, false, false};
+        int[] dots = new int[3];
         dots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, dots);
         for (int i = 0; i < 3; i++) {
-            if (dots[i]) {
+            if (0 != dots[i]) {
                 v_red_dot.setVisibility(View.VISIBLE);
+
                 break;
             }
         }
