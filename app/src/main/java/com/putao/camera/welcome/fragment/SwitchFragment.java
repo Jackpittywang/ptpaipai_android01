@@ -14,9 +14,7 @@ import android.widget.TextView;
 
 import com.putao.camera.R;
 import com.putao.camera.camera.ActivityCamera;
-import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.ActivityHelper;
-import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.welcome.CircleSwitchActivity;
 
 public class SwitchFragment extends Fragment {
@@ -55,30 +53,30 @@ public class SwitchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!fromAbout){
-                    ActivityHelper.startActivity(getActivity(), ActivityCamera.class, new Bundle());
-                    getActivity().finish();
+                    initRes();
                 }else {
                     getActivity().finish();
                 }
             }
         });
 
-        initRes();
+
+//        initRes();
         return layout;
     }
 
     private void initRes() {
-        boolean isFristUse = SharedPreferencesHelper.readBooleanValue(getActivity(), PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, true);
-        if (isFristUse && (position == CircleSwitchActivity.logos.length - 1)) {
+//        boolean isFristUse = SharedPreferencesHelper.readBooleanValue(getActivity(), PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, true);
+//        if ((position == CircleSwitchActivity.logos.length - 1)) {
             pbInit.setVisibility(View.VISIBLE);
             tvTip.setVisibility(View.VISIBLE);
             bt_go.setVisibility(View.GONE);
-        } else {
+       /* } else {
             pbInit.setVisibility(View.GONE);
             tvTip.setVisibility(View.INVISIBLE);
             bt_go.setVisibility(View.VISIBLE);
             return;
-        }
+        }*/
         new AsyncTask<Void, Integer, Void>() {
             int count = 0;
 
@@ -102,14 +100,16 @@ public class SwitchFragment extends Fragment {
                     pbInit.setProgress(values[0]);
                 } else {
                     pbInit.setProgress(values[0]);
+
                 }
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                bt_go.setVisibility(View.VISIBLE);
                 pbInit.setVisibility(View.GONE);
                 tvTip.setVisibility(View.INVISIBLE);
+                ActivityHelper.startActivity(getActivity(), ActivityCamera.class, new Bundle());
+                getActivity().finish();
             }
         }.execute();
     }

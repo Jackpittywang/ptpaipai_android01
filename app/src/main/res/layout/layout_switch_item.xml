@@ -9,18 +9,22 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:scaleType="centerCrop" />
-
+    <!--android:layout_above="@+id/tvTip"-->
     <Button
         android:id="@+id/bt_go"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tvTip"
+
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:visibility="visible"
         android:background="@drawable/iv_logo"
         android:gravity="center" />
 
     <ProgressBar
         android:id="@+id/pbInit"
+        android:visibility="gone"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="150dp"
         android:layout_height="30dp"
@@ -35,6 +39,7 @@
 
     <TextView
         android:id="@+id/tvTip"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
