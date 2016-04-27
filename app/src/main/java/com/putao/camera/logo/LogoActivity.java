@@ -4,12 +4,9 @@ package com.putao.camera.logo;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
@@ -20,9 +17,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.FileUtils;
-import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.welcome.CircleSwitchActivity;
-import com.sunnybear.library.controller.eventbus.Subcriber;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,12 +26,10 @@ import java.util.TimerTask;
 
 public class LogoActivity extends BaseActivity {
 
-    private ImageView baidu_icon_iv;
-    private TextView tvTip;
+    private ImageView baidu_icon_iv, image_loading;
     public static Intent redServiceIntent;
     public static boolean isServiceClose;
     public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
-    private ProgressBar pbInit;
 
     @Override
     public int doGetContentViewId() {
@@ -48,9 +41,9 @@ public class LogoActivity extends BaseActivity {
         EventBus.getEventBus().register(this);
         startRedDotService();
         baidu_icon_iv = queryViewById(R.id.baidu_icon_iv);
-        pbInit = queryViewById(R.id.pbInit);
-        tvTip = queryViewById(R.id.tvTip);
+        image_loading = queryViewById(R.id.image_loading);
         baidu_icon_iv.setVisibility(View.INVISIBLE);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -72,7 +65,6 @@ public class LogoActivity extends BaseActivity {
                 }
             }
         }).start();
-
     }
 
     /**
@@ -82,50 +74,16 @@ public class LogoActivity extends BaseActivity {
         sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
     }
 
-    private final long WAIT_TIME = 2 * 1000;
 
     @Override
     public void doInitData() {
-        boolean isFristUse = SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_FIRST_USE_APPLICATION, true);
-        if (isFristUse) {
-            pbInit.setVisibility(View.VISIBLE);
-            tvTip.setVisibility(View.VISIBLE);
-        } else {
-            pbInit.setVisibility(View.GONE);
-            tvTip.setVisibility(View.GONE);
-        }
-        new AsyncTask<Void, Integer, Void>() {
-            int count = 0;
-
+        new Timer().schedule(new TimerTask() {
             @Override
-            protected Void doInBackground(Void... params) {
-                while (count <= 100) {
-                    count++;
-                    try {
-                        Thread.sleep(WAIT_TIME / 100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    publishProgress(count);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onProgressUpdate(Integer... values) {
-                if (values[0] <= 100) {
-                    pbInit.setProgress(values[0]);
-                } else {
-                    pbInit.setProgress(values[0]);
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
+            public void run() {
                 ActivityHelper.startActivity(mActivity, CircleSwitchActivity.class);
                 finish();
             }
-        }.execute();
+        }, 2000);
     }
 
     @Override
