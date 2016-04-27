@@ -4,13 +4,10 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/image_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/loading"
-
-         />
-
+        android:scaleType="centerCrop"
+        android:src="@drawable/loading" />
 
     <ImageView
         android:id="@+id/baidu_icon_iv"
@@ -22,5 +19,26 @@
         android:src="@drawable/baidu_family"
         android:visibility="gone" />
 
+    <ProgressBar
+        android:id="@+id/pbInit"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/tvTip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_bar" />
 
+    <TextView
+        android:id="@+id/tvTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="正在准备进入相机" />
 </RelativeLayout>
