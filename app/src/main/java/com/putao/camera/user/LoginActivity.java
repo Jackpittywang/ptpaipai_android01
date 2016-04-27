@@ -116,7 +116,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         new JPushHeaper().setAlias(mContext, result.getString("uid"));
                                         //验证登陆后的连接发送
                                         checkLogin(mobile);
-                                        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
 //                                        startActivity((Class) args.getSerializable(TERMINAL_ACTIVITY), args);
                                     }
 
@@ -162,6 +161,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                 new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
                     @Override
                     public void onSuccess(String url, UserInfo result) {
+                        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         AccountHelper.setUserInfo(result);
                         //启动红点推送
                         sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
@@ -175,7 +175,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                             bundle.putString("savefile", path);
                             bundle.putString("imgpath", imgpath);
                             ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
-                            finish();
                         } else {
                             Bundle bundle = new Bundle();
                             bundle.putString("from", "");
@@ -189,6 +188,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
+                        finish();
+                        loading.dismiss();
                     }
 
                     @Override

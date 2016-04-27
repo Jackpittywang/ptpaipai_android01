@@ -36,10 +36,11 @@ public final class AccountConstants {
     public static final class Url {
         public static final String URL_REGISTER = "api/register";           //注册
         public static final String URL_CHECK_MOBILE = "api/checkMobile";     //手机注册与否检测
-//        public static final String URL_SEND_VERIFY_CODE = "api/sendMsg";     //发送验证码
+        //        public static final String URL_SEND_VERIFY_CODE = "api/sendMsg";     //发送验证码
         public static final String URL_SEND_VERIFY_CODE = "/api/safeSendMsg";//发送验证码安全接口
         public static final String URL_FORGET = "api/forget";               //忘记密码(手机)
         public static final String URL_LOGIN = "api/login";                 //登录
+        public static final String URL_LOGIN_CHECK = "/user/login";                 //登录后的连接传送
         public static final String URL_SAFELOGIN = "api/safeLogin";         //安全登录
         public static final String URL_UPDATE_PASSWORD = "api/changePasswd";  //修改密码
         public static final String URL_UPDATE_TOKEN = "api/updateToken";    //更新token

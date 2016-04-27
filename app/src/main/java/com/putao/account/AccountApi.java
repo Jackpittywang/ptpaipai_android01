@@ -191,7 +191,7 @@ public class AccountApi {
     /**
      * 登陆后验证
      */
-    public static final String URL_LOGIN_AFTER = PuTaoConstants.PAIPAI_SERVER_HOST + AccountConstants.Url.URL_LOGIN;
+    public static final String URL_LOGIN_AFTER = PuTaoConstants.PAIPAI_SERVER_HOST + AccountConstants.Url.URL_LOGIN_CHECK;
 
     /**
      * 登录后的验证
