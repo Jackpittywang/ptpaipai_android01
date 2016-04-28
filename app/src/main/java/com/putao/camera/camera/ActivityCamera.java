@@ -574,6 +574,10 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 //        switchCamera();
         filterName = CustomerFilter.FilterType.NONE;
         tv_takephoto.setEnabled(true);
+        take_photo_btn.setEnabled(true);
+        camera_set_iv.setEnabled(true);
+        camera_set_ll.setEnabled(true);
+
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
@@ -869,9 +873,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         @Override
                         public void run() {
                             execTakePhoto();
-                            take_photo_btn.setEnabled(true);
-                            camera_set_iv.setEnabled(true);
-                            camera_set_ll.setEnabled(true);
+//                            take_photo_btn.setEnabled(true);
+//                            camera_set_iv.setEnabled(true);
+//                            camera_set_ll.setEnabled(true);
 //                            take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.film_camera_btn));
                             take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_capture_nor));
 //                            take_photo_btn.setText("");
@@ -882,9 +886,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             finalTime_thread.start();
         } else {
             execTakePhoto();
-            take_photo_btn.setEnabled(true);
-            camera_set_iv.setEnabled(true);
-            camera_set_ll.setEnabled(true);
+//            take_photo_btn.setEnabled(true);
+//            camera_set_iv.setEnabled(true);
+//            camera_set_ll.setEnabled(true);
         }
     }
 
