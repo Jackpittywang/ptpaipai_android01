@@ -1,13 +1,14 @@
 package com.sunnybear.library.util;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -332,4 +333,25 @@ public final class ImageUtils {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+
+    /**
+     * 存储图像并将信息添加入媒体数据库
+     */
+    public static final Uri VIDEO_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+    public static Uri insertVideo(Context context, String title, String filePath, String filename) {
+        long dateTaken = System.currentTimeMillis();
+        ContentResolver cr = context.getContentResolver();
+        ContentValues values = new ContentValues(7);
+        values.put(MediaStore.Video.Media.TITLE, title);
+        values.put(MediaStore.Video.Media.DISPLAY_NAME, filename);
+        values.put(MediaStore.Video.Media.DATE_TAKEN, dateTaken);
+        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+        values.put(MediaStore.Video.Media.DATA, filePath);
+        return cr.insert(VIDEO_URI, values);
+    }
+
+
+
+
 }

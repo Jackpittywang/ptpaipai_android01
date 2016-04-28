@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -86,7 +88,34 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
 //        mShareTools = new ShareTools(this, filepath);
         //loadShareImage();
         //showPathToast();
+        handler.sendEmptyMessageDelayed(0x100,5000);
 
+
+    }
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what==0x100){
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updataVideo();
+                    }
+                });
+            }
+
+        }
+    };
+
+    private void updataVideo(){
+        MediaScannerConnection.scanFile(mContext, new String[]{filepath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+
+            }
+        });
     }
 
     @Override

@@ -2,8 +2,11 @@
 package com.putao.camera.menu;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -52,7 +55,9 @@ import com.sunnybear.library.view.image.ImageDraweeView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -101,6 +106,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     private SelectPopupWindow mSelectPopupWindow;
     private MenuIconInfo aMenuIconInfo;
     private boolean openCVLibraryLoaded = false;
+    private boolean skipToApp=false;
 
 
     @Override
@@ -123,7 +129,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
 //        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
         if (!AccountHelper.isLogin()) {
-//            iv_header_icon.setImageResource(R.drawable.img_head_signup);
         } else if (AccountHelper.isLogin()) {
             getUserInfo();
         }
@@ -135,6 +140,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                     public void onClick(DialogInterface dialog, int which) {
                         AccountHelper.logout();
                         user_name_tv.setText("登录葡萄账户");
+                        setDefaultBlur();
 //                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
                     }
                 }).setNegativeButton("否", new DialogInterface.OnClickListener() {
@@ -211,10 +217,10 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         return str.substring(0, str.length() - 4) + "_120x120" + str.substring(str.length() - 4);
     }
 
-/*    private void setDefaultBlur() {
+    private void setDefaultBlur() {
         Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 1, false);
         EventBusHelper.post(apply, ME_BLUR);
-    }*/
+    }
 
     @Subcriber(tag = ME_BLUR)
     private void setBlur(Bitmap bitmap) {
@@ -242,12 +248,24 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
-                if (skipUrl != null) {
+                if(skipToApp&&skipUrl != null){
+                    if (isAppInstalled(mContext,skipUrl )) {
+                        //跳转app
+                        PackageManager packageManager = getPackageManager();
+                        Intent intent = new Intent();
+                        intent = packageManager.getLaunchIntentForPackage(skipUrl);
+                        startActivity(intent);
+                    }else{
+                        Uri uri = Uri.parse(skipUrl);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                }else {
                     Uri uri = Uri.parse(skipUrl);
-//                Uri uri = Uri.parse(skipUrl);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                 }
+
                 break;
             case R.id.menu_home_jigsaw_btn://关于我们--原萌萌拼图
                 // ActivityHelper.startActivity(this, CollageSampleSelectActivity.class);
@@ -299,6 +317,21 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         }
     }
 
+
+    public boolean isAppInstalled(Context context, String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        List<String> pName = new ArrayList<String>();
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        return pName.contains(packageName);
+    }
+
+
     private String skipUrl;
 
     public void initIconInfo() {
@@ -322,7 +355,11 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                     iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ImageLoader.getInstance().displayImage(aMenuIconInfo.data.bg_url, iv_main, options);
                     if (!TextUtils.isEmpty(aMenuIconInfo.data.android_link_url)) {
-
+                        skipToApp=true;
+                        skipUrl=aMenuIconInfo.data.android_link_url;
+                        if (!isAppInstalled(mContext,skipUrl )) {
+                            skipUrl = aMenuIconInfo.data.h5_link_url;
+                        }
                     } else {
                         skipUrl = aMenuIconInfo.data.h5_link_url;
                     }
