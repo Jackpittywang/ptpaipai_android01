@@ -32,7 +32,7 @@ import com.putao.camera.util.UmengPushHelper;
 import com.putao.camera.util.UmengUpdateHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.putao.jpush.JPushHeaper;
-import com.putao.mtlib.HomeBroadcastReceiver;
+import com.putao.mtlib.CameraHomeBroadcastReceiver;
 import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.util.AppUtils;
@@ -87,15 +87,7 @@ public class MainApplication extends BasicApplication {
         //startService(new Intent(globalContext, GpsService.class));
 
         initAssetsDate();
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(getApplicationContext());
-        //启动内部推送
-       /* startRedDotService();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Fore_Message);
-        intentFilter.addAction(Not_Fore_Message);
-        registerReceiver(new HomeBroadcastReceiver(), intentFilter);*/
-//        startRedDotService();
+
 
 //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
@@ -112,7 +104,8 @@ public class MainApplication extends BasicApplication {
         intentFilter.addAction(IN_FORE_MESSAGE);
         intentFilter.addAction(OUT_FORE_MESSAGE);
         intentFilter.addAction(OUT_FORE_MESSAGE_SOON);
-        registerReceiver(HomeBroadcastReceiver.getInstance(), intentFilter);
+        intentFilter.addAction(RESTART_MESSAGE);
+        registerReceiver(CameraHomeBroadcastReceiver.getInstance(), intentFilter);
     }
 
 
@@ -363,21 +356,7 @@ public class MainApplication extends BasicApplication {
         return sdCardPath + File.separator + "http_cache";
     }
 
-   /* */
 
-    /**
-     * 监听程序已经在后台
-     *//*
-    private class HomeBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (isServiceClose) {
-                startRedDotService();
-                isServiceClose = false;
-            }
-        }
-    }*/
     public static boolean isServiceStart(Context context) {
         android.app.ActivityManager systemService = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
@@ -394,10 +373,10 @@ public class MainApplication extends BasicApplication {
      */
     private static final String KEY_APP_ID = "app_id";
     public static final String ACTION_PUSH_SERVICE = "com.putao.camera.PUSH";
-    public static final String IN_FORE_MESSAGE = "in_fore_message";
-    public static final String OUT_FORE_MESSAGE = "out_fore_message";
-    public static final String OUT_FORE_MESSAGE_SOON = "out_fore_message_soon";
-    public static final String RESTART_MESSAGE = "restart_message";
+    public static final String IN_FORE_MESSAGE = "camera_in_fore_message";
+    public static final String OUT_FORE_MESSAGE = "camera_out_fore_message";
+    public static final String OUT_FORE_MESSAGE_SOON = "camera_out_fore_message_soon";
+    public static final String RESTART_MESSAGE = "camera_restart_message";
     //===================preference key===========================
     public static String app_id;
     public static final String PREFERENCE_KEY_UID = "uid";

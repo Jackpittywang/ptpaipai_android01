@@ -4,10 +4,11 @@ import android.content.Intent;
 
 import com.putao.camera.application.MainApplication;
 import com.putao.mtlib.util.PTLoger;
+import com.sunnybear.library.util.AppUtils;
 
 /**
  * @author jidongdong
- *         <p>
+ *         <p/>
  *         2015年7月27日 下午6:20:08
  */
 class PTSocketHeartThread extends Thread {
@@ -52,6 +53,10 @@ class PTSocketHeartThread extends Thread {
                 Thread.sleep(PTSenderManager.sharedInstance().getConfig().getHeartSecond() * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+            if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
+                MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
+                continue;
             }
             if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
                 PTLoger.d("SocketConnect--is---------true, send heart message/");

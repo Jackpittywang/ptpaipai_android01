@@ -18,6 +18,7 @@ import com.putao.mtlib.tcp.PTMessageType;
 import com.putao.mtlib.tcp.PTRecMessage;
 import com.putao.mtlib.tcp.PTSenderManager;
 import com.putao.mtlib.tcp.PTSocketOutputThread;
+import com.putao.mtlib.tcp.PTTCPClient;
 import com.putao.mtlib.util.MD5Util;
 import com.putao.mtlib.util.MsgPackUtil;
 import com.putao.mtlib.util.PTLoger;
@@ -136,6 +137,7 @@ public class CameraNotifyService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mPTSenderManager.stopThreads();
+        PTTCPClient.setS_Tcp(null);
         isAlive = false;
     }
 
