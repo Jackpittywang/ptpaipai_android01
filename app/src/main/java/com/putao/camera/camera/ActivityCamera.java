@@ -135,7 +135,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
     private int currentSelectDynamic = 0;
-    private String  currentSelectDynamicName=null;
+    private String currentSelectDynamicName = null;
     boolean isFFC = false;
     private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
 
@@ -239,7 +239,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     e.printStackTrace();
                 }
                 if (null != list && list.size() > 0) {
-                    if (animation_view.isAnimationLoading()) {
+                    if (animation_view.isAnimationLoading() || !canSelectAS) {
                         ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
                         return;
                     }
@@ -258,7 +258,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 //                    ffc.setAnimationView(animation_view);
                     current.setAnimationView(animation_view);
                     currentSelectDynamic = position;
-                    currentSelectDynamicName=list.get(0).zipName;
+                    currentSelectDynamicName = list.get(0).zipName;
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
@@ -587,19 +587,21 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
-        if (!StringUtils.isEmpty(currentSelectDynamicName) && nativeList!=null) {
+        if (!StringUtils.isEmpty(currentSelectDynamicName) && nativeList != null) {
             animation_view.clearData();
             animation_view.setData(currentSelectDynamicName, false);
             //std.setAnimationView(animation_view);
             //ffc.setAnimationView(animation_view);
             // 这里启动脸检测
             if (current != null) {
+                canSelectAS = false;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             Thread.sleep(2000);
                             current.setAnimationView(animation_view);
+                            canSelectAS = true;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -610,6 +612,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
     }
 
+    private boolean canSelectAS = true;
 
     @Override
     public void onPause() {
@@ -775,7 +778,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
                 mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
                 clearAnimationData();
-                 currentSelectDynamicName=null;
+                currentSelectDynamicName = null;
                 break;
             case R.id.btn_clear_filter:
                 current.setFilter(new GPUImageBilateralFilter(8.0f));
@@ -814,7 +817,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         std.clearAnimationView();
         ffc.clearAnimationView();
         if (lastSelectArImageView != null) lastSelectArImageView.setChecked(false);
-        currentSelectDynamic=0;
+        currentSelectDynamic = 0;
     }
 
     private void saveAnimationImageData() {
