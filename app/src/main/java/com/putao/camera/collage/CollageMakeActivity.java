@@ -57,7 +57,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     private ArrayList<String> selectImages;
     private TextView tv_save;
     private Button back_btn;
-    private LinearLayout cur_cate_samples, panel_sample_list,ll_change_make;
+    private LinearLayout cur_cate_samples, panel_sample_list, ll_change_make;
     private HorizontalScrollView sl_sample_list;
     //    private CollageConfigInfo mCollageConfigInfo;
     private CollageSampleItem mCollageItemInfo;
@@ -74,7 +74,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void doBefore() {
         super.doBefore();
-        isFirstUseMake= SharedPreferencesHelper.readBooleanValue(this,"isFirstUseMake",true);
+        isFirstUseMake = SharedPreferencesHelper.readBooleanValue(this, "isFirstUseMake", true);
     }
 
     @Override
@@ -87,16 +87,16 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         mCollageView = queryViewById(R.id.collage_view);
         tv_save = queryViewById(R.id.tv_save);
         back_btn = queryViewById(R.id.back_btn);
-        tips=queryViewById(R.id.tips);
+        tips = queryViewById(R.id.tips);
 
         cur_cate_samples = queryViewById(R.id.cur_cate_samples);
         panel_sample_list = queryViewById(R.id.panel_sample_list);
         sl_sample_list = queryViewById(R.id.sl_sample_list);
         ll_change_make = queryViewById(R.id.ll_change_make);
         mCollageView.setOnPhotoItemOnClick(mOnPhotoItemOnClick);
-        addOnClickListener(tv_save, back_btn, ll_change_make,tips);
+        addOnClickListener(tv_save, back_btn, ll_change_make, tips);
         EventBus.getEventBus().register(this);
-        if(isFirstUseMake){
+        if (isFirstUseMake) {
             isFirstUseMake = false;
             SharedPreferencesHelper.saveBooleanValue(this, "isFirstUseMake", false);
             tips.setVisibility(View.VISIBLE);
@@ -128,16 +128,19 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             List<TemplateIconInfo> list = MainApplication.getDBServer().getTemplateIconInfoByWhere(map);
             zipName = list.get(0).zipName.substring(0, list.get(0).zipName.lastIndexOf(".zip"));
             Gson gson = new Gson();
-            pintuInfo = gson.fromJson(list.get(0).pintuGson, PintuInfo.class);
-
-
+            String pintuJson = list.get(0).pintuGson;
+            if (pintuJson.contains("maskList\":{")) {
+                pintuJson = pintuJson.replace("maskList\":{", "maskList\":[{");
+                pintuJson = pintuJson.replace("},\"height", "}],\"height");
+            }
+            pintuInfo = gson.fromJson(pintuJson, PintuInfo.class);
             initCollageView();
         }
 //        loadSamples();
     }
 
     public void initCollageView() {
-        String imagName = pintuInfo.maskList.get(selectImages.size()-1).imageName;
+        String imagName = pintuInfo.maskList.get(selectImages.size() - 1).imageName;
 //        String mask_path = FileUtils.getSdcardPath() + File.separator + zipName + File.separator + imagName;
         String mask_path = FileUtils.getARStickersPath() + File.separator + zipName + File.separator + imagName;
 
@@ -164,7 +167,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         if (photoSet != null) {
             //获取选中模板图片张数
             for (int i = 0; i < selectImages.size(); i++) {
-                PintuInfo.Mask mask = pintuInfo.maskList.get(selectImages.size()-1).mask.get(i);
+                PintuInfo.Mask mask = pintuInfo.maskList.get(selectImages.size() - 1).mask.get(i);
 //                PintuInfo.MaskInfo imageInfo = info.elements .get(0).datas.get(selectImages.size()).mask.get(i);
 
                 if (i < selectImages.size()) {
@@ -233,7 +236,6 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-
     @Override
     public void onBackPressed() {
         showQuitTip();
@@ -272,11 +274,11 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
                 ObjectAnimator.ofFloat(panel_sample_list, "translationY", start, end).setDuration(300).start();
                 break;*/
             case R.id.ll_change_make:
-                bundle.putSerializable("sampleinfo",mTemplateIconInfo);
-                bundle.putSerializable("images",selectImages);
+                bundle.putSerializable("sampleinfo", mTemplateIconInfo);
+                bundle.putSerializable("images", selectImages);
                 bundle.putInt("imgsum", selectImages.size());
                 bundle.putString("from", "collageMake");
-                ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class,bundle);
+                ActivityHelper.startActivity(mActivity, TemplateManagemenActivity.class, bundle);
                 finish();
                 break;
 
@@ -378,9 +380,9 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
         dialog = new AlertDialog.Builder(mContext).create();
         dialog.show();
         View parent = LayoutInflater.from(this).inflate(R.layout.layout_collage_image_opreate_dialog, null);
-        LinearLayout ll_replace= queryViewById(parent,R.id.ll_replace);
-        LinearLayout ll_rotate= queryViewById(parent,R.id.ll_rotate);
-        LinearLayout ll_mirror= queryViewById(parent,R.id.ll_mirror);
+        LinearLayout ll_replace = queryViewById(parent, R.id.ll_replace);
+        LinearLayout ll_rotate = queryViewById(parent, R.id.ll_rotate);
+        LinearLayout ll_mirror = queryViewById(parent, R.id.ll_mirror);
         ImageView iv_replace = queryViewById(parent, R.id.iv_replace);
         ImageView iv_rotate = queryViewById(parent, R.id.iv_rotate);
         ImageView iv_mirror = queryViewById(parent, R.id.iv_mirror);
