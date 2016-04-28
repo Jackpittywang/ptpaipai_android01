@@ -52,7 +52,11 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
         matter_jigsaw_btn = queryViewById(R.id.matter_jigsaw_btn);
         vp_content = queryViewById(R.id.vp_content);
         rg_matter = queryViewById(R.id.rg_matter);
-
+        //获取缓存红点数据
+        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
+        mDots[0] = 0;
+        PreferenceUtils.save(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
+        setRedDot();
         addFragments();
         vp_content.setCurrentItem(0, false);
         rg_matter.setOnTitleItemSelectedListener(new TitleBar.OnTitleItemSelectedListener() {
@@ -81,14 +85,6 @@ public class MatterCenterActivity extends BaseActivity implements View.OnClickLi
         });
         vp_content.setOffscreenPageLimit(3);
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //获取缓存红点数据
-        mDots = PreferenceUtils.getValue(RedDotReceiver.EVENT_DOT_MATTER_CENTER, mDots);
-        setRedDot();
     }
 
     /**

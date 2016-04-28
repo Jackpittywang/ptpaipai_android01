@@ -206,7 +206,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
                 EventBusHelper.post(LoginActivity.EVENT_LOGIN, LoginActivity.EVENT_LOGIN);
 //                startActivity(IndexActivity.class);
                 //启动红点推送
-                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+//                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                 finish();
                 loading.dismiss();
             }

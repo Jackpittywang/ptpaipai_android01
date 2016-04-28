@@ -21,6 +21,7 @@ import com.putao.mtlib.tcp.PTSocketOutputThread;
 import com.putao.mtlib.util.MD5Util;
 import com.putao.mtlib.util.MsgPackUtil;
 import com.putao.mtlib.util.PTLoger;
+import com.sunnybear.library.util.AppUtils;
 import com.sunnybear.library.util.Logger;
 
 import java.net.InetAddress;
@@ -121,7 +122,7 @@ public class CameraNotifyService extends Service {
      */
     public static void sendConnectValidate() {
         CS_CONNECT connect = new CS_CONNECT();
-        connect.setDeviceid(AccountHelper.getCurrentUid());
+        connect.setDeviceid(AppUtils.getDeviceId(MainApplication.getInstance()));
         connect.setAppid(appid);
         connect.setSign(getSign(connect.getDeviceid(), secret));
         PTSenderManager.sharedInstance().sendMsg(MsgPackUtil.Pack(connect, PTMessageType.CS_CONNECT));

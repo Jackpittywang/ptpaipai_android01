@@ -164,7 +164,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         AccountHelper.setUserInfo(result);
                         //启动红点推送
-                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+//                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);

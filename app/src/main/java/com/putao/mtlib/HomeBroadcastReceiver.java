@@ -36,7 +36,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
             case MainApplication.IN_FORE_MESSAGE:
 //                inFore();
                 Logger.d("ptl---------------", "应用恢复到前台了");
-                if (!AccountHelper.isLogin()) return;
+//                if (!AccountHelper.isLogin()) return;
 
                 if (null != timer) {
                     timer.cancel();
@@ -96,7 +96,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
         android.app.ActivityManager systemService = (android.app.ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
         for (android.app.ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
-            Logger.d("service-----", runningServiceInfo.service.getClassName().toString());
+//            Logger.d("service-----", runningServiceInfo.service.getClassName().toString());
             if ("com.putao.mtlib.NotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
                 return true;
             }

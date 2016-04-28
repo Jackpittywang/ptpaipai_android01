@@ -124,7 +124,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 //        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
         if (!AccountHelper.isLogin()) {
 //            iv_header_icon.setImageResource(R.drawable.img_head_signup);
-            setDefaultBlur();
         } else if (AccountHelper.isLogin()) {
             getUserInfo();
         }
@@ -135,10 +134,8 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AccountHelper.logout();
-                        setDefaultBlur();
                         user_name_tv.setText("登录葡萄账户");
-                        tv_red_number.setVisibility(View.GONE);
-                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
+//                        sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
                     }
                 }).setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
@@ -165,7 +162,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //        EventBus.getEventBus().unregister(this);
         MainApplication.stopLocationClient();
     }
 
@@ -189,14 +185,12 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                         AccountHelper.setUserInfo(result);
                         user_name_tv.setText(result.getNick_name());
                         if (mImg.equals(result.getHead_img())) {
-                            if (TextUtils.isEmpty(result.getHead_img())) setDefaultBlur();
                             loading.dismiss();
                             return;
                         }
                         mImg = result.getHead_img();
                         iv_header_icon.setImageURL(setSmallImageUrl(result.getHead_img()), true);
                         if (TextUtils.isEmpty(mImg)) {
-                            setDefaultBlur();
                             return;
                         }
                         //message.obj = result.getHead_img();
@@ -217,10 +211,10 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         return str.substring(0, str.length() - 4) + "_120x120" + str.substring(str.length() - 4);
     }
 
-    private void setDefaultBlur() {
+/*    private void setDefaultBlur() {
         Bitmap apply = FastBlur.doBlur(BitmapFactory.decodeResource(getResources(), R.drawable.img_head_signup), 1, false);
         EventBusHelper.post(apply, ME_BLUR);
-    }
+    }*/
 
     @Subcriber(tag = ME_BLUR)
     private void setBlur(Bitmap bitmap) {
