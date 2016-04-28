@@ -97,7 +97,7 @@ public class HomeBroadcastReceiver extends BroadcastReceiver {
         List<android.app.ActivityManager.RunningServiceInfo> runningServices = systemService.getRunningServices(100);
         for (android.app.ActivityManager.RunningServiceInfo runningServiceInfo : runningServices) {
 //            Logger.d("service-----", runningServiceInfo.service.getClassName().toString());
-            if ("com.putao.mtlib.NotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
+            if ("com.putao.mtlib.CameraNotifyService".equals(runningServiceInfo.service.getClassName().toString())) {
                 return true;
             }
         }
