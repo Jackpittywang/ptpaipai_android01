@@ -485,29 +485,25 @@ public class BitmapHelper {
 
         int startWidth = bitmap.getWidth(); // 得到图片的宽，高
         int startHeight = bitmap.getHeight();
-        boolean b = startWidth > startHeight;
-       /* if (b) {
-            bitmap = BitmapHelper.orientBitmap(bitmap, ExifInterface.ORIENTATION_ROTATE_90);
-            startWidth = bitmap.getWidth(); // 得到图片的宽，高
-            startHeight = bitmap.getHeight();
-        }*/
-
         int retX = 0;
         int endWidth = startWidth;
-
+        boolean b = startWidth > startHeight;
         switch (cropType) {
             case CROP_11:
                 retX = Math.abs(startWidth - startHeight) / 2;
                 endWidth = b ? startHeight : startWidth;
                 break;
             case CROP_43:
-                /*if (b) {
-                    endWidth = startHeight * 3 / 4;
-                } else {
+//                endWidth = (b ? startHeight : startWidth) * 4 / 3;
+                if(b){
+                    endWidth =  startHeight * 3 / 4;
+                    retX = Math.abs(startWidth - endWidth) / 2;
+//                    retX = Math.abs(startWidth - endWidth) / 2;
+                }else {
                     endWidth = startWidth * 4 / 3;
-                }*/
-                endWidth = (b ? startHeight : startWidth) * 4 / 3;
-                retX = Math.abs(startWidth - endWidth) / 2;
+                    retX = Math.abs(startHeight - endWidth) / 2;
+                }
+
                 break;
             default:
                 return bitmap;

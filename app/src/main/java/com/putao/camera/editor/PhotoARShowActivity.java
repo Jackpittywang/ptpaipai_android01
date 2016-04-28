@@ -3,7 +3,6 @@ package com.putao.camera.editor;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -59,14 +58,14 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private String imagePath = "";
     private String animationName = "";
     private String videoImagePath = "";
-    private CustomerFilter.FilterType filterName=CustomerFilter.FilterType.NONE;
+    private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
     private String PATH = "Android/data/com.putao.camera/files/";
     // 保存视频时候图片的张数
     private int imageCount = 36;
 
     private AnimationImageView animation_view;
     private int photoType;
-    private Bitmap  saveOriginImageBitmap ;
+    private Bitmap saveOriginImageBitmap;
 
     private ProgressDialog progressDialog = null;
     /**
@@ -92,13 +91,15 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         EventBus.getEventBus().register(this);
         photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
     }
-    Bitmap  bgImageBitmap;
+
+    Bitmap bgImageBitmap;
+
     @Override
     public void doInitData() {
         Intent intent = this.getIntent();
         if (intent == null) return;
         imagePath = intent.getStringExtra("imagePath");
-        filterName= (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
+        filterName = (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         animationName = intent.getStringExtra("animationName");
         if (StringHelper.isEmpty(imagePath)) return;
         GPUImage mGPUImage = new GPUImage(mContext);
@@ -107,10 +108,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             // 把图片缩放成屏幕的大小1:1，方便视频合成的时候调用
             Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(imagePath, DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
 
-           bgImageBitmap= originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
+            bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
 //            tempBitmap.recycle();
 
-            CustomerFilter filter=new CustomerFilter();
+            CustomerFilter filter = new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
             mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
@@ -118,7 +119,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                         public void onPictureSaved(final Uri uri) {
                             try {
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
-                                originImageBitmap=bitmap;
+                                originImageBitmap = bitmap;
                                 show_image.setImageBitmap(originImageBitmap);
                                 showPreview(originImageBitmap);
                             } catch (IOException e) {
@@ -128,8 +129,6 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                         }
 
                     });
-
-
 
 
 //            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);
@@ -176,7 +175,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-    public void showPreview( Bitmap newOriginImageBitmap ){
+    public void showPreview(Bitmap newOriginImageBitmap) {
         int screenW = DisplayHelper.getScreenWidth();
         int screenH = DisplayHelper.getScreenHeight();
         float imageScaleW = (float) screenW / (float) newOriginImageBitmap.getWidth();
@@ -190,7 +189,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
         newOriginImageBitmap = BitmapHelper.combineBitmap(newOriginImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
         animation_view.setData(animationName, false);
-        saveOriginImageBitmap=newOriginImageBitmap;
+        saveOriginImageBitmap = newOriginImageBitmap;
 //        show_image.setImageBitmap(newOriginImageBitmap);
 
         //检测人脸
@@ -379,7 +378,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private void clearImageList() {
         File folder = new File(videoImagePath);
         File[] childFile = folder.listFiles();
-        if(childFile==null)return;
+        if (childFile == null) return;
         for (int i = 0; i < childFile.length; i++) {
             try {
                 File file = childFile[i];
@@ -477,7 +476,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
     private String videoPath;
 
-    private void saveASVideo(final Bitmap bitmap) {
+    private void saveASVideo(final Bitmap scaleImageBmp) {
         videoSaving = true;
         final YMDetector detector = new YMDetector(mContext);
         singleThreadExecutor.submit(new Runnable() {
@@ -485,11 +484,12 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             public void run() {
                 try {
                     FaceModel faceModel;
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 2;
+ /*                     BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 1;
                     options.inJustDecodeBounds = false;
                     byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
-                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
+//                    List<YMFace> faces = detector.onDetector(scaleImageBmp);
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
                     if (faces != null && faces.size() > 0 && faces.get(0) != null) {
                         YMFace face = faces.get(0);
