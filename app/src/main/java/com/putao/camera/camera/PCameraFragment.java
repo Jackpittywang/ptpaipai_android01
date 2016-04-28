@@ -558,7 +558,7 @@ public class PCameraFragment extends CameraFragment {
                 flash_view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        flash_view.setVisibility(View.GONE);
+                        if(flash_view!=null) flash_view.setVisibility(View.GONE);
                     }
                 }, 200);
             }
