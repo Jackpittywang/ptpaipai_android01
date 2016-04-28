@@ -73,7 +73,7 @@ public class CameraHomeBroadcastReceiver extends BroadcastReceiver {
                 if (isServiceStart) {
                     context.stopService(MainApplication.redServiceIntent);
                     isServiceStart = false;
-                    Logger.d("ptl---------------", "停止服务");
+                    Logger.d("ptl---------------", "准备重启，停止服务");
                 }
                 if (null == timer)
                     timer = new Timer();

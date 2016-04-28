@@ -476,7 +476,10 @@ public abstract class BasicFragmentActivity<App extends BasicApplication> extend
     @Override
     protected void onStart() {
         super.onStart();
-        if (BasicApplication.isInBack) sendBroadcast(new Intent("in_fore_message"));
+        if (BasicApplication.isInBack) {
+            sendBroadcast(new Intent("camera_in_fore_message"));
+            BasicApplication.isInBack = false;
+        }
     }
 
     @Override

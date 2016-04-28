@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.putao.camera.application.MainApplication;
 import com.putao.mtlib.util.PTLoger;
+import com.sunnybear.library.BasicApplication;
 import com.sunnybear.library.util.AppUtils;
 
 /**
@@ -56,6 +57,7 @@ class PTSocketHeartThread extends Thread {
             }
             if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
                 MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
+                BasicApplication.isInBack = true;
                 continue;
             }
             if (PTSocketOutputThread.isConnected && PTTCPClient.instance().isConnect()) {
