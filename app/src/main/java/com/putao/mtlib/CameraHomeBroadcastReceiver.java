@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.putao.account.AccountHelper;
 import com.putao.camera.application.MainApplication;
 import com.putao.mtlib.tcp.PTSenderManager;
 import com.sunnybear.library.util.Logger;
@@ -16,17 +15,17 @@ import java.util.TimerTask;
 /**
  * 程序进入后台恢复前台监听
  */
-public class HomeBroadcastReceiver extends BroadcastReceiver {
+public class CameraHomeBroadcastReceiver extends BroadcastReceiver {
     Timer timer;
-    private static HomeBroadcastReceiver mHomeBroadcastReceiver;
+    private static CameraHomeBroadcastReceiver mCameraHomeBroadcastReceiver;
     private boolean isServiceStart;
     private boolean isServiceRealClose;
 
-    public static HomeBroadcastReceiver getInstance() {
-        if (null == mHomeBroadcastReceiver) {
-            mHomeBroadcastReceiver = new HomeBroadcastReceiver();
+    public static CameraHomeBroadcastReceiver getInstance() {
+        if (null == mCameraHomeBroadcastReceiver) {
+            mCameraHomeBroadcastReceiver = new CameraHomeBroadcastReceiver();
         }
-        return mHomeBroadcastReceiver;
+        return mCameraHomeBroadcastReceiver;
     }
 
     @Override
