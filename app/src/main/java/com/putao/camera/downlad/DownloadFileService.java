@@ -325,7 +325,7 @@ public class DownloadFileService extends Service {
             }
             matcher.appendTail(sbr);
 
-           pintu=sbr.toString();
+            pintu = sbr.toString();
             pattern = Pattern.compile("maskList\":\\{(.+?)\\}\\]\\}");
             matcher = pattern.matcher(pintu);
             sbr = new StringBuffer();
@@ -337,7 +337,6 @@ public class DownloadFileService extends Service {
                 matcher.appendReplacement(sbr, matcher2.replaceFirst("\\}\\]\\}\\]"));
             }
             matcher.appendTail(sbr);
-
 
 
             templateIconInfo.pintuGson = sbr.toString();
