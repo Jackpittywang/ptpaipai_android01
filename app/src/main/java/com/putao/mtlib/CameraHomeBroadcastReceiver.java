@@ -72,7 +72,6 @@ public class CameraHomeBroadcastReceiver extends BroadcastReceiver {
             case MainApplication.RESTART_MESSAGE:
                 if (isServiceStart) {
                     context.stopService(MainApplication.redServiceIntent);
-                    isServiceStart = false;
                     Logger.d("ptl---------------", "准备重启，停止服务");
                 }
                 if (null == timer)
@@ -80,7 +79,7 @@ public class CameraHomeBroadcastReceiver extends BroadcastReceiver {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        if (!isServiceStart && !isServiceRealClose) {
+                        if (!isServiceStart(context) && !isServiceRealClose) {
                             Logger.d("ptl---------------", "重启");
                             context.startService(MainApplication.redServiceIntent);
                         }
