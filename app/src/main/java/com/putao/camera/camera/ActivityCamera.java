@@ -92,6 +92,7 @@ import com.putao.camera.util.WaterMarkHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.util.PreferenceUtils;
+import com.sunnybear.library.util.StringUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -134,6 +135,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private List<DynamicIconInfo> nativeList = null;
     private int currentSelectDynamic = 0;
+    private String  currentSelectDynamicName=null;
     boolean isFFC = false;
     private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
 
@@ -237,6 +239,10 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     e.printStackTrace();
                 }
                 if (null != list && list.size() > 0) {
+                    if (animation_view.isAnimationLoading()) {
+                        ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
+                        return;
+                    }
                     mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
                     mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
 
@@ -245,15 +251,14 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     mDynamicPicAdapter.notifyItemChanged(position);
 //                    ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (current == null) return;
-                    if (animation_view.isAnimationLoading()) {
-                        ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
-                        return;
-                    }
+
                     animation_view.clearData();
                     animation_view.setData(list.get(0).zipName, false);
-                    std.setAnimationView(animation_view);
-                    ffc.setAnimationView(animation_view);
+//                    std.setAnimationView(animation_view);
+//                    ffc.setAnimationView(animation_view);
+                    current.setAnimationView(animation_view);
                     currentSelectDynamic = position;
+                    currentSelectDynamicName=list.get(0).zipName;
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
@@ -446,10 +451,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         mSceneWaterMarkViewList = new ArrayList<View>();
         // 加载静态贴图
         // doInitWaterMarkScene(0);
-        //加载滤镜效果
-        doInitARFilter();
         // 加载动态贴图
-        doInitARStick();
+        // doInitARStick();
         queryCollageList();
     }
 
@@ -568,6 +571,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
@@ -583,15 +587,29 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
-        if (lastSelectArImageView != null) {
-            String animationName = (String) lastSelectArImageView.getTag();
-            animation_view.setData(animationName, false);
+        if (!StringUtils.isEmpty(currentSelectDynamicName) && nativeList!=null) {
+            animation_view.clearData();
+            animation_view.setData(currentSelectDynamicName, false);
+            //std.setAnimationView(animation_view);
+            //ffc.setAnimationView(animation_view);
             // 这里启动脸检测
             if (current != null) {
-                current.setAnimationView(animation_view);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                            current.setAnimationView(animation_view);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
+
         }
     }
+
 
     @Override
     public void onPause() {
@@ -757,6 +775,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
                 mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
                 clearAnimationData();
+                 currentSelectDynamicName=null;
                 break;
             case R.id.btn_clear_filter:
                 current.setFilter(new GPUImageBilateralFilter(8.0f));
@@ -795,6 +814,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         std.clearAnimationView();
         ffc.clearAnimationView();
         if (lastSelectArImageView != null) lastSelectArImageView.setChecked(false);
+        currentSelectDynamic=0;
     }
 
     private void saveAnimationImageData() {
@@ -912,11 +932,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true,false, isFFC);
+            current.takeSimplePicture(mMarkViewList, true, false, isFFC);
         } else if (mHdrState == HDRSTATE.AUTO) {
             current.takeSimplePicture(mMarkViewList, true, true, isFFC);
         } else {
-            current.takeSimplePicture(mMarkViewList,false,false, isFFC);
+            current.takeSimplePicture(mMarkViewList, false, false, isFFC);
 
         }
 
@@ -1232,7 +1252,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             case PuTaoConstants.OPEN_AR_SHOW_ACTIVITY:
                 Intent intent = new Intent(mContext, PhotoARShowActivity.class);
                 intent.putExtra("isFFC", isFFC + "");
-                intent.putExtra("filterName",filterName);
+                intent.putExtra("filterName", filterName);
                 intent.putExtra("imagePath", event.bundle.getString("imagePath"));
                 intent.putExtra("animationName", animation_view.getAnimtionName());
                 mContext.startActivity(intent);
@@ -1505,12 +1525,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         loadARThumbnail();
     }
 
-    //加载滤镜效果
-    private void doInitARFilter() {
-//        loadFilters();
-//        loadARThumbnail();
-    }
-
     // 加载静态贴图
     private void doInitWaterMarkScene(int index) {
         mSceneWaterMarkViewList.clear();
@@ -1711,8 +1725,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             lastSelectArImageView.setChecked(true);
             String animationName = (String) v.getTag();
             animation_view.setData(animationName, false);
-            std.setAnimationView(animation_view);
-            ffc.setAnimationView(animation_view);
+            current.setAnimationView(animation_view);
+            //std.setAnimationView(animation_view);
+            //ffc.setAnimationView(animation_view);
 
         }
     };
