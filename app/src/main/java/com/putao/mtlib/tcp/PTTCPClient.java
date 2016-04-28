@@ -237,6 +237,14 @@ public class PTTCPClient {
         }
     }
 
+    public static PTTCPClient getS_Tcp() {
+        return s_Tcp;
+    }
+
+    public static void setS_Tcp(PTTCPClient s_Tcp) {
+        PTTCPClient.s_Tcp = s_Tcp;
+    }
+
     /**
      *
      */
