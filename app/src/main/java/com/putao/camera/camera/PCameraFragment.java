@@ -411,17 +411,6 @@ public class PCameraFragment extends CameraFragment {
 
     public void takeSimplePhoto() {
         flashScreen();
-       /* if (mHdrEnable) {
-            if (mExposureLevel == ExposureLevel.NORMAL) {
-                setExposureLevel(ExposureLevel.LOW);
-            } else if (mExposureLevel == ExposureLevel.LOW) {
-                setExposureLevel(ExposureLevel.HIGH);
-            } else {
-                setExposureLevel(ExposureLevel.NORMAL);
-            }
-        } else {
-            setExposureLevel(ExposureLevel.NORMAL);
-        }*/
         Camera camera = cameraView.getCamera();
         Parameters pictureParams = camera.getParameters();
         if (mHdrEnable) {
@@ -447,7 +436,8 @@ public class PCameraFragment extends CameraFragment {
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
-                imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
+                imagePath = FileUtils.getARStickersPath()+ File.separator + "temp.jpg";
+//                imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
                 Bitmap saveBitmap = null;
                 if (tempBitmap.getHeight() < tempBitmap.getWidth()) {
@@ -468,25 +458,6 @@ public class PCameraFragment extends CameraFragment {
                 }*/
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
-                   /* mGPUImage.saveToPictures(saveBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
-                            new GPUImage.OnPictureSavedListener() {
-                                @Override
-                                public void onPictureSaved(final Uri uri) {
-//                            pic.delete();
-//                                camera.startPreview();
-                                    cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-                                    Bundle bundle = new Bundle();
-                                    if (isShowAR == false) {
-                                    bundle.putString("ImagePath", imagePath);
-                                    EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_FROM_CAMERA, bundle));
-                                    }else {
-                                        handler.sendEmptyMessageDelayed(0x001, 100);
-                                    }
-                                }
-
-                            });*/
-
 
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();

@@ -152,7 +152,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
             CustomerFilter filter=new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
-            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
                         public void onPictureSaved(final Uri uri) {

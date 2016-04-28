@@ -138,7 +138,8 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
 
     public void initCollageView() {
         String imagName = pintuInfo.maskList.get(selectImages.size()-1).imageName;
-        String mask_path = FileUtils.getSdcardPath() + File.separator + zipName + File.separator + imagName;
+//        String mask_path = FileUtils.getSdcardPath() + File.separator + zipName + File.separator + imagName;
+        String mask_path = FileUtils.getARStickersPath() + File.separator + zipName + File.separator + imagName;
 
         //边框图片,按照图片数量选择
         /*String mask_path = CollageHelper.getCollageFilePath()

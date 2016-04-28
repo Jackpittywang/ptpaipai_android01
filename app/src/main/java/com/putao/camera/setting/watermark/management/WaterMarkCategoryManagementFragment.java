@@ -76,7 +76,7 @@ public final class WaterMarkCategoryManagementFragment extends BaseFragment impl
         mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                ToasterHelper.showShort(getActivity(), "下拉", R.drawable.img_blur_bg);
+//                ToasterHelper.showShort(getActivity(), "下拉", R.drawable.img_blur_bg);
                 new FinishRefresh().execute();
             }
 

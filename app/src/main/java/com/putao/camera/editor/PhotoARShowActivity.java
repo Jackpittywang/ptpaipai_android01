@@ -113,7 +113,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
             CustomerFilter filter = new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
-            mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getSdcardPath() + File.separator, "temp.jpg",
+            mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
                         public void onPictureSaved(final Uri uri) {

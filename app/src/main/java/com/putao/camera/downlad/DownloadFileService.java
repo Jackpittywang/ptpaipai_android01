@@ -300,7 +300,8 @@ public class DownloadFileService extends Service {
         try {
             zipFile.getName();
             zipFile.getAbsolutePath();
-            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true);
+//            FileUtils.unZipInSdCard(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true);
+            FileUtils.unZipInARStickersPath(zipFile.getAbsolutePath(), zipFile.getName().replace(".zip", ""), true);
             File file_old = new File(WaterMarkHelper.getWaterMarkFilePath());
             if (file_old.exists()) {
                 file_old.delete();
@@ -309,7 +310,7 @@ public class DownloadFileService extends Service {
             FileOperationHelper.copyFolder(CollageHelper.getCollageUnzipFilePath() + upZipFloderName, CollageHelper.getCollageFilePath());
 
             //解析xml
-            String pintu = FileOperationHelper.readJsonFile(zipFile.getName().replace(".zip", ""), unZipXmlName);
+            String pintu = FileOperationHelper.readTemJsonFile(zipFile.getName().replace(".zip", ""), unZipXmlName);
 
             Pattern pattern = Pattern.compile("mask\":\\{(.+?)\\}");
 
