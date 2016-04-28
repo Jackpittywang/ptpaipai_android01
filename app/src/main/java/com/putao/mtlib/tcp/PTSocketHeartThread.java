@@ -54,7 +54,7 @@ class PTSocketHeartThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (!AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
+            if (AppUtils.isApplicationInBackground(MainApplication.getInstance())) {
                 MainApplication.getInstance().sendBroadcast(new Intent(MainApplication.OUT_FORE_MESSAGE));
                 continue;
             }
