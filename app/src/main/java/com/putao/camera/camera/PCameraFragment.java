@@ -444,7 +444,7 @@ public class PCameraFragment extends CameraFragment {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
-                if (model.contains("oppo") || brand.contains("oppo")) {
+                if (model.contains("OPPO") || brand.contains("OPPO")) {
                     if (isFFC) {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
@@ -558,7 +558,7 @@ public class PCameraFragment extends CameraFragment {
                 flash_view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        flash_view.setVisibility(View.GONE);
+                        if(flash_view!=null) flash_view.setVisibility(View.GONE);
                     }
                 }, 200);
             }

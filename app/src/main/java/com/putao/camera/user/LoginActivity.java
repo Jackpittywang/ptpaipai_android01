@@ -16,10 +16,8 @@ import com.putao.account.AccountCallback;
 import com.putao.account.AccountConstants;
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
-import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.bean.UserInfo;
-import com.putao.camera.constants.UserApi;
 import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
@@ -222,6 +220,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
             ActivityHelper.startActivity(LoginActivity.this, PhotoShareActivity.class, bundle);
             finish();
         } else {
+            overridePendingTransition(R.anim.activity_to_in, R.anim.activity_to_out);
             startActivity(MenuActivity.class);
         }
 
