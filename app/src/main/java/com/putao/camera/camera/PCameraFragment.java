@@ -275,7 +275,9 @@ public class PCameraFragment extends CameraFragment {
 
         while (mIterator.hasNext()) {
             Camera.Size size = (Camera.Size) mIterator.next();
-            if (size.width - targetWidth < 100) {
+//            if (size.width - targetWidth < 100) {
+            if (Math.abs((float) size.width / size.height - 16f / 9) < 0.2 && size.width - targetWidth < 250) {
+
                 optimalSize = size;
                 break;
             }

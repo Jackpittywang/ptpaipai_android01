@@ -618,7 +618,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-    public int photoSize = 0;//0为全屏,1为1比1,2为4比3
+    public int photoSize = 2;//0为全屏,1为1比1,2为4比3
 
     @OnClick({
             R.id.camera_scale_iv, R.id.camera_timer_iv, R.id.flash_light_iv, R.id.switch_camera_iv, R.id.back_home_iv, R.id.camera_set_iv,
@@ -912,11 +912,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
 
         if (mHdrState == HDRSTATE.ON) {
-            current.takeSimplePicture(mMarkViewList, true, isFFC);
+            current.takeSimplePicture(mMarkViewList, true,false, isFFC);
         } else if (mHdrState == HDRSTATE.AUTO) {
             current.takeSimplePicture(mMarkViewList, true, true, isFFC);
         } else {
-            current.takeSimplePicture(mMarkViewList, isFFC);
+            current.takeSimplePicture(mMarkViewList,false,false, isFFC);
 
         }
 
@@ -1800,8 +1800,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 scaleType = SCALETYPE_THREE;
                 mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                 setCameraRatioThreeToFour();
-//                photoSize = PhotoEditorActivity.CROP_43;
-                photoSize=0;
+                photoSize = PhotoEditorActivity.CROP_43;
+//                photoSize=0;
                 ToasterHelper.showShort(this, "3:4", R.drawable.img_blur_bg);
                 break;
         }
