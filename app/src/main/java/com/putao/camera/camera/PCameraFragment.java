@@ -440,6 +440,7 @@ public class PCameraFragment extends CameraFragment {
         camera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
+                camera.startPreview();
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
                 imagePath = FileUtils.getARStickersPath() + File.separator + "temp.jpg";
 //                imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
