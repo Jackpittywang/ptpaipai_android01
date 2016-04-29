@@ -226,7 +226,7 @@ public class PCameraFragment extends CameraFragment {
             cameraParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 //        cameraParams.setFlashMode();
-        setOptimalPreviewSize(cameraParams, 960, 960);
+        setOptimalPreviewSize(cameraParams, 1280, 960);
         setOptimalPictureSize(cameraParams, 1280);
         cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), degrees, flipHorizontal, flipVertical);
@@ -254,10 +254,16 @@ public class PCameraFragment extends CameraFragment {
 
             while (mIterator.hasNext()) {
                 Camera.Size size = (Camera.Size) mIterator.next();
-                if ((double) Math.abs(size.width - targetWidth) < minDiff) {
+               /* if ((double) Math.abs(size.width - targetWidth) < minDiff) {
                     optimalSize = size;
                     minDiff = (double) Math.abs(size.width - targetWidth);
+                }*/
+                if (Math.abs((float) size.width / size.height - 16f / 9) < 0.2 && size.width - targetWidth < 250) {
+
+                    optimalSize = size;
+                    break;
                 }
+
             }
 
             int iw = optimalSize.width;

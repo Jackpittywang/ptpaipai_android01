@@ -78,13 +78,13 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             imgpath = bundle.getString("imgpath");
         }
 
-        if(from.equals("complete")){
+       /* if(from.equals("complete")){
 //            final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("正在处理...");
             progressDialog.show();
             tag = 0;
             checkSha1(filepath);
-        }
+        }*/
 //        mShareTools = new ShareTools(this, filepath);
         //loadShareImage();
         //showPathToast();
@@ -196,10 +196,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
                             Bundle bundle = new Bundle();
                             bundle.putString("from", "share");
-                           /* bundle.putString("path", filepath);
-                            bundle.putString("imgpath",imgpath);*/
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
-//                            finish();
                         } else if (AccountHelper.isLogin()) {
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
@@ -422,16 +419,16 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                         progressDialog.dismiss();
                         switch (tag) {
                             case 0:
-                                ShareTools.wechatWebShare(mContext, false, null, null, imgpath, video_url);
+                                ShareTools.wechatWebShare(mContext, false, null, "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);
                                 break;
                             case 1:
-                                ShareTools.OnQQZShare(mContext, true, null, null, imgpath, video_url);
+                                ShareTools.OnQQZShare(mContext, true, null, "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);
                                 break;
                             case 2:
-                                ShareTools.OnWeiboShare(mContext, null, imgpath,video_url);
+                                ShareTools.OnWeiboShare(mContext, "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath,video_url);
                                 break;
                             case 3:
-                                ShareTools.wechatWebShare(mContext, true, "视频分享", null, imgpath, video_url);
+                                ShareTools.wechatWebShare(mContext, true, "视频分享", "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);
                                 break;
                         }
 

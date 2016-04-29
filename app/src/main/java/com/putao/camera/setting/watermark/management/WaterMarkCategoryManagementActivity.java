@@ -1,7 +1,6 @@
 
 package com.putao.camera.setting.watermark.management;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,13 +16,10 @@ import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.DatabaseServer;
-import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.setting.watermark.download.DownloadFinishStickerAdapter;
-import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
-import com.putao.camera.util.WaterMarkHelper;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
 
 import java.util.ArrayList;
@@ -35,7 +31,6 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
     private Button right_btn, back_btn;
     private PullToRefreshGridView mPullRefreshGridView;
     private GridView mGridView;
-    //    private WaterMarkManagementAdapter mManagementAdapter;
     private DownloadFinishStickerAdapter mManagementAdapter;
     private ArrayList<StickerCategoryInfo> list;
     private TextView title_tv, tv_delect_selected,tv_select_all;
@@ -68,31 +63,6 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void doInitData() {
-//        mGridView = mPullRefreshGridView.getRefreshableView();
-//        mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
-//            @Override
-//            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(WaterMarkCategoryManagementActivity.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//
-//            @Override
-//            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//        });
-//        //        TextView tv = new TextView(this);
-//        //        tv.setGravity(Gravity.CENTER);
-//        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-//        //        mPullRefreshGridView.setEmptyView(tv);
-//        mManagementAdapter = new WaterMarkManagementAdapter(this);
-//        mManagementAdapter.setUpdateCallback(this);
-//        mGridView.setAdapter(mManagementAdapter);
-//        mGridView.setOnItemClickListener(this);
-////        right_btn = (Button) this.findViewById(R.id.right_btn);
-////        right_btn.setText("已下载");
-//        back_btn = (Button) this.findViewById(R.id.back_btn);
         addOnClickListener(back_btn, tv_delect_selected,tv_select_all);
 //        queryWaterMarkList();
     }
@@ -117,18 +87,11 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Bundle bundle = new Bundle();
-//        WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//        StickerListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//        bundle.putString("wid", info.id+"");
-//        bundle.putInt("position", position);
-//        ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
+
     }
 
     @Override
     public void startProgress(StickerListInfo.PackageInfo info, final int position) {
-        String path = WaterMarkHelper.getWaterMarkUnzipFilePath();
-        startDownloadService(info.download_url, path, position);
     }
 
     @Override
@@ -138,12 +101,10 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
 
     @Override
     public void delete(StickerListInfo.PackageInfo info, final int position) {
-        Map<String, String> map = new HashMap<String, String>();
+      /*  Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(info.id));
         MainApplication.getDBServer().deleteWaterMarkCategoryInfo(map);
-
-
-        mManagementAdapter.notifyDataSetChanged();
+        mManagementAdapter.notifyDataSetChanged();*/
     }
 
     @Override
@@ -173,34 +134,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         }
     }
 
-    //请求水印列表
-   /* public void queryWaterMarkList() {
-        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
-            @Override
-            public void onSuccess(int whatCode, JSONObject json) {
-                super.onSuccess(whatCode, json);
-                final StickerListInfo aWaterMarkRequestInfo;
-                try {
-                    Gson gson = new Gson();
-                    aWaterMarkRequestInfo = (StickerListInfo) gson.fromJson(json.toString(), StickerListInfo.class);
-//                    mManagementAdapter.setDatas(aWaterMarkRequestInfo.data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mManagementAdapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onFail(int whatCode, int statusCode, String responseString) {
-                super.onFail(whatCode, statusCode, responseString);
-            }
-        };
-        HashMap<String, String> map = new HashMap<String, String>();
-//        CacheRequest mCacheRequest = new CacheRequest("watermark/watermark/list", map, mWaterMarkUpdateCallback);
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=sticker_pic&page=1", map, mWaterMarkUpdateCallback);
-        mCacheRequest.startGetRequest();
-    }
-*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -242,23 +176,7 @@ public final class WaterMarkCategoryManagementActivity extends BaseActivity impl
         }
     }
 
-    //开启开始下载服务
-    private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
-        if (isExistRunning) {
-            Loger.i("startDownloadService:exist");
-            return;
-        } else {
-            Loger.i("startDownloadService:run");
-        }
-        if (null == url || null == folderPath) return;
-        Intent bindIntent = new Intent(this, DownloadFileService.class);
-        bindIntent.putExtra("position", position);
-        bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_STICKER);
-        this.startService(bindIntent);
-    }
+
 
     //下载贴图包
     public void onEvent(BasePostEvent event) {

@@ -1,7 +1,6 @@
 
 package com.putao.camera.setting.watermark.management;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,24 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.DynamicIconInfo;
-import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.DatabaseServer;
-import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.download.DownloadFinishedDynamicAdapter;
-import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,44 +85,17 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
 
     @Override
     public void doInitData() {
-//        mGridView = mPullRefreshGridView.getRefreshableView();
-//        mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
-//            @Override
-//            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-////                Toast.makeText(CollageManagementFragment.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//
-//            @Override
-//            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-////                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//        });
-//
-////        mManagementAdapter = new DynamicManagementAdapter(mActivity);
-//        mManagementAdapter = new DownloadFinishDynamicAdapter(mActivity);
-//        mManagementAdapter.setUpdateCallback(this);
-//        mGridView.setAdapter(mManagementAdapter);
-//        mGridView.setOnItemClickListener(this);
         addOnClickListener(back_btn, tv_delect_selected, tv_select_all);
-//        queryCollageList();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Bundle bundle = new Bundle();
-//                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//                bundle.putSerializable("info", info);
-//                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
+
     }
 
-    int progress = 0;
 
     @Override
     public void startProgress(DynamicListInfo.PackageInfo info, final int position) {
-        String path = CollageHelper.getCollageUnzipFilePath();
-        startDownloadService(info.download_url, path, position);
     }
 
     @Override
@@ -165,12 +130,8 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
         }
     }
 
-    private void updateFinish() {
-        //        vh.download_status_pb.setVisibility(View.INVISIBLE);
-        //        vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-    }
 
-    public void queryCollageList() {
+   /* public void queryCollageList() {
         CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
             @Override
             public void onSuccess(int whatCode, JSONObject json) {
@@ -194,7 +155,7 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
         HashMap<String, String> map = new HashMap<String, String>();
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
-    }
+    }*/
 
     @Override
     public void onClick(View v) {
@@ -232,22 +193,7 @@ public final class DynamicManagementActivity extends BaseActivity implements Ada
         }
     }
 
-    private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(mActivity, DownloadFileService.class.getName());
-        if (isExistRunning) {
-            Loger.i("startDownloadService:exist");
-            return;
-        } else {
-            Loger.i("startDownloadService:run");
-        }
-        if (null == url || null == folderPath) return;
-        Intent bindIntent = new Intent(mActivity, DownloadFileService.class);
-        bindIntent.putExtra("position", position);
-        bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
-        mActivity.startService(bindIntent);
-    }
+
 
     public void onEvent(BasePostEvent event) {
         switch (event.eventCode) {

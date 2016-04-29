@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -125,7 +126,10 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     e.printStackTrace();
                 }
                 if (null != list && list.size() > 0) {
-
+                    if (animation_view.isAnimationLoading()) {
+                        ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
+                        return;
+                    }
                     mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
                     mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
 
@@ -134,10 +138,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     mDynamicPicAdapter.notifyItemChanged(position);
                     Loger.d("click");
 //                    ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
-                    if (animation_view.isAnimationLoading()) {
-                        ToasterHelper.showShort(PhotoDynamicActivity.this, "动画加载中请稍后", R.drawable.img_blur_bg);
-                        return;
-                    }
+
                     animation_view.clearData();
                     animation_view.setData(list.get(0).zipName, false);
                     //检测人脸
@@ -221,6 +222,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         float imageScaleH = (float) screenH / (float) originImageBitmap.getHeight();
         float imageScale = imageScaleW;
         if (imageScaleH < imageScaleW) imageScale = imageScaleH;
+
 
         int bgImageOffsetX = (int) (DisplayHelper.getScreenWidth() - imageScale * originImageBitmap.getWidth()) / 2;
         int bgImageOffsetY = (int) (DisplayHelper.getScreenHeight() - imageScale * originImageBitmap.getHeight()) / 2;
@@ -517,12 +519,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
      *
      * @param bitmap
      */
-    private ProgressDialog saveDialog;
     private boolean videoSaving = false;
     private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
     private String videoPath;
 
-    private void saveASVideo(final Bitmap scaleImageBmp) {
+    private void saveASVideo(final Bitmap bitmap) {
         videoSaving = true;
         final YMDetector detector = new YMDetector(mContext);
         singleThreadExecutor.submit(new Runnable() {
@@ -530,11 +531,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             public void run() {
                 try {
                     FaceModel faceModel;
-                   /* BitmapFactory.Options options = new BitmapFactory.Options();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 2;
                     options.inJustDecodeBounds = false;
                     byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
-                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
+                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
                     if (faces != null && faces.size() > 0 && faces.get(0) != null) {
                         YMFace face = faces.get(0);
@@ -556,6 +557,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     }
                     RecorderManager recorderManager = new RecorderManager(3 * 1000, scaleImageBmp.getWidth(), scaleImageBmp.getHeight(), videoPath);
                     final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, animation_view.getAnimationModel(), scaleImageBmp, animation_view.getEyesBitmapArr(), animation_view.getMouthBitmapArr(), animation_view.getBottomBitmapArr());
+
                     MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
                         @Override
                         public void onScanCompleted(String path, Uri uri) {
@@ -578,8 +580,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0x200) {
-                if (saveDialog != null && saveDialog.isShowing()) {
-                    saveDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
                 videoSaving = false;
 

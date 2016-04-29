@@ -1,7 +1,6 @@
 
 package com.putao.camera.setting.watermark.management;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,24 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.BaseActivity;
 import com.putao.camera.bean.TemplateIconInfo;
-import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.DatabaseServer;
-import com.putao.camera.downlad.DownloadFileService;
 import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
-import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.download.DownloadFinishedTemplateAdapter;
-import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 import com.putao.widget.pulltorefresh.PullToRefreshGridView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,47 +80,18 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
     @Override
     public void doInitData() {
-//        mGridView = mPullRefreshGridView.getRefreshableView();
-//        mPullRefreshGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
-//            @Override
-//            public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(CollageManagementActivity.this, "Pull Down!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//
-//            @Override
-//            public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-//                Toast.makeText(mContext, "Pull Up!", Toast.LENGTH_SHORT).show();
-//                //                new GetDataTask().execute();
-//            }
-//        });
-//        //        TextView tv = new TextView(this);
-//        //        tv.setGravity(Gravity.CENTER);
-//        //        tv.setText("Empty View, Pull Down/Up to Add Items");
-//        //        mPullRefreshGridView.setEmptyView(tv);
-//        mManagementAdapter = new DownloadFinishedTemplateAdapter(this);
-//        mManagementAdapter.setUpdateCallback(this);
-//        mGridView.setAdapter(mManagementAdapter);
-//        mGridView.setOnItemClickListener(this);
-//
+
         addOnClickListener( back_btn,tv_delect_selected,tv_select_all);
-//        queryCollageList();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Bundle bundle = new Bundle();
-//                WaterMarkPackageListInfo.PackageInfo info = mManagementAdapter.getItem(position);
-//                bundle.putSerializable("info", info);
-//                ActivityHelper.startActivity(this, WaterMarkCategoryDetailActivity.class, bundle);
     }
 
-    int progress = 0;
 
     @Override
     public void startProgress(TemplateListInfo.PackageInfo info, final int position) {
-        String path = CollageHelper.getCollageUnzipFilePath();
-        startDownloadService(info.download_url, path, position);
+
     }
 
     @Override
@@ -163,46 +126,9 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
         }
     }
 
-    private void updateFinish() {
-        //        vh.download_status_pb.setVisibility(View.INVISIBLE);
-        //        vh.collage_photo_ok_iv.setVisibility(View.VISIBLE);
-    }
-
-    public void queryCollageList() {
-        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
-            @Override
-            public void onSuccess(int whatCode, JSONObject json) {
-                super.onSuccess(whatCode, json);
-                final TemplateListInfo aCollageInfo;
-                try {
-                    Gson gson = new Gson();
-                    aCollageInfo = (TemplateListInfo) gson.fromJson(json.toString(), TemplateListInfo.class);
-//                    mManagementAdapter.setDatas(aCollageInfo.data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mManagementAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFail(int whatCode, int statusCode, String responseString) {
-                super.onFail(whatCode, statusCode, responseString);
-            }
-        };
-        HashMap<String, String> map = new HashMap<String, String>();
-//        CacheRequest mCacheRequest = new CacheRequest("collage/collage/list", map, mWaterMarkUpdateCallback);
-        CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=template_pic&page=1", map, mWaterMarkUpdateCallback);
-        mCacheRequest.startGetRequest();
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.right_btn:
-//                Bundle bundle = new Bundle();
-//                bundle.putString("source", this.getClass().getName());
-//                ActivityHelper.startActivity(this, DownloadFinishActivity.class, bundle);
-//                break;
             case R.id.back_btn:
                 finish();
                 break;
@@ -234,23 +160,6 @@ public final class CollageManagementActivity extends BaseActivity implements Ada
 
                 break;
         }
-    }
-
-    private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(this, DownloadFileService.class.getName());
-        if (isExistRunning) {
-            Loger.i("startDownloadService:exist");
-            return;
-        } else {
-            Loger.i("startDownloadService:run");
-        }
-        if(null == url || null == folderPath) return;
-        Intent bindIntent = new Intent(this, DownloadFileService.class);
-        bindIntent.putExtra("position", position);
-        bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_TEMPLATE);
-        this.startService(bindIntent);
     }
 
     public void onEvent(BasePostEvent event) {
