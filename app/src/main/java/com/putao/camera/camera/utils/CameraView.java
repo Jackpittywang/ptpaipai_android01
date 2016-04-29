@@ -120,6 +120,10 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
     public GLSurfaceView getmGLView() {
         return glSurfacePreviewStrategy.getmGLView();
     }
+    public boolean getFace() {
+        return glSurfacePreviewStrategy.getFace();
+    }
+
 
     public GlSurfacePreviewStrategy getPreviewStrategy() {
         return previewStrategy;

@@ -438,11 +438,10 @@ public class PCameraFragment extends CameraFragment {
         }
 
         camera.takePicture(null, null, new Camera.PictureCallback() {
-
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
-                imagePath = FileUtils.getARStickersPath()+ File.separator + "temp.jpg";
+                imagePath = FileUtils.getARStickersPath() + File.separator + "temp.jpg";
 //                imagePath = FileUtils.getSdcardPath() + File.separator + "temp.jpg";
                 Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
                 Bitmap saveBitmap = null;
@@ -464,12 +463,16 @@ public class PCameraFragment extends CameraFragment {
                 }*/
 
                 cameraView.getmGLView().setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
+                boolean haveFace = cameraView.getFace();
                 BitmapHelper.saveBitmap(saveBitmap, imagePath);
                 saveBitmap.recycle();
                 tempBitmap.recycle();
                 if (isShowAR == true) {
-                    handler.sendEmptyMessageDelayed(0x001, 100);
+                    if (haveFace) {
+                        handler.sendEmptyMessageDelayed(0x001, 100);
+                    } else {
+                        handler.sendEmptyMessageDelayed(0x002, 0);
+                    }
                 } else {
                     handler.sendEmptyMessageDelayed(0x002, 0);
                 }
@@ -564,7 +567,7 @@ public class PCameraFragment extends CameraFragment {
                 flash_view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(flash_view!=null) flash_view.setVisibility(View.GONE);
+                        if (flash_view != null) flash_view.setVisibility(View.GONE);
                     }
                 }, 200);
             }

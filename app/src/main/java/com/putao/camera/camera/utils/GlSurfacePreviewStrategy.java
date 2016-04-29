@@ -42,6 +42,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private int screenW, screenH;
     private YMDetector mDetector;
     private Size cameraSize;
+    private  boolean haveFace=false;
 //    private Mat mYuv;
 //    private Mat previewMat;
 
@@ -75,6 +76,11 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     public GLSurfaceView getmGLView() {
         return mGLView;
     }
+
+    public boolean getFace() {
+        return haveFace;
+    }
+
 
     public void setAnimationView(AnimationImageView view) {
         animationImageView = view;
@@ -158,7 +164,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         if (face != null) {
             animationImageView.setVisibility(View.VISIBLE);
             animationImageView.setPositionAndStartAnimation(points);
+            haveFace=true;
         } else {
+            haveFace=false;
             animationImageView.setVisibility(View.GONE);
         }
     }

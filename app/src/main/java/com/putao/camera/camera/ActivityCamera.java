@@ -248,9 +248,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
 
                     mDynamicPicAdapter.getItem(position).setSelect(true);
-//                    dynamicIconInfo.setSelect(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
-//                    ToasterHelper.showShort(ActivityCamera.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
                     if (current == null) return;
 
                     animation_view.clearData();
@@ -624,6 +622,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         if (animation_view != null) {
             animation_view.clearData();
         }
+
     }
 
 
@@ -676,9 +675,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 if (hasTwoCameras) {
                     switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
-                    /*
-                     * Umeng事件统计
-                     */
+
                     if (current == std) {
 //                        doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_OUT_CAMERA);
 //                        current.stopAnimation();
@@ -696,12 +693,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 switch_camera_ll.setEnabled(false);
                 clearAnimationData();
                 if (hasTwoCameras) {
-
                     switchCamera();
                     getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
-                    /*
-                     * Umeng事件统计
-                     */
+
                     if (current == std) {
 //                        doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_OUT_CAMERA);
 
@@ -815,6 +809,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         animation_view.clearData();
         std.clearAnimationView();
         ffc.clearAnimationView();
+        mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
+        mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
         if (lastSelectArImageView != null) lastSelectArImageView.setChecked(false);
         currentSelectDynamic = 0;
     }
@@ -834,7 +830,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
      * 切换前后camera
      */
     private void switchCamera() {
-
         if (current == null) {
             current = ffc;
             flash_light_iv.setVisibility(View.GONE);
