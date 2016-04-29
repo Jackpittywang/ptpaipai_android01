@@ -131,7 +131,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             String pintuJson = list.get(0).pintuGson;
             if (pintuJson.contains("maskList\":{")) {
                 pintuJson = pintuJson.replace("maskList\":{", "maskList\":[{");
-                pintuJson = pintuJson.replace("},\"height", "}],\"height");
+                pintuJson = pintuJson.replace("\"}", "\"}}]");
             }
             pintuInfo = gson.fromJson(pintuJson, PintuInfo.class);
             initCollageView();
@@ -161,7 +161,6 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
 
     private ArrayList<CollageView.CollagePhotoSet> getPhotoSetFromCollageItemInfo(
             TemplateIconInfo info) {
-
         //得到模板框内点的信息
         ArrayList<CollageView.CollagePhotoSet> photoSet = new ArrayList<CollageView.CollagePhotoSet>();
         if (photoSet != null) {

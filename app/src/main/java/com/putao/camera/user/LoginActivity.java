@@ -27,6 +27,7 @@ import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
+import com.sunnybear.library.view.LoadingHUD;
 import com.sunnybear.library.view.image.ImageDraweeView;
 
 import butterknife.Bind;
@@ -60,6 +61,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
 
 
     private int mErrorCount = 0;
+    private LoadingHUD mLoading;
 
     @Override
     protected int getLayoutId() {
@@ -76,7 +78,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         from = intent.getStringExtra("from");
         path = intent.getStringExtra("path");
         imgpath = intent.getStringExtra("imgpath");
-
+        mLoading = new LoadingHUD(mContext);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login://登录
-                loading.show();
+                mLoading.show();
                 btn_login.setClickable(false);
                 final String mobile = et_mobile.getText().toString();
                 final String passWord = et_password.getText().toString();
@@ -187,7 +189,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
                         finish();
-                        loading.dismiss();
                     }
 
                     @Override
@@ -200,6 +201,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                     public void onFinish(String url, boolean isSuccess, String msg) {
                         super.onFinish(url, isSuccess, msg);
                         btn_login.setClickable(true);
+                        mLoading.dismiss();
                     }
                 });
     }
