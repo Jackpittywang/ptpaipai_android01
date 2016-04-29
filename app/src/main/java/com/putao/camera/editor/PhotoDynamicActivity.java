@@ -99,6 +99,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private int Viedheight;
     private int currentSelectDynamic = 0;
     private boolean haveNoFace=false;
+    private String photo_data;
 
     @Override
     protected int getLayoutId() {
@@ -205,10 +206,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         queryCollageList();
         Intent intent = this.getIntent();
         if (intent == null) return;
-        String photo_data = intent.getStringExtra("photo_data");
+        photo_data = intent.getStringExtra("photo_data");
 //        animationName = intent.getStringExtra("animationName");
         Bitmap tempBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                 DisplayHelper.getScreenHeight());
+
 
         Bitmap bgImageBitmap = originImageBitmap = BitmapHelper.resizeBitmap(tempBitmap, 0.5f);
 //            bgImageBitmap=BitmapHelper.imageCrop(bgImageBitmap,photoType);
@@ -230,7 +232,6 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
         Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
         originImageBitmap = BitmapHelper.combineBitmap(originImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
         show_image.setImageBitmap(originImageBitmap);
-
         bgImageBitmap.recycle();
         resizedBgImage.recycle();
 
@@ -534,8 +535,9 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 2;
                     options.inJustDecodeBounds = false;
-                    byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
-                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                    Bitmap  scaleImageBmp=BitmapFactory.decodeFile(photo_data, options);
+                 /*   byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
+                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
                     if (faces != null && faces.size() > 0 && faces.get(0) != null) {
                         YMFace face = faces.get(0);
@@ -602,7 +604,19 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             }
         }
     };
+ /*BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = false;
+        newOpts.inPurgeable = true;
+        newOpts.inInputShareable = true;
+        // Do not compress
+        newOpts.inSampleSize = 2;
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+       newOriginImageBitmap=BitmapFactory.decodeFile(photo_data, newOpts);
 
+        int ss= newOriginImageBitmap.getRowBytes() * newOriginImageBitmap.getHeight();
+
+       int hh= newOriginImageBitmap.getHeight();
+        int ww=newOriginImageBitmap.getWidth();*/
 
 
 }
