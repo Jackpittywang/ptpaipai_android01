@@ -161,20 +161,19 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                 new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
                     @Override
                     public void onSuccess(String url, UserInfo result) {
+                        ToastUtils.showToastShort(mContext, "登录成功");
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         AccountHelper.setUserInfo(result);
-                        //启动红点推送
-//                        sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
                         if (from.equals("share")) {
-                            Bundle bundle = new Bundle();
+                          /*  Bundle bundle = new Bundle();
                             bundle.putString("from", from);
                             bundle.putString("savefile", path);
                             bundle.putString("imgpath", imgpath);
-                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
+                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);*/
                         } else {
                             Bundle bundle = new Bundle();
                             bundle.putString("from", "");

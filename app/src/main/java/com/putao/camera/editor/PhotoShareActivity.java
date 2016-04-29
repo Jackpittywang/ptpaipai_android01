@@ -199,7 +199,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("path", filepath);
                             bundle.putString("imgpath",imgpath);
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
-                            finish();
+//                            finish();
                         } else if (AccountHelper.isLogin()) {
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();

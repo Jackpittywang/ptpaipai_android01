@@ -106,7 +106,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     private SelectPopupWindow mSelectPopupWindow;
     private MenuIconInfo aMenuIconInfo;
     private boolean openCVLibraryLoaded = false;
-    private boolean skipToApp=false;
+    private boolean skipToApp = false;
 
 
     @Override
@@ -248,19 +248,19 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
-                if(skipToApp&&skipUrl != null){
-                    if (isAppInstalled(mContext,skipUrl )) {
+                if (skipToApp && skipUrl != null) {
+                    if (isAppInstalled(mContext, skipUrl)) {
                         //跳转app
                         PackageManager packageManager = getPackageManager();
                         Intent intent = new Intent();
                         intent = packageManager.getLaunchIntentForPackage(skipUrl);
                         startActivity(intent);
-                    }else{
+                    } else {
                         Uri uri = Uri.parse(skipUrl);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
-                }else {
+                } else {
                     Uri uri = Uri.parse(skipUrl);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
@@ -355,9 +355,9 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                     iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     ImageLoader.getInstance().displayImage(aMenuIconInfo.data.bg_url, iv_main, options);
                     if (!TextUtils.isEmpty(aMenuIconInfo.data.android_link_url)) {
-                        skipToApp=true;
-                        skipUrl=aMenuIconInfo.data.android_link_url;
-                        if (!isAppInstalled(mContext,skipUrl )) {
+                        skipToApp = true;
+                        skipUrl = aMenuIconInfo.data.android_link_url;
+                        if (!isAppInstalled(mContext, skipUrl)) {
                             skipUrl = aMenuIconInfo.data.h5_link_url;
                         }
                     } else {
@@ -439,6 +439,16 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     @Subcriber(tag = RedDotReceiver.EVENT_DOT_MATTER_CENTER)
     private void setRed_dot(String dot) {
         setNum();
+    }
+
+    /**
+     * 登录刷新
+     */
+    @Subcriber(tag = LoginActivity.EVENT_LOGIN)
+    private void login(String str) {
+        UserInfo currentUserInfo = AccountHelper.getCurrentUserInfo();
+        user_name_tv.setText(currentUserInfo.getNick_name());
+        iv_header_icon.setImageURL(setSmallImageUrl(currentUserInfo.getHead_img()));
     }
 
 
