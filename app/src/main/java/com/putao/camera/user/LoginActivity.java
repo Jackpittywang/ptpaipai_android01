@@ -18,7 +18,6 @@ import com.putao.account.AccountHelper;
 import com.putao.camera.R;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.bean.UserInfo;
-import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.NetManager;
@@ -76,8 +75,8 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
         btn_login.setClickable(false);
         Intent intent = this.getIntent();
         from = intent.getStringExtra("from");
-        path = intent.getStringExtra("path");
-        imgpath = intent.getStringExtra("imgpath");
+       /* path = intent.getStringExtra("path");
+        imgpath = intent.getStringExtra("imgpath");*/
         mLoading = new LoadingHUD(mContext);
     }
 
@@ -175,11 +174,11 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                             bundle.putString("imgpath", imgpath);
                             ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);*/
                         } else {
-                            Bundle bundle = new Bundle();
+                            /*Bundle bundle = new Bundle();
                             bundle.putString("from", "");
                             bundle.putString("savefile", "");
-                            bundle.putString("imgpath", "");
-                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class, bundle);
+                            bundle.putString("imgpath", "");*/
+                            ActivityHelper.startActivity(LoginActivity.this, CompleteActivity.class);
                         }
 
 //                                        startActivity(CompleteActivity.class);
@@ -214,11 +213,11 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     public void onBackPressed() {
         super.onBackPressed();
         if (from.equals("share")) {
-            Bundle bundle = new Bundle();
+           /*  Bundle bundle = new Bundle();
             bundle.putString("from", from);
-            bundle.putString("savefile", path);
+           bundle.putString("savefile", path);
             bundle.putString("imgpath", imgpath);
-            ActivityHelper.startActivity(LoginActivity.this, PhotoShareActivity.class, bundle);
+            ActivityHelper.startActivity(LoginActivity.this, PhotoShareActivity.class, bundle);*/
             finish();
         } else {
             overridePendingTransition(R.anim.activity_to_in, R.anim.activity_to_out);

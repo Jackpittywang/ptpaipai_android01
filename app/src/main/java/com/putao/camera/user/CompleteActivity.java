@@ -22,7 +22,6 @@ import com.putao.camera.base.SelectPopupWindow;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
-import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.menu.MenuActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
@@ -117,12 +116,12 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
             }
         };
 
-        Intent intent = this.getIntent();
+      /*  Intent intent = this.getIntent();
         if (intent != null) {
             from = intent.getStringExtra("from");
             path = intent.getStringExtra("savefile");
             imgpath = intent.getStringExtra("imgpath");
-        }
+        }*/
 
     }
 
@@ -137,14 +136,14 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
                 tv_user_info.setText(result.getProfile().isEmpty() ? "这个用户很懒" : result.getProfile());
                 AccountHelper.setUserInfo(result);
                 loading.dismiss();
-                if (from.equals("share")) {
+                /*if (from.equals("share")) {
                     Bundle bundle = new Bundle();
                     bundle.putString("from", "complete");
                     bundle.putString("savefile", path);
                     bundle.putString("imgpath", imgpath);
                     ActivityHelper.startActivity(CompleteActivity.this, PhotoShareActivity.class, bundle);
                     finish();
-                }
+                }*/
 
 
             }
@@ -153,14 +152,14 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
             public void onFailure(String url, int statusCode, String msg) {
                 super.onFailure(url, statusCode, msg);
                 ToastUtils.showToastLong(mContext, "登录失败请重新登录");
-                if (from.equals("share")) {
+              /*  if (from.equals("share")) {
                     Bundle bundle = new Bundle();
                     bundle.putString("from", "complete");
                     bundle.putString("savefile", path);
                     bundle.putString("imgpath", imgpath);
                     ActivityHelper.startActivity(CompleteActivity.this, PhotoShareActivity.class, bundle);
                     finish();
-                }
+                }*/
             }
         });
     }

@@ -138,6 +138,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private String currentSelectDynamicName = null;
     boolean isFFC = false;
     private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
+    public int photoSize = PhotoEditorActivity.CROP_43;//0为全屏,1为1比1,2为4比3
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -638,8 +639,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         EventBus.getEventBus().unregister(this);
     }
 
-
-    public int photoSize = 2;//0为全屏,1为1比1,2为4比3
 
     @OnClick({
             R.id.camera_scale_iv, R.id.camera_timer_iv, R.id.flash_light_iv, R.id.switch_camera_iv, R.id.back_home_iv, R.id.camera_set_iv,

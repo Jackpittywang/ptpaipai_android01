@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -523,7 +522,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
     private String videoPath;
 
-    private void saveASVideo(final Bitmap bitmap) {
+    private void saveASVideo(final Bitmap scaleImageBmp) {
         videoSaving = true;
         final YMDetector detector = new YMDetector(mContext);
         singleThreadExecutor.submit(new Runnable() {
@@ -531,11 +530,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             public void run() {
                 try {
                     FaceModel faceModel;
-                    BitmapFactory.Options options = new BitmapFactory.Options();
+                   /* BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 2;
                     options.inJustDecodeBounds = false;
                     byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
-                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+                    Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
                     if (faces != null && faces.size() > 0 && faces.get(0) != null) {
                         YMFace face = faces.get(0);
@@ -583,19 +582,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     saveDialog.dismiss();
                 }
                 videoSaving = false;
-                /*MediaScannerConnection.scanFile(PhotoDynamicActivity.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(String path, Uri uri) {
-                        ToastUtils.showToastShort(mContext, "视频保存成功");
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("savefile", videoPath);
-                        bundle.putString("imgpath", videoImagePath + "image00.jpg");
-                        bundle.putString("from", "dynamic");
-                        ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
-                        finish();
-                    }
-                });*/
                 ToastUtils.showToastShort(mContext, "视频保存成功");
 
                 Bundle bundle = new Bundle();
@@ -605,8 +592,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                 ActivityHelper.startActivity(PhotoDynamicActivity.this, PhotoShareActivity.class, bundle);
                 finish();
             } else if (msg.what == 0x201) {
-                if (saveDialog != null && saveDialog.isShowing()) {
-                    saveDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
                 videoSaving = false;
                 ToastUtils.showToastShort(mContext, "视频保存失败");

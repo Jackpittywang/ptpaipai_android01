@@ -196,8 +196,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             ToasterHelper.showShort(this, "请登录葡萄账户", R.drawable.img_blur_bg);
                             Bundle bundle = new Bundle();
                             bundle.putString("from", "share");
-                            bundle.putString("path", filepath);
-                            bundle.putString("imgpath",imgpath);
+                           /* bundle.putString("path", filepath);
+                            bundle.putString("imgpath",imgpath);*/
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
 //                            finish();
                         } else if (AccountHelper.isLogin()) {
