@@ -16,10 +16,11 @@ import com.putao.account.AccountCallback;
 import com.putao.account.AccountConstants;
 import com.putao.account.AccountHelper;
 import com.putao.camera.R;
-import com.putao.camera.application.MainApplication;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UserApi;
+import com.putao.camera.menu.MenuActivity;
+import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.StringUtils;
@@ -179,7 +180,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
                         if (mErrorCount >= 2) {
                             mDiskFileCacheHelper.put(FORGET_CODE + mobile, FORGET_CODE);
                         }
-                        AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
+                        AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_FORGET);
                         et_graph_verify.setText("");
                     }
                 });
@@ -207,7 +208,9 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
 //                startActivity(IndexActivity.class);
                 //启动红点推送
 //                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
+                ToastUtils.showToastShort(mContext, "登录成功");
                 finish();
+                ActivityManager.getInstance().finishActivity(MenuActivity.class);
                 loading.dismiss();
             }
         });
