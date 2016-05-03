@@ -102,6 +102,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         initInfo();
 //        IndexActivity.isNotRefreshUserInfo = false;
 
+        tv_nick_name.setText(AccountHelper.getUserNickName());
         mSelectPopupWindow = new SelectPopupWindow(mContext) {
             @Override
             public void onFirstClick(View v) {
@@ -151,7 +152,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
             @Override
             public void onFailure(String url, int statusCode, String msg) {
                 super.onFailure(url, statusCode, msg);
-                ToastUtils.showToastLong(mContext, "登录失败请重新登录");
+                ToastUtils.showToastLong(mContext, "网络不给力");
               /*  if (from.equals("share")) {
                     Bundle bundle = new Bundle();
                     bundle.putString("from", "complete");
