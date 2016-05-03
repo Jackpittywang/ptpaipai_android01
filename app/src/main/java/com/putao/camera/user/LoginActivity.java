@@ -98,16 +98,14 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                 if (NetManager.isNetworkAvailable(LoginActivity.this) == true) {//没有网络连接
                     ToastUtils.showToastLong(mContext, "您的网络不给力");
                     btn_login.setClickable(true);
-                    loading.dismiss();
                 } else {
                     if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile)) && rl_graph_verify.getVisibility() == View.GONE) {
                         rl_graph_verify.setVisibility(View.VISIBLE);
                         AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
                         btn_login.setClickable(true);
-                        loading.dismiss();
                     } else
                         networkRequest(AccountApi.safeLogin(mobile, passWord, verify),
-                                new AccountCallback(loading) {
+                                new AccountCallback(mLoading) {
                                     @Override
                                     public void onSuccess(JSONObject result) {
                                         AccountHelper.setCurrentUid(result.getString("uid"));
@@ -135,6 +133,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                     public void onFinish(String url, boolean isSuccess, String msg) {
                                         super.onFinish(url, isSuccess, msg);
                                         btn_login.setClickable(true);
+                                        mLoading.dismiss();
                                     }
                                 });
                 }
