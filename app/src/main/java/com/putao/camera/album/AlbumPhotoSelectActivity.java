@@ -78,7 +78,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     boolean from_collage_photo = false;
     private LinearLayout nonePhotoView;
     private RelativeLayout grid_rl;
-    private ImageView body_iv_none_camera;
+//    private ImageView body_iv_none_camera;
     private  ImageView iv_icon;
 
     private int bucket_id = -1;
@@ -94,15 +94,17 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
         iv_icon=queryViewById(R.id.iv_icon);
         iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
         nonePhotoView = (LinearLayout) this.findViewById(R.id.body_iv_none);
-        body_iv_none_camera = (ImageView) this.findViewById(R.id.body_iv_none_camera);
+       /* body_iv_none_camera = (ImageView) this.findViewById(R.id.body_iv_none_camera);
         body_iv_none_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
+                ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+                finish();
+              *//*  Bundle bundle = new Bundle();
                 bundle.putString("reason", "edit");
-                ActivityHelper.startActivity(mActivity, MovieCameraActivity.class, bundle);
+                ActivityHelper.startActivity(mActivity, MovieCameraActivity.class, bundle);*//*
             }
-        });
+        });*/
         mGridView = (StickyGridHeadersGridView) findViewById(R.id.asset_grid);
         back_btn = (Button) this.findViewById(R.id.back_btn);
         title_tv = (TextView) this.findViewById(R.id.title_tv);
