@@ -1,6 +1,5 @@
 package com.putao.camera.user;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,8 +18,6 @@ import com.putao.camera.R;
 import com.putao.camera.base.PTXJActivity;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UserApi;
-import com.putao.camera.menu.MenuActivity;
-import com.sunnybear.library.controller.ActivityManager;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.StringUtils;
@@ -209,9 +206,11 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
                 //启动红点推送
 //                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                 ToastUtils.showToastShort(mContext, "登录成功");
-                finish();
-                ActivityManager.getInstance().finishActivity(MenuActivity.class);
+//                ActivityHelper.startActivity(ForgetPasswordActivity.this, MenuActivity.class);
                 loading.dismiss();
+                finish();
+
+
             }
         });
     }

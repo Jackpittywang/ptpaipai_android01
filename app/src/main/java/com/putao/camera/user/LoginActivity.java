@@ -23,6 +23,7 @@ import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.NetManager;
 import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
@@ -98,13 +99,13 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                 if (NetManager.isNetworkAvailable(LoginActivity.this) == true) {//没有网络连接
                     ToastUtils.showToastLong(mContext, "您的网络不给力");
                     btn_login.setClickable(true);
-                    loading.dismiss();
+                    mLoading.dismiss();
                 } else {
                     if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile)) && rl_graph_verify.getVisibility() == View.GONE) {
                         rl_graph_verify.setVisibility(View.VISIBLE);
                         AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
                         btn_login.setClickable(true);
-                        loading.dismiss();
+                        mLoading.dismiss();
                     } else
                         networkRequest(AccountApi.safeLogin(mobile, passWord, verify),
                                 new AccountCallback(loading) {
@@ -161,7 +162,6 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                     @Override
                     public void onSuccess(String url, UserInfo result) {
                         ToastUtils.showToastShort(mContext, "登录成功");
-                        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         AccountHelper.setUserInfo(result);
                         EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
@@ -186,13 +186,14 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
-                        finish();
+//                        finish();
                     }
 
                     @Override
                     public void onFailure(String url, int statusCode, String msg) {
                         super.onFailure(url, statusCode, msg);
 //                        ToastUtils.showToastLong(mContext, "登录失败请重新登录");
+                        mLoading.dismiss();
                     }
 
                     @Override
@@ -258,4 +259,11 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
     }
 
 
+    /**
+     * 登录刷新
+     */
+    @Subcriber(tag = LoginActivity.EVENT_LOGIN)
+    private void login(String str) {
+        finish();
+    }
 }

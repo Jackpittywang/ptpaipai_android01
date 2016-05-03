@@ -170,48 +170,56 @@ public abstract class OnekeyShareThemeImpl implements PlatformActionListener, Ca
 
 		boolean isGooglePlus = "GooglePlus".equals(name);
 		if (isGooglePlus && !plat.isClientValid()) {
-			toast("ssdk_google_plus_client_inavailable");
+//			toast("ssdk_google_plus_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isAlipay = "Alipay".equals(name);
 		if (isAlipay && !plat.isClientValid()) {
-			toast("ssdk_alipay_client_inavailable");
+//			toast("ssdk_alipay_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isKakaoTalk = "KakaoTalk".equals(name);
 		if (isKakaoTalk && !plat.isClientValid()) {
-			toast("ssdk_kakaotalk_client_inavailable");
+//			toast("ssdk_kakaotalk_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isKakaoStory = "KakaoStory".equals(name);
 		if (isKakaoStory && !plat.isClientValid()) {
-			toast("ssdk_kakaostory_client_inavailable");
+//			toast("ssdk_kakaostory_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isLine = "Line".equals(name);
 		if (isLine && !plat.isClientValid()) {
-			toast("ssdk_line_client_inavailable");
+//			toast("ssdk_line_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isWhatsApp = "WhatsApp".equals(name);
 		if (isWhatsApp && !plat.isClientValid()) {
-			toast("ssdk_whatsapp_client_inavailable");
+//			toast("ssdk_whatsapp_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isPinterest = "Pinterest".equals(name);
 		if (isPinterest && !plat.isClientValid()) {
-			toast("ssdk_pinterest_client_inavailable");
+//			toast("ssdk_pinterest_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		if ("Instagram".equals(name) && !plat.isClientValid()) {
-			toast("ssdk_instagram_client_inavailable");
+//			toast("ssdk_instagram_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
@@ -219,25 +227,29 @@ public abstract class OnekeyShareThemeImpl implements PlatformActionListener, Ca
 		boolean isLaiwangMoments = "LaiwangMoments".equals(name);
 		if(isLaiwang || isLaiwangMoments){
 			if (!plat.isClientValid()) {
-				toast("ssdk_laiwang_client_inavailable");
+//				toast("ssdk_laiwang_client_inavailable");
+				toast("未安装");
 				return false;
 			}
 		}
 
 		boolean isYixin = "YixinMoments".equals(name) || "Yixin".equals(name);
 		if (isYixin && !plat.isClientValid()) {
-			toast("ssdk_yixin_client_inavailable");
+//			toast("ssdk_yixin_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
 		boolean isWechat = "WechatFavorite".equals(name) || "Wechat".equals(name) || "WechatMoments".equals(name);
 		if (isWechat && !plat.isClientValid()) {
-			toast("ssdk_wechat_client_inavailable");
+//			toast("ssdk_wechat_client_inavailable");
+			toast("未安装微信");
 			return false;
 		}
 
 		if ("FacebookMessenger".equals(name) && !plat.isClientValid()) {
-			toast("ssdk_facebookmessenger_client_inavailable");
+//			toast("ssdk_facebookmessenger_client_inavailable");
+			toast("未安装");
 			return false;
 		}
 
@@ -305,7 +317,9 @@ public abstract class OnekeyShareThemeImpl implements PlatformActionListener, Ca
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
-			toast("ssdk_oks_share_failed");
+//			toast("ssdk_oks_share_failed");
+			toast("分享失败");
+
 			return null;
 		}
 

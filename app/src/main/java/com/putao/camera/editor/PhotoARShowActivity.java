@@ -260,6 +260,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                 int height = event.bundle.getInt("backgroundHight");
                 Viedheight = height * 480 / with;
                 saveASVideo(originImageBitmap);
+//                saveASVideo(saveOriginImageBitmap);
                 break;
         }
     }
@@ -276,7 +277,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         saveDialog.show();
         Bitmap tip = BitmapHelper.decodeSampledBitmapFromResource(getResources(), R.drawable.tips, 220, 60);
         saveOriginImageBitmap = BitmapHelper.combineBitmap(saveOriginImageBitmap, tip, saveOriginImageBitmap.getWidth() - tip.getWidth() - 5, saveOriginImageBitmap.getHeight() - tip.getHeight() - 2);
-
+//        BitmapHelper.saveBitmap(saveOriginImageBitmap,imagePath);
         animation_view.setSave(saveOriginImageBitmap, videoImagePath, imageCount);
 //        imagesToVideo();
 
