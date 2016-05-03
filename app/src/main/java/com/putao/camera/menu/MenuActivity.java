@@ -248,6 +248,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
+                if(TextUtils.isEmpty(skipUrl))return;
                 if (skipToApp && skipUrl != null) {
                     if (isAppInstalled(mContext, skipUrl)) {
                         //跳转app
