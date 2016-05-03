@@ -131,7 +131,7 @@ public class CollageMakeActivity extends BaseActivity implements View.OnClickLis
             String pintuJson = list.get(0).pintuGson;
             if (pintuJson.contains("maskList\":{")) {
                 pintuJson = pintuJson.replace("maskList\":{", "maskList\":[{");
-                pintuJson = pintuJson.replace("\"}", "\"}}]");
+                pintuJson = pintuJson.replace("\"}", "\"}]");
             }
             pintuInfo = gson.fromJson(pintuJson, PintuInfo.class);
             initCollageView();

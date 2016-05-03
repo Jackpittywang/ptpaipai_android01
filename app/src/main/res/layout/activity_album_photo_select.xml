@@ -148,11 +148,11 @@
                     android:textSize="16dp"
                     android:text="开始使用葡萄相机记录您的生活吧" />
 
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/body_iv_none_camera"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/album_camera_btn" />
+                    android:src="@drawable/album_camera_btn" />-->
             </LinearLayout>
 
         </RelativeLayout>

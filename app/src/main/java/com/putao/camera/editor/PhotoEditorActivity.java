@@ -159,6 +159,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                             try {
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
                                 bitmap = BitmapHelper.imageCrop(bitmap, photoType);
+                                BitmapHelper.saveBitmap(bitmap,photo_data);
                                 show_image.setImageBitmap(bitmap);
                                 ImageCropBitmap=bitmap;
                             } catch (IOException e) {

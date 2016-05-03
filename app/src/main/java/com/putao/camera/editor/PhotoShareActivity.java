@@ -444,12 +444,22 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Bundle bundle = (Bundle) msg.obj;
-            //上传PHP服务器
-            upload(bundle.getString("ext"), bundle.getString("filename"), bundle.getString("hash"));
-
+            if(msg.what==0x100) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updataVideo();
+                    }
+                });
+            }else {
+                Bundle bundle = (Bundle) msg.obj;
+                //上传PHP服务器
+                upload(bundle.getString("ext"), bundle.getString("filename"), bundle.getString("hash"));
+            }
         }
     };
+
+
 
 
 }
