@@ -88,6 +88,7 @@ public abstract class BasicApplication extends MultiDexApplication {
                 onCrash(ex);
             }
         });
+        isInBack = true;
     }
 
     public static Context getInstance() {

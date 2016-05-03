@@ -98,6 +98,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                 if (NetManager.isNetworkAvailable(LoginActivity.this) == true) {//没有网络连接
                     ToastUtils.showToastLong(mContext, "您的网络不给力");
                     btn_login.setClickable(true);
+                    mLoading.dismiss();
                 } else {
                     if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile)) && rl_graph_verify.getVisibility() == View.GONE) {
                         rl_graph_verify.setVisibility(View.VISIBLE);
@@ -127,13 +128,19 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                         }
                                         AccountApi.OnGraphVerify(image_graph_verify, AccountConstants.Action.ACTION_LOGIN);
                                         et_graph_verify.setText("");
+                                        mLoading.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String url, int statusCode, String msg) {
+                                        super.onFailure(url, statusCode, msg);
+                                        mLoading.dismiss();
                                     }
 
                                     @Override
                                     public void onFinish(String url, boolean isSuccess, String msg) {
                                         super.onFinish(url, isSuccess, msg);
                                         btn_login.setClickable(true);
-                                        mLoading.dismiss();
                                     }
                                 });
                 }
@@ -156,7 +163,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
      */
     private void checkLogin(final String mobile) {
         networkRequest(AccountApi.login(),
-                new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
+                new SimpleFastJsonCallback<UserInfo>(UserInfo.class, mLoading) {
                     @Override
                     public void onSuccess(String url, UserInfo result) {
                         ToastUtils.showToastShort(mContext, "登录成功");
