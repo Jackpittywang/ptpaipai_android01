@@ -254,7 +254,7 @@ public class SimpleCameraHost implements CameraHost {
         return (new File(dir, getPhotoFilename()));
     }
 
-    protected File getPhotoDirectory() {
+    public File getPhotoDirectory() {
         if (photoDirectory == null) {
             initPhotoDirectory();
         }

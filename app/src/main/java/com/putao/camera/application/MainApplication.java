@@ -21,6 +21,7 @@ import com.putao.account.AccountApi;
 import com.putao.account.AccountHelper;
 import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
+import com.putao.camera.camera.utils.SimpleCameraHost;
 import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.DatabaseServer;
@@ -106,6 +107,9 @@ public class MainApplication extends BasicApplication {
         intentFilter.addAction(OUT_FORE_MESSAGE_SOON);
         intentFilter.addAction(RESTART_MESSAGE);
         registerReceiver(CameraHomeBroadcastReceiver.getInstance(), intentFilter);
+        SimpleCameraHost simpleCameraHost = new SimpleCameraHost(this);
+        new SimpleCameraHost(this).getPhotoDirectory();
+        FileOperationHelper.getExternalFilePath();
     }
 
 
@@ -259,9 +263,9 @@ public class MainApplication extends BasicApplication {
                 CollageConfigInfo mCollageConfigInfo = gson.fromJson(config_str, CollageConfigInfo.class);
                 CollageHelper.saveCollageConfigInfoToDB(globalContext, mCollageConfigInfo, "1");
 
-                if (!PuTaoConstants.isDebug) {
+               /* if (!MainApplication.isDebug) {
                     new File(FileOperationHelper.getExternalFilePath() + "/" + unZipFileName + ".zip").delete();
-                }
+                }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -285,9 +289,9 @@ public class MainApplication extends BasicApplication {
                 WaterMarkConfigInfo ConfigInfo = new Gson().fromJson(config_str, WaterMarkConfigInfo.class);
                 WaterMarkHelper.saveCategoryInfoToDb(ConfigInfo, "1");
 
-                if (!PuTaoConstants.isDebug) {
+               /* if (!PuTaoConstants.isDebug) {
                     new File(FileOperationHelper.getExternalFilePath() + "/" + unZipFileName + ".zip").delete();
-                }
+                }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -2,6 +2,7 @@
 package com.putao.camera.util;
 
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 
 import com.putao.camera.application.MainApplication;
@@ -30,7 +31,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-
 
 
 public abstract class FileOperationHelper {
@@ -212,9 +212,9 @@ public abstract class FileOperationHelper {
     }
 
     //获取文件大小并保留两位小数调整为MB
-    public static   String double2String(File file){
-        double d=0;
-        try{
+    public static String double2String(File file) {
+        double d = 0;
+        try {
             d = FileOperationHelper.getFileSize(file);
             d = d / 1024 / 1024;
             BigDecimal bigdecimal = new BigDecimal(d);
@@ -223,13 +223,14 @@ public abstract class FileOperationHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return d+"";
+        return d + "";
 
     }
+
     //保留两位小数
-    public static  double doubleCut(double d){
-            BigDecimal bigdecimal = new BigDecimal(d);
-            d = bigdecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    public static double doubleCut(double d) {
+        BigDecimal bigdecimal = new BigDecimal(d);
+        d = bigdecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return d;
 
     }
@@ -369,7 +370,7 @@ public abstract class FileOperationHelper {
         try {
 //            String path = getExternalFilePath() + "/" + zipFloderName;
 //            String path =FileUtils.getARStickersPath() + File.separator + zipFloderName;
-            String path =FileUtils.getSdcardPath() + File.separator + zipFloderName;
+            String path = FileUtils.getSdcardPath() + File.separator + zipFloderName;
             File jsonFile = new File(path, fileName);
             FileInputStream fin = new FileInputStream(jsonFile);
             int length = fin.available();
@@ -386,7 +387,6 @@ public abstract class FileOperationHelper {
     /**
      * 读取文件
      *
-     * @param dirPath
      * @param fileName
      * @return
      */
@@ -394,7 +394,7 @@ public abstract class FileOperationHelper {
         String reslt = "";
         try {
 //            String path = getExternalFilePath() + "/" + zipFloderName;
-            String path =FileUtils.getARStickersPath() + File.separator + zipFloderName;
+            String path = FileUtils.getARStickersPath() + File.separator + zipFloderName;
 //            String path =FileUtils.getSdcardPath() + File.separator + zipFloderName;
             File jsonFile = new File(path, fileName);
             FileInputStream fin = new FileInputStream(jsonFile);
@@ -437,8 +437,13 @@ public abstract class FileOperationHelper {
             e.printStackTrace();
             path = MainApplication.getInstance().getFilesDir().getPath();
         }
+        addNoMedia(Environment.getExternalStorageDirectory().getAbsolutePath());
+        addNoMedia(path);
+        return path;
+    }
 
-        File noMedia = new File(path, ".nomedia");
+    private static void addNoMedia(String path) {
+        File noMedia = new File(path, ".camera.nomedia");
         if (!noMedia.exists()) {
             try {
                 noMedia.createNewFile();
@@ -446,8 +451,6 @@ public abstract class FileOperationHelper {
                 e.printStackTrace();
             }
         }
-
-        return path;
     }
     //    //文件夹名称必须和解压包解压出来的名称保持一致。
     //    public static String getWaterMarkFilePath()
@@ -499,7 +502,6 @@ public abstract class FileOperationHelper {
         }
         return reslt;
     }
-
 
 
     @SuppressWarnings("unchecked")
@@ -605,7 +607,6 @@ public abstract class FileOperationHelper {
             return super.toString(obj);
         }
     }
-
 
 
 }

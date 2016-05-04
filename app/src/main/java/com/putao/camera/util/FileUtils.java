@@ -32,7 +32,7 @@ public final class FileUtils {
 
     public static final String FILE_PARENT_NAME = "PutaoCamera";
 
-    public static final String FILE_AR_PARENT_NAME = "ARStickers";
+    public static final String FILE_AR_PARENT_NAME = ".ARStickers";
 
     /**
      * 读取文件内容
@@ -203,10 +203,10 @@ public final class FileUtils {
                 }
             }
             DynamicIconInfo item = new DynamicIconInfo();
-            if(zipEntry.getName().contains(".xml")){
-                item.id="0";
-                item.zipName=assetName.substring(0,assetName.lastIndexOf(".zip"));
-                item.cover_pic="file://"+FileUtils.getARStickersPath()+assetName.substring(0,assetName.lastIndexOf(".zip"))+"_icon.png";
+            if (zipEntry.getName().contains(".xml")) {
+                item.id = "0";
+                item.zipName = assetName.substring(0, assetName.lastIndexOf(".zip"));
+                item.cover_pic = "file://" + FileUtils.getARStickersPath() + assetName.substring(0, assetName.lastIndexOf(".zip")) + "_icon.png";
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("cover_pic", item.cover_pic);
                 List<DynamicIconInfo> list = null;
@@ -215,7 +215,7 @@ public final class FileUtils {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (list.size()==0) {
+                if (list.size() == 0) {
                     MainApplication.getDBServer().addDynamicIconInfo(item);
                 }
             }
@@ -234,7 +234,7 @@ public final class FileUtils {
      * @param isReWrite 是否覆盖
      * @throws IOException
      */
-    public static void unZipInSdCard(String zipPath, String outputDir, boolean isReWrite,String id) throws IOException {
+    public static void unZipInSdCard(String zipPath, String outputDir, boolean isReWrite, String id) throws IOException {
         String outputDirectory = getPutaoCameraPath() + File.separator + outputDir;
         // 创建解压目标目录
         File file = new File(outputDirectory);
@@ -271,13 +271,13 @@ public final class FileUtils {
             }
 
             StickerUnZipInfo item = new StickerUnZipInfo();
-            if(zipEntry.getName().contains("icon")){
-                item.iconName=zipEntry.getName();
-            }else {
-                item.imgName=zipEntry.getName();
+            if (zipEntry.getName().contains("icon")) {
+                item.iconName = zipEntry.getName();
+            } else {
+                item.imgName = zipEntry.getName();
             }
-            item.parentid=id;
-            item.zipName =outputDir;
+            item.parentid = id;
+            item.zipName = outputDir;
             MainApplication.getDBServer().addStickerUnZipInfo(item);
             // 定位到下一个文件入口
             zipEntry = zipInputStream.getNextEntry();
@@ -323,7 +323,6 @@ public final class FileUtils {
             }
 
 
-
             // 定位到下一个文件入口
             zipEntry = zipInputStream.getNextEntry();
         }
@@ -331,7 +330,7 @@ public final class FileUtils {
     }
 
 
-    public static void unZipInARStickersPath(String zipPath, String outputDir, boolean isReWrite,String id) throws IOException {
+    public static void unZipInARStickersPath(String zipPath, String outputDir, boolean isReWrite, String id) throws IOException {
         String outputDirectory = getARStickersPath() + File.separator + outputDir;
         // 创建解压目标目录
         File file = new File(outputDirectory);
@@ -367,11 +366,11 @@ public final class FileUtils {
                 }
             }
             StickerUnZipInfo item = new StickerUnZipInfo();
-            item.parentid=id;
-            item.zipName =outputDir;
-            item.imgName=zipEntry.getName();
-            if(zipEntry.getName().contains(".xml")){
-                item.xmlName=zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(".xml"));
+            item.parentid = id;
+            item.zipName = outputDir;
+            item.imgName = zipEntry.getName();
+            if (zipEntry.getName().contains(".xml")) {
+                item.xmlName = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(".xml"));
             }
             MainApplication.getDBServer().addStickerUnZipInfo(item);
 
@@ -562,21 +561,22 @@ public final class FileUtils {
      * 获取sd卡路径
      */
     public static String getSdcardPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()  ;
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     /**
      * 获取sd卡路径
      */
     public static String getPutaoCameraPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator + FILE_PARENT_NAME  ;
+        return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + FILE_PARENT_NAME;
     }
 
     /**
      * 获取sd卡 ar sticker路径
+     *
      * @return
      */
-    public static String getARStickersPath(){
+    public static String getARStickersPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + FILE_PARENT_NAME + File.separator + FILE_AR_PARENT_NAME + File.separator;
     }
 
@@ -593,6 +593,7 @@ public final class FileUtils {
 
     /**
      * 从assets里面获取文件字符串
+     *
      * @param context
      * @param fileName
      * @return
@@ -629,7 +630,6 @@ public final class FileUtils {
         }
         return true;
     }
-
 
 
 }

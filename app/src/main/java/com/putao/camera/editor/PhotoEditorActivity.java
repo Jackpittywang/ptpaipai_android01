@@ -1290,6 +1290,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         }
 
 
+
         if (mEditAction == EditAction.ACTION_Mark) {
 //            doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_WATER_MARK_BACKOUT);
         } else if (mEditAction == EditAction.ACTION_FILTER) {
