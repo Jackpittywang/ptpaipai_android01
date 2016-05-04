@@ -384,7 +384,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 @Override
                 public void run() {
                     album_btn.setImageBitmap(photo, true);
-                    take_photo_btn.setEnabled(true);
+//                    take_photo_btn.setEnabled(true);
                     last_mark_view = null;
                     // ClearWaterMark();
                 }
@@ -393,8 +393,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
         @Override
         public void focusChanged(boolean isfocusing) {
-            if (take_photo_btn != null)
-                take_photo_btn.setEnabled(!isfocusing);
+//            if (take_photo_btn != null)
+//                take_photo_btn.setEnabled(!isfocusing);
         }
     };
 
@@ -576,10 +576,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         super.onResume();
 //        switchCamera();
         filterName = CustomerFilter.FilterType.NONE;
+        setBtnEnable(true);
         tv_takephoto.setEnabled(true);
-        take_photo_btn.setEnabled(true);
-        camera_set_iv.setEnabled(true);
-        camera_set_ll.setEnabled(true);
+
 
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
 
@@ -711,13 +710,14 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case R.id.take_photo_btn:
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_TAKE_PHOTO);
-                take_photo_btn.setEnabled(false);
                 mMarkViewList.clear();
                 if (last_mark_view != null) {
                     last_mark_view.setEditState(false);
                     mMarkViewList.add(last_mark_view);
                 }
                 saveAnimationImageData();
+                setBtnEnable(false);
+
                 takePhoto();
                 break;
             case R.id.album_btn:
@@ -791,7 +791,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             case R.id.tv_takephoto:
                 if (flag) {
                     tv_takephoto.setEnabled(false);
-                    take_photo_btn.setEnabled(false);
+                    setBtnEnable(false);
                     takePhoto();
                 }
                 break;
@@ -804,6 +804,18 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
     }
 
+    private void setBtnEnable(boolean isEnable){
+        back_home_iv.setEnabled(isEnable);
+        back_home_ll.setEnabled(isEnable);
+        take_photo_btn.setEnabled(isEnable);
+        camera_set_ll.setEnabled(isEnable);
+        camera_set_iv.setEnabled(isEnable);
+        show_material_ll.setEnabled(isEnable);
+        album_btn.setEnabled(isEnable);
+        camera_top_rl.setEnabled(isEnable);
+        show_sticker_ll.setEnabled(isEnable);
+        show_filter_ll.setEnabled(isEnable);
+    }
     private void clearAnimationData() {
         if (animation_view == null) return;
         animation_view.clearData();
@@ -850,11 +862,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
     private void takePhoto() {
+
         SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
 
-        camera_set_ll.setEnabled(false);
-        camera_set_iv.setEnabled(false);
-        take_photo_btn.setEnabled(false);
         final int delay;
         if (timeType == DELAY_THREE) {
             delay = 3 * 1000;
@@ -876,6 +886,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                setBtnEnable(false);
                                 take_photo_btn.setText(finalDown_time + "");
                             }
                         });
@@ -889,6 +900,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            setBtnEnable(false);
                             execTakePhoto();
 //                            take_photo_btn.setEnabled(true);
 //                            camera_set_iv.setEnabled(true);

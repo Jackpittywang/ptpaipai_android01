@@ -91,7 +91,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     //    private MyTextView btn_new_res;
     private List<WaterMarkView> mMarkViewList, mMarkViewTempList;
     private LinearLayout ll_picture_filter, choice_water_mark_ll, filter_contanier, opt_button_bar2, opt_button_bar, mark_content, mark_list_pager, opt_button_bar3,
-            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_rotate_cancel,edit_ll_ratate_save, edit_ll_save;
+            mark_cate_contanier, ll_cut_image, rotate_image_ll, rotate_contanier, anti_clockwise, clockwise_spin, horizontal_flip, vertical_flip, ll_dynamic_filter, left_btn_ll, edit_ll_cancel, edit_ll_rotate_cancel, edit_ll_ratate_save, edit_ll_save;
     private ViewGroup title_bar_rl, option_bars;
     private BasicRecyclerView rv_articlesdetail_applyusers;
     private BasicRecyclerView rv_nativ_mark;
@@ -115,8 +115,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private ArrayList<WaterMarkCategoryInfo> content1 = new ArrayList<WaterMarkCategoryInfo>();
     private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
-    private CustomerFilter.FilterType filterName=CustomerFilter.FilterType.NONE;
-    private int photoType=0;
+    private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
+    private int photoType = 0;
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
     private boolean is_edited;
@@ -132,16 +132,17 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     @Override
     protected int getLayoutId() {
-        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
         return R.layout.activity_photo_editor;
     }
 
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
+        photoType = SharedPreferencesHelper.readIntValue(this, PuTaoConstants.CUT_TYPE, 0);
+        SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 0);
         doInitSubViews();
         GPUImage mGPUImage = new GPUImage(mContext);
         Intent intent = this.getIntent();
-        filterName= (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
+        filterName = (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
@@ -149,12 +150,12 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
-            CustomerFilter filter=new CustomerFilter();
+            CustomerFilter filter = new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
 
 //            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
 
-            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
+            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath() + File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
                         public void onPictureSaved(final String path) {
@@ -163,9 +164,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                                         DisplayHelper.getScreenHeight());
 //                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
                                 bitmap = BitmapHelper.imageCrop(bitmap, photoType);
-                                BitmapHelper.saveBitmap(bitmap,photo_data);
+                                BitmapHelper.saveBitmap(bitmap, photo_data);
                                 show_image.setImageBitmap(bitmap);
-                                ImageCropBitmap=bitmap;
+                                ImageCropBitmap = bitmap;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -264,7 +265,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         opt_button_bar = (LinearLayout) findViewById(R.id.opt_button_bar);
         edit_ll_cancel = (LinearLayout) findViewById(R.id.edit_ll_cancel);
         edit_ll_save = (LinearLayout) findViewById(R.id.edit_ll_save);
-        edit_ll_ratate_save= (LinearLayout) findViewById(R.id.edit_ll_ratate_save);
+        edit_ll_ratate_save = (LinearLayout) findViewById(R.id.edit_ll_ratate_save);
         edit_ll_rotate_cancel = (LinearLayout) findViewById(R.id.edit_ll_rotate_cancel);
         backBtn = (Button) findViewById(R.id.back_btn);
         tv_save = (TextView) findViewById(R.id.tv_save);
@@ -1124,14 +1125,14 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 bundle.putString("from", "editor");
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_CONTENT_PROVIDER_REFRESH, bundle));
                 progressDialog.dismiss();
-                originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
-                        DisplayHelper.getScreenHeight());
-                int hh=originImageBitmap.getHeight();
-               int ww= originImageBitmap.getWidth();
+               /* originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+                        DisplayHelper.getScreenHeight());*/
+               /* int hh=originImageBitmap.getHeight();
+               int ww= originImageBitmap.getWidth();*/
 //                ActivityHelper.startActivity(mContext, PhotoShareActivity.class, bundle);
                 startActivity(PhotoShareActivity.class, bundle);
-                if(!TextUtils.isEmpty(photo_data)){
-                    File image=new File(photo_data);
+                if (!TextUtils.isEmpty(photo_data)) {
+                    File image = new File(photo_data);
                     image.delete();
                 }
                 finish();
@@ -1284,10 +1285,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         } else if (mEditAction == EditAction.ACTION_FILTER) {
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
 //            show_image.setImageBitmap();
-        }else if(mEditAction == EditAction.ACTION_ROTATE){
+        } else if (mEditAction == EditAction.ACTION_ROTATE) {
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }
-
 
 
         if (mEditAction == EditAction.ACTION_Mark) {
@@ -1305,9 +1305,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         filter_scrollview.setVisibility(View.GONE);
         mark_content.setVisibility(View.GONE);
         mMarkViewTempList.clear();
-        if(mEditAction == EditAction.ACTION_ROTATE){
+        if (mEditAction == EditAction.ACTION_ROTATE) {
 
-        }else if(mEditAction == EditAction.ACTION_FILTER) {
+        } else if (mEditAction == EditAction.ACTION_FILTER) {
             mCurrentFilter = mTempFilter;
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }
@@ -1364,7 +1364,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         @Override
         public void rendered(Bitmap bitmap) {
             if (bitmap != null) {
-                ImageCropBitmap=bitmap;
+                ImageCropBitmap = bitmap;
                 show_image.setImageBitmap(bitmap);
             }
         }

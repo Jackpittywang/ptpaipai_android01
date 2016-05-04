@@ -288,7 +288,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
         mAlbumGridAdapter = new AlbumGridAdapter(mActivity, mGirdList, mGridView);
         mGridView.setAdapter(mAlbumGridAdapter);
         //至少有一个相机的Icon
-        if (mGirdList.size() > 1) {
+        if (mGirdList.size() > 0) {
             nonePhotoView.setVisibility(View.INVISIBLE);
             mGridView.setVisibility(View.VISIBLE);
         } else {

@@ -294,7 +294,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.CompleteActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityCameraTheme"/>
         <activity
             android:name=".user.NickActivity"
             android:screenOrientation="portrait" />

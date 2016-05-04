@@ -28,7 +28,7 @@
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="还未下载任何贴图模板哦"
+                android:text="还未下载任何拼图模板哦"
                 android:layout_below="@id/iv_empty"/>
         </RelativeLayout>
 
