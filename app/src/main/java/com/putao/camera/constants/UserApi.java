@@ -66,13 +66,13 @@ public class UserApi {
     public static final String URL_USER_EDIT = BASE_URL + "user/edit";
     public static final String URL_USER_MEDIA = BASE_URL + "relation/media";
 
-    public static Request userMedia(String ext, String filename, String filehash,  String media_type) {
+    public static Request userMedia(String ext, String filename, String filehash, String media_type) {
         return PTWDRequestHelper.explore()
                 .addParam(REQUEST_EXT, ext)
                 .addParam(REQUEST_FILENAME, filename)
                 .addParam(REQUEST_FILEHASH, filehash)
                 .addParam(REQUEST_MEDIA, media_type)
-                .build(RequestMethod.POST, URL_USER_MEDIA);
+                .build(RequestMethod.GET, URL_USER_MEDIA);
     }
 
 
