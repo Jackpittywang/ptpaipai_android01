@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -113,6 +114,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
             CustomerFilter filter = new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
+//            mGPUImage.saveToPictures(originImageBitmap,  this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
             mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
@@ -438,6 +440,10 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             saveDialog.hide();
             saveDialog = null;
         }
+       /* if(!TextUtils.isEmpty(imagePath)){
+            File image=new File(imagePath);
+            image.delete();
+        }*/
         finish();
 //        new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
 //            @Override
@@ -547,10 +553,18 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
                 bundle.putString("imgpath", videoImagePath + "image00.jpg");
                 bundle.putString("from", "dynamic");
                 ActivityHelper.startActivity(PhotoARShowActivity.this, PhotoShareActivity.class, bundle);
+                if(!TextUtils.isEmpty(imagePath)){
+                    File image=new File(imagePath);
+                    image.delete();
+                }
                 finish();
             } else if (msg.what == 0x201) {
                 if (saveDialog != null && saveDialog.isShowing()) {
                     saveDialog.dismiss();
+                }
+                if(!TextUtils.isEmpty(imagePath)){
+                    File image=new File(imagePath);
+                    image.delete();
                 }
                 videoSaving = false;
                 ToastUtils.showToastShort(mContext, "视频保存失败");

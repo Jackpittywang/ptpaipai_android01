@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,6 +153,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
             CustomerFilter filter=new CustomerFilter();
             mGPUImage.setFilter(filter.getFilterByType(filterName));
+
+//            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
+
             mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
@@ -1122,6 +1126,10 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 progressDialog.dismiss();
 //                ActivityHelper.startActivity(mContext, PhotoShareActivity.class, bundle);
                 startActivity(PhotoShareActivity.class, bundle);
+              /*  if(!TextUtils.isEmpty(photo_data)){
+                    File image=new File(photo_data);
+                    image.delete();
+                }*/
                 finish();
             }
         });
@@ -1229,12 +1237,27 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     void showQuitTip() {
         if (!is_edited) {
+            if(!TextUtils.isEmpty(photo_data)){
+                File image=new File(photo_data);
+                image.delete();
+            }
+            MediaScannerConnection.scanFile(this, new String[]{photo_data.toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                @Override
+                public void onScanCompleted(String path, Uri uri) {
+
+                }
+            });
+
             finish();
             return;
         }
         new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if(!TextUtils.isEmpty(photo_data)){
+                    File image=new File(photo_data);
+                    image.delete();
+                }
                 finish();
             }
         }).setNegativeButton("否", new DialogInterface.OnClickListener() {

@@ -1,5 +1,7 @@
 package com.putao.camera.camera.utils;
 
+import android.text.TextUtils;
+
 import com.putao.camera.application.MainApplication;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.camera.model.AnimationModel;
@@ -20,6 +22,7 @@ public class AnimationUtils {
 
     /**
      * load animation model data from xml file;
+     *
      * @param animationName
      * @return
      */
@@ -27,16 +30,21 @@ public class AnimationUtils {
         // xxx/xxx/xxx.xml
         //第一个name为包名,第二个为文件名
 //        String modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";
-        String modelSetFile="";
+        String modelSetFile = "";
         Map<String, String> map = new HashMap<String, String>();
         map.put("zipName", animationName);
 //        List<DynamicIconInfo>   list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
-        List<StickerUnZipInfo> list= MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
-        if(list.size()==0){
+        List<StickerUnZipInfo> list = MainApplication.getDBServer().getStickerUnZipInfoByWhere(map);
+        if (list.size() == 0) {
             modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + animationName + ".xml";
-        }else {
-            String xmlName=list.get(0).xmlName;
-            modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + xmlName + ".xml";
+        } else {
+            for (StickerUnZipInfo stickerunzipinfolist : list) {
+                String xmlName = stickerunzipinfolist.xmlName;
+                if (!TextUtils.isEmpty(xmlName)) {
+                    modelSetFile = FileUtils.getARStickersPath() + animationName + File.separator + xmlName + ".xml";
+                    break;
+                }
+            }
         }
         String xmlStr = FileUtils.getFileContent(modelSetFile);
         if (xmlStr == null) return null;
@@ -63,9 +71,6 @@ public class AnimationUtils {
         }
         return model;
     }
-
-
-
 
 
 }

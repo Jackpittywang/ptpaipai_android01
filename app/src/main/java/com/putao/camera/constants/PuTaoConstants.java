@@ -165,6 +165,7 @@ public class PuTaoConstants {
 //    public static final String MENU_ICON_LINK = "/core/config";
 
 
+    public static final String EVENT_CAMERA_PHOTO_SAVE = "event_camera_photo_save";
 
 
 }
