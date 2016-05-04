@@ -154,7 +154,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
             @Override
             public void onSecondClick(View v) {
                 ActivityHelper.startActivity(MenuActivity.this, CompleteActivity.class);
-                finish();
+//                finish();
             }
         };
 

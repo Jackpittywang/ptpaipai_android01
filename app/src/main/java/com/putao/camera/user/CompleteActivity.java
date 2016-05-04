@@ -22,8 +22,6 @@ import com.putao.camera.base.SelectPopupWindow;
 import com.putao.camera.bean.UserInfo;
 import com.putao.camera.constants.UploadApi;
 import com.putao.camera.constants.UserApi;
-import com.putao.camera.menu.MenuActivity;
-import com.putao.camera.util.ActivityHelper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
 import com.sunnybear.library.model.http.callback.JSONObjectCallback;
@@ -48,6 +46,7 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
     //    public static final String EVENT_USER_INFO_SAVE_SUCCESS = "user_info_save_success";
     public static final String NICK_NAME = "nick_name";
     public static final String USER_INFO = "user_info";
+    public static final String EVENT_LOGIN = "login";
     @Bind(R.id.ll_main)
     LinearLayout ll_main;
     @Bind(R.id.rl_header_icon)
@@ -169,7 +168,9 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        ActivityHelper.startActivity(this, MenuActivity.class);
+//        ActivityHelper.startActivity(this, MenuActivity.class);
+        EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
+        finish();
     }
 
     @Override
@@ -184,18 +185,21 @@ public class CompleteActivity extends PTXJActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.rl_header_icon://选择用户头像
                 mSelectPopupWindow.show(ll_main);
+
                 break;
             case R.id.rl_nick_name://修改用户昵称
                 bundle.putString(NICK_NAME, tv_nick_name.getText().toString());
                 Intent nickIntent = new Intent(this, NickActivity.class);
                 nickIntent.putExtra(NICK_NAME, bundle);
                 startActivityForResult(nickIntent, CHANGE_NICK);
+                EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                 break;
             case R.id.rl_user_info://修改用户简介
                 bundle.putString(USER_INFO, tv_user_info.getText().toString());
                 Intent infoiIntent = new Intent(this, UserInfoActivity.class);
                 infoiIntent.putExtra(USER_INFO, bundle);
                 startActivityForResult(infoiIntent, CHANGE_INFO);
+                EventBusHelper.post(EVENT_LOGIN, EVENT_LOGIN);
                 break;
         }
     }

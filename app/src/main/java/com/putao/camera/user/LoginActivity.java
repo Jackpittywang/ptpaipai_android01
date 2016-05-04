@@ -23,6 +23,7 @@ import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.NetManager;
 import com.putao.jpush.JPushHeaper;
 import com.sunnybear.library.controller.eventbus.EventBusHelper;
+import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
