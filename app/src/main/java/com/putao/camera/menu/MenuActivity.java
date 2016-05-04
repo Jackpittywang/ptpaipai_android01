@@ -248,7 +248,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 ActivityHelper.startActivity(this, UmengFeedbackActivity.class);
                 break;
             case R.id.menu_home_camera_btn://葡萄纬度官网
-                if(TextUtils.isEmpty(skipUrl))return;
+                if (TextUtils.isEmpty(skipUrl)) return;
                 if (skipToApp && skipUrl != null) {
                     if (isAppInstalled(mContext, skipUrl)) {
                         //跳转app
@@ -347,14 +347,16 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                     aMenuIconInfo = (MenuIconInfo) gson.fromJson(json.toString(), MenuIconInfo.class);
 
                     name_tv.setText(aMenuIconInfo.data.app_name);
-
-                    DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
-                            .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
-                    menu_home_camera_btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    if (!TextUtils.isEmpty(aMenuIconInfo.data.bg_url)) {
+                        DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(BitmapHelper.getLoadingDrawable())
+                                .showImageOnFail(BitmapHelper.getLoadingDrawable()).cacheInMemory(true).cacheOnDisc(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+                        menu_home_camera_btn.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 //                    ImageLoader.getInstance().displayImage(aMenuIconInfo.data.app_icon, menu_home_camera_btn, options);
-                    menu_home_camera_btn.setImageURL(aMenuIconInfo.data.app_icon);
-                    iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    ImageLoader.getInstance().displayImage(aMenuIconInfo.data.bg_url, iv_main, options);
+                        menu_home_camera_btn.setImageURL(aMenuIconInfo.data.app_icon);
+                        iv_main.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        ImageLoader.getInstance().displayImage(aMenuIconInfo.data.bg_url, iv_main, options);
+                    }
+
                     if (!TextUtils.isEmpty(aMenuIconInfo.data.android_link_url)) {
                         skipToApp = true;
                         skipUrl = aMenuIconInfo.data.android_link_url;
