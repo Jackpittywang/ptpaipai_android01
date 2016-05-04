@@ -27,7 +27,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.ExifInterface;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
@@ -413,14 +412,20 @@ public class GPUImage {
                     .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
             File file = new File(path, folderName + "/" + fileName);*/
 
-            File file = new File(folderName + fileName);
+            final File file = new File(folderName + fileName);
             try {
                 file.getParentFile().mkdirs();
                 image.compress(CompressFormat.JPEG, 80, new FileOutputStream(file));
-                MediaScannerConnection.scanFile(mContext,
-                        new String[]{
-                                file.toString()
-                        }, null,
+                if (mListener != null) {
+                    mHandler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            mListener.onPictureSaved(file.getAbsolutePath());
+                        }
+                    });
+                }
+               /* MediaScannerConnection.scanFile(mContext,new String[]{file.toString()}, null,
                         new MediaScannerConnection.OnScanCompletedListener() {
                             @Override
                             public void onScanCompleted(final String path, final Uri uri) {
@@ -434,7 +439,7 @@ public class GPUImage {
                                     });
                                 }
                             }
-                        });
+                        });*/
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -442,7 +447,7 @@ public class GPUImage {
     }
 
     public interface OnPictureSavedListener {
-        void onPictureSaved(Uri uri);
+        void onPictureSaved(String path);
     }
 
     private class LoadImageUriTask extends LoadImageTask {

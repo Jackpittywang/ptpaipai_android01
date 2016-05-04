@@ -488,7 +488,7 @@ public class BitmapHelper {
         int startWidth = bitmap.getWidth(); // 得到图片的宽，高
         int startHeight = bitmap.getHeight();
         int retX = 0;
-        int titleHeight=32;
+        int titleHeight=30;
         int endWidth = startWidth;
         boolean b = startWidth > startHeight;
         switch (cropType) {
@@ -511,7 +511,7 @@ public class BitmapHelper {
             default:
                 return bitmap;
         }
-        return b ? Bitmap.createBitmap(bitmap, retX-titleHeight, 0, endWidth-titleHeight, startHeight, null, false) : Bitmap.createBitmap(bitmap, 0, retX-titleHeight, startWidth, endWidth-titleHeight, null, false);
+        return b ? Bitmap.createBitmap(bitmap, retX-titleHeight, 0, endWidth, startHeight, null, false) : Bitmap.createBitmap(bitmap, 0, retX-titleHeight, startWidth, endWidth, null, false);
     }
 
 }

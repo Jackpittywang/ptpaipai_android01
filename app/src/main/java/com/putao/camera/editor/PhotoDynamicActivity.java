@@ -537,6 +537,8 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     options.inSampleSize = 2;
                     options.inJustDecodeBounds = false;
                     Bitmap  scaleImageBmp=BitmapFactory.decodeFile(photo_data, options);
+                   int hh= scaleImageBmp.getHeight();
+                  int ww=  scaleImageBmp.getWidth();
                  /*   byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
                     Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
@@ -548,6 +550,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                         RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
                         faceModel.rectf = rect;
                     } else {
+                        Log.e("tag","111111111111111");
                         handler.sendEmptyMessage(0x201);
                         return;
                     }

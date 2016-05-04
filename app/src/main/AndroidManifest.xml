@@ -103,7 +103,8 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".editor.PhotoEditorActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityCameraTheme" />
         <activity
             android:name=".editor.PhotoShareActivity"
             android:screenOrientation="portrait" />

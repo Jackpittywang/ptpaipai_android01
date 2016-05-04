@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +42,6 @@ import com.putao.video.VideoHelper;
 import com.sunnybear.library.util.ToastUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -118,13 +116,15 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
             mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
-                        public void onPictureSaved(final Uri uri) {
+                        public void onPictureSaved(final String path) {
                             try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                                Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
+                                        DisplayHelper.getScreenHeight());
+//                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
                                 originImageBitmap = bitmap;
                                 show_image.setImageBitmap(originImageBitmap);
                                 showPreview(originImageBitmap);
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -178,6 +178,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
     }
 
     public void showPreview(Bitmap newOriginImageBitmap) {
+        saveOriginImageBitmap = newOriginImageBitmap;
         int screenW = DisplayHelper.getScreenWidth();
         int screenH = DisplayHelper.getScreenHeight();
         float imageScaleW = (float) screenW / (float) newOriginImageBitmap.getWidth();
@@ -191,7 +192,8 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         Bitmap resizedBgImage = BitmapHelper.resizeBitmap(bgImageBitmap, imageScale);
         newOriginImageBitmap = BitmapHelper.combineBitmap(newOriginImageBitmap, resizedBgImage, bgImageOffsetX, bgImageOffsetY);
         animation_view.setData(animationName, false);
-        saveOriginImageBitmap = newOriginImageBitmap;
+
+//        show_image.setImageBitmap(newOriginImageBitmap);
 //        show_image.setImageBitmap(newOriginImageBitmap);
 
         //检测人脸

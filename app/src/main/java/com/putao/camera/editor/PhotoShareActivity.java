@@ -25,6 +25,7 @@ import com.putao.camera.setting.watermark.management.TemplateManagemenActivity;
 import com.putao.camera.share.ShareTools;
 import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
+import com.putao.camera.util.NetManager;
 import com.putao.camera.util.ToasterHelper;
 import com.sunnybear.library.model.http.UploadFileTask;
 import com.sunnybear.library.model.http.callback.JSONObjectCallback;
@@ -32,6 +33,7 @@ import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.FileUtils;
 import com.sunnybear.library.util.Logger;
 import com.sunnybear.library.util.StringUtils;
+import com.sunnybear.library.util.ToastUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -198,6 +200,11 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            if (NetManager.isNetworkAvailable(PhotoShareActivity.this)) {
+                                ToastUtils.showToastLong(mContext, "您的网络不给力");
+                                return;
+                            }
+
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 0;
@@ -223,6 +230,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            if (NetManager.isNetworkAvailable(PhotoShareActivity.this)) {
+                                ToastUtils.showToastLong(mContext, "您的网络不给力");
+                                return;
+                            }
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 1;
@@ -254,6 +265,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            if (NetManager.isNetworkAvailable(PhotoShareActivity.this)) {
+                                ToastUtils.showToastLong(mContext, "您的网络不给力");
+                                return;
+                            }
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 2;
@@ -278,6 +293,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             bundle.putString("from", "share");
                             ActivityHelper.startActivity(this, LoginActivity.class, bundle);
                         } else if (AccountHelper.isLogin()) {
+                            if (NetManager.isNetworkAvailable(PhotoShareActivity.this)) {
+                                ToastUtils.showToastLong(mContext, "您的网络不给力");
+                                return;
+                            }
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 3;
@@ -419,7 +438,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                         progressDialog.dismiss();
                         switch (tag) {
                             case 0:
-                                ShareTools.wechatWebShare(mContext, false, null, "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);
+                                ShareTools.wechatWebShare(mContext, false, "我拍了一张超可爱的照片!赶快来瞧一瞧...", "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);
                                 break;
                             case 1:
                                 ShareTools.OnQQZShare(mContext, true, null, "我拍了一张超可爱的照片!赶快来瞧一瞧...", imgpath, video_url);

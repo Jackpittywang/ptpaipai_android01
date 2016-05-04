@@ -17,7 +17,6 @@ import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -76,7 +75,6 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,14 +157,16 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {
                         @Override
-                        public void onPictureSaved(final Uri uri) {
+                        public void onPictureSaved(final String path) {
                             try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
+                                Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
+                                        DisplayHelper.getScreenHeight());
+//                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
                                 bitmap = BitmapHelper.imageCrop(bitmap, photoType);
                                 BitmapHelper.saveBitmap(bitmap,photo_data);
                                 show_image.setImageBitmap(bitmap);
                                 ImageCropBitmap=bitmap;
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -1124,12 +1124,16 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 bundle.putString("from", "editor");
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.PHOTO_CONTENT_PROVIDER_REFRESH, bundle));
                 progressDialog.dismiss();
+                originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+                        DisplayHelper.getScreenHeight());
+                int hh=originImageBitmap.getHeight();
+               int ww= originImageBitmap.getWidth();
 //                ActivityHelper.startActivity(mContext, PhotoShareActivity.class, bundle);
                 startActivity(PhotoShareActivity.class, bundle);
-              /*  if(!TextUtils.isEmpty(photo_data)){
+                if(!TextUtils.isEmpty(photo_data)){
                     File image=new File(photo_data);
                     image.delete();
-                }*/
+                }
                 finish();
             }
         });
@@ -1237,27 +1241,20 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
 
     void showQuitTip() {
         if (!is_edited) {
-            if(!TextUtils.isEmpty(photo_data)){
+            /*if(!TextUtils.isEmpty(photo_data)){
                 File image=new File(photo_data);
                 image.delete();
-            }
-            MediaScannerConnection.scanFile(this, new String[]{photo_data.toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
-
-                }
-            });
-
+            }*/
             finish();
             return;
         }
         new AlertDialog.Builder(mContext).setTitle("提示").setMessage("确认放弃当前编辑吗？").setPositiveButton("是", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(!TextUtils.isEmpty(photo_data)){
+               /* if(!TextUtils.isEmpty(photo_data)){
                     File image=new File(photo_data);
                     image.delete();
-                }
+                }*/
                 finish();
             }
         }).setNegativeButton("否", new DialogInterface.OnClickListener() {
