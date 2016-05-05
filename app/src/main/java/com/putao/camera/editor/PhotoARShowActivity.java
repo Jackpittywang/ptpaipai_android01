@@ -271,7 +271,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 
 
     public void save() {
-        videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/temp/";
+        videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/.temp/";
         clearImageList();
         File file = new File(videoImagePath);
         if (file.exists() == false) file.mkdir();

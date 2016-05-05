@@ -61,9 +61,9 @@ android {
         channel_putao {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_putao"]
         }
-       /* channel_baiduzhushou {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
-        }*/
+//        channel_baiduzhushou {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baiduzhushou"]
+//        }
 //        channel_360 {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_360"]
 //        }
@@ -73,7 +73,7 @@ android {
 //        channel_xiaomi {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
 //        }
-
+//
 //        channel_yingyongbao {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyongbao"]
 //        }
