@@ -143,6 +143,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                                     public void onFinish(String url, boolean isSuccess, String msg) {
                                         super.onFinish(url, isSuccess, msg);
                                         btn_login.setClickable(true);
+                                        mLoading.dismiss();
                                     }
                                 });
                 }
@@ -193,6 +194,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                         if (!TextUtils.isEmpty(mDiskFileCacheHelper.getAsString(NEED_CODE + mobile))) {
                             mDiskFileCacheHelper.remove(NEED_CODE + mobile);
                         }
+                        mLoading.dismiss();
 //                        finish();
                     }
 
@@ -200,6 +202,7 @@ public class LoginActivity extends PTXJActivity implements View.OnClickListener,
                     public void onFailure(String url, int statusCode, String msg) {
                         super.onFailure(url, statusCode, msg);
 //                        ToastUtils.showToastLong(mContext, "登录失败请重新登录");
+                        mLoading.dismiss();
                     }
 
                     @Override

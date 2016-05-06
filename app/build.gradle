@@ -55,7 +55,7 @@ android {
     }
     //产品渠道配置
     productFlavors {
-        //        local_release { versionName = "V" + defaultConfig.versionName }
+//        local_release { versionName = "V" + defaultConfig.versionName }
 //        local_debug { versionName = "D" + defaultConfig.versionName }
 
         channel_putao {
@@ -93,49 +93,164 @@ android {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
 //        }
 
-//        channel_anzhi {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhi"]
-//        }
-//        channel_baidu {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_baidu"]
-//        }
-//
-//        channel_91 {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_91"]
-//        }
-//        channel_xiaomi {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_xiaomi"]
-//        }
-//        channel_meizu {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_meizu"]
-//        }
-//        channel_oppo {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_oppo"]
+//        channel_huawei {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_huawei"]
 //        }
 //        channel_lenovo {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_lenovo"]
 //        }
-//        channel_woshangdian {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_woshangdian"]
+//
+//        channel_jifeng {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_jifeng"]
 //        }
-//        channel_huawei {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_huawei"]
+
+//          channel_anzhishichang {
+//             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhishichang"]
+//         }
+
+//        channel_dangle {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_dangle"]
 //        }
-//        channel_coolpad {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_coolpad"]
+//
+//        channel_mumayi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mumayi"]
 //        }
-//        channel_ppzhushou {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_ppzhushou"]
+//        channel_nduo {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_nduo"]
 //        }
-//        channel_sougoushoujizhushou {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_sougoushoujizhushou"]
+//
+//        channel_anzhuozaixian {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhuozaixian"]
 //        }
+//        channel_dianwanbashi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_dianwanbashi"]
+//        }
+//        channel_vivo {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_vivo"]
+//        }
+
+//        channel_yingyonghui {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yingyonghui"]
+//        }
+
+//        channel_tengxun {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_tengxun"]
+//        }
+//
+//        channel_wangyi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_wangyi"]
+//        }
+
+//        channel_gaoqu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_gaoqu"]
+//        }
+
+//        channel_zhihuiyun {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_zhihuiyun"]
+//        }
+//
+//        channel_youyi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_youyi"]
+//        }
+//
+//        channel_souhu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_souhu"]
+//        }
+//
+//        channel_shouyoutianxia {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_shouyoutianxia"]
+//        }
+//        channel_paojiaowang {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_paojiaowang"]
+//        }
+//
+//        channel_leshangdian {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_leshangdian"]
+//        }
+//
+//        channel_feiliu {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_feiliu"]
+//        }
+//
+
+//        channel_shizimao {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_shizimao"]
+//        }
+//
+//        channel_liantongwoshangdian {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_liantongwoshangdian"]
+//        }
+//
+//        channel_yiyoushichang {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_yiyoushichang"]
+//        }
+//
+//        channel_zhuole {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_zhuole"]
+//        }
+
+//
+//        channel_koudaibashi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_koudaibashi"]
+//        }
+//
+//        channel_anjishichang {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anjishichang"]
+//        }
+//
+//        channel_anguowang {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anguowang"]
+//        }
+//
+
+//        channel_taobao {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_taobao"]
+//        }
+//
+//        channel_anzhimi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anzhimi"]
+//        }
+//
+//        channel_qixiazi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_qixiazi"]
+//        }
+//
+//        channel_aiyingyong {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_aiyingyong"]
+//        }
+//
+//        channel_pipawang {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_pipawang"]
+//        }
+//
+//        channel_lexun {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_lexun"]
+//        }
+//
+//        channel_mogujie {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mogujie"]
+//        }
+//        channel_anbei {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_anbei"]
+//        }
+//
+
+//        channel_leshi {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_leshi"]
+//        }
+
+//        channel_suning {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_suning"]
+//        }
+
 //        channel_jinli {
 //            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_jinli"]
 //        }
-//        channel_mmpintai {
-//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_mmpintai"]
+
+//        channel_coolpad {
+//            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "channel_coolpad"]
 //        }
+
 
     }
 }

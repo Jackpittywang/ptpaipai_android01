@@ -23,6 +23,7 @@ import com.sunnybear.library.model.http.callback.SimpleFastJsonCallback;
 import com.sunnybear.library.util.StringUtils;
 import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.CleanableEditText;
+import com.sunnybear.library.view.LoadingHUD;
 import com.sunnybear.library.view.SwitchButton;
 import com.sunnybear.library.view.TimeButton;
 import com.sunnybear.library.view.image.ImageDraweeView;
@@ -52,7 +53,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
     ImageDraweeView image_graph_verify;
     @Bind(R.id.et_graph_verify)
     CleanableEditText et_graph_verify;
-
+    private LoadingHUD mLoading;
     private int mErrorCount = 0;
 
     @Override
@@ -66,7 +67,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
         et_mobile.addTextChangedListener(this);
         //et_password.addTextChangedListener(this);
         btn_lock.setOnSwitchClickListener(this);
-
+        mLoading = LoadingHUD.getInstance(mContext);
         /**
          * 图形验证码
          * */
@@ -88,14 +89,15 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
                 if (11 != et_mobile.getText().toString().length() || "" == et_mobile.getText().toString().trim()) {
                     ToastUtils.showToastLong(mContext, "请输入正确手机号码");
                 } else {
+                    mLoading.show();
                     String smsCode = et_sms_verify.getText().toString();
                     final String password = et_password.getText().toString();
-                    networkRequest(AccountApi.forget(mobile, smsCode, password, verify), new AccountCallback(loading) {
+                    networkRequest(AccountApi.forget(mobile, smsCode, password, verify), new AccountCallback(mLoading) {
 
                         @Override
                         public void onSuccess(JSONObject result) {
                             networkRequest(AccountApi.safeLogin(mobile, password, verify),
-                                    new AccountCallback(loading) {
+                                    new AccountCallback(mLoading) {
                                         @Override
                                         public void onSuccess(JSONObject result) {
                                             AccountHelper.setCurrentUid(result.getString("uid"));
@@ -105,6 +107,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
 
                                         @Override
                                         public void onError(String error_msg) {
+                                            mLoading.dismiss();
                                         }
                                     });
                         }
@@ -197,7 +200,7 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
      * 验证登录
      */
     private void checkLogin() {
-        networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, loading) {
+        networkRequest(UserApi.getUserInfo(), new SimpleFastJsonCallback<UserInfo>(UserInfo.class, mLoading) {
             @Override
             public void onSuccess(String url, UserInfo result) {
                 AccountHelper.setUserInfo(result);
@@ -207,11 +210,25 @@ public class ForgetPasswordActivity extends PTXJActivity implements View.OnClick
 //                sendBroadcast(new Intent(MainApplication.IN_FORE_MESSAGE));
                 ToastUtils.showToastShort(mContext, "登录成功");
 //                ActivityHelper.startActivity(ForgetPasswordActivity.this, MenuActivity.class);
-                loading.dismiss();
+                mLoading.dismiss();
                 finish();
 
 
             }
+
+            @Override
+            public void onFailure(String url, int statusCode, String msg) {
+                super.onFailure(url, statusCode, msg);
+                ToastUtils.showToastLong(mContext, "登录失败请重新登录");
+                mLoading.dismiss();
+            }
+
+            @Override
+            public void onFinish(String url, boolean isSuccess, String msg) {
+                super.onFinish(url, isSuccess, msg);
+                mLoading.dismiss();
+            }
+
         });
     }
 
