@@ -34,23 +34,23 @@ android {
     }
 
     signingConfigs {
-        release {
-            storeFile file("../putao_paipai_keystore.jks")
-            storePassword "123456"
-            keyAlias "putao_paipai"
-            keyPassword "123456"
+        debug {
+            keyAlias 'putao_paipai'
+            keyPassword '123456'
+            storeFile file('../putao_paipai_keystore.jks')
+            storePassword '123456'
         }
     }
     buildTypes {
-        release {
-            shrinkResources true
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
+        /* release {
+             shrinkResources true
+             minifyEnabled false
+             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+             signingConfig signingConfigs.release
+         }*/
         debug {
             shrinkResources true
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
     //产品渠道配置

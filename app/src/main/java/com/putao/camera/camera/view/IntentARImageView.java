@@ -91,7 +91,7 @@ public class IntentARImageView extends RelativeLayout {
     }
 
     private void initComponent(Context context) {
-        RelativeLayout.inflate(context, R.layout.layout_intent_ar_sticker, this);
+        RelativeLayout.inflate(context, R.layout.layout_newintent_ar_sticker, this);
 
         collage_photo_download_iv= (ImageView) this.findViewById(R.id.collage_photo_download_iv);
         collage_download_iv = (ImageView) this.findViewById(R.id.collage_download_iv);

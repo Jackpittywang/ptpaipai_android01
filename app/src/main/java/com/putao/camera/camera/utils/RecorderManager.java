@@ -17,6 +17,8 @@ import java.nio.Buffer;
 import java.nio.ShortBuffer;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.googlecode.javacv.cpp.opencv_core.CV_32FC1;
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
@@ -218,20 +220,26 @@ public class RecorderManager {
         }
     }
 
-    private void onPreviewFrame(byte[] data) {
-        int during = checkIfMax(new Date().getTime());
-        if (yuvIplimage != null && isStart) {
-            yuvIplimage.getByteBuffer().put(data);
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private void onPreviewFrame(final byte[] data) {
+        singleThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                int during = checkIfMax(new Date().getTime());
+                if (yuvIplimage != null && isStart) {
+                    yuvIplimage.getByteBuffer().put(data);
 //            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
-            try {
-                if (during < maxTime && isStart) {
-                    recorder.setTimestamp(1000 * during);
-                    recorder.record(yuvIplimage);
+                    try {
+                        if (during < maxTime && isStart) {
+                            recorder.setTimestamp(1000 * during);
+                            recorder.record(yuvIplimage);
+                        }
+                    } catch (FFmpegFrameRecorder.Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (FFmpegFrameRecorder.Exception e) {
-                e.printStackTrace();
             }
-        }
+        });
     }
 
     private CvMat rotateImage(CvMat input, int angle) {

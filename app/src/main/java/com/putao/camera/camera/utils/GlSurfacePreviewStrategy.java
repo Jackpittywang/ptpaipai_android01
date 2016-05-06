@@ -14,8 +14,10 @@ import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImageRenderer;
 import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
@@ -42,12 +44,22 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private int screenW, screenH;
     private YMDetector mDetector;
     private Size cameraSize;
-    private  boolean haveFace=false;
-//    private Mat mYuv;
+    private boolean haveFace = false;
+    //    private Mat mYuv;
 //    private Mat previewMat;
+    private boolean isStartVedio = false;
 
     private AnimationImageView animationImageView;
     private boolean isstop;
+
+    public void setVedio(boolean isStart) {
+        if (!isStart) {
+            recorderManager.stopRecord();
+        } else {
+            recorderManager.startRecord();
+        }
+        isStartVedio = isStart;
+    }
 
     public GlSurfacePreviewStrategy(Context context, CameraView cameraView) {
         this.cameraView = cameraView;
@@ -119,9 +131,16 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private YMFace face;
     private boolean detecting = false;
     float[] points;
-
+    private RecorderManager recorderManager = null;
+    private long lastTime=0;
     @Override
     public void onPreviewFrame(final byte[] data, Camera camera) {
+        if (recorderManager == null)
+            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
+        if (isStartVedio) {
+            lastTime=System.currentTimeMillis();
+            recorderManager.recordVideo(data);
+        }
         if (animationImageView == null) return;
 
         if (mainRadio == 0 || mainRadioY == 0) {
@@ -164,9 +183,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         if (face != null) {
             animationImageView.setVisibility(View.VISIBLE);
             animationImageView.setPositionAndStartAnimation(points);
-            haveFace=true;
+            haveFace = true;
         } else {
-            haveFace=false;
+            haveFace = false;
             animationImageView.setVisibility(View.GONE);
         }
     }

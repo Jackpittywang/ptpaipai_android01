@@ -374,6 +374,32 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
         loadFilters();
 
+       /* take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent motionEvent) {
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                    recorderManager.startRecord();
+                    current.isStart(true);
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                    recorderManager.stopRecord();
+                    current.isStart(false);
+                }
+                return true;
+            }
+        });*/
+
+        /*take_photo_btn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ToastUtils.showToast(mContext,"长按",500);
+                RecorderManager recorderManager=new RecorderManager(20*1000,480,600,FileUtils.getSdcardPath()+ File.separator +"test.mp4");
+                recorderManager.startRecord();
+
+                return true;
+            }
+        });*/
+
 
     }
 
