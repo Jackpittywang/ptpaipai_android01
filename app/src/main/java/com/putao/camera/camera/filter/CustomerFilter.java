@@ -7,6 +7,7 @@ import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
 import com.putao.camera.camera.gpuimage.GPUImageContrastFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilterGroup;
+import com.putao.camera.camera.gpuimage.GPUImageMagicBeautyFilter;
 import com.putao.camera.camera.gpuimage.GPUImageRGBFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSaturationFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSepiaFilter;
@@ -213,7 +214,8 @@ public class CustomerFilter {
     private GPUImageFilterGroup getYuTu() {
         List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 }

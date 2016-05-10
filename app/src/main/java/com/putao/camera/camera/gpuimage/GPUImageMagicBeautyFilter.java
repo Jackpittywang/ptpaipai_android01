@@ -1,11 +1,8 @@
 package com.putao.camera.camera.gpuimage;
 
-import android.content.Context;
 import android.opengl.GLES20;
 
 
-//import com.seu.magicfilter.filter.base.gpuimage.GPUImageFilter;
-// import com.seu.magicfilter.filter.helper.MagicFilterParam;
 
 
 public class GPUImageMagicBeautyFilter extends GPUImageFilter {
