@@ -145,6 +145,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         filterName = (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         photo_data = intent.getStringExtra("photo_data");
         if (!StringHelper.isEmpty(photo_data)) {
+           Bitmap bb= BitmapHelper.getBitmapFromPath(photo_data);
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
 
@@ -1169,8 +1170,9 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 actual_width = area_width;
                 actual_height = (int) (ImageCropBitmap.getHeight() * ((float) actual_width / ImageCropBitmap.getWidth()));
             } else {
-                actual_height = area_height;
-                actual_width = (int) (ImageCropBitmap.getWidth() * ((float) actual_height) / ImageCropBitmap.getHeight());
+                return  ImageCropBitmap;
+               /* actual_height = area_height;
+                actual_width = (int) (ImageCropBitmap.getWidth() * ((float) actual_height) / ImageCropBitmap.getHeight());*/
             }
         }
         int cut_x = (area_width - actual_width) / 2;

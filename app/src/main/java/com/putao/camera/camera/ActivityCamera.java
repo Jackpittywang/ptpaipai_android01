@@ -171,6 +171,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
      * 延时拍照倒计时
      */
     Thread finalTime_thread;
+    Thread vedio_thread;
     private boolean camera_watermark_setting = false;
     /**
      * hdr
@@ -374,22 +375,58 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
         loadFilters();
 
-       /* take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
+
+        /*take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent motionEvent) {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    long time= System.currentTimeMillis();
+                    isOver=true;
+                    vedio_thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int down_time = 2000 / 1000;
+                            while (down_time > 0) {
+                                final int finalDown_time = down_time;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+//                                        setBtnEnable(false);
+//                                        take_photo_btn.setText(finalDown_time + "");
+                                    }
+                                });
+                                down_time--;
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            if(down_time==0){
+                                isOver=false;
+                                current.isStart(true);
+                            }
+                        }
+                    });
+                    vedio_thread.start();
 //                    recorderManager.startRecord();
-                    current.isStart(true);
+//                    current.isStart(true);
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    vedio_thread.stop();
 //                    recorderManager.stopRecord();
-                    current.isStart(false);
+                    if(isOver){
+                        takePhoto();
+                    }else {
+                        current.isStart(false);
+                    }
                 }
                 return true;
             }
         });*/
 
-        /*take_photo_btn.setOnLongClickListener(new View.OnLongClickListener() {
+
+       /* take_photo_btn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 ToastUtils.showToast(mContext,"长按",500);
@@ -402,7 +439,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
 
     }
-
+ private   boolean isOver=true;
     TakePictureListener photoListener = new TakePictureListener() {
         @Override
         public void saved(final Bitmap photo) {

@@ -79,6 +79,11 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             from = bundle.getString("from");
             imgpath = bundle.getString("imgpath");
         }
+       /* if(!TextUtils.isEmpty(imgpath)){
+          Bitmap bitmap= BitmapHelper.getBitmapFromPath(imgpath);
+          int hh=  bitmap.getHeight();
+           int ww= bitmap.getWidth();
+        }*/
 
        /* if(from.equals("complete")){
 //            final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -126,53 +131,6 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
     }
 
 
- /*   @Override
-
-    public int doGetContentViewId() {
-        return R.layout.activity_photo_share;
-    }
-
-    @Override
-    public void doInitSubViews(View view) {
-        btn_back = (Button) findViewById(R.id.back_btn);
-        title_tv = (TextView) findViewById(R.id.title_tv);
-        title_tv.setText("保存");
-        btn_home = (Button) findViewById(R.id.right_btn);
-        btn_home.setBackgroundResource(R.drawable.share_button_home);
-        share_btn_sina = (Button) findViewById(R.id.share_btn_sina);
-        share_btn_wechat = (Button) findViewById(R.id.share_btn_wechat);
-        share_btn_friend = (Button) findViewById(R.id.share_btn_friend);
-        share_btn_qq = (Button) findViewById(R.id.share_btn_qq);
-        share_btn_qzone = (Button) findViewById(R.id.share_btn_qzone);
-        tv_filepath = (TextView) findViewById(R.id.tv_filepath);
-//        btn_go_chartlet = (LinearLayout) findViewById(R.id.btn_go_chartlet);
-        btn_go_camera = (LinearLayout) findViewById(R.id.btn_go_camera);
-        btn_go_collage = (LinearLayout) findViewById(R.id.btn_go_collage);
-        btn_go_movie = (LinearLayout) findViewById(R.id.btn_go_movie);
-        addOnClickListener(btn_back, btn_home, share_btn_friend, share_btn_sina, share_btn_qq, share_btn_qzone, share_btn_wechat, btn_go_camera,  btn_go_collage, btn_go_movie);
-    }*/
-   /* @Override
-    public void doInitData() {
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            filepath = bundle.getString("savefile");
-            from = bundle.getString("from");
-            tv_filepath.setText("图片保存在" + filepath);
-            videoPath=bundle.getString("videoPath");
-        }
-        mShareTools = new ShareTools(mActivity, filepath);
-        //loadShareImage();
-        //showPathToast();
-    }*/
-
-//    void showPathToast() {
-//        if (!StringHelper.isEmpty(filepath)) {
-//            ObjectAnimator.ofFloat(save_tips, "alpha", 0, 1).setDuration(4000).start();
-//        }
-//    }
-
-
     @Override
     public void onRightAction() {
         super.onRightAction();
@@ -208,7 +166,7 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 0;
-                            checkSha1(filepath);
+                            checkSha1Imag(imgpath);
 //                            ShareTools.wechatWebShare(this, true,null,null, imgpath,url);
                         }
                     } else {
@@ -237,7 +195,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 1;
-                            checkSha1(filepath);
+//                            checkSha1(filepath);
+                            checkSha1Imag(imgpath);
 
                         }
                     } else {
@@ -272,7 +231,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 2;
-                            checkSha1(filepath);
+//                            checkSha1(filepath);
+                            checkSha1Imag(imgpath);
                         }
                     } else {
                         ShareTools.newInstance(SinaWeibo.NAME)
@@ -300,7 +260,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                             progressDialog.setMessage("正在处理...");
                             progressDialog.show();
                             tag = 3;
-                            checkSha1(filepath);
+//                            checkSha1(filepath);
+                            checkSha1Imag(imgpath);
                         }
                     } else {
                         ShareTools.newInstance(Wechat.NAME).setImagePath(filepath).execute(mContext);
@@ -336,10 +297,6 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
 
     }
 
- /*   @Override
-    public File onSave() {
-        return new File(filepath);
-    }*/
 
     public boolean isAppInstalled(Context context, String packageName) {
         final PackageManager packageManager = context.getPackageManager();
@@ -358,6 +315,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
     private File uploadFile;//上传文件
     private String sha1;//上传文件sha1
 
+    private String uploadTokenImag;//上传token
+    private File uploadFileImag;//上传文件
+    private String sha1Imag;//上传文件sha1
+
     private void checkSha1(String uploadFilePath) {
         uploadFile = new File(uploadFilePath);
         sha1 = FileUtils.getSHA1ByFile(uploadFile);
@@ -370,6 +331,31 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                     getUploadToken();
                 else
                     upload("mp4", hash, hash);
+            }
+            @Override
+            public void onCacheSuccess(String url, JSONObject result) {
+
+            }
+
+            @Override
+            public void onFailure(String url, int statusCode, String msg) {
+
+            }
+        });
+    }
+
+    private void checkSha1Imag(String uploadFilePath) {
+        uploadFileImag = new File(uploadFilePath);
+        sha1Imag = FileUtils.getSHA1ByFile(uploadFileImag);
+
+        networkRequest(UploadApi.checkSha1(sha1Imag), new JSONObjectCallback() {
+            @Override
+            public void onSuccess(String url, JSONObject result) {
+                String hash = result.getString("hash");
+                if (StringUtils.isEmpty(hash))
+                    getUploadTokenImag();
+                else{}
+//                    uploadImag("jpg", hash, hash);
             }
             @Override
             public void onCacheSuccess(String url, JSONObject result) {
@@ -399,6 +385,18 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
         });
     }
 
+    private void getUploadTokenImag() {
+        networkRequest(UserApi.getUploadToken(), new SimpleFastJsonCallback<String>(String.class, null) {
+            @Override
+            public void onSuccess(String url, String result) {
+                JSONObject jsonObject = JSON.parseObject(result);
+                uploadTokenImag = jsonObject.getString("uploadToken");
+                Logger.d(uploadTokenImag);
+                uploadFileImag();
+            }
+        });
+    }
+
     /**
      * 上传文件
      */
@@ -422,6 +420,28 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
             }
         }).start();
     }
+    private String imagName="";
+    private void uploadFileImag() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UploadApi.uploadFile(uploadTokenImag, sha1Imag, uploadFileImag, new UploadFileTask.UploadCallback() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+
+                        Logger.d(result.toJSONString());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ext", result.getString("ext"));
+                        bundle.putString("filename", result.getString("filename"));
+                        bundle.putString("hash", result.getString("hash"));
+                        imagName=result.getString("hash")+"."+result.getString("ext");
+                        mHandler.sendMessage(Message.obtain(mHandler, 0x11, bundle));
+//                        checkSha1(filepath);
+                    }
+                });
+            }
+        }).start();
+    }
 
 //    private String url;
 
@@ -429,7 +449,8 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
      * 上传PHP服务器
      */
     private void upload(String ext, String filename, String filehash) {
-        networkRequest(UserApi.userMedia(ext, filename, filehash, "VIDEO"),
+//        networkRequest(UserApi.userMedia(ext, filename, filehash, "VIDEO"),
+                networkRequest(UserApi.userDetailMedia(ext, filename, filehash, "VIDEO",imagName),
                 new SimpleFastJsonCallback<String>(String.class, loading) {
                     @Override
                     public void onSuccess(String url, String result) {
@@ -470,7 +491,10 @@ public class PhotoShareActivity extends PTXJActivity implements View.OnClickList
                         updataVideo();
                     }
                 });
-            }else {
+            }else  if(msg.what==0x11){
+                checkSha1(filepath);
+            }
+            else {
                 Bundle bundle = (Bundle) msg.obj;
                 //上传PHP服务器
                 upload(bundle.getString("ext"), bundle.getString("filename"), bundle.getString("hash"));

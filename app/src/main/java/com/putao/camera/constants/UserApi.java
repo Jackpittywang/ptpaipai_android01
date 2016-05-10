@@ -75,6 +75,21 @@ public class UserApi {
                 .build(RequestMethod.GET, URL_USER_MEDIA);
     }
 
+    public static final String WIDTH ="width";
+    public static final String HEIGHT ="height";
+    public static final String MEDIA_COVER ="media_cover";
+    public static Request userDetailMedia(String ext, String filename, String filehash, String media_type,String picName) {
+        return PTWDRequestHelper.explore()
+                .addParam(REQUEST_EXT, ext)
+                .addParam(REQUEST_FILENAME, filename)
+                .addParam(REQUEST_FILEHASH, filehash)
+                .addParam(REQUEST_MEDIA, media_type)
+                .addParam(WIDTH,"480")
+                .addParam(HEIGHT,"640")
+                .addParam(MEDIA_COVER,picName)
+                .build(RequestMethod.GET, URL_USER_MEDIA);
+    }
+
 
     public static Request userAdd(String ext, String filename, String filehash, String nick_name, String user_info) {
         return PTWDRequestHelper.explore()
