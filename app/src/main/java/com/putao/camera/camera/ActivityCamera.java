@@ -965,9 +965,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         public void run() {
                             setBtnEnable(false);
                             execTakePhoto();
-//                            take_photo_btn.setEnabled(true);
-//                            camera_set_iv.setEnabled(true);
-//                            camera_set_ll.setEnabled(true);
 //                            take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.film_camera_btn));
                             take_photo_btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_capture_nor));
 //                            take_photo_btn.setText("");
@@ -978,9 +975,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             finalTime_thread.start();
         } else {
             execTakePhoto();
-//            take_photo_btn.setEnabled(true);
-//            camera_set_iv.setEnabled(true);
-//            camera_set_ll.setEnabled(true);
         }
     }
 

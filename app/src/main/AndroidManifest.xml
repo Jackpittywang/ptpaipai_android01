@@ -272,7 +272,8 @@
 
         <activity
             android:name=".editor.PhotoDynamicActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityCameraTheme"/>
 
         <activity
             android:name=".setting.watermark.management.TemplateManagemenActivity"

@@ -2,7 +2,6 @@ package com.putao.camera.camera.filter;
 
 import android.graphics.PointF;
 
-import com.putao.camera.camera.gpuimage.GPUImageBilateralFilter;
 import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
 import com.putao.camera.camera.gpuimage.GPUImageContrastFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
@@ -85,7 +84,8 @@ public class CustomerFilter {
         //亮度 0.0f, 2.0f
         filters.add(new GPUImageBrightnessFilter(0.25f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -102,7 +102,8 @@ public class CustomerFilter {
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.0f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -118,7 +119,8 @@ public class CustomerFilter {
         //饱和度 0.0f, 2.0f
         filters.add(new GPUImageSaturationFilter(1.2f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -138,7 +140,8 @@ public class CustomerFilter {
         //对比度 0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.1f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -154,7 +157,8 @@ public class CustomerFilter {
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.25f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -170,7 +174,8 @@ public class CustomerFilter {
         //对比度 0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.3f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -186,7 +191,8 @@ public class CustomerFilter {
         //rgb
         filters.add(new GPUImageRGBFilter(0.75f, 0.75f, 1.0f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
@@ -205,7 +211,8 @@ public class CustomerFilter {
         //0.0f, 2.0f
         filters.add(new GPUImageContrastFilter(1.0f));
         //高斯模糊0.0f, 15.0f
-        filters.add(new GPUImageBilateralFilter(progress));
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new GPUImageMagicBeautyFilter());
         return new GPUImageFilterGroup(filters);
     }
 
