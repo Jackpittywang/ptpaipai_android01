@@ -115,6 +115,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private ArrayList<WaterMarkCategoryInfo> content1 = new ArrayList<WaterMarkCategoryInfo>();
     private ArrayList<StickerCategoryInfo> content = new ArrayList<StickerCategoryInfo>();
     private String photo_data;
+    private String from;
     private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
     private int photoType = 0;
     final List<View> filterEffectViews = new ArrayList<View>();
@@ -144,6 +145,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         Intent intent = this.getIntent();
         filterName = (CustomerFilter.FilterType) intent.getSerializableExtra("filterName");
         photo_data = intent.getStringExtra("photo_data");
+        from = intent.getStringExtra("from");
+
         if (!StringHelper.isEmpty(photo_data)) {
            Bitmap bb= BitmapHelper.getBitmapFromPath(photo_data);
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
@@ -164,8 +167,11 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                                 Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
                                         DisplayHelper.getScreenHeight());
 //                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
-                                bitmap = BitmapHelper.imageCrop(bitmap, photoType);
-                                BitmapHelper.saveBitmap(bitmap, photo_data);
+                                if(from.equals("camera")){
+                                    bitmap = BitmapHelper.imageCrop(bitmap, photoType);
+                                    BitmapHelper.saveBitmap(bitmap, photo_data);
+                                }
+
                                 show_image.setImageBitmap(bitmap);
                                 ImageCropBitmap = bitmap;
                             } catch (Exception e) {
@@ -302,6 +308,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 ActivityHelper.startActivity(this, PhotoDynamicActivity.class, bundle);
                 break;
             case R.id.ll_cut_image:
+//                BitmapHelper.saveBitmap(ImageCropBitmap, photo_data);
                 bundle = new Bundle();
                 bundle.putString("photo_data", photo_data);
                /* intent=  new Intent(this,PhotoEditorCutActivity.class);

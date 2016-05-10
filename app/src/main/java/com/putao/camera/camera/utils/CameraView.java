@@ -749,6 +749,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
             } else if (msg.what == 0x002) {
                 Intent intent = new Intent(mContext, PhotoEditorActivity.class);
                 intent.putExtra("photo_data", imagePath);
+                intent.putExtra("from", "cameraview");
                 mContext.startActivity(intent);
             }
         }

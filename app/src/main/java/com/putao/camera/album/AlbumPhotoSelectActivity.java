@@ -201,6 +201,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             Intent intent = new Intent(this, PhotoEditorActivity.class);
             intent.putExtra("filterName", CustomerFilter.FilterType.NONE);
             intent.putExtra("photo_data", path);
+            intent.putExtra("from", "album");
             this.startActivity(intent);
             finish();
         }

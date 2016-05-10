@@ -279,6 +279,7 @@ public class CategoryPhotoListActivity extends BaseActivity implements PhotoList
                 Intent intent = new Intent(this, PhotoEditorActivity.class);
                 intent.putExtra("select_photo_id", info._ID);
                 intent.putExtra("photo_data", info._DATA);
+                intent.putExtra("from", "category");
                 this.startActivity(intent);
             }
         }

@@ -499,6 +499,7 @@ public class PCameraFragment extends CameraFragment {
                 Intent intent = new Intent(getActivity(), PhotoEditorActivity.class);
                 intent.putExtra("filterName", filterName);
                 intent.putExtra("photo_data", imagePath);
+                intent.putExtra("from", "camera");
                 getActivity().startActivity(intent);
             }
         }
