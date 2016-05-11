@@ -148,7 +148,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         from = intent.getStringExtra("from");
 
         if (!StringHelper.isEmpty(photo_data)) {
-           Bitmap bb= BitmapHelper.getBitmapFromPath(photo_data);
             originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
                     DisplayHelper.getScreenHeight());
 
@@ -158,29 +157,35 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mGPUImage.setFilter(filter.getFilterByType(filterName));
 
 //            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
+            if(from.equals("camera")) {
 
-            mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath() + File.separator, "temp.jpg",
-                    new GPUImage.OnPictureSavedListener() {
-                        @Override
-                        public void onPictureSaved(final String path) {
-                            try {
-                                Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
-                                        DisplayHelper.getScreenHeight());
+
+                mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath() + File.separator, "temp.jpg",
+                        new GPUImage.OnPictureSavedListener() {
+                            @Override
+                            public void onPictureSaved(final String path) {
+                                try {
+                                    Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
+                                            DisplayHelper.getScreenHeight());
 //                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
-                                if(from.equals("camera")){
-                                    bitmap = BitmapHelper.imageCrop(bitmap, photoType);
-                                    BitmapHelper.saveBitmap(bitmap, photo_data);
+//                                    if (from.equals("camera")) {
+                                        bitmap = BitmapHelper.imageCrop(bitmap, photoType);
+                                        BitmapHelper.saveBitmap(bitmap, photo_data);
+//                                    }
+
+                                    show_image.setImageBitmap(bitmap);
+                                    ImageCropBitmap = bitmap;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
-                                show_image.setImageBitmap(bitmap);
-                                ImageCropBitmap = bitmap;
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
 
-                        }
-
-                    });
+                        });
+            }else {
+                show_image.setImageBitmap(originImageBitmap);
+                ImageCropBitmap = originImageBitmap;
+            }
 
 
         }

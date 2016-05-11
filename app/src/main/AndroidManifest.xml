@@ -107,7 +107,8 @@
             android:theme="@style/ActivityCameraTheme" />
         <activity
             android:name=".editor.PhotoShareActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityCameraTheme"/>
         <activity
             android:name=".camera.ActivityCamera"
             android:launchMode="singleTask"

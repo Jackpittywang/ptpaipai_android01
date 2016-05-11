@@ -139,6 +139,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     boolean isFFC = false;
     private CustomerFilter.FilterType filterName = CustomerFilter.FilterType.NONE;
     public int photoSize = PhotoEditorActivity.CROP_43;//0为全屏,1为1比1,2为4比3
+//    public int oldSize = PhotoEditorActivity.CROP_43;
 
 
 //    private TakeDelayTime mTakedelaytime = TakeDelayTime.DELAY_NONE;
@@ -212,6 +213,23 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private int lastVersionCode;
     private int curVersionCode;
 
+
+    /*private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0x100) {
+                if(isActionUp){
+
+                }else {
+                    isOver = false;
+                    current.isStart(true);
+                    ToastUtils.showToast(mContext, "开始录制", 500);
+                }
+            }
+
+        }
+    };*/
 
     @Override
     protected int getLayoutId() {
@@ -376,17 +394,18 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         loadFilters();
 
 
-        /*take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
+       /* take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent motionEvent) {
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    long time= System.currentTimeMillis();
-                    isOver=true;
+                    long time = System.currentTimeMillis();
+                    isOver = true;
+                    isActionUp = false;
                     vedio_thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            int down_time = 2000 / 1000;
+                            int down_time = 1000 / 1000;
                             while (down_time > 0) {
                                 final int finalDown_time = down_time;
                                 runOnUiThread(new Runnable() {
@@ -403,22 +422,20 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                                     e.printStackTrace();
                                 }
                             }
-                            if(down_time==0){
-                                isOver=false;
-                                current.isStart(true);
-                            }
+                            handler.sendEmptyMessageDelayed(0x100, 0);
                         }
                     });
                     vedio_thread.start();
 //                    recorderManager.startRecord();
-//                    current.isStart(true);
+
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    vedio_thread.stop();
-//                    recorderManager.stopRecord();
-                    if(isOver){
+                   isActionUp = true;
+//                    vedio_thread.stop();
+                    if (isOver) {
                         takePhoto();
-                    }else {
+                    } else {
                         current.isStart(false);
+                        ToastUtils.showToast(mContext, "录制完成", 500);
                     }
                 }
                 return true;
@@ -439,7 +456,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
 
     }
- private   boolean isOver=true;
+
+    /* private boolean isActionUp = false;
+     private boolean isOver = true;*/
     TakePictureListener photoListener = new TakePictureListener() {
         @Override
         public void saved(final Bitmap photo) {
@@ -641,10 +660,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         filterName = CustomerFilter.FilterType.NONE;
         setBtnEnable(true);
         tv_takephoto.setEnabled(true);
-
-
         getFragmentManager().beginTransaction().replace(R.id.container, current).commit();
-
         SharedPreferencesHelper.saveBooleanValue(this, "ispause", false);
         mOrientationEvent.enable();
         resetAlbumPhoto();
@@ -785,8 +801,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 break;
             case R.id.album_btn:
                 //相册图片不进行裁剪
-                photoSize = 0;
-                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, photoSize);
+                SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 0);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);
                 ActivityHelper.startActivity(this, AlbumPhotoSelectActivity.class);
                 break;
@@ -867,7 +882,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }
     }
 
-    private void setBtnEnable(boolean isEnable){
+    private void setBtnEnable(boolean isEnable) {
         back_home_iv.setEnabled(isEnable);
         back_home_ll.setEnabled(isEnable);
         take_photo_btn.setEnabled(isEnable);
@@ -879,6 +894,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         show_sticker_ll.setEnabled(isEnable);
         show_filter_ll.setEnabled(isEnable);
     }
+
     private void clearAnimationData() {
         if (animation_view == null) return;
         animation_view.clearData();
@@ -1882,7 +1898,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 mPictureRatio = PictureRatio.RATIO_THREE_TO_FOUR;
                 setCameraRatioThreeToFour();
                 photoSize = PhotoEditorActivity.CROP_43;
-//                photoSize=0;
                 ToasterHelper.showShort(this, "3:4", R.drawable.img_blur_bg);
                 break;
         }
