@@ -458,7 +458,6 @@ public class PCameraFragment extends CameraFragment {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
                 }
-
               /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("L09") || model.contains("honor") || model.contains("oppo") || brand.contains("oppo")) {
                 } else {
                     if (isFFC) {
