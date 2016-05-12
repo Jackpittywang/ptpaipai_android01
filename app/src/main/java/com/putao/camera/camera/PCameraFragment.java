@@ -411,7 +411,6 @@ public class PCameraFragment extends CameraFragment {
 
     public void isShowAR(boolean isShowAR) {
         this.isShowAR = isShowAR;
-        cameraView.setIsStart(isShowAR);
     }
     public void isStart(boolean isStart) {
         cameraView.setIsStart(isStart);
