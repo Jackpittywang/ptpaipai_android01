@@ -1,6 +1,6 @@
 /**
  * 7  Copyright (c) 2013 CommonsWare, LLC
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
  * a copy of the License at
@@ -412,6 +412,7 @@ public class PCameraFragment extends CameraFragment {
     public void isShowAR(boolean isShowAR) {
         this.isShowAR = isShowAR;
     }
+
     public void isStart(boolean isStart) {
         cameraView.setIsStart(isStart);
     }
@@ -435,6 +436,7 @@ public class PCameraFragment extends CameraFragment {
         final String model = android.os.Build.MODEL.toLowerCase();
         final String brand = Build.BRAND.toLowerCase();
         // 所有华为的机器不要做set处理,
+
         if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("honor")) {
         } else {
             camera.setParameters(pictureParams);
@@ -453,15 +455,20 @@ public class PCameraFragment extends CameraFragment {
                     Log.e("onPictureTaken", "onPictureTaken: ");
                     saveBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_90);
                 } else saveBitmap = tempBitmap;
-                if (model.contains("OPPO") || brand.contains("OPPO")) {
-                    if (isFFC) {
+
+//                if (model.contains("OPPO") || brand.contains("OPPO")) {
+                if (isFFC) {
+                    if (model.contains("huawei") || brand.contains("huawei")|| model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi")) {
+
+                    } else {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
                 }
+
               /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("L09") || model.contains("honor") || model.contains("oppo") || brand.contains("oppo")) {
                 } else {
                     if (isFFC) {
-//                        saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
+                        saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
                 }*/
 

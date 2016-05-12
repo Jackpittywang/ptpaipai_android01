@@ -157,9 +157,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             mGPUImage.setFilter(filter.getFilterByType(filterName));
 
 //            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
-            if(from.equals("camera")) {
-
-
+            if (from.equals("camera")) {
                 mGPUImage.saveToPictures(originImageBitmap, FileUtils.getARStickersPath() + File.separator, "temp.jpg",
                         new GPUImage.OnPictureSavedListener() {
                             @Override
@@ -168,11 +166,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                                     Bitmap bitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(path, DisplayHelper.getScreenWidth(),
                                             DisplayHelper.getScreenHeight());
 //                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
-//                                    if (from.equals("camera")) {
-                                        bitmap = BitmapHelper.imageCrop(bitmap, photoType);
-                                        BitmapHelper.saveBitmap(bitmap, photo_data);
-//                                    }
-
+                                    bitmap = BitmapHelper.imageCrop(bitmap, photoType);
+                                    BitmapHelper.saveBitmap(bitmap, photo_data);
                                     show_image.setImageBitmap(bitmap);
                                     ImageCropBitmap = bitmap;
                                 } catch (Exception e) {
@@ -182,7 +177,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                             }
 
                         });
-            }else {
+            } else {
                 show_image.setImageBitmap(originImageBitmap);
                 ImageCropBitmap = originImageBitmap;
             }
@@ -1182,7 +1177,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 actual_width = area_width;
                 actual_height = (int) (ImageCropBitmap.getHeight() * ((float) actual_width / ImageCropBitmap.getWidth()));
             } else {
-                return  ImageCropBitmap;
+                return ImageCropBitmap;
                /* actual_height = area_height;
                 actual_width = (int) (ImageCropBitmap.getWidth() * ((float) actual_height) / ImageCropBitmap.getHeight());*/
             }
@@ -1302,7 +1297,6 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         } else if (mEditAction == EditAction.ACTION_ROTATE) {
             new EffectImageTask(ImageCropBitmap, mCurrentFilter, mFilterEffectListener).execute();
         }
-
 
 
         if (mEditAction == EditAction.ACTION_Mark) {

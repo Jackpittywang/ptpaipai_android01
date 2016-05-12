@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -93,6 +94,7 @@ import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.util.StringUtils;
+import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -213,14 +215,15 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     private int lastVersionCode;
     private int curVersionCode;
 
-
-    /*private Handler handler = new Handler() {
+    private boolean isActionUp = false;
+    private boolean isOver = true;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0x100) {
                 if(isActionUp){
-
+                    ToastUtils.showToast(mContext, "拍照", 500);
                 }else {
                     isOver = false;
                     current.isStart(true);
@@ -229,7 +232,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }
 
         }
-    };*/
+    };
 
     @Override
     protected int getLayoutId() {
@@ -411,8 +414,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-//                                        setBtnEnable(false);
-//                                        take_photo_btn.setText(finalDown_time + "");
                                     }
                                 });
                                 down_time--;
@@ -430,7 +431,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                    isActionUp = true;
-//                    vedio_thread.stop();
                     if (isOver) {
                         takePhoto();
                     } else {
@@ -442,23 +442,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }
         });*/
 
-
-       /* take_photo_btn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ToastUtils.showToast(mContext,"长按",500);
-                RecorderManager recorderManager=new RecorderManager(20*1000,480,600,FileUtils.getSdcardPath()+ File.separator +"test.mp4");
-                recorderManager.startRecord();
-
-                return true;
-            }
-        });*/
-
-
     }
 
-    /* private boolean isActionUp = false;
-     private boolean isOver = true;*/
+
     TakePictureListener photoListener = new TakePictureListener() {
         @Override
         public void saved(final Bitmap photo) {

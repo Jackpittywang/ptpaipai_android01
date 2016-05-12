@@ -493,10 +493,16 @@ public class BitmapHelper {
         boolean b = startWidth > startHeight;
         switch (cropType) {
             case CROP_11:
+                if(startHeight==startWidth){
+                    return bitmap;
+                }
                 retX = Math.abs(startWidth - startHeight) / 2;
                 endWidth = b ? startHeight : startWidth;
                 break;
             case CROP_43:
+                if(startHeight*3==4*startWidth){
+                    return bitmap;
+                }
 //                endWidth = (b ? startHeight : startWidth) * 4 / 3;
                 if(b){
                     endWidth =  startHeight * 3 / 4;
