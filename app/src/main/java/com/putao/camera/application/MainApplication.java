@@ -19,10 +19,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.putao.account.AccountApi;
 import com.putao.account.AccountHelper;
-import com.putao.camera.bean.CollageConfigInfo;
 import com.putao.camera.bean.WaterMarkConfigInfo;
 import com.putao.camera.camera.utils.SimpleCameraHost;
-import com.putao.camera.collage.util.CollageHelper;
 import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.db.DatabaseServer;
 import com.putao.camera.gps.CityMap;
@@ -86,10 +84,9 @@ public class MainApplication extends BasicApplication {
                 CityMap.getInstance().init();
                 mLocationClient.registerLocationListener(mMyLocationListener);
                 InitLocation();
-                initAssetsDate();
             }
         });
-
+        initAssetsDate();
         /*//初始化城市列表
         CityMap.getInstance().init();
         mLocationClient = new LocationClient(this.getApplicationContext());
@@ -262,7 +259,7 @@ public class MainApplication extends BasicApplication {
 
     }
 
-    //第一次拼图资源初始化
+   /* //第一次拼图资源初始化
     private static void doFirstInitCollageFileCopy(String unZipFileName) {
         boolean bSuccess = FileOperationHelper.copyAssetsFileToExternalFile(unZipFileName + ".zip");
         if (bSuccess) {
@@ -277,15 +274,15 @@ public class MainApplication extends BasicApplication {
                 CollageConfigInfo mCollageConfigInfo = gson.fromJson(config_str, CollageConfigInfo.class);
                 CollageHelper.saveCollageConfigInfoToDB(globalContext, mCollageConfigInfo, "1");
 
-               /* if (!MainApplication.isDebug) {
+               *//* if (!MainApplication.isDebug) {
                     new File(FileOperationHelper.getExternalFilePath() + "/" + unZipFileName + ".zip").delete();
-                }*/
+                }*//*
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
         }
-    }
+    }*/
 
     //第一次水印文件初始化
     private static void doFirstInitWaterMarkFileCopy(String unZipFileName) {
