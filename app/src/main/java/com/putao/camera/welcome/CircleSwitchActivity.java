@@ -84,7 +84,7 @@ public class CircleSwitchActivity extends BaseActivity {
         switch (event.eventCode) {
             case PuTaoConstants.WELCOME_FINISH_EVENT:
                 if (!fromAbout) {
-                    ActivityHelper.startActivity(mActivity, ActivityCamera.class);
+//                    ActivityHelper.startActivity(mActivity, ActivityCamera.class);
                 }
                 finish();
                 break;

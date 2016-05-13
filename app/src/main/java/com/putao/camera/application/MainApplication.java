@@ -76,7 +76,21 @@ public class MainApplication extends BasicApplication {
         UmengUpdateHelper.getInstance().setCommonConfig();
         // Umeng消息推送
         UmengPushHelper.getInstance().initPushAgent();
-        //初始化城市列表
+
+        mLocationClient = new LocationClient(this.getApplicationContext());
+        mMyLocationListener = new MyLocationListener();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //初始化城市列表
+                CityMap.getInstance().init();
+                mLocationClient.registerLocationListener(mMyLocationListener);
+                InitLocation();
+                initAssetsDate();
+            }
+        });
+
+        /*//初始化城市列表
         CityMap.getInstance().init();
         mLocationClient = new LocationClient(this.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
@@ -87,7 +101,7 @@ public class MainApplication extends BasicApplication {
 //        }
         //startService(new Intent(globalContext, GpsService.class));
 
-        initAssetsDate();
+        initAssetsDate();*/
 
 
 //极光推送
@@ -241,7 +255,7 @@ public class MainApplication extends BasicApplication {
         if (isFristUse || lastVersionCode != curVersionCode) {
             if (isFristUseCollage) {
                 doFirstInitWaterMarkFileCopy(PuTaoConstants.PAIPAI_WATERMARK_FLODER_NAME);
-                doFirstInitCollageFileCopy(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME);
+//                doFirstInitCollageFileCopy(PuTaoConstants.PAIPAI_COLLAGE_FLODER_NAME);
                 SharedPreferencesHelper.saveBooleanValue(globalContext, PuTaoConstants.PREFERENC_FIRST_USE_COLLAGE, false);
             }
         }

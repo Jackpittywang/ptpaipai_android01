@@ -18,7 +18,7 @@ import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.welcome.CircleSwitchActivity;
 
 public class SwitchFragment extends Fragment {
-    private final long WAIT_TIME = 3 * 1000;
+    private final long WAIT_TIME = 1 * 1000;
     int position;
     ProgressBar pbInit;
     Button bt_go;
@@ -106,7 +106,7 @@ public class SwitchFragment extends Fragment {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                pbInit.setVisibility(View.GONE);
+//                pbInit.setVisibility(View.GONE);
                 tvTip.setVisibility(View.INVISIBLE);
                 ActivityHelper.startActivity(getActivity(), ActivityCamera.class, new Bundle());
                 getActivity().finish();
