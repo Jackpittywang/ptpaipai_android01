@@ -1,14 +1,6 @@
 
 package com.putao.camera.voice;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -45,6 +37,14 @@ import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.voice.util.AudioRecorder;
+
+import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class VoicePhotoActivity extends BaseActivity implements View.OnClickListener {
     private Button choice_photo_btn, take_photo_btn, voice_record_btn, save_btn, back_btn;
@@ -213,7 +213,7 @@ public class VoicePhotoActivity extends BaseActivity implements View.OnClickList
 
     // 录音Dialog图片随声音大小切换
     void setDialogImage() {
-        record_voice_left_time_pb.setProgress((int) (recodeTime * 10));
+       /* record_voice_left_time_pb.setProgress((int) (recodeTime * 10));
         if (voiceValue < 600.0) {
             mIvRecVolume.setImageResource(R.drawable.voice_tips_volume01);
         } else if (voiceValue > 600.0 && voiceValue < 1000.0) {
@@ -242,7 +242,7 @@ public class VoicePhotoActivity extends BaseActivity implements View.OnClickList
             mIvRecVolume.setImageResource(R.drawable.voice_tips_volume13);
         } else if (voiceValue > 12000.0) {
             mIvRecVolume.setImageResource(R.drawable.voice_tips_volume14);
-        }
+        }*/
     }
 
     public Handler recordHandler = new Handler() {
@@ -304,7 +304,7 @@ public class VoicePhotoActivity extends BaseActivity implements View.OnClickList
                 mTvRecordDialogTxt.setText("松开手指可取消录音");
                 break;
             default:
-                mIvRecVolume.setImageResource(R.drawable.voice_tips_volume01);
+//                mIvRecVolume.setImageResource(R.drawable.voice_tips_volume01);
                 mTvRecordDialogTxt.setText("向下滑动可取消录音");
                 break;
         }
