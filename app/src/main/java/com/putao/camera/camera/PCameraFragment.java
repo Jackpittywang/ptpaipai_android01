@@ -458,7 +458,7 @@ public class PCameraFragment extends CameraFragment {
 
 //                if (model.contains("OPPO") || brand.contains("OPPO")) {
                 if (isFFC) {
-                    if (model.contains("huawei") || brand.contains("huawei")|| model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi")) {
+                    if (model.contains("huawei") || brand.contains("huawei")|| model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi")|| brand.contains("nubia")) {
 
                     } else {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
