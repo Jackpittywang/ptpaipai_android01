@@ -418,6 +418,7 @@ public class PCameraFragment extends CameraFragment {
     }
 
     private Parameters previewParams = null;
+    private Matrix matrix;
 
     public void takeSimplePhoto() {
         flashScreen();
@@ -463,6 +464,12 @@ public class PCameraFragment extends CameraFragment {
                     } else {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
                     }
+
+                    matrix = new Matrix();
+                    matrix.postScale(-1, 1);      /*水平翻转180度*/
+                    saveBitmap = Bitmap.createBitmap(saveBitmap, 0, 0, saveBitmap.getWidth(),  saveBitmap.getHeight(), matrix, true);
+
+
                 }
 
               /*  if (model.contains("huawei") || brand.contains("huawei") || model.contains("cl00") || model.contains("L09") || model.contains("honor") || model.contains("oppo") || brand.contains("oppo")) {

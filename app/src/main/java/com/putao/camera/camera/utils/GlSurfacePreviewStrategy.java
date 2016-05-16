@@ -14,10 +14,9 @@ import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImageRenderer;
 import com.putao.camera.camera.view.AnimationImageView;
-import com.putao.camera.util.FileUtils;
+import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
@@ -50,11 +49,13 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private boolean isStartVedio = false;
 
     private AnimationImageView animationImageView;
-    private boolean isstop;
+    private boolean newRecorderManager=false;
 
     public void setVedio(boolean isStart) {
         if (!isStart) {
-            recorderManager.stopRecord();
+            recorderManager.stopRecording();
+            recorderManager.releaseRecord();
+            recorderManager=null;
         } else {
             recorderManager.startRecord();
         }
@@ -132,13 +133,15 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private boolean detecting = false;
     float[] points;
     private RecorderManager recorderManager = null;
-    private long lastTime=0;
+
     @Override
     public void onPreviewFrame(final byte[] data, Camera camera) {
-        if (recorderManager == null)
-            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
+        if (recorderManager == null){
+            //            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
+            recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, CommonUtils.getOutputVideoFile().getAbsolutePath());
+        }
+
         if (isStartVedio) {
-            lastTime=System.currentTimeMillis();
             recorderManager.recordVideo(data);
         }
         if (animationImageView == null) return;

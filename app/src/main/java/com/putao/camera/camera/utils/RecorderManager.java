@@ -106,12 +106,12 @@ public class RecorderManager {
         recorder.setFrameRate(frameRate);
         audioRecordRunnable = new AudioRecordRunnable();
         audioThread = new Thread(audioRecordRunnable);
-        try {
+       /* try {
             recorder.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        audioThread.start();
+        audioThread.start();*/
     }
 
     private class AudioRecordRunnable implements Runnable {
@@ -174,6 +174,12 @@ public class RecorderManager {
         if (isMax) {
             return;
         }
+        try {
+            recorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        audioThread.start();
         isStart = true;
         videoStartTime = new Date().getTime();
     }
@@ -181,6 +187,8 @@ public class RecorderManager {
     public void stopRecord() {
         if (recorder != null && isStart) {
             runAudioThread = false;
+//            audioRecordRunnable = null;
+//            audioThread = null;
             if (!isMax) {
                 totalTime += new Date().getTime() - videoStartTime;
                 videoStartTime = 0;
@@ -190,16 +198,33 @@ public class RecorderManager {
         }
     }
 
-    private void releaseRecord() {
+    public void releaseRecord() {
         isFinished = true;
-        try {
-            recorder.stop();
-            recorder.release();
-        } catch (FFmpegFrameRecorder.Exception e) {
-            e.printStackTrace();
+        if(recorder != null){
+            try {
+                recorder.stop();
+                recorder.release();
+            } catch (FFmpegFrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
+            recorder = null;
         }
-        recorder = null;
+
     }
+
+
+    public void stopRecording() {
+        if (recorder != null && isStart) {
+            runAudioThread = false;
+            if (!isMax) {
+                totalTime += new Date().getTime() - videoStartTime;
+                videoStartTime = 0;
+            }
+            isStart = false;
+
+        }
+    }
+
 
 
     private void onPreviewFrame(Bitmap bmp) {
@@ -208,7 +233,7 @@ public class RecorderManager {
             yuvIplimage.getByteBuffer().put(
                     BitmapToVideoUtil.getYUV420sp(bmp.getWidth(), bmp.getHeight(), bmp));
 //            bmp.recycle();
-//            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
+            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
             try {
                 if (during < maxTime && isStart) {
                     recorder.setTimestamp(1000 * during);
@@ -221,6 +246,7 @@ public class RecorderManager {
     }
 
     private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+
     private void onPreviewFrame(final byte[] data) {
         singleThreadExecutor.execute(new Runnable() {
             @Override
@@ -242,6 +268,26 @@ public class RecorderManager {
         });
     }
 
+
+
+    public void onPreviewFrameOld(byte[] data) {
+        int during = checkIfMax(new Date().getTime());
+        if (yuvIplimage != null && isStart) {
+            long time = System.currentTimeMillis();
+            yuvIplimage.getByteBuffer().put(data);
+            try {
+                System.out.println(System.currentTimeMillis() - videoStartTime);
+                if (during < maxTime) {
+                    recorder.setTimestamp(1000 * during);
+                    recorder.record(yuvIplimage);
+                }
+            } catch (FFmpegFrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
     private CvMat rotateImage(CvMat input, int angle) {
         CvPoint2D32f center = new CvPoint2D32f(input.cols() / 2.0F,
                 input.rows() / 2.0F);
@@ -254,11 +300,12 @@ public class RecorderManager {
 
     }
 
-    /**
+  /**
      * 一张图片合成视频
      *
      * @param bmp
-     */
+     **/
+
     public void combineVideo(final Bitmap bmp) {
         startRecord();
         new Thread(new Runnable() {
@@ -307,6 +354,8 @@ public class RecorderManager {
     }
 
     public void recordVideo(byte[] data) {
-        onPreviewFrame(data);
+        onPreviewFrameOld(data);
     }
+
+
 }

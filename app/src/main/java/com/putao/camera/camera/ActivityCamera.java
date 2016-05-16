@@ -13,7 +13,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -94,7 +93,6 @@ import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.util.StringUtils;
-import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -217,13 +215,13 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private boolean isActionUp = false;
     private boolean isOver = true;
-    private Handler handler = new Handler() {
+    /*private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0x100) {
                 if(isActionUp){
-                    ToastUtils.showToast(mContext, "拍照", 500);
+//                    ToastUtils.showToast(mContext, "拍照", 500);
                 }else {
                     isOver = false;
                     current.isStart(true);
@@ -232,7 +230,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }
 
         }
-    };
+    };*/
 
     @Override
     protected int getLayoutId() {
@@ -1203,12 +1201,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         }, 1000);
     }
 
-    /**
-     * 重置设置按钮文字
-     *
-     * @param btn
-     */
-    void setButtonText(Button btn) {
+
+      void setButtonText(Button btn) {
         switch (btn.getId()) {
             case R.id.btn_camrea_ratio:
                 btn.setText((mPictureRatio == PictureRatio.RATIO_DEFAULT) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
