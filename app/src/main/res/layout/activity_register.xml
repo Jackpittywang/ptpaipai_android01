@@ -186,7 +186,7 @@
             android:layout_margin="16dp"
             android:background="@drawable/btn_los_focus"
             android:clickable="false"
-            android:text="@string/next"
+            android:text="完 成"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/text_size_16sp" />
 
@@ -196,12 +196,13 @@
             android:layout_below="@id/btn_next"
             android:layout_marginTop="8dp"
             android:paddingLeft="8dp">
-
+            <!--android:textColor="@color/text_main_color_sel"-->
             <TextView
+                android:textColor="#ff5859"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="点击下一步表示您已同意"
-                android:textColor="@color/text_main_color_sel"
+
                 android:textSize="@dimen/text_size_16sp" />
 
             <TextView
@@ -209,7 +210,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="《用户服务协议》"
-                android:textColor="@color/text_main_color_sel"
+                android:textColor="#ff5859"
                 android:textSize="@dimen/text_size_16sp" />
         </LinearLayout>
     </RelativeLayout>
