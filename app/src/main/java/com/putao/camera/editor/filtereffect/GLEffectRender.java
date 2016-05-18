@@ -12,7 +12,6 @@ import android.opengl.GLUtils;
 
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
-import com.putao.camera.util.Loger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,7 +217,21 @@ public class GLEffectRender implements GLSurfaceView.Renderer {
             mEffectList.add(temp_effect);
         } else if (mCurrentEffect.equals(EffectCollection.none)) {
 
-        } else {
+        } else if (mCurrentEffect.equals(EffectCollection.sketch)) {
+            Effect tint_effect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_TINT);
+            tint_effect.setParameter("tint", Color.argb(0, 204, 204, 255));
+            mEffectList.add(tint_effect);
+            mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_BRIGHTNESS);
+            mEffect.setParameter("brightness", 1.2f);
+            mEffectList.add(mEffect);
+            Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
+            temp_effect.setParameter("scale", .3f);
+            mEffectList.add(temp_effect);
+
+        }
+        else {
 
         }
     }

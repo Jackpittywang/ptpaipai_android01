@@ -218,22 +218,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private boolean isActionUp = false;
     private boolean isOver = true;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0x100) {
-                if(isActionUp){
-//                    ToastUtils.showToast(mContext, "拍照", 500);
-                }else {
-                    isOver = false;
-                    current.isStart(true);
-                    ToastUtils.showToast(mContext, "开始录制", 500);
-                }
-            }
 
-        }
-    };
+
+
 
     @Override
     protected int getLayoutId() {
@@ -242,85 +229,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         curVersionCode = MainApplication.getVersionCode();
         return R.layout.activity_camera;
     }
-
-    @Override
-    protected void onViewCreatedFinish(Bundle saveInstanceState) {
-        doInitSubViews();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mDynamicPicAdapter = new DynamicPicAdapter(mContext, null);
-        rv_articlesdetail_applyusers.setAdapter(mDynamicPicAdapter);
-        rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
-        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener<DynamicIconInfo>() {
-            @Override
-            public void onItemClick(DynamicIconInfo dynamicIconInfo, int position) {
-                Map<String, String> map = new HashMap<String, String>();
-                List<DynamicIconInfo> list = null;
-                map.put("cover_pic", dynamicIconInfo.cover_pic);
-                try {
-                    list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (null != list && list.size() > 0) {
-                    if (animation_view.isAnimationLoading() || !canSelectAS) {
-                        ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
-                        return;
-                    }
-                    mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
-                    mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
-
-                    mDynamicPicAdapter.getItem(position).setSelect(true);
-                    mDynamicPicAdapter.notifyItemChanged(position);
-                    if (current == null) return;
-
-                    animation_view.clearData();
-                    animation_view.setData(list.get(0).zipName, false);
-//                    std.setAnimationView(animation_view);
-//                    ffc.setAnimationView(animation_view);
-                    current.setAnimationView(animation_view);
-                    currentSelectDynamic = position;
-                    currentSelectDynamicName = list.get(0).zipName;
-                } else {
-                    dynamicIconInfo.setShowProgress(true);
-                    mDynamicPicAdapter.notifyItemChanged(position);
-                    String path = CollageHelper.getCollageUnzipFilePath();
-                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
-                }
-
-            }
-        });
-
-        doInitData();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("id", "0");
-        try {
-            nativeList = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mDynamicPicAdapter.addAll(nativeList);
-    }
-
-    private void startDownloadService(final String url, final String folderPath, final int position) {
-        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
-        if (isExistRunning) {
-            Loger.i("startDownloadService:exist");
-            return;
-        } else {
-            Loger.i("startDownloadService:run");
-        }
-        if (null == url || null == folderPath) return;
-        mDynamicIconInfo.get(position).type = "dynamic";
-        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
-        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
-        bindIntent.putExtra("position", position);
-        bindIntent.putExtra("url", url);
-        bindIntent.putExtra("floderPath", folderPath);
-        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
-        mContext.startService(bindIntent);
-    }
-
     public void doInitSubViews() {
 //        fullScreen(true);
         DisplayMetrics metric = new DisplayMetrics();
@@ -431,7 +339,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 //                    recorderManager.startRecord();
 
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                   isActionUp = true;
+                    isActionUp = true;
                     if (isOver) {
                         takePhoto();
                     } else {
@@ -444,6 +352,285 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         });
 
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0x100) {
+                if (isActionUp) {
+//                    ToastUtils.showToast(mContext, "拍照", 500);
+                } else {
+                    isOver = false;
+                    current.isStart(true);
+                    ToastUtils.showToast(mContext, "开始录制", 500);
+                }
+            }
+
+        }
+    };
+
+    @Override
+    protected void onViewCreatedFinish(Bundle saveInstanceState) {
+        doInitSubViews();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mDynamicPicAdapter = new DynamicPicAdapter(mContext, null);
+        rv_articlesdetail_applyusers.setAdapter(mDynamicPicAdapter);
+        rv_articlesdetail_applyusers.setLayoutManager(linearLayoutManager);
+        rv_articlesdetail_applyusers.setOnItemClickListener(new OnItemClickListener<DynamicIconInfo>() {
+            @Override
+            public void onItemClick(DynamicIconInfo dynamicIconInfo, int position) {
+                Map<String, String> map = new HashMap<String, String>();
+                List<DynamicIconInfo> list = null;
+                map.put("cover_pic", dynamicIconInfo.cover_pic);
+                try {
+                    list = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (null != list && list.size() > 0) {
+                    if (animation_view.isAnimationLoading() || !canSelectAS) {
+                        ToasterHelper.showShort(ActivityCamera.this, "动画加载中请稍后", R.drawable.img_blur_bg);
+                        return;
+                    }
+                    mDynamicPicAdapter.getItem(currentSelectDynamic).setSelect(false);
+                    mDynamicPicAdapter.notifyItemChanged(currentSelectDynamic);
+
+                    mDynamicPicAdapter.getItem(position).setSelect(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
+                    if (current == null) return;
+
+                    animation_view.clearData();
+                    animation_view.setData(list.get(0).zipName, false);
+//                    std.setAnimationView(animation_view);
+//                    ffc.setAnimationView(animation_view);
+                    current.setAnimationView(animation_view);
+                    currentSelectDynamic = position;
+                    currentSelectDynamicName = list.get(0).zipName;
+                } else {
+                    dynamicIconInfo.setShowProgress(true);
+                    mDynamicPicAdapter.notifyItemChanged(position);
+                    String path = CollageHelper.getCollageUnzipFilePath();
+                    startDownloadService(dynamicIconInfo.download_url, path, position - nativeList.size());
+                }
+
+            }
+        });
+
+        doInitData();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("id", "0");
+        try {
+            nativeList = MainApplication.getDBServer().getDynamicIconInfoByWhere(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mDynamicPicAdapter.addAll(nativeList);
+    }
+
+    /**
+     * 切换前后camera
+     */
+    private void switchCamera() {
+        if (current == null) {
+            current = ffc;
+            flash_light_iv.setVisibility(View.GONE);
+        } else {
+            current = ((current == std) ? ffc : std);
+            flash_light_iv.setVisibility((current == std) ? View.VISIBLE : View.GONE);
+            if (current == ffc) isMirror = true;
+        }
+//         current.setAnimationView(animation_view);
+        animation_view.setIsMirror(isMirror);
+        switch_camera_iv.setEnabled(true);
+        switch_camera_ll.setEnabled(true);
+
+    }
+
+    //加载滤镜效果
+    public void loadFilters() {
+        List<String> filterEffectNameList = new ArrayList<String>();
+        filterEffectNameList.addAll(Arrays.asList(getResources().getStringArray(R.array.filter_effect)));
+        filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
+        for (final String item : filterEffectNameList) {
+           /* GPUImage mGPUImage = new GPUImage(mContext);
+            CustomerFilter filter = new CustomerFilter();
+            mGPUImage.setFilter(filter.getFilterByType(filterName,mContext));*/
+
+
+            new EffectImageTask(filter_origin, item, new EffectImageTask.FilterEffectListener() {
+                @Override
+                public void rendered(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        AddFilterView(item, bitmap);
+                    }
+                }
+            }).execute();
+        }
+    }
+    private void AddFilterView(final String item, Bitmap bitmap_sample) {
+        Log.e(TAG, "AddFilterView: " + item);
+        View view = LayoutInflater.from(this).inflate(R.layout.filter_item, null);
+        FilterEffectThumbnailView simple_image = (FilterEffectThumbnailView) view.findViewById(R.id.filter_preview);
+        simple_image.setImageBitmap(bitmap_sample);
+        TextView tv_filter_name = (TextView) view.findViewById(R.id.filter_name);
+        tv_filter_name.setText(EffectCollection.getFilterName(item));
+        tv_filter_name.setTag(item);
+        view.setTag(item);
+       /* originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
+                DisplayHelper.getScreenHeight());*/
+        final Bitmap bitmap = BitmapHelper.getLoadingBitmap(DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Umeng事件统计
+                HashMap<String, String> filterMap = new HashMap<String, String>();
+                filterMap.put((String) view.getTag(), (String) view.getTag());
+                mTempFilter = (String) view.getTag();
+                new EffectImageTask(bitmap, mTempFilter,
+                        new EffectImageTask.FilterEffectListener() {
+                            @Override
+                            public void rendered(Bitmap bitmap) {
+                                if (bitmap != null) {
+//                                    show_image.setImageBitmap(bitmap);
+                                }
+                            }
+                        }).execute();
+                // 边框
+                for (View viewTemp : filterEffectViews) {
+                    FilterEffectThumbnailView aRoundCornnerImageView = ((FilterEffectThumbnailView) viewTemp.findViewById(R.id.filter_preview));
+                    if ((viewTemp.getTag()).equals(view.getTag())) {
+                        aRoundCornnerImageView.setPhotoSelected(true);
+                    } else {
+                        aRoundCornnerImageView.setPhotoSelected(false);
+                    }
+                }
+                for (TextView tv : filterNameViews) {
+                    if (tv.getTag().equals(view.getTag())) {
+                        tv.setTextColor(Color.RED);
+                    } else {
+                        tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
+                    }
+                }
+
+                //设置当前滤镜
+                GPUImageFilter filter = null;
+                if (item.equals(EffectCollection.none)) {
+                    //原画
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.NONE, mContext);
+                    filterName = CustomerFilter.FilterType.NONE;
+                } else if (item.equals(EffectCollection.brightness)) {
+                    //白亮晨曦
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX, mContext);
+                    filterName = CustomerFilter.FilterType.BLCX;
+                } else if (item.equals(EffectCollection.crossprocess)) {
+                    //陌上花开
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK, mContext);
+                    filterName = CustomerFilter.FilterType.MSHK;
+                } else if (item.equals(EffectCollection.filllight)) {
+                    //白白嫩嫩
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN, mContext);
+                    filterName = CustomerFilter.FilterType.BBNN;
+                } else if (item.equals(EffectCollection.saturate)) {
+                    // 秋日私语
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY, mContext);
+                    filterName = CustomerFilter.FilterType.QRSY;
+                } else if (item.equals(EffectCollection.sepia)) {
+                    //指尖流年
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN, mContext);
+                    filterName = CustomerFilter.FilterType.ZJLN;
+                } else if (item.equals(EffectCollection.temperature)) {
+                    //一米阳关
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG, mContext);
+                    filterName = CustomerFilter.FilterType.YMYG;
+                } else if (item.equals(EffectCollection.tint)) {
+                    //蔚蓝海岸
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA, mContext);
+                    filterName = CustomerFilter.FilterType.WLHA;
+                } else if (item.equals(EffectCollection.vignette)) {
+                    //闪亮登场
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC, mContext);
+                    filterName = CustomerFilter.FilterType.SLDC;
+                } else if (item.equals(EffectCollection.sketch)) {
+                    //闪亮登场
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.SM, mContext);
+                    filterName = CustomerFilter.FilterType.SM;
+                }
+                current.setFilter(filter);
+                current.setFilterName(filterName);
+            }
+        });
+        layout_filter_list.addView(view);
+        filterEffectViews.add(view);
+        filterNameViews.add(tv_filter_name);
+    }
+
+
+
+    public void doInitData() {
+        camera_watermark_setting = SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_CAMERA_WATER_MARK_SETTING, false);
+        mOrientationEvent = new OrientationEventListener(this) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                return;
+                //
+//                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
+//                    return;
+//                }
+//                mOrientation = RoundUtil.roundOrientation(orientation, mOrientation);
+//                int orientationCompensation = (mOrientation + RoundUtil.getDisplayRotation(ActivityCamera.this)) % 360;
+//                if (mOrientationCompensation != orientationCompensation) {
+//                    mOrientationCompensation = orientationCompensation;
+//                    OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
+//                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_ll, show_material_ll,
+//                            take_photo_btn, back_home_btn, camera_set_btn);
+//
+//                }
+            }
+        };
+        mMarkViewList = new ArrayList<WaterMarkView>();
+        mSceneWaterMarkViewList = new ArrayList<View>();
+        // 加载静态贴图
+        // doInitWaterMarkScene(0);
+        // 加载动态贴图
+        // doInitARStick();
+        queryCollageList();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void startDownloadService(final String url, final String folderPath, final int position) {
+        boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
+        if (isExistRunning) {
+            Loger.i("startDownloadService:exist");
+            return;
+        } else {
+            Loger.i("startDownloadService:run");
+        }
+        if (null == url || null == folderPath) return;
+        mDynamicIconInfo.get(position).type = "dynamic";
+        Intent bindIntent = new Intent(mContext, DownloadFileService.class);
+        bindIntent.putExtra("item", mDynamicIconInfo.get(position));
+        bindIntent.putExtra("position", position);
+        bindIntent.putExtra("url", url);
+        bindIntent.putExtra("floderPath", folderPath);
+        bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
+        mContext.startService(bindIntent);
+    }
+
+
 
 
     TakePictureListener photoListener = new TakePictureListener() {
@@ -494,35 +681,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-    public void doInitData() {
-        camera_watermark_setting = SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_CAMERA_WATER_MARK_SETTING, false);
-        mOrientationEvent = new OrientationEventListener(this) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                return;
-                //
-//                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
-//                    return;
-//                }
-//                mOrientation = RoundUtil.roundOrientation(orientation, mOrientation);
-//                int orientationCompensation = (mOrientation + RoundUtil.getDisplayRotation(ActivityCamera.this)) % 360;
-//                if (mOrientationCompensation != orientationCompensation) {
-//                    mOrientationCompensation = orientationCompensation;
-//                    OrientationUtil.setOrientation(mOrientationCompensation == -1 ? 0 : mOrientationCompensation);
-//                    setOrientation(OrientationUtil.getOrientation(), true, flash_light_btn, switch_camera_btn, album_btn, show_sticker_ll, show_material_ll,
-//                            take_photo_btn, back_home_btn, camera_set_btn);
-//
-//                }
-            }
-        };
-        mMarkViewList = new ArrayList<WaterMarkView>();
-        mSceneWaterMarkViewList = new ArrayList<View>();
-        // 加载静态贴图
-        // doInitWaterMarkScene(0);
-        // 加载动态贴图
-        // doInitARStick();
-        queryCollageList();
-    }
+
 
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
@@ -554,6 +713,12 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
+
+
+
+
+
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -904,24 +1069,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private boolean isMirror = false;
 
-    /**
-     * 切换前后camera
-     */
-    private void switchCamera() {
-        if (current == null) {
-            current = ffc;
-            flash_light_iv.setVisibility(View.GONE);
-        } else {
-            current = ((current == std) ? ffc : std);
-            flash_light_iv.setVisibility((current == std) ? View.VISIBLE : View.GONE);
-            if (current == ffc) isMirror = true;
-        }
-//         current.setAnimationView(animation_view);
-        animation_view.setIsMirror(isMirror);
-        switch_camera_iv.setEnabled(true);
-        switch_camera_ll.setEnabled(true);
 
-    }
 
     private void setEnhanceButton() {
         btn_enhance_switch.setBackgroundResource(current.isEnableEnhance() ? R.drawable.button_enhance_on : R.drawable.button_enhance_off);
@@ -1205,7 +1353,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-      void setButtonText(Button btn) {
+    void setButtonText(Button btn) {
         switch (btn.getId()) {
             case R.id.btn_camrea_ratio:
                 btn.setText((mPictureRatio == PictureRatio.RATIO_DEFAULT) ? "默认" : (mPictureRatio == PictureRatio.RATIO_ONE_TO_ONE) ? "1:1" : "3:4");
@@ -1650,122 +1798,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     final List<View> filterEffectViews = new ArrayList<View>();
     List<TextView> filterNameViews = new ArrayList<TextView>();
 
-    //加载滤镜效果
-    public void loadFilters() {
-        List<String> filterEffectNameList = new ArrayList<String>();
-        filterEffectNameList.addAll(Arrays.asList(getResources().getStringArray(R.array.filter_effect)));
-        filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
-        for (final String item : filterEffectNameList) {
-            new EffectImageTask(filter_origin, item, new EffectImageTask.FilterEffectListener() {
-                @Override
-                public void rendered(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        AddFilterView(item, bitmap);
-                    }
-                }
-            }).execute();
-        }
-    }
+
 
     private CustomerFilter filters = new CustomerFilter();
 
-    private void AddFilterView(final String item, Bitmap bitmap_sample) {
-        Log.e(TAG, "AddFilterView: " + item);
-        View view = LayoutInflater.from(this).inflate(R.layout.filter_item, null);
-        FilterEffectThumbnailView simple_image = (FilterEffectThumbnailView) view.findViewById(R.id.filter_preview);
-        simple_image.setImageBitmap(bitmap_sample);
-        TextView tv_filter_name = (TextView) view.findViewById(R.id.filter_name);
-        tv_filter_name.setText(EffectCollection.getFilterName(item));
-        tv_filter_name.setTag(item);
-        view.setTag(item);
-       /* originImageBitmap = BitmapHelper.getInstance().getBitmapFromPathWithSize(photo_data, DisplayHelper.getScreenWidth(),
-                DisplayHelper.getScreenHeight());*/
-        final Bitmap bitmap = BitmapHelper.getLoadingBitmap(DisplayHelper.getScreenWidth(), DisplayHelper.getScreenHeight());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Umeng事件统计
-                HashMap<String, String> filterMap = new HashMap<String, String>();
-                filterMap.put((String) view.getTag(), (String) view.getTag());
-                mTempFilter = (String) view.getTag();
-                new EffectImageTask(bitmap, mTempFilter,
-                        new EffectImageTask.FilterEffectListener() {
-                            @Override
-                            public void rendered(Bitmap bitmap) {
-                                if (bitmap != null) {
-//                                    show_image.setImageBitmap(bitmap);
-                                }
-                            }
-                        }).execute();
-                // 边框
-                for (View viewTemp : filterEffectViews) {
-                    FilterEffectThumbnailView aRoundCornnerImageView = ((FilterEffectThumbnailView) viewTemp.findViewById(R.id.filter_preview));
-                    if ((viewTemp.getTag()).equals(view.getTag())) {
-                        aRoundCornnerImageView.setPhotoSelected(true);
-                    } else {
-                        aRoundCornnerImageView.setPhotoSelected(false);
-                    }
-                }
-                for (TextView tv : filterNameViews) {
-                    if (tv.getTag().equals(view.getTag())) {
-                        tv.setTextColor(Color.RED);
-                    } else {
-                        tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
-                    }
-                }
-
-                //设置当前滤镜
-                GPUImageFilter filter = null;
-                if (item.equals(EffectCollection.none)) {
-                    //原画
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.NONE,mContext);
-                    filterName = CustomerFilter.FilterType.NONE;
-                } else if (item.equals(EffectCollection.brightness)) {
-                    //白亮晨曦
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX,mContext);
-                    filterName = CustomerFilter.FilterType.BLCX;
-                } else if (item.equals(EffectCollection.crossprocess)) {
-                    //陌上花开
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK,mContext);
-                    filterName = CustomerFilter.FilterType.MSHK;
-                } else if (item.equals(EffectCollection.filllight)) {
-                    //白白嫩嫩
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN,mContext);
-                    filterName = CustomerFilter.FilterType.BBNN;
-                } else if (item.equals(EffectCollection.saturate)) {
-                    // 秋日私语
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY,mContext);
-                    filterName = CustomerFilter.FilterType.QRSY;
-                } else if (item.equals(EffectCollection.sepia)) {
-                    //指尖流年
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN,mContext);
-                    filterName = CustomerFilter.FilterType.ZJLN;
-                } else if (item.equals(EffectCollection.temperature)) {
-                    //一米阳关
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG,mContext);
-                    filterName = CustomerFilter.FilterType.YMYG;
-                } else if (item.equals(EffectCollection.tint)) {
-                    //蔚蓝海岸
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA,mContext);
-                    filterName = CustomerFilter.FilterType.WLHA;
-                } else if (item.equals(EffectCollection.vignette)) {
-                    //闪亮登场
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC,mContext);
-                    filterName = CustomerFilter.FilterType.SLDC;
-                }else if (item.equals(EffectCollection.sketch)) {
-                    //闪亮登场
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.SM,mContext);
-                    filterName = CustomerFilter.FilterType.SM;
-                }
-                current.setFilter(filter);
-                current.setFilterName(filterName);
-            }
-        });
-        layout_filter_list.addView(view);
-        filterEffectViews.add(view);
-        filterNameViews.add(tv_filter_name);
-    }
 
     private static Bitmap zoomSmall(Bitmap bitmap) {
         Matrix matrix = new Matrix();

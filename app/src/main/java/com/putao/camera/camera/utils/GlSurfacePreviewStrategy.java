@@ -140,60 +140,68 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             //            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
             recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, CommonUtils.getOutputVideoFile().getAbsolutePath());
         }
-
         /*if (isStartVedio) {
             recorderManager.recordVideo(data,camera,mDetector);
         }*/
-        if (animationImageView == null) return;
+        if (animationImageView != null) {
 
-        if (mainRadio == 0 || mainRadioY == 0) {
-            iw = camera.getParameters().getPreviewSize().width;
-            ih = camera.getParameters().getPreviewSize().height;
-            mainRadio = (float) screenW / (float) ih;
-            mainRadioY = (float) screenH / (float) iw;
-        }
+            if (mainRadio == 0 || mainRadioY == 0) {
+                iw = camera.getParameters().getPreviewSize().width;
+                ih = camera.getParameters().getPreviewSize().height;
+                mainRadio = (float) screenW / (float) ih;
+                mainRadioY = (float) screenH / (float) iw;
+            }
 
-        if (detecting) return;
-        singleThreadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                detecting = true;
-                face = mDetector.onDetector(data, iw, ih);
-                //        YMFace face = mDetector.onDetector(data, iw, ih);
-                if (face != null) {
-                    float[] landmarks = face.getLandmarks();
-                    float[] emotions = face.getEmotions();
-                    float[] rect = face.getRect();
+            if (detecting) return;
+            singleThreadExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    detecting = true;
+                    face = mDetector.onDetector(data, iw, ih);
+                    //        YMFace face = mDetector.onDetector(data, iw, ih);
+                    if (face != null) {
+                        float[] landmarks = face.getLandmarks();
+                        float[] emotions = face.getEmotions();
+                        float[] rect = face.getRect();
 
-                    points = new float[landmarks.length];
-                    for (int i = 0; i < landmarks.length / 2; i++) {
-                        float x = landmarks[i * 2] * mainRadio;
-                        if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            x = screenW - x;
+                        points = new float[landmarks.length];
+                        for (int i = 0; i < landmarks.length / 2; i++) {
+                            float x = landmarks[i * 2] * mainRadio;
+                            if (cameraView.getHost().getCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                                x = screenW - x;
+                            }
+                            float y = landmarks[i * 2 + 1] * mainRadioY;
+                            points[i * 2] = x;
+                            points[i * 2 + 1] = y;
                         }
-                        float y = landmarks[i * 2 + 1] * mainRadioY;
-                        points[i * 2] = x;
-                        points[i * 2 + 1] = y;
-                    }
-                }/*else {
+                    }/*else {
                     Bundle bundle = new Bundle();
                     bundle.putBoolean("noface", true);
                     EventBusHelper.post(bundle, PuTaoConstants.HAVE_NO_FACE+"");
                 }*/
-                detecting = false;
+                    detecting = false;
+                }
+            });
+            if (face != null) {
+                animationImageView.setVisibility(View.VISIBLE);
+                animationImageView.setPositionAndStartAnimation(points);
+                haveFace = true;
+            } else {
+                haveFace = false;
+                animationImageView.setVisibility(View.GONE);
             }
-        });
-        if (face != null) {
-            animationImageView.setVisibility(View.VISIBLE);
-            animationImageView.setPositionAndStartAnimation(points);
-            haveFace = true;
-        } else {
-            haveFace = false;
-            animationImageView.setVisibility(View.GONE);
+            if (isStartVedio) {
+                recorderManager.setAnimationview(animationImageView);
+                recorderManager.onPreviewFrameOldAR(data,camera,mDetector);
+            }
+        }else {
+            if (isStartVedio) {
+                recorderManager.recordVideo(data,camera,mDetector);
+            }
         }
-        if (isStartVedio) {
-            recorderManager.recordVideo(data,camera,mDetector);
-        }
+
+
+
     }
 
     public static class PtTextureSize {

@@ -2,6 +2,7 @@ package com.putao.camera.camera.utils;
 
 
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -13,9 +14,14 @@ import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvPoint2D32f;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.putao.camera.camera.model.FaceModel;
+import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.util.BitmapHelper;
 import com.putao.camera.util.BitmapToVideoUtil;
+import com.putao.camera.util.FileUtils;
 
+import java.io.File;
 import java.nio.Buffer;
+import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Date;
 import java.util.List;
@@ -272,10 +278,6 @@ public class RecorderManager {
         });
     }
 
-    private YMFace face;
-    float[] points;
-    FaceModel faceModel;
-
     public void onPreviewFrameOld(byte[] data, Camera camera, YMDetector mDetector) {
         int during = checkIfMax(new Date().getTime());
         if (yuvIplimage != null && isStart) {
@@ -291,25 +293,50 @@ public class RecorderManager {
                 e.printStackTrace();
             }
         }
-   /* Bitmap tempBitmap =BitmapToVideoUtil.yuv2bitmap(data,480,800);
-    //            Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
-    List<YMFace> faces = mDetector.onDetector(tempBitmap);
-    if (faces != null && faces.size() > 0 && faces.get(0) != null) {
-        YMFace face = faces.get(0);
-        faceModel = new FaceModel();
-        faceModel.landmarks = face.getLandmarks();
-        faceModel.emotions = face.getEmotions();
-        RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
-        faceModel.rectf = rect;
-    } else {
-        Log.e("tag", "111111111111111");
-        return;
     }
 
-    final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimation_view.getAnimationModel(), tempBitmap, mAnimation_view.getEyesBitmapArr(), mAnimation_view.getMouthBitmapArr(), mAnimation_view.getBottomBitmapArr());
-    combineVideo(combineBmps);*/
+    private AnimationImageView mAnimationView;
+
+    public void setAnimationview(AnimationImageView animation_view) {
+        mAnimationView = animation_view;
+    }
+
+    private YMFace face;
+    float[] points;
+    FaceModel faceModel;
+    private IntBuffer mGLRgbBuffer;
+
+    public void onPreviewFrameOldAR(byte[] data, Camera camera, YMDetector mDetector) {
+        final Camera.Size previewSize = camera.getParameters().getPreviewSize();
+        int during = checkIfMax(new Date().getTime());
+
+        if (isStart) {
+//            int [] rgb=BitmapToVideoUtil.YV12ToRGB(data,previewSize.width,previewSize.height);
+          int[] rgb=  new int[previewSize.width*previewSize.height];
+            rgb= BitmapToVideoUtil.decodeYUV420SPrgb565(rgb,data,previewSize.width,previewSize.height);
+            Bitmap tempBitmap = Bitmap.createBitmap(rgb, 480, 800,
+                    Bitmap.Config.RGB_565);
+//            Bitmap tempBitmap= BitmapHelper.Bytes2Bimap(data);
+            BitmapHelper.saveBitmap(tempBitmap, FileUtils.getSdcardPath() + File.separator + "temp2222222222222.jpg");
+
+            List<YMFace> faces = mDetector.onDetector(tempBitmap);
+            if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+                YMFace face = faces.get(0);
+                faceModel = new FaceModel();
+                faceModel.landmarks = face.getLandmarks();
+                faceModel.emotions = face.getEmotions();
+                RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+                faceModel.rectf = rect;
+            } else {
+                Log.e("tag", "111111111111111");
+                return;
+            }
+            final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
+            combineVideo(combineBmps);
+        }
 
     }
+
 
     private CvMat rotateImage(CvMat input, int angle) {
         CvPoint2D32f center = new CvPoint2D32f(input.cols() / 2.0F,
