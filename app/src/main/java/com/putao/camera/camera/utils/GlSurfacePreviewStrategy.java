@@ -51,7 +51,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private AnimationImageView animationImageView;
     private boolean newRecorderManager=false;
 
-    public void setVedio(boolean isStart) {
+    public void setVedio(boolean isStart ) {
         if (!isStart) {
             recorderManager.stopRecording();
             recorderManager.releaseRecord();
@@ -141,9 +141,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, CommonUtils.getOutputVideoFile().getAbsolutePath());
         }
 
-        if (isStartVedio) {
-            recorderManager.recordVideo(data);
-        }
+        /*if (isStartVedio) {
+            recorderManager.recordVideo(data,camera,mDetector);
+        }*/
         if (animationImageView == null) return;
 
         if (mainRadio == 0 || mainRadioY == 0) {
@@ -190,6 +190,9 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         } else {
             haveFace = false;
             animationImageView.setVisibility(View.GONE);
+        }
+        if (isStartVedio) {
+            recorderManager.recordVideo(data,camera,mDetector);
         }
     }
 

@@ -98,7 +98,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
     private List<DynamicIconInfo> nativeList = null;
     private int Viedheight;
     private int currentSelectDynamic = 0;
-    private boolean haveNoFace=false;
+    private boolean haveNoFace = false;
     private String photo_data;
 
     @Override
@@ -149,14 +149,14 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                         public void run() {
                             List<YMFace> faces = YMDetector.onDetector(originImageBitmap);
                             if (faces != null && faces.size() > 0) {
-                                haveNoFace=false;
+                                haveNoFace = false;
                                 YMFace face = faces.get(0);
                                 landmarks = face.getLandmarks();
                                 if (landmarks != null && landmarks.length > 0) {
                                     mHandle.sendEmptyMessage(123);
                                 }
-                            }else {
-                                haveNoFace=true;
+                            } else {
+                                haveNoFace = true;
                                 ToasterHelper.showShort(PhotoDynamicActivity.this, "检测不到人脸,请换一张试试吧", R.drawable.img_blur_bg);
                             }
                         }
@@ -247,9 +247,9 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
             }
             break;
             case R.id.tv_save:
-                if(haveNoFace){
+                if (haveNoFace) {
                     ToasterHelper.showShort(PhotoDynamicActivity.this, "检测不到人脸,请换一张试试吧", R.drawable.img_blur_bg);
-                }else {
+                } else {
                     save();
                 }
                 break;
@@ -536,9 +536,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 2;
                     options.inJustDecodeBounds = false;
-                    Bitmap  scaleImageBmp=BitmapFactory.decodeFile(photo_data, options);
-                   int hh= scaleImageBmp.getHeight();
-                  int ww=  scaleImageBmp.getWidth();
+                    Bitmap scaleImageBmp = BitmapFactory.decodeFile(photo_data, options);
                  /*   byte[] data = BitmapHelper.Bitmap2Bytes(bitmap);
                     Bitmap scaleImageBmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);*/
                     List<YMFace> faces = detector.onDetector(scaleImageBmp);
@@ -550,7 +548,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                         RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
                         faceModel.rectf = rect;
                     } else {
-                        Log.e("tag","111111111111111");
+                        Log.e("tag", "111111111111111");
                         handler.sendEmptyMessage(0x201);
                         return;
                     }

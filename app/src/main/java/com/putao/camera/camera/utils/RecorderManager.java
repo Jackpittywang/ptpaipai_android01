@@ -2,6 +2,7 @@ package com.putao.camera.camera.utils;
 
 
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -11,6 +12,7 @@ import com.googlecode.javacv.FFmpegFrameRecorder;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvPoint2D32f;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.putao.camera.camera.model.FaceModel;
 import com.putao.camera.util.BitmapToVideoUtil;
 
 import java.nio.Buffer;
@@ -19,6 +21,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import mobile.ReadFace.YMDetector;
+import mobile.ReadFace.YMFace;
 
 import static com.googlecode.javacv.cpp.opencv_core.CV_32FC1;
 import static com.googlecode.javacv.cpp.opencv_core.IPL_DEPTH_8U;
@@ -200,7 +205,7 @@ public class RecorderManager {
 
     public void releaseRecord() {
         isFinished = true;
-        if(recorder != null){
+        if (recorder != null) {
             try {
                 recorder.stop();
                 recorder.release();
@@ -226,14 +231,13 @@ public class RecorderManager {
     }
 
 
-
     private void onPreviewFrame(Bitmap bmp) {
         int during = checkIfMax(new Date().getTime());
         if (yuvIplimage != null && isStart) {
             yuvIplimage.getByteBuffer().put(
                     BitmapToVideoUtil.getYUV420sp(bmp.getWidth(), bmp.getHeight(), bmp));
 //            bmp.recycle();
-            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
+//            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
             try {
                 if (during < maxTime && isStart) {
                     recorder.setTimestamp(1000 * during);
@@ -268,9 +272,11 @@ public class RecorderManager {
         });
     }
 
+    private YMFace face;
+    float[] points;
+    FaceModel faceModel;
 
-
-    public void onPreviewFrameOld(byte[] data) {
+    public void onPreviewFrameOld(byte[] data, Camera camera, YMDetector mDetector) {
         int during = checkIfMax(new Date().getTime());
         if (yuvIplimage != null && isStart) {
             long time = System.currentTimeMillis();
@@ -284,8 +290,25 @@ public class RecorderManager {
             } catch (FFmpegFrameRecorder.Exception e) {
                 e.printStackTrace();
             }
-
         }
+   /* Bitmap tempBitmap =BitmapToVideoUtil.yuv2bitmap(data,480,800);
+    //            Bitmap tempBitmap = BitmapHelper.Bytes2Bimap(data);
+    List<YMFace> faces = mDetector.onDetector(tempBitmap);
+    if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+        YMFace face = faces.get(0);
+        faceModel = new FaceModel();
+        faceModel.landmarks = face.getLandmarks();
+        faceModel.emotions = face.getEmotions();
+        RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+        faceModel.rectf = rect;
+    } else {
+        Log.e("tag", "111111111111111");
+        return;
+    }
+
+    final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimation_view.getAnimationModel(), tempBitmap, mAnimation_view.getEyesBitmapArr(), mAnimation_view.getMouthBitmapArr(), mAnimation_view.getBottomBitmapArr());
+    combineVideo(combineBmps);*/
+
     }
 
     private CvMat rotateImage(CvMat input, int angle) {
@@ -300,7 +323,7 @@ public class RecorderManager {
 
     }
 
-  /**
+    /**
      * 一张图片合成视频
      *
      * @param bmp
@@ -353,8 +376,8 @@ public class RecorderManager {
         }).start();
     }
 
-    public void recordVideo(byte[] data) {
-        onPreviewFrameOld(data);
+    public void recordVideo(byte[] data, Camera camera, YMDetector mDetector) {
+        onPreviewFrameOld(data, camera, mDetector);
     }
 
 

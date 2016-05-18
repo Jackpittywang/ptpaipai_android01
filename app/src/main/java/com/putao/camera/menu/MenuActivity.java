@@ -212,6 +212,14 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
                 });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!AccountHelper.isLogin()) {
+        } else if (AccountHelper.isLogin()) {
+            getUserInfo();
+        }
+    }
 
     private String setSmallImageUrl(String str) {
         return str.substring(0, str.length() - 4) + "_120x120" + str.substring(str.length() - 4);
