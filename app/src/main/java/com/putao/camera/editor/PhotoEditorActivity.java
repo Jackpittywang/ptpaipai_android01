@@ -3,8 +3,10 @@ package com.putao.camera.editor;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,12 +15,21 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +43,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
@@ -75,11 +87,15 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.OnClick;
@@ -154,7 +170,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
             CustomerFilter filter = new CustomerFilter();
-            mGPUImage.setFilter(filter.getFilterByType(filterName));
+            mGPUImage.setFilter(filter.getFilterByType(filterName,mContext));
 
 //            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
             if (from.equals("camera")) {
@@ -1101,7 +1117,88 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         return resizeBmp;
     }
 
+
+    LocationListener locationListener = new LocationListener() {
+        // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        // Provider被enable时触发此函数，比如GPS被打开
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        // Provider被disable时触发此函数，比如GPS被关闭
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        // 当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+        @Override
+        public void onLocationChanged(Location location) {
+            if (location != null) {
+                Log.e("Map", "Location changed : Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
+                latitude = location.getLatitude(); // 经度
+                longitude = location.getLongitude(); // 纬度
+            }
+        }
+    };
+
+    private double latitude = 0.0;
+    private double longitude = 0.0;
+    private Location location;
+    private LocationManager locationManager;
+
     public void save() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.getProvider(LocationManager.GPS_PROVIDER) != null) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);//高精度
+                criteria.setAltitudeRequired(false);//不要求海拔
+                criteria.setBearingRequired(false);//不要求方位
+                criteria.setCostAllowed(true);//允许有花费
+                criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+                String provider = locationManager.getBestProvider(criteria, true);
+                locationManager.requestLocationUpdates(provider, 2000, 0, locationListener);
+                Location location = locationManager.getLastKnownLocation(provider);
+                latitude = location.getLatitude();//经度
+                longitude = location.getLongitude();//纬度
+            }
+        } else {
+            //无法定位：1、提示用户打开定位服务；2、跳转到设置界面
+            Toast.makeText(this, "无法定位，请打开定位服务", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent();
+            i.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(i);
+        }
+
+        Geocoder gc = new Geocoder(this, Locale.getDefault());
+        List<Address> locationList = null;
+        try {
+            //27.7328340000,111.3072050000
+//            locationList = gc.getFromLocation(27.7328340000, 111.3072050000, 1);
+            locationList = gc.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Address address = locationList.get(0);//得到Address实例
+        String ss=address.toString();
+        String countryName = address.getCountryName();//得到国家名称，比如：中国
+        String locality = address.getLocality();//得到城市名称，比如：北京市
+        String thoroughfare=address.getThoroughfare();
+        String addressLine=address.getAddressLine(0);
+        /*for (int i = 0; address.getAddressLine(i) != null; i++) {
+            String addressLine = address.getAddressLine(i);//得到周边信息，包括街道等，i=0，得到街道名称
+        }*/
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+
+
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在保存图片...");
         progressDialog.show();

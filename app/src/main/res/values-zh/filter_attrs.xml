@@ -56,6 +56,7 @@
         <item>temperature</item>
         <item>tint</item>
         <item>vignette</item>
+        <item>sketch</item>
     </string-array>
 
 </resources>

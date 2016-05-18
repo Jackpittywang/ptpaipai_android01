@@ -1,5 +1,6 @@
 package com.putao.camera.camera.filter;
 
+import android.content.Context;
 import android.graphics.PointF;
 
 import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
@@ -12,6 +13,7 @@ import com.putao.camera.camera.gpuimage.GPUImageSaturationFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSepiaFilter;
 import com.putao.camera.camera.gpuimage.GPUImageVignetteFilter;
 import com.putao.camera.camera.gpuimage.GPUImageWhiteBalanceFilter;
+import com.putao.camera.camera.gpuimage.MagicSketchFilter;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -24,10 +26,10 @@ import java.util.Map;
  */
 public class CustomerFilter {
     public enum FilterType implements Serializable {
-        NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC
+        NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC,SM
     }
 
-    private final String[] filterNmae = {"原图", "白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场"};
+    private final String[] filterNmae = {"原图", "白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场","素描"};
     private Map<String, FilterType> filterTypeMap = new HashMap<>();
 
     public CustomerFilter() {
@@ -44,13 +46,14 @@ public class CustomerFilter {
         filterTypeMap.put(filterNmae[6], FilterType.YMYG);
         filterTypeMap.put(filterNmae[7], FilterType.WLHA);
         filterTypeMap.put(filterNmae[8], FilterType.SLDC);
+        filterTypeMap.put(filterNmae[9], FilterType.SM);
     }
 
     public Map<String, FilterType> getFilterTypeMap() {
         return filterTypeMap;
     }
 
-    public GPUImageFilter getFilterByType(FilterType type) {
+    public GPUImageFilter getFilterByType(FilterType type, Context mContext) {
         switch (type) {
             case NONE:
                 return getYuTu();
@@ -70,9 +73,21 @@ public class CustomerFilter {
                 return getWeiLanHaiAn();
             case SLDC:
                 return getShanLiangDengChang();
+            case SM:
+//                return new MagicSketchFilter(mContext);
+            return getMagicSketchFilter(mContext);
             default:
                 return new GPUImageFilter();
         }
+    }
+
+    private GPUImageFilterGroup getMagicSketchFilter(Context mContext) {
+        List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
+        //高斯模糊0.0f, 15.0f
+//        filters.add(new GPUImageBilateralFilter(progress));
+        filters.add(new MagicSketchFilter(mContext));
+        filters.add(new GPUImageMagicBeautyFilter());
+        return new GPUImageFilterGroup(filters);
     }
 
 

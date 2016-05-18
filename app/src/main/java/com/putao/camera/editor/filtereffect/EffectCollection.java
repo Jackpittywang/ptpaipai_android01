@@ -33,6 +33,7 @@ public class EffectCollection {
     public static final String brightness = "brightness";
     public static final String bw = "bw";
     public static final String vignette = "vignette";
+    public static final String sketch = "sketch";
     private static Map<String, String> filterMap = new HashMap<String, String>() {
         {
             put(autofix, "温暖如玉");
@@ -59,6 +60,7 @@ public class EffectCollection {
             put(bw, "bw");
             put(vignette, "闪亮登场");
             put(none, "原图");
+            put(sketch, "素描");
         }
     };
 

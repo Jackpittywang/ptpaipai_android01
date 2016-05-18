@@ -31,14 +31,14 @@
                 android:paddingLeft="6dp"
                 android:background="@drawable/btn_20_back_w_nor"
                 android:textColor="@color/title_text_color" />
-            <TextView
+            <!--<TextView
                 android:id="@+id/back_tv"
                 android:textSize="18sp"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="返回"/>
+                android:text="返回"/>-->
 
 
             <Button

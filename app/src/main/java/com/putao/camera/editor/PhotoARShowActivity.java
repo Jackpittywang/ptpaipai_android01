@@ -111,7 +111,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
 //            tempBitmap.recycle();
 
             CustomerFilter filter = new CustomerFilter();
-            mGPUImage.setFilter(filter.getFilterByType(filterName));
+            mGPUImage.setFilter(filter.getFilterByType(filterName,mContext));
 //            mGPUImage.saveToPictures(originImageBitmap,  this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
             mGPUImage.saveToPictures(bgImageBitmap, FileUtils.getARStickersPath()+ File.separator, "temp.jpg",
                     new GPUImage.OnPictureSavedListener() {

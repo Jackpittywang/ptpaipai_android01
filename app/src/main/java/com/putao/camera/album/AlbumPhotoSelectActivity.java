@@ -55,7 +55,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     private boolean mGalleryShow = false;
     ArrayList<GalleryEntity> mGalleryList;
     private RelativeLayout gallery_list_panel;
-    private TextView title_tv, back_tv;
+    private TextView title_tv;
     private boolean multiSelectState = false;
     Handler mHandler = new Handler() {
         @Override
@@ -90,7 +90,6 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
 
     @Override
     public void doInitSubViews(View view) {
-        back_tv = queryViewById(R.id.back_tv);
         iv_icon = queryViewById(R.id.iv_icon);
         iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
         nonePhotoView = (LinearLayout) this.findViewById(R.id.body_iv_none);
@@ -123,7 +122,7 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
             }
         });
         gallery_list_panel.setVisibility(View.GONE);
-        addOnClickListener(back_btn, right_btn, title_tv, back_tv);
+        addOnClickListener(back_btn, right_btn, title_tv);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -322,9 +321,6 @@ public class AlbumPhotoSelectActivity extends BaseActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_btn:
-                finish();
-                break;
-            case R.id.back_tv:
                 finish();
                 break;
             /*case R.id.right_btn:

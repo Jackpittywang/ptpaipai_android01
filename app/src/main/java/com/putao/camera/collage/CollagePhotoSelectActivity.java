@@ -62,7 +62,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     private final static int ImageSum = 3;
     private StickyGridHeadersGridView mGridView;
     private List<PhotoGridItem> mGirdList = new ArrayList<PhotoGridItem>();
-    private TextView tv_photo_num,back_tv,sum;
+    private TextView tv_photo_num,sum;
     private  ImageView iv_icon;
     private int maxnum = 1;
     private CollageSampleItem mSampleInfo;
@@ -106,7 +106,6 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     @Override
     public void doInitSubViews(View view) {
         sum= queryViewById(R.id.sum);
-        back_tv=queryViewById(R.id.back_tv);
         iv_icon=queryViewById(R.id.iv_icon);
         iv_icon.setImageResource(R.drawable.btn_nav_spread_down);
         mGridView = queryViewById(R.id.asset_grid);
@@ -141,7 +140,7 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
             }
         });
         gallery_list_panel.setVisibility(View.GONE);
-        addOnClickListener(back_btn, title_tv,back_tv,ll_ok);
+        addOnClickListener(back_btn, title_tv,ll_ok);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -408,9 +407,6 @@ public class CollagePhotoSelectActivity extends BaseActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_btn:
-                finish();
-                break;
-            case R.id.back_tv:
                 finish();
                 break;
           /*  case R.id.btn_ok:

@@ -13,10 +13,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -93,6 +95,7 @@ import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.util.PreferenceUtils;
 import com.sunnybear.library.util.StringUtils;
+import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
@@ -215,7 +218,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private boolean isActionUp = false;
     private boolean isOver = true;
-    /*private Handler handler = new Handler() {
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -230,7 +233,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }
 
         }
-    };*/
+    };
 
     @Override
     protected int getLayoutId() {
@@ -395,7 +398,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         loadFilters();
 
 
-       /* take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
+        take_photo_btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent motionEvent) {
 
@@ -438,7 +441,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 return true;
             }
-        });*/
+        });
 
     }
 
@@ -771,7 +774,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 }
                 ClearWaterMark();
                 break;
-            case R.id.take_photo_btn:
+           /* case R.id.take_photo_btn:
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_TAKE_PHOTO);
                 mMarkViewList.clear();
                 if (last_mark_view != null) {
@@ -782,7 +785,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 setBtnEnable(false);
 
                 takePhoto();
-                break;
+                break;*/
             case R.id.album_btn:
                 //相册图片不进行裁剪
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 0);
@@ -1716,40 +1719,44 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 GPUImageFilter filter = null;
                 if (item.equals(EffectCollection.none)) {
                     //原画
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.NONE);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.NONE,mContext);
                     filterName = CustomerFilter.FilterType.NONE;
                 } else if (item.equals(EffectCollection.brightness)) {
                     //白亮晨曦
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BLCX,mContext);
                     filterName = CustomerFilter.FilterType.BLCX;
                 } else if (item.equals(EffectCollection.crossprocess)) {
                     //陌上花开
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.MSHK,mContext);
                     filterName = CustomerFilter.FilterType.MSHK;
                 } else if (item.equals(EffectCollection.filllight)) {
                     //白白嫩嫩
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.BBNN,mContext);
                     filterName = CustomerFilter.FilterType.BBNN;
                 } else if (item.equals(EffectCollection.saturate)) {
                     // 秋日私语
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.QRSY,mContext);
                     filterName = CustomerFilter.FilterType.QRSY;
                 } else if (item.equals(EffectCollection.sepia)) {
                     //指尖流年
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.ZJLN,mContext);
                     filterName = CustomerFilter.FilterType.ZJLN;
                 } else if (item.equals(EffectCollection.temperature)) {
                     //一米阳关
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.YMYG,mContext);
                     filterName = CustomerFilter.FilterType.YMYG;
                 } else if (item.equals(EffectCollection.tint)) {
                     //蔚蓝海岸
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.WLHA,mContext);
                     filterName = CustomerFilter.FilterType.WLHA;
                 } else if (item.equals(EffectCollection.vignette)) {
                     //闪亮登场
-                    filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC);
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC,mContext);
                     filterName = CustomerFilter.FilterType.SLDC;
+                }else if (item.equals(EffectCollection.sketch)) {
+                    //闪亮登场
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.SM,mContext);
+                    filterName = CustomerFilter.FilterType.SM;
                 }
                 current.setFilter(filter);
                 current.setFilterName(filterName);
