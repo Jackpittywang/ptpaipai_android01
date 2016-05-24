@@ -145,7 +145,8 @@ public class PuTaoConstants {
     public static final String PAIPAI_MATTER_CENTER_PATH = "/material/type";
     //素材列表
     public static final String PAIPAI_MATTER_LIST_PATH = "/material/list";
-
+    //
+    public static final String PAIPAI_MATTER_LIST_MATERIAL = "/media/property";
 
 
     // 有声贺卡资源上传host

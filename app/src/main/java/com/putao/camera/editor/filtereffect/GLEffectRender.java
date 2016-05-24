@@ -165,35 +165,28 @@ public class GLEffectRender implements GLSurfaceView.Renderer {
                     EffectFactory.EFFECT_DOCUMENTARY);
             mEffectList.add(mEffect);
         } else if (mCurrentEffect.equals(EffectCollection.grayscale)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_GRAYSCALE);
+            mEffect = effectFactory.createEffect( EffectFactory.EFFECT_GRAYSCALE);
             mEffectList.add(mEffect);
-            Effect bwEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_BLACKWHITE);
+            Effect bwEffect = effectFactory.createEffect(EffectFactory.EFFECT_BLACKWHITE);
             bwEffect.setParameter("black", 0.1f);
             bwEffect.setParameter("white", 0.8f);
             mEffectList.add(bwEffect);
         } else if (mCurrentEffect.equals(EffectCollection.autofix)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_AUTOFIX);
+            mEffect = effectFactory.createEffect( EffectFactory.EFFECT_AUTOFIX);
             mEffect.setParameter("scale", 0.9f);
             mEffectList.add(mEffect);
         } else if (mCurrentEffect.equals(EffectCollection.fisheye)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_FISHEYE);
+            mEffect = effectFactory.createEffect(  EffectFactory.EFFECT_FISHEYE);
             mEffect.setParameter("scale", .5f);
             mEffectList.add(mEffect);
         } else if (mCurrentEffect.equals(EffectCollection.sepia)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_SEPIA);
+            mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SEPIA);
             mEffectList.add(mEffect);
         } else if (mCurrentEffect.equals(EffectCollection.lomoish)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_LOMOISH);
+            mEffect = effectFactory.createEffect( EffectFactory.EFFECT_LOMOISH);
             mEffectList.add(mEffect);
         } else if (mCurrentEffect.equals(EffectCollection.brightness)) {
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_BRIGHTNESS);
+            mEffect = effectFactory.createEffect( EffectFactory.EFFECT_BRIGHTNESS);
             mEffect.setParameter("brightness", 1.2f);
             mEffectList.add(mEffect);
             Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
@@ -204,12 +197,10 @@ public class GLEffectRender implements GLSurfaceView.Renderer {
             mEffectList.add(effect_fill);
 
         } else if (mCurrentEffect.equals(EffectCollection.tint)) {
-            Effect tint_effect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_TINT);
+            Effect tint_effect = effectFactory.createEffect(EffectFactory.EFFECT_TINT);
             tint_effect.setParameter("tint", Color.argb(0, 204, 204, 255));
             mEffectList.add(tint_effect);
-            mEffect = effectFactory.createEffect(
-                    EffectFactory.EFFECT_BRIGHTNESS);
+            mEffect = effectFactory.createEffect(EffectFactory.EFFECT_BRIGHTNESS);
             mEffect.setParameter("brightness", 1.2f);
             mEffectList.add(mEffect);
             Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
@@ -229,6 +220,47 @@ public class GLEffectRender implements GLSurfaceView.Renderer {
             Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
             temp_effect.setParameter("scale", .3f);
             mEffectList.add(temp_effect);
+            Effect mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CROSSPROCESS);
+            mEffectList.add(mEffect);
+            Effect effect_fill = effectFactory.createEffect(EffectFactory.EFFECT_FILLLIGHT);
+            effect_fill.setParameter("strength", .3f);
+            mEffectList.add(effect_fill);
+
+        }else if (mCurrentEffect.equals(EffectCollection.test1)) {
+            Effect tint_effect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_TINT);
+            tint_effect.setParameter("tint", Color.argb(0, 204, 204, 255));
+            mEffectList.add(tint_effect);
+            mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_BRIGHTNESS);
+            mEffect.setParameter("brightness", 1.2f);
+            mEffectList.add(mEffect);
+            Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
+            temp_effect.setParameter("scale", .3f);
+            mEffectList.add(temp_effect);
+            Effect mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CROSSPROCESS);
+            mEffectList.add(mEffect);
+            Effect effect_fill = effectFactory.createEffect(EffectFactory.EFFECT_FILLLIGHT);
+            effect_fill.setParameter("strength", .3f);
+            mEffectList.add(effect_fill);
+
+        }else if (mCurrentEffect.equals(EffectCollection.test2)) {
+            Effect tint_effect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_TINT);
+            tint_effect.setParameter("tint", Color.argb(0, 204, 204, 255));
+            mEffectList.add(tint_effect);
+            mEffect = effectFactory.createEffect(
+                    EffectFactory.EFFECT_BRIGHTNESS);
+            mEffect.setParameter("brightness", 1.2f);
+            mEffectList.add(mEffect);
+            Effect temp_effect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE);
+            temp_effect.setParameter("scale", .3f);
+            mEffectList.add(temp_effect);
+            Effect mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CROSSPROCESS);
+            mEffectList.add(mEffect);
+            Effect effect_fill = effectFactory.createEffect(EffectFactory.EFFECT_FILLLIGHT);
+            effect_fill.setParameter("strength", .3f);
+            mEffectList.add(effect_fill);
 
         }
         else {

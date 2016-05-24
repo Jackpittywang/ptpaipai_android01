@@ -57,6 +57,8 @@
         <item>tint</item>
         <item>vignette</item>
         <item>sketch</item>
+        <item>test1</item>
+        <item>test2</item>
     </string-array>
 
 </resources>

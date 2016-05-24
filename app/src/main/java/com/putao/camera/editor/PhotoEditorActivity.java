@@ -45,8 +45,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.BeautifyInfo;
 import com.putao.camera.bean.StickerCategoryInfo;
 import com.putao.camera.bean.StickerUnZipInfo;
 import com.putao.camera.bean.WaterMarkCategoryInfo;
@@ -68,6 +70,7 @@ import com.putao.camera.event.BasePostEvent;
 import com.putao.camera.event.EventBus;
 import com.putao.camera.gps.CityMap;
 import com.putao.camera.gps.GpsUtil;
+import com.putao.camera.http.CacheRequest;
 import com.putao.camera.setting.watermark.management.MatterCenterActivity;
 import com.putao.camera.setting.watermark.management.StickerNativePicAdapter;
 import com.putao.camera.setting.watermark.management.StickerPicAdapter;
@@ -78,12 +81,16 @@ import com.putao.camera.util.DateUtil;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.NetManager;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.WaterMarkHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
+import com.sunnybear.library.util.ToastUtils;
 import com.sunnybear.library.view.recycler.BasicRecyclerView;
 import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -170,7 +177,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             int filter_origin_size = DisplayHelper.getValueByDensity(120);
             filter_origin = BitmapHelper.getInstance().getCenterCropBitmap(photo_data, filter_origin_size, filter_origin_size);
             CustomerFilter filter = new CustomerFilter();
-            mGPUImage.setFilter(filter.getFilterByType(filterName,mContext));
+            mGPUImage.setFilter(filter.getFilterByType(filterName, mContext));
 
 //            mGPUImage.saveToPictures(originImageBitmap, this.getApplicationContext().getFilesDir().getAbsolutePath() + File.separator, "temp.jpg",
             if (from.equals("camera")) {
@@ -242,6 +249,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                 Bundle bundle = new Bundle();
 //                WaterMarkIconInfo info = mWaterMarkChoiceAdapter.getItem(position);
                 StickerUnZipInfo info = mStickerPicAdapter.getItem(position);
+                SharedPreferencesHelper.saveStringValue(mContext, "sticker", info.parentid);
                 bundle.putSerializable("iconRes", info);
                 EventBus.getEventBus().post(new BasePostEvent(PuTaoConstants.WATER_MARK_ICON_CHOICE_REFRESH, bundle));
             }
@@ -267,6 +275,19 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         } else {
             btn_new_res.setShowRedPoint(false);
             btn_new_res.setVisibility(View.VISIBLE);
+        }*/
+      /*  try {
+            //android读取图片EXIF信息
+            ExifInterface exifInterface = new ExifInterface(photo_data);
+            exifInterface.setAttribute(ExifInterface.TAG_MODEL, "xiaomi");
+            String smodel = exifInterface.getAttribute(ExifInterface.TAG_MODEL);
+            String width = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+            String tag_white_balance = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
+            String tag_datetime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+            String tag_gps_latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+            String iso = exifInterface.getAttribute(ExifInterface.TAG_ISO);
+        } catch (Exception e) {
+            e.printStackTrace();
         }*/
 
     }
@@ -1061,7 +1082,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
         }
     }
 
-    private void AddFilterView(String item, Bitmap bitmap_sample) {
+    private void AddFilterView(final String item, Bitmap bitmap_sample) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.filter_item, null);
         FilterEffectThumbnailView simple_image = (FilterEffectThumbnailView) view.findViewById(R.id.filter_preview);
         simple_image.setImageBitmap(bitmap_sample);
@@ -1101,6 +1122,8 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                         tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
                     }
                 }
+                SharedPreferencesHelper.saveStringValue(mContext,"filtername",item.toString());
+
             }
 
 
@@ -1150,7 +1173,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
     private Location location;
     private LocationManager locationManager;
 
-    public void save() {
+    public void getMassege() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.getProvider(LocationManager.GPS_PROVIDER) != null) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -1184,21 +1207,59 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             e.printStackTrace();
         }
         Address address = locationList.get(0);//得到Address实例
-        String ss=address.toString();
+        String ss = address.toString();
         String countryName = address.getCountryName();//得到国家名称，比如：中国
         String locality = address.getLocality();//得到城市名称，比如：北京市
-        String thoroughfare=address.getThoroughfare();
-        String addressLine=address.getAddressLine(0);
+        String thoroughfare = address.getThoroughfare();
+        String addressLine = address.getAddressLine(0);
         /*for (int i = 0; address.getAddressLine(i) != null; i++) {
             String addressLine = address.getAddressLine(i);//得到周边信息，包括街道等，i=0，得到街道名称
         }*/
 
-
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         String str = formatter.format(curDate);
+        long shooting_time = System.currentTimeMillis() / 1000;
+        if (!NetManager.isNetworkAvailable(PhotoEditorActivity.this)) {
+            uploadMassege(latitude, longitude, shooting_time);
+        }
 
+    }
 
+    public void uploadMassege(double latitude, double longitude, long str) {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+                ToastUtils.showToast(mContext, "111111", Toast.LENGTH_SHORT);
+                String ss = json.toString();
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+                ToastUtils.showToast(mContext, "0000", Toast.LENGTH_SHORT);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest(requestString(latitude, longitude, str),
+                map, mWaterMarkUpdateCallback);
+        mCacheRequest.startPostRequest();
+    }
+
+    public void initSharedPreferencesHelper() {
+        SharedPreferencesHelper.saveStringValue(mContext, "dynamic", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "sticker", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "template", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "filtername", "None");
+
+    }
+
+    public void save() {
+
+        getMassege();
+
+        initSharedPreferencesHelper();
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("正在保存图片...");
         progressDialog.show();
@@ -1240,6 +1301,7 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
                     File image = new File(photo_data);
                     image.delete();
                 }
+
                 finish();
             }
         });
@@ -1475,6 +1537,25 @@ public class PhotoEditorActivity extends BasicFragmentActivity implements View.O
             }
         }
     };
+
+    public String requestString(double latitude, double longitude, long str) {
+        String dynamic = SharedPreferencesHelper.readStringValue(mContext, "dynamic", "");
+        String sticker = SharedPreferencesHelper.readStringValue(mContext, "sticker", "");
+        String template = SharedPreferencesHelper.readStringValue(mContext, "template", "");
+        String filtername = SharedPreferencesHelper.readStringValue(mContext,"filtername","NONE");
+//        String beautify = "{\"android\":{\"filtername\":\"null\"}}";
+        BeautifyInfo beautifyInfo = new BeautifyInfo();
+        HashMap<String, String> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("filtername", filtername);
+        beautifyInfo.setAndroid(objectObjectHashMap);
+        String beautifyInfoStr = JSON.toJSONString(beautifyInfo);
+
+
+        return PuTaoConstants.PAIPAI_MATTER_LIST_MATERIAL + "?appid=" + MainApplication.app_id + "&lat=" + latitude + "&lng=" + longitude +
+                "&dynameic=" + dynamic + "&sticker=" + sticker + "&template=" + template +
+                "&beautify=" + beautifyInfoStr +
+                "&shooting_time=" + str;
+    }
 
 
 }

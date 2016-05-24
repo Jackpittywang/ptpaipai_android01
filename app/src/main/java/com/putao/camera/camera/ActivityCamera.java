@@ -342,6 +342,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     isActionUp = true;
                     if (isOver) {
                         takePhoto();
+
                     } else {
                         current.isStart(false);
                         ToastUtils.showToast(mContext, "录制完成", 500);
@@ -408,6 +409,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     current.setAnimationView(animation_view);
                     currentSelectDynamic = position;
                     currentSelectDynamicName = list.get(0).zipName;
+                    SharedPreferencesHelper.saveStringValue(mContext,"dynamic",currentSelectDynamicName);
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
@@ -454,9 +456,9 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         filterEffectNameList.addAll(Arrays.asList(getResources().getStringArray(R.array.filter_effect)));
         filter_origin = zoomSmall(((BitmapDrawable) getResources().getDrawable(R.drawable.filter_none)).getBitmap());
         for (final String item : filterEffectNameList) {
-           /* GPUImage mGPUImage = new GPUImage(mContext);
+            /*GPUImage mGPUImage = new GPUImage(mContext);
             CustomerFilter filter = new CustomerFilter();
-            mGPUImage.setFilter(filter.getFilterByType(filterName,mContext));*/
+            mGPUImage.setFilter(filter.getFilterByType(CustomerFilter.FilterType.SM,mContext));*/
 
 
             new EffectImageTask(filter_origin, item, new EffectImageTask.FilterEffectListener() {
@@ -514,7 +516,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
                     }
                 }
-
+                SharedPreferencesHelper.saveStringValue(mContext,"filtername",item.toString());
                 //设置当前滤镜
                 GPUImageFilter filter = null;
                 if (item.equals(EffectCollection.none)) {
@@ -554,9 +556,19 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     filter = filters.getFilterByType(CustomerFilter.FilterType.SLDC, mContext);
                     filterName = CustomerFilter.FilterType.SLDC;
                 } else if (item.equals(EffectCollection.sketch)) {
-                    //闪亮登场
+                    //素描
                     filter = filters.getFilterByType(CustomerFilter.FilterType.SM, mContext);
                     filterName = CustomerFilter.FilterType.SM;
+                }
+                else if (item.equals(EffectCollection.test1)) {
+                    //素描
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.TEST1, mContext);
+                    filterName = CustomerFilter.FilterType.TEST1;
+                }
+                else if (item.equals(EffectCollection.test2)) {
+                    //素描
+                    filter = filters.getFilterByType(CustomerFilter.FilterType.TEST2, mContext);
+                    filterName = CustomerFilter.FilterType.TEST2;
                 }
                 current.setFilter(filter);
                 current.setFilterName(filterName);
@@ -952,6 +964,8 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 takePhoto();
                 break;*/
             case R.id.album_btn:
+//                BitmapToVideoUtil.savePic(BitmapToVideoUtil.takeScreenShot(this), FileUtils.getSdcardPath() + File.separator  + "00.jpg");
+
                 //相册图片不进行裁剪
                 SharedPreferencesHelper.saveIntValue(this, PuTaoConstants.CUT_TYPE, 0);
 //                doUmengEventAnalysis(UmengAnalysisConstants.UMENG_COUNT_EVENT_PHOTO_LIST);

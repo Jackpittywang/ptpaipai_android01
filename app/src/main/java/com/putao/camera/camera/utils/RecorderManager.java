@@ -2,7 +2,6 @@ package com.putao.camera.camera.utils;
 
 
 import android.graphics.Bitmap;
-import android.graphics.RectF;
 import android.hardware.Camera;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -180,6 +179,7 @@ public class RecorderManager {
         isMax = false;
     }
 
+    int count = 0;
 
     public void startRecord() {
         if (isMax) {
@@ -190,6 +190,7 @@ public class RecorderManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        count = 0;
         audioThread.start();
         isStart = true;
         videoStartTime = new Date().getTime();
@@ -204,8 +205,20 @@ public class RecorderManager {
                 totalTime += new Date().getTime() - videoStartTime;
                 videoStartTime = 0;
             }
+            count = 0;
             isStart = false;
             releaseRecord();
+        }
+    }
+
+    public void stopRecording() {
+        if (recorder != null && isStart) {
+            runAudioThread = false;
+            if (!isMax) {
+                totalTime += new Date().getTime() - videoStartTime;
+                videoStartTime = 0;
+            }
+            isStart = false;
         }
     }
 
@@ -221,19 +234,6 @@ public class RecorderManager {
             recorder = null;
         }
 
-    }
-
-
-    public void stopRecording() {
-        if (recorder != null && isStart) {
-            runAudioThread = false;
-            if (!isMax) {
-                totalTime += new Date().getTime() - videoStartTime;
-                videoStartTime = 0;
-            }
-            isStart = false;
-
-        }
     }
 
 
@@ -264,7 +264,6 @@ public class RecorderManager {
                 int during = checkIfMax(new Date().getTime());
                 if (yuvIplimage != null && isStart) {
                     yuvIplimage.getByteBuffer().put(data);
-//            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
                     try {
                         if (during < maxTime && isStart) {
                             recorder.setTimestamp(1000 * during);
@@ -278,7 +277,7 @@ public class RecorderManager {
         });
     }
 
-    public void onPreviewFrameOld(byte[] data, Camera camera, YMDetector mDetector) {
+    public void onPreviewFrameOld(final byte[] data) {
         int during = checkIfMax(new Date().getTime());
         if (yuvIplimage != null && isStart) {
             long time = System.currentTimeMillis();
@@ -293,6 +292,7 @@ public class RecorderManager {
                 e.printStackTrace();
             }
         }
+
     }
 
     private AnimationImageView mAnimationView;
@@ -305,36 +305,65 @@ public class RecorderManager {
     float[] points;
     FaceModel faceModel;
     private IntBuffer mGLRgbBuffer;
+    String videoImagePath;
 
-    public void onPreviewFrameOldAR(byte[] data, Camera camera, YMDetector mDetector) {
+    public void onPreviewFrameOldAR(final byte[] data, Camera camera, final YMDetector mDetector) {
         final Camera.Size previewSize = camera.getParameters().getPreviewSize();
+        count++;
         int during = checkIfMax(new Date().getTime());
-
         if (isStart) {
-//            int [] rgb=BitmapToVideoUtil.YV12ToRGB(data,previewSize.width,previewSize.height);
-          int[] rgb=  new int[previewSize.width*previewSize.height];
-            rgb= BitmapToVideoUtil.decodeYUV420SPrgb565(rgb,data,previewSize.width,previewSize.height);
-            Bitmap tempBitmap = Bitmap.createBitmap(rgb, 480, 800,
-                    Bitmap.Config.RGB_565);
+            Bitmap tempBitmap = BitmapToVideoUtil.yuv2bitmap(data, previewSize.width, previewSize.height);
 //            Bitmap tempBitmap= BitmapHelper.Bytes2Bimap(data);
-            BitmapHelper.saveBitmap(tempBitmap, FileUtils.getSdcardPath() + File.separator + "temp2222222222222.jpg");
+//            tempBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_270);
+            BitmapHelper.saveBitmap(tempBitmap, FileUtils.getSdcardPath() + File.separator + count + ".jpg");
+//            BitmapToVideoUtil.takeScreenShot();
 
-            List<YMFace> faces = mDetector.onDetector(tempBitmap);
-            if (faces != null && faces.size() > 0 && faces.get(0) != null) {
-                YMFace face = faces.get(0);
-                faceModel = new FaceModel();
-                faceModel.landmarks = face.getLandmarks();
-                faceModel.emotions = face.getEmotions();
-                RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
-                faceModel.rectf = rect;
-            } else {
-                Log.e("tag", "111111111111111");
-                return;
-            }
-            final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
-            combineVideo(combineBmps);
+//                    List<YMFace> faces = mDetector.onDetector(tempBitmap);
+//                    if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+//                        YMFace face = faces.get(0);
+//                        faceModel = new FaceModel();
+//                        faceModel.landmarks = face.getLandmarks();
+//                        faceModel.emotions = face.getEmotions();
+//                        RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+//                        faceModel.rectf = rect;
+//                    } else {
+//                        Log.e("tag", "111111111111111");
+//                        return;
+//                    }
+//                    mAnimationView.setSave(tempBitmap, FileUtils.getSdcardPath() + File.separator+ "/temp/", 36);
+//
+//                    final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
+//                    combineVideoOld(combineBmps);
         }
 
+    }
+
+
+    public void combineVideoOld(final List<byte[]> combineBmps) {
+//        startRecord();
+        needVoice = false;
+        picIndex = 0;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (picIndex < combineBmps.size() && isStart) {
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    onPreviewFrameOld(combineBmps.get(picIndex));
+//                    onPreviewFrame(combineBmps.get(picIndex));
+                    picIndex++;
+
+                    if (picIndex >= combineBmps.size()) {
+                        picIndex = 0;
+                    }
+                }
+                combineBmps.clear();
+                needVoice = true;
+            }
+        }).start();
     }
 
 
@@ -403,8 +432,8 @@ public class RecorderManager {
         }).start();
     }
 
-    public void recordVideo(byte[] data, Camera camera, YMDetector mDetector) {
-        onPreviewFrameOld(data, camera, mDetector);
+    public void recordVideo(byte[] data) {
+        onPreviewFrameOld(data);
     }
 
 

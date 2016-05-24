@@ -26,10 +26,10 @@ import java.util.Map;
  */
 public class CustomerFilter {
     public enum FilterType implements Serializable {
-        NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC,SM
+        NONE, BLCX, MSHK, BBNN, QRSY, ZJLN, YMYG, WLHA, SLDC,SM,TEST1,TEST2
     }
 
-    private final String[] filterNmae = {"原图", "白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场","素描"};
+    private final String[] filterNmae = {"原图", "白亮晨曦", "陌上花开", "白白嫩嫩", "秋日私语", "指尖流年", "一米阳光", "蔚蓝海岸", "闪亮登场","素描","样式1","样式2"};
     private Map<String, FilterType> filterTypeMap = new HashMap<>();
 
     public CustomerFilter() {
@@ -47,6 +47,9 @@ public class CustomerFilter {
         filterTypeMap.put(filterNmae[7], FilterType.WLHA);
         filterTypeMap.put(filterNmae[8], FilterType.SLDC);
         filterTypeMap.put(filterNmae[9], FilterType.SM);
+        filterTypeMap.put(filterNmae[10], FilterType.TEST1);
+        filterTypeMap.put(filterNmae[11], FilterType.TEST2);
+
     }
 
     public Map<String, FilterType> getFilterTypeMap() {
@@ -76,11 +79,20 @@ public class CustomerFilter {
             case SM:
 //                return new MagicSketchFilter(mContext);
             return getMagicSketchFilter(mContext);
+            case TEST1:
+                return getMagicSketchFilter(mContext);
+            case TEST2:
+                return getMagicSketchFilter(mContext);
             default:
                 return new GPUImageFilter();
         }
     }
 
+    /**
+     * 素描
+     *
+     * @return
+     */
     private GPUImageFilterGroup getMagicSketchFilter(Context mContext) {
         List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
         //高斯模糊0.0f, 15.0f
