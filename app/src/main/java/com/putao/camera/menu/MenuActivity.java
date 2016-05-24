@@ -111,10 +111,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
 
     @Override
     protected int getLayoutId() {
-        /*if (SharedPreferencesHelper.readBooleanValue(this, PuTaoConstants.PREFERENC_CAMERA_ENTER_SETTING, false)) {
-            ActivityHelper.startActivity(this, ActivityCamera.class);
-//            finish();
-        }*/
+
         return R.layout.activity_menu;
     }
 
@@ -127,7 +124,6 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
         UmengUpdateHelper.getInstance().setShowTip(false).autoUpdate(MainApplication.getInstance());
         initIconInfo();
 
-//        filePath = MainApplication.sdCardPath + File.separator + "head_icon.jpg";
         if (!AccountHelper.isLogin()) {
         } else if (AccountHelper.isLogin()) {
             getUserInfo();

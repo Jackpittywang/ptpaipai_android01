@@ -2,11 +2,19 @@ package com.putao.camera.editor;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.RectF;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +22,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -21,13 +31,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.application.MainApplication;
+import com.putao.camera.bean.BeautifyInfo;
 import com.putao.camera.bean.DynamicCategoryInfo;
 import com.putao.camera.bean.DynamicIconInfo;
 import com.putao.camera.camera.model.FaceModel;
@@ -49,6 +62,8 @@ import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.DisplayHelper;
 import com.putao.camera.util.FileUtils;
 import com.putao.camera.util.Loger;
+import com.putao.camera.util.NetManager;
+import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.video.VideoHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
@@ -60,9 +75,13 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -139,7 +158,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
                     mDynamicPicAdapter.notifyItemChanged(position);
                     Loger.d("click");
 //                    ToasterHelper.showShort(PhotoDynamicActivity.this, "请将正脸置于取景器内", R.drawable.img_blur_bg);
-
+                    SharedPreferencesHelper.saveStringValue(mContext,"dynamic",list.get(0).zipName);
                     animation_view.clearData();
                     animation_view.setData(list.get(0).zipName, false);
                     //检测人脸
@@ -390,8 +409,11 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
 
 
     public void save() {
+        getMassege();
+
         videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/.temp/";
         clearImageList();
+        initSharedPreferencesHelper();
         File file = new File(videoImagePath);
         if (file.exists() == false) file.mkdir();
         progressDialog = new ProgressDialog(this);
@@ -619,6 +641,134 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
 
        int hh= newOriginImageBitmap.getHeight();
         int ww=newOriginImageBitmap.getWidth();*/
+ LocationListener locationListener = new LocationListener() {
+     // Provider的状态在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+     @Override
+     public void onStatusChanged(String provider, int status, Bundle extras) {
+     }
 
+     // Provider被enable时触发此函数，比如GPS被打开
+     @Override
+     public void onProviderEnabled(String provider) {
+     }
+
+     // Provider被disable时触发此函数，比如GPS被关闭
+     @Override
+     public void onProviderDisabled(String provider) {
+     }
+
+     // 当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+     @Override
+     public void onLocationChanged(Location location) {
+         if (location != null) {
+             Log.e("Map", "Location changed : Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
+             latitude = location.getLatitude(); // 经度
+             longitude = location.getLongitude(); // 纬度
+         }
+     }
+ };
+
+    private double latitude = 0.0;
+    private double longitude = 0.0;
+    private Location location;
+    private LocationManager locationManager;
+
+    public void getMassege() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.getProvider(LocationManager.GPS_PROVIDER) != null) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);//高精度
+                criteria.setAltitudeRequired(false);//不要求海拔
+                criteria.setBearingRequired(false);//不要求方位
+                criteria.setCostAllowed(true);//允许有花费
+                criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+                String provider = locationManager.getBestProvider(criteria, true);
+                locationManager.requestLocationUpdates(provider, 2000, 0, locationListener);
+                Location location = locationManager.getLastKnownLocation(provider);
+                latitude = location.getLatitude();//经度
+                longitude = location.getLongitude();//纬度
+            }
+        } else {
+            //无法定位：1、提示用户打开定位服务；2、跳转到设置界面
+            Toast.makeText(this, "无法定位，请打开定位服务", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent();
+            i.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(i);
+        }
+
+        Geocoder gc = new Geocoder(this, Locale.getDefault());
+        List<Address> locationList = null;
+        try {
+            //27.7328340000,111.3072050000
+//            locationList = gc.getFromLocation(27.7328340000, 111.3072050000, 1);
+            locationList = gc.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Address address = locationList.get(0);//得到Address实例
+        String ss = address.toString();
+        String countryName = address.getCountryName();//得到国家名称，比如：中国
+        String locality = address.getLocality();//得到城市名称，比如：北京市
+        String thoroughfare = address.getThoroughfare();
+        String addressLine = address.getAddressLine(0);
+        /*for (int i = 0; address.getAddressLine(i) != null; i++) {
+            String addressLine = address.getAddressLine(i);//得到周边信息，包括街道等，i=0，得到街道名称
+        }*/
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String str = formatter.format(curDate);
+        long shooting_time=  System.currentTimeMillis()/1000;
+        if (!NetManager.isNetworkAvailable(PhotoDynamicActivity.this)) {
+            uploadMassege(latitude, longitude,shooting_time);
+        }
+
+    }
+
+    public void uploadMassege(double latitude,double longitude ,long str) {
+        CacheRequest.ICacheRequestCallBack mWaterMarkUpdateCallback = new CacheRequest.ICacheRequestCallBack() {
+            @Override
+            public void onSuccess(int whatCode, JSONObject json) {
+                super.onSuccess(whatCode, json);
+                ToastUtils.showToast(mContext,"111111",Toast.LENGTH_SHORT);
+                String ss=  json.toString();
+            }
+
+            @Override
+            public void onFail(int whatCode, int statusCode, String responseString) {
+                super.onFail(whatCode, statusCode, responseString);
+                ToastUtils.showToast(mContext,"0000",Toast.LENGTH_SHORT);
+            }
+        };
+        HashMap<String, String> map = new HashMap<String, String>();
+        CacheRequest mCacheRequest = new CacheRequest(requestString(latitude,longitude,str),
+                map, mWaterMarkUpdateCallback);
+        mCacheRequest.startPostRequest();
+    }
+    public void  initSharedPreferencesHelper(){
+        SharedPreferencesHelper.saveStringValue(mContext, "dynamic", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "sticker", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "template", "");
+        SharedPreferencesHelper.saveStringValue(mContext, "filtername", "None");
+
+    }
+    public String requestString(double latitude,double longitude,long str){
+        String dynamic = SharedPreferencesHelper.readStringValue(mContext, "dynamic", "");
+        String sticker = SharedPreferencesHelper.readStringValue(mContext, "sticker", "");
+        String template = SharedPreferencesHelper.readStringValue(mContext, "template", "");
+        String filtername = SharedPreferencesHelper.readStringValue(mContext,"filtername","NONE");
+        BeautifyInfo beautifyInfo = new BeautifyInfo();
+        HashMap<String, String> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("filtername", filtername);
+        beautifyInfo.setAndroid(objectObjectHashMap);
+        String beautifyInfoStr = JSON.toJSONString(beautifyInfo);
+
+        return PuTaoConstants.PAIPAI_MATTER_LIST_MATERIAL + "?appid=" + MainApplication.app_id + "&lat=" + latitude + "&lng=" + longitude +
+                "&dynameic=" + dynamic + "&sticker=" + sticker + "&template=" + template +
+                "&beautify=" + beautifyInfoStr +
+                "&shooting_time=" + str;
+    }
 
 }

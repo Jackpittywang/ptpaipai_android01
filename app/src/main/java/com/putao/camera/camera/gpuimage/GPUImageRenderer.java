@@ -127,7 +127,6 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         final Size previewSize = camera.getParameters().getPreviewSize();
         if (previewCallback != null)
             previewCallback.onPreviewFrame(data, camera);
-
         if (mGLRgbBuffer == null) {
             mGLRgbBuffer = IntBuffer.allocate(previewSize.width * previewSize.height);
         }

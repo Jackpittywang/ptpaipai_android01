@@ -316,7 +316,7 @@ public class MainApplication extends BasicApplication {
      * @return 是否开启
      */
     public boolean isDebug() {
-        return false;
+        return true;
     }
 
     @Override

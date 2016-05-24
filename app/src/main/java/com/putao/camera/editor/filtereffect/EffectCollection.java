@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by jidongdong on 14/12/30.
  */
 public class EffectCollection {
-    public static final String none = "None";
+    public static final String none = "none";
     public static final String autofix = "autofix";
     public static final String tint = "tint";
     public static final String temperature = "temperature";
@@ -34,6 +34,8 @@ public class EffectCollection {
     public static final String bw = "bw";
     public static final String vignette = "vignette";
     public static final String sketch = "sketch";
+    public static final String test1 = "test1";
+    public static final String test2 = "test2";
     private static Map<String, String> filterMap = new HashMap<String, String>() {
         {
             put(autofix, "温暖如玉");
@@ -61,6 +63,8 @@ public class EffectCollection {
             put(vignette, "闪亮登场");
             put(none, "原图");
             put(sketch, "素描");
+            put(test1,"样式1");
+            put(test2,"样式2");
         }
     };
 

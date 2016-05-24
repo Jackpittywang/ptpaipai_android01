@@ -204,10 +204,17 @@ public class PCameraFragment extends CameraFragment {
                 .getSystemService(Context.WINDOW_SERVICE);
         screenW = manager.getDefaultDisplay().getWidth();
         screenH = manager.getDefaultDisplay().getHeight();
+
+        /*LinkedList<byte[]> data=new LinkedList<>();
+        while (data!=null && data.size()>0){
+             byte[] temp=data.poll();
+
+        }*/
         return (results);
     }
 
     private GPUImage mGPUImage;
+    private Camera.Parameters cameraParams;
 
     private void initFilter() {
         boolean flipHorizontal = false;
@@ -221,13 +228,14 @@ public class PCameraFragment extends CameraFragment {
             } else
                 degrees = 90;
         }
-        Camera.Parameters cameraParams = cameraView.getCamera().getParameters();
+        cameraParams = cameraView.getCamera().getParameters();
         if (cameraParams.getFocusMode().contains(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             cameraParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 //        cameraParams.setFlashMode();
-        setOptimalPreviewSize(cameraParams, 1280, 960);
+        setOptimalPreviewSize(cameraParams, 800, 480);
         setOptimalPictureSize(cameraParams, 1280);
+//        setOptimalPictureSize(cameraParams, 2592);
         cameraView.getCamera().setParameters(cameraParams);
         mGPUImage.setUpCamera(cameraView.getCamera(), degrees, flipHorizontal, flipVertical);
     }
@@ -414,8 +422,13 @@ public class PCameraFragment extends CameraFragment {
     }
 
     public void isStart(boolean isStart) {
+        if (isStart)
+            setOptimalPictureSize(cameraParams, 800);
+        else setOptimalPictureSize(cameraParams, 1280);
+
         cameraView.setIsStart(isStart);
     }
+
 
     private Parameters previewParams = null;
     private Matrix matrix;
@@ -424,7 +437,10 @@ public class PCameraFragment extends CameraFragment {
         flashScreen();
         Camera camera = cameraView.getCamera();
         Parameters pictureParams = camera.getParameters();
+//        pictureParams.setExposureCompensation(3);
+
         if (mHdrEnable) {
+
             if (mHdrAuto) {
                 pictureParams.setFlashMode(Parameters.FLASH_MODE_AUTO);
             } else {
@@ -442,10 +458,14 @@ public class PCameraFragment extends CameraFragment {
         } else {
             camera.setParameters(pictureParams);
         }
-
         camera.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, final Camera camera) {
+//                获取当前情景模式设置。
+                camera.getParameters().getSceneMode();
+
+                camera.getParameters().flatten();
+                camera.getParameters().getWhiteBalance();
                 camera.startPreview();
 //                imagePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
                 imagePath = FileUtils.getARStickersPath() + File.separator + "temp.jpg";
@@ -459,7 +479,7 @@ public class PCameraFragment extends CameraFragment {
 
 //                if (model.contains("OPPO") || brand.contains("OPPO")) {
                 if (isFFC) {
-                    if (model.contains("huawei") || brand.contains("huawei")|| model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi")|| brand.contains("nubia")) {
+                    if (model.contains("huawei") || brand.contains("huawei") || model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi") || brand.contains("nubia")) {
 
                     } else {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);
@@ -467,7 +487,7 @@ public class PCameraFragment extends CameraFragment {
 
                     matrix = new Matrix();
                     matrix.postScale(-1, 1);      /*水平翻转180度*/
-                    saveBitmap = Bitmap.createBitmap(saveBitmap, 0, 0, saveBitmap.getWidth(),  saveBitmap.getHeight(), matrix, true);
+                    saveBitmap = Bitmap.createBitmap(saveBitmap, 0, 0, saveBitmap.getWidth(), saveBitmap.getHeight(), matrix, true);
 
 
                 }
@@ -493,6 +513,37 @@ public class PCameraFragment extends CameraFragment {
                 } else {
                     handler.sendEmptyMessageDelayed(0x002, 0);
                 }
+
+        /*
+         * 目前Android SDK定义的Tag有:
+        TAG_DATETIME 时间日期
+        TAG_FLASH 闪光灯
+        TAG_GPS_LATITUDE 纬度
+        TAG_GPS_LATITUDE_REF 纬度参考
+        TAG_GPS_LONGITUDE 经度
+        TAG_GPS_LONGITUDE_REF 经度参考
+        TAG_IMAGE_LENGTH 图片长
+        TAG_IMAGE_WIDTH 图片宽
+        TAG_MAKE 设备制造商
+        TAG_MODEL 设备型号
+        TAG_ORIENTATION 方向
+        TAG_WHITE_BALANCE 白平衡
+        */
+
+                try {
+                    //android读取图片EXIF信息
+                    ExifInterface exifInterface = new ExifInterface(imagePath);
+                    String smodel = exifInterface.getAttribute(ExifInterface.TAG_MODEL);
+                    String width = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+                    String tag_white_balance  = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE );
+                    String tag_datetime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                    String tag_gps_latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                    String iso = exifInterface.getAttribute(ExifInterface.TAG_ISO);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
         });

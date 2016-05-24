@@ -1,17 +1,23 @@
 package com.putao.camera.util;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.util.Log;
+import android.view.View;
 
 import com.putao.camera.camera.model.AnimationModel;
 import com.putao.camera.camera.model.FaceModel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -245,7 +251,7 @@ public class BitmapToVideoUtil {
     }
 
     public static int[] decodeYUV420SPrgb565(int[] rgb, byte[] yuv420sp, int width,
-                                            int height) {
+                                             int height) {
         final int frameSize = width * height;
         for (int j = 0, yp = 0; j < height; j++) {
             int uvp = frameSize + (j >> 1) * width, u = 0, v = 0;
@@ -273,323 +279,372 @@ public class BitmapToVideoUtil {
                     b = 0;
                 else if (b > 262143)
                     b = 262143;
-              rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000)
+                rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000)
                         | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
 
             }
         }
-        return  rgb;
+        return rgb;
     }
+
     private static int R = 0;
     private static int G = 1;
     private static int B = 2;
+
     //I420是yuv420格式，是3个plane，排列方式为(Y)(U)(V)
-    public static int[] I420ToRGB(byte[] src, int width, int height){
+    public static int[] I420ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfV = numOfPixel;
-        int positionOfU = numOfPixel/4 + numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = (i/2)*(width/2);
+        int positionOfU = numOfPixel / 4 + numOfPixel;
+        int[] rgb = new int[numOfPixel * 3];
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = (i / 2) * (width / 2);
             int startU = positionOfV + step;
             int startV = positionOfU + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int U = startU + j/2;
-                int V = startV + j/2;
-                int index = Y*3;
+                int U = startU + j / 2;
+                int V = startV + j / 2;
+                int index = Y * 3;
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
 
         return rgb;
     }
 
-    private static class RGB{
+    private static class RGB {
         public int r, g, b;
     }
 
-    private static RGB yuvTorgb(byte Y, byte U, byte V){
+    private static RGB yuvTorgb(byte Y, byte U, byte V) {
         RGB rgb = new RGB();
-        rgb.r = (int)((Y&0xff) + 1.4075 * ((V&0xff)-128));
-        rgb.g = (int)((Y&0xff) - 0.3455 * ((U&0xff)-128) - 0.7169*((V&0xff)-128));
-        rgb.b = (int)((Y&0xff) + 1.779 * ((U&0xff)-128));
-        rgb.r =(rgb.r<0? 0: rgb.r>255? 255 : rgb.r);
-        rgb.g =(rgb.g<0? 0: rgb.g>255? 255 : rgb.g);
-        rgb.b =(rgb.b<0? 0: rgb.b>255? 255 : rgb.b);
+        rgb.r = (int) ((Y & 0xff) + 1.4075 * ((V & 0xff) - 128));
+        rgb.g = (int) ((Y & 0xff) - 0.3455 * ((U & 0xff) - 128) - 0.7169 * ((V & 0xff) - 128));
+        rgb.b = (int) ((Y & 0xff) + 1.779 * ((U & 0xff) - 128));
+        rgb.r = (rgb.r < 0 ? 0 : rgb.r > 255 ? 255 : rgb.r);
+        rgb.g = (rgb.g < 0 ? 0 : rgb.g > 255 ? 255 : rgb.g);
+        rgb.b = (rgb.b < 0 ? 0 : rgb.b > 255 ? 255 : rgb.b);
         return rgb;
     }
 
     //YV16是yuv422格式，是三个plane，(Y)(U)(V)
-    public static int[] YV16ToRGB(byte[] src, int width, int height){
+    public static int[] YV16ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfU = numOfPixel;
-        int positionOfV = numOfPixel/2 + numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = i*width/2;
+        int positionOfV = numOfPixel / 2 + numOfPixel;
+        int[] rgb = new int[numOfPixel * 3];
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = i * width / 2;
             int startU = positionOfU + step;
             int startV = positionOfV + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int U = startU + j/2;
-                int V = startV + j/2;
-                int index = Y*3;
+                int U = startU + j / 2;
+                int V = startV + j / 2;
+                int index = Y * 3;
                 //rgb[index+R] = (int)((src[Y]&0xff) + 1.4075 * ((src[V]&0xff)-128));
                 //rgb[index+G] = (int)((src[Y]&0xff) - 0.3455 * ((src[U]&0xff)-128) - 0.7169*((src[V]&0xff)-128));
                 //rgb[index+B] = (int)((src[Y]&0xff) + 1.779 * ((src[U]&0xff)-128));
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //YV12是yuv420格式，是3个plane，排列方式为(Y)(V)(U)
-    public static int[] YV12ToRGB(byte[] src, int width, int height){
+    public static int[] YV12ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfV = numOfPixel;
-        int positionOfU = numOfPixel/4 + numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
+        int positionOfU = numOfPixel / 4 + numOfPixel;
+        int[] rgb = new int[numOfPixel * 3];
 
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = (i/2)*(width/2);
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = (i / 2) * (width / 2);
             int startV = positionOfV + step;
             int startU = positionOfU + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int V = startV + j/2;
-                int U = startU + j/2;
-                int index = Y*3;
+                int V = startV + j / 2;
+                int U = startU + j / 2;
+                int index = Y * 3;
 
                 //rgb[index+R] = (int)((src[Y]&0xff) + 1.4075 * ((src[V]&0xff)-128));
                 //rgb[index+G] = (int)((src[Y]&0xff) - 0.3455 * ((src[U]&0xff)-128) - 0.7169*((src[V]&0xff)-128));
                 //rgb[index+B] = (int)((src[Y]&0xff) + 1.779 * ((src[U]&0xff)-128));
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //YUY2是YUV422格式，排列是(YUYV)，是1 plane
-    public static int[] YUY2ToRGB(byte[] src, int width, int height){
+    public static int[] YUY2ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
-        int[] rgb = new int[numOfPixel*3];
-        int lineWidth = 2*width;
-        for(int i=0; i<height; i++){
-            int startY = i*lineWidth;
-            for(int j = 0; j < lineWidth; j+=4){
+        int[] rgb = new int[numOfPixel * 3];
+        int lineWidth = 2 * width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * lineWidth;
+            for (int j = 0; j < lineWidth; j += 4) {
                 int Y1 = j + startY;
-                int Y2 = Y1+2;
-                int U = Y1+1;
-                int V = Y1+3;
-                int index = (Y1>>1)*3;
+                int Y2 = Y1 + 2;
+                int U = Y1 + 1;
+                int V = Y1 + 3;
+                int index = (Y1 >> 1) * 3;
                 RGB tmp = yuvTorgb(src[Y1], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
                 index += 3;
                 tmp = yuvTorgb(src[Y2], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //UYVY是YUV422格式，排列是(UYVY)，是1 plane
-    public static int[] UYVYToRGB(byte[] src, int width, int height){
+    public static int[] UYVYToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
-        int[] rgb = new int[numOfPixel*3];
-        int lineWidth = 2*width;
-        for(int i=0; i<height; i++){
-            int startU = i*lineWidth;
-            for(int j = 0; j < lineWidth; j+=4){
+        int[] rgb = new int[numOfPixel * 3];
+        int lineWidth = 2 * width;
+        for (int i = 0; i < height; i++) {
+            int startU = i * lineWidth;
+            for (int j = 0; j < lineWidth; j += 4) {
                 int U = j + startU;
-                int Y1 = U+1;
-                int Y2 = U+3;
-                int V = U+2;
-                int index = (U>>1)*3;
+                int Y1 = U + 1;
+                int Y2 = U + 3;
+                int V = U + 2;
+                int index = (U >> 1) * 3;
                 RGB tmp = yuvTorgb(src[Y1], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
                 index += 3;
                 tmp = yuvTorgb(src[Y2], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //NV21是YUV420格式，排列是(Y), (VU)，是2 plane
-    public static int[] NV21ToRGB(byte[] src, int width, int height){
+    public static int[] NV21ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfV = numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
+        int[] rgb = new int[numOfPixel * 3];
 
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = i/2*width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = i / 2 * width;
             int startV = positionOfV + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int V = startV + j/2;
+                int V = startV + j / 2;
                 int U = V + 1;
-                int index = Y*3;
+                int index = Y * 3;
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //NV12是YUV420格式，排列是(Y), (UV)，是2 plane
-    public static int[] NV12ToRGB(byte[] src, int width, int height){
+    public static int[] NV12ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfU = numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
+        int[] rgb = new int[numOfPixel * 3];
 
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = i/2*width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = i / 2 * width;
             int startU = positionOfU + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int U = startU + j/2;
+                int U = startU + j / 2;
                 int V = U + 1;
-                int index = Y*3;
+                int index = Y * 3;
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //NV16是YUV422格式，排列是(Y), (UV)，是2 plane
-    public static int[] NV16ToRGB(byte[] src, int width, int height){
+    public static int[] NV16ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfU = numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
+        int[] rgb = new int[numOfPixel * 3];
 
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = i*width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = i * width;
             int startU = positionOfU + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int U = startU + j/2;
+                int U = startU + j / 2;
                 int V = U + 1;
-                int index = Y*3;
+                int index = Y * 3;
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //NV61是YUV422格式，排列是(Y), (VU)，是2 plane
-    public static int[] NV61ToRGB(byte[] src, int width, int height){
+    public static int[] NV61ToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
         int positionOfV = numOfPixel;
-        int[] rgb = new int[numOfPixel*3];
+        int[] rgb = new int[numOfPixel * 3];
 
-        for(int i=0; i<height; i++){
-            int startY = i*width;
-            int step = i*width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * width;
+            int step = i * width;
             int startV = positionOfV + step;
-            for(int j = 0; j < width; j++){
+            for (int j = 0; j < width; j++) {
                 int Y = startY + j;
-                int V = startV + j/2;
+                int V = startV + j / 2;
                 int U = V + 1;
-                int index = Y*3;
+                int index = Y * 3;
                 RGB tmp = yuvTorgb(src[Y], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //YVYU是YUV422格式，排列是(YVYU)，是1 plane
-    public static int[] YVYUToRGB(byte[] src, int width, int height){
+    public static int[] YVYUToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
-        int[] rgb = new int[numOfPixel*3];
-        int lineWidth = 2*width;
-        for(int i=0; i<height; i++){
-            int startY = i*lineWidth;
-            for(int j = 0; j < lineWidth; j+=4){
+        int[] rgb = new int[numOfPixel * 3];
+        int lineWidth = 2 * width;
+        for (int i = 0; i < height; i++) {
+            int startY = i * lineWidth;
+            for (int j = 0; j < lineWidth; j += 4) {
                 int Y1 = j + startY;
-                int Y2 = Y1+2;
-                int V = Y1+1;
-                int U = Y1+3;
-                int index = (Y1>>1)*3;
+                int Y2 = Y1 + 2;
+                int V = Y1 + 1;
+                int U = Y1 + 3;
+                int index = (Y1 >> 1) * 3;
                 RGB tmp = yuvTorgb(src[Y1], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
                 index += 3;
                 tmp = yuvTorgb(src[Y2], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
     //VYUY是YUV422格式，排列是(VYUY)，是1 plane
-    public static int[] VYUYToRGB(byte[] src, int width, int height){
+    public static int[] VYUYToRGB(byte[] src, int width, int height) {
         int numOfPixel = width * height;
-        int[] rgb = new int[numOfPixel*3];
-        int lineWidth = 2*width;
-        for(int i=0; i<height; i++){
-            int startV = i*lineWidth;
-            for(int j = 0; j < lineWidth; j+=4){
+        int[] rgb = new int[numOfPixel * 3];
+        int lineWidth = 2 * width;
+        for (int i = 0; i < height; i++) {
+            int startV = i * lineWidth;
+            for (int j = 0; j < lineWidth; j += 4) {
                 int V = j + startV;
-                int Y1 = V+1;
-                int Y2 = V+3;
-                int U = V+2;
-                int index = (U>>1)*3;
+                int Y1 = V + 1;
+                int Y2 = V + 3;
+                int U = V + 2;
+                int index = (U >> 1) * 3;
                 RGB tmp = yuvTorgb(src[Y1], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
                 index += 3;
                 tmp = yuvTorgb(src[Y2], src[U], src[V]);
-                rgb[index+R] = tmp.r;
-                rgb[index+G] = tmp.g;
-                rgb[index+B] = tmp.b;
+                rgb[index + R] = tmp.r;
+                rgb[index + G] = tmp.g;
+                rgb[index + B] = tmp.b;
             }
         }
         return rgb;
     }
 
+    //截取屏幕画面
+    public static Bitmap takeScreenShot(Activity activity) {
 
+//View是你需要截图的View
+//        View view =activity.getWindow().getCurrentFocus();
+        View view = activity.getWindow().getDecorView();
+        view.setDrawingCacheEnabled(true);
 
+        view.buildDrawingCache();
 
+        Bitmap b1 = view.getDrawingCache();
+        //获取状态栏高度
+        Rect frame = new Rect();
 
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+
+        int statusBarHeight = frame.top;
+
+        System.out.println(statusBarHeight);//获取屏幕长和高
+
+        int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+
+        int height = activity.getWindowManager().getDefaultDisplay().getHeight();//去掉标题栏
+
+        //Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+
+        Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
+
+        view.destroyDrawingCache();
+
+        return b;
+
+    }//保存到sdcard
+
+    //保存图片
+    public static void savePic(Bitmap b, String strFileName) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(strFileName);
+            if (null != fos)
+            {
+                b.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.flush();
+                fos.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
