@@ -7,6 +7,7 @@ import android.hardware.Camera.Size;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -49,14 +50,13 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private boolean isStartVedio = false;
 
     private AnimationImageView animationImageView;
-    private boolean newRecorderManager = false;
+    private boolean newRecorderManager=false;
 
-    public void setVedio(boolean isStart) {
+    public void setVedio(boolean isStart ) {
         if (!isStart) {
             recorderManager.stopRecording();
             recorderManager.releaseRecord();
-            haveSetAnimation = false;
-            recorderManager = null;
+            recorderManager=null;
         } else {
             recorderManager.startRecord();
         }
@@ -134,14 +134,16 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private boolean detecting = false;
     float[] points;
     private RecorderManager recorderManager = null;
-    boolean haveSetAnimation = false;
 
     @Override
-    public void onPreviewFrame(final byte[] data, final Camera camera) {
-        if (recorderManager == null) {
+    public void onPreviewFrame(final byte[] data, Camera camera) {
+        if (recorderManager == null){
+            //            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
             recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, CommonUtils.getOutputVideoFile().getAbsolutePath());
         }
-
+        /*if (isStartVedio) {
+            recorderManager.recordVideo(data,camera,mDetector);
+        }*/
         if (animationImageView != null) {
 
             if (mainRadio == 0 || mainRadioY == 0) {
@@ -173,7 +175,11 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                             points[i * 2] = x;
                             points[i * 2 + 1] = y;
                         }
-                    }
+                    }/*else {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("noface", true);
+                    EventBusHelper.post(bundle, PuTaoConstants.HAVE_NO_FACE+"");
+                }*/
                     detecting = false;
                 }
             });
@@ -185,19 +191,18 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                 haveFace = false;
                 animationImageView.setVisibility(View.GONE);
             }
+           // Log.i("QQQ", "on preview frame .... is start vedieo called 222..."+isStartVedio);
             if (isStartVedio) {
-                if (!haveSetAnimation) {
-                    recorderManager.setAnimationview(animationImageView);
-                    haveSetAnimation = true;
-                }
-                recorderManager.onPreviewFrameOldAR(data, camera, mDetector);
+                recorderManager.setAnimationview(animationImageView);
+                recorderManager.onPreviewFrameOldAR(data,camera,mDetector);
             }
-        } else {
+        }else {
+
             if (isStartVedio) {
-//                recorderManager.recordVideo(data,camera,mDetector);
-                recorderManager.recordVideo(data);
+                recorderManager.recordVideo(data,camera,mDetector);
             }
         }
+
 
 
     }
@@ -291,5 +296,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             }
         }
     }
+
+
 
 }

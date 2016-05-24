@@ -1739,6 +1739,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         rotate.setDuration(500);
         view.startAnimation(rotate);
         view.setRotation(toRotation);
+        //Log.i("QQQ", "set view roation is:"+rotate);
     }
 
     private void rotateWaterMark(float degree) {

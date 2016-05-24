@@ -2,16 +2,19 @@ package com.putao.camera.camera.utils;
 
 
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 
+import com.googlecode.javacpp.BytePointer;
 import com.googlecode.javacv.FFmpegFrameRecorder;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvPoint2D32f;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
+import com.putao.camera.camera.gpuimage.GPUImageNativeLibrary;
 import com.putao.camera.camera.model.FaceModel;
 import com.putao.camera.camera.view.AnimationImageView;
 import com.putao.camera.util.BitmapHelper;
@@ -179,7 +182,6 @@ public class RecorderManager {
         isMax = false;
     }
 
-    int count = 0;
 
     public void startRecord() {
         if (isMax) {
@@ -190,7 +192,6 @@ public class RecorderManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        count = 0;
         audioThread.start();
         isStart = true;
         videoStartTime = new Date().getTime();
@@ -205,20 +206,8 @@ public class RecorderManager {
                 totalTime += new Date().getTime() - videoStartTime;
                 videoStartTime = 0;
             }
-            count = 0;
             isStart = false;
             releaseRecord();
-        }
-    }
-
-    public void stopRecording() {
-        if (recorder != null && isStart) {
-            runAudioThread = false;
-            if (!isMax) {
-                totalTime += new Date().getTime() - videoStartTime;
-                videoStartTime = 0;
-            }
-            isStart = false;
         }
     }
 
@@ -234,6 +223,19 @@ public class RecorderManager {
             recorder = null;
         }
 
+    }
+
+
+    public void stopRecording() {
+        if (recorder != null && isStart) {
+            runAudioThread = false;
+            if (!isMax) {
+                totalTime += new Date().getTime() - videoStartTime;
+                videoStartTime = 0;
+            }
+            isStart = false;
+
+        }
     }
 
 
@@ -264,6 +266,7 @@ public class RecorderManager {
                 int during = checkIfMax(new Date().getTime());
                 if (yuvIplimage != null && isStart) {
                     yuvIplimage.getByteBuffer().put(data);
+//            yuvIplimage = rotateImage(yuvIplimage.asCvMat(), 90).asIplImage();
                     try {
                         if (during < maxTime && isStart) {
                             recorder.setTimestamp(1000 * during);
@@ -277,7 +280,7 @@ public class RecorderManager {
         });
     }
 
-    public void onPreviewFrameOld(final byte[] data) {
+    public void onPreviewFrameOld(byte[] data, Camera camera, YMDetector mDetector) {
         int during = checkIfMax(new Date().getTime());
         if (yuvIplimage != null && isStart) {
             long time = System.currentTimeMillis();
@@ -292,7 +295,6 @@ public class RecorderManager {
                 e.printStackTrace();
             }
         }
-
     }
 
     private AnimationImageView mAnimationView;
@@ -305,66 +307,144 @@ public class RecorderManager {
     float[] points;
     FaceModel faceModel;
     private IntBuffer mGLRgbBuffer;
-    String videoImagePath;
 
-    public void onPreviewFrameOldAR(final byte[] data, Camera camera, final YMDetector mDetector) {
-        final Camera.Size previewSize = camera.getParameters().getPreviewSize();
-        count++;
+    public void onPreviewFrameOldAR(byte[] data, Camera camera, YMDetector mDetector) {
+
         int during = checkIfMax(new Date().getTime());
-        if (isStart) {
-            Bitmap tempBitmap = BitmapToVideoUtil.yuv2bitmap(data, previewSize.width, previewSize.height);
-//            Bitmap tempBitmap= BitmapHelper.Bytes2Bimap(data);
-//            tempBitmap = BitmapHelper.orientBitmap(tempBitmap, ExifInterface.ORIENTATION_ROTATE_270);
-            BitmapHelper.saveBitmap(tempBitmap, FileUtils.getSdcardPath() + File.separator + count + ".jpg");
-//            BitmapToVideoUtil.takeScreenShot();
+        if (yuvIplimage != null && isStart) {
+            long time = System.currentTimeMillis();
+            yuvIplimage.getByteBuffer().put(data);
+            BytePointer yuvBuffer = yuvIplimage.imageData();
 
-//                    List<YMFace> faces = mDetector.onDetector(tempBitmap);
-//                    if (faces != null && faces.size() > 0 && faces.get(0) != null) {
-//                        YMFace face = faces.get(0);
-//                        faceModel = new FaceModel();
-//                        faceModel.landmarks = face.getLandmarks();
-//                        faceModel.emotions = face.getEmotions();
-//                        RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
-//                        faceModel.rectf = rect;
-//                    } else {
-//                        Log.e("tag", "111111111111111");
-//                        return;
-//                    }
-//                    mAnimationView.setSave(tempBitmap, FileUtils.getSdcardPath() + File.separator+ "/temp/", 36);
-//
-//                    final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
-//                    combineVideoOld(combineBmps);
+            //yuvBuffer;
+
+            Bitmap arBitmap = mAnimationView.getDrawingCache();
+            int[] pix = new int[arBitmap.getWidth() * arBitmap.getHeight()];
+            arBitmap.getPixels(pix, 0, arBitmap.getWidth(), 0, 0, arBitmap.getWidth(), arBitmap.getHeight());
+            for(int i = 0; i<pix.length; i++){
+                if(pix[i] == 0) continue;
+                yuvBuffer.put(i, (byte) 0);
+                //yuvBuffer.put(3*i+1, (byte) 0);
+                //yuvBuffer.put(3*i+2, (byte) 0);
+            }
+            //arBitmap.copyPixelsToBuffer(yuvIplimage.getByteBuffer());
+
+
+            try {
+                System.out.println(System.currentTimeMillis() - videoStartTime);
+                if (during < maxTime) {
+                    recorder.setTimestamp(1000 * during);
+                    recorder.record(yuvIplimage);
+                }
+            } catch (FFmpegFrameRecorder.Exception e) {
+                e.printStackTrace();
+            }
         }
 
-    }
 
+/*
 
-    public void combineVideoOld(final List<byte[]> combineBmps) {
-//        startRecord();
-        needVoice = false;
-        picIndex = 0;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (picIndex < combineBmps.size() && isStart) {
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    onPreviewFrameOld(combineBmps.get(picIndex));
-//                    onPreviewFrame(combineBmps.get(picIndex));
-                    picIndex++;
+        final Camera.Size previewSize = camera.getParameters().getPreviewSize();
+        int during = checkIfMax(new Date().getTime());
 
-                    if (picIndex >= combineBmps.size()) {
-                        picIndex = 0;
-                    }
-                }
-                combineBmps.clear();
-                needVoice = true;
+        if (isStart) {
+            long startTime = System.currentTimeMillis();
+            long gap = 0;
+            int[] rgb=  new int[previewSize.width*previewSize.height];
+            //rgb= BitmapToVideoUtil.decodeYUV420SPrgb565(rgb,data,previewSize.width,previewSize.height);
+            //GPUImageNativeLibrary.YUVtoARBG(data, previewSize.width, previewSize.height, rgb);
+            //Bitmap tempBitmap = Bitmap.createBitmap(rgb, previewSize.width, previewSize.height, Bitmap.Config.ARGB_8888);
+            Bitmap arBitmap = mAnimationView.getDrawingCache();
+
+           // Bitmap tempBitmap= BitmapHelper.Bytes2Bimap(data);
+           // BitmapHelper.saveBitmap(arBitmap, "/mnt/sdcard/temp2222222222222.jpg");
+
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "save image gap is:" + gap);
+
+            return;*/
+/*
+            List<YMFace> faces = mDetector.onDetector(tempBitmap);
+            if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+                YMFace face = faces.get(0);
+                faceModel = new FaceModel();
+                faceModel.landmarks = face.getLandmarks();
+                faceModel.emotions = face.getEmotions();
+                RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+                faceModel.rectf = rect;
+            } else {
+                gap = System.currentTimeMillis() - startTime;
+                startTime = System.currentTimeMillis();
+                Log.i("QQQ", "face detect gap is:" + gap);
+
+                Log.e("tag", "111111111111111");
+                return;
             }
-        }).start();
+
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "face detect gap is:" + gap);
+
+            final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "combine gap is :" + gap);
+            combineVideo(combineBmps);
+            Log.i("QQQ", "combine video called ");
+        }*/
+
     }
+    /*
+    public void onPreviewFrameOldAR(byte[] data, Camera camera, YMDetector mDetector) {
+        final Camera.Size previewSize = camera.getParameters().getPreviewSize();
+        int during = checkIfMax(new Date().getTime());
+
+        if (isStart) {
+            long startTime = System.currentTimeMillis();
+            long gap = 0;
+//            int [] rgb=BitmapToVideoUtil.YV12ToRGB(data,previewSize.width,previewSize.height);
+          int[] rgb=  new int[previewSize.width*previewSize.height];
+            rgb= BitmapToVideoUtil.decodeYUV420SPrgb565(rgb,data,previewSize.width,previewSize.height);
+            Bitmap tempBitmap = Bitmap.createBitmap(rgb, 480, 800,
+                    Bitmap.Config.RGB_565);
+//            Bitmap tempBitmap= BitmapHelper.Bytes2Bimap(data);
+            // BitmapHelper.saveBitmap(tempBitmap, FileUtils.getSdcardPath() + File.separator + "temp2222222222222.jpg");
+
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "save image gap is:" + gap);
+
+            List<YMFace> faces = mDetector.onDetector(tempBitmap);
+            if (faces != null && faces.size() > 0 && faces.get(0) != null) {
+                YMFace face = faces.get(0);
+                faceModel = new FaceModel();
+                faceModel.landmarks = face.getLandmarks();
+                faceModel.emotions = face.getEmotions();
+                RectF rect = new RectF((int) face.getRect()[0], (int) face.getRect()[1], (int) face.getRect()[2], (int) face.getRect()[3]);
+                faceModel.rectf = rect;
+            } else {
+                gap = System.currentTimeMillis() - startTime;
+                startTime = System.currentTimeMillis();
+                Log.i("QQQ", "face detect gap is:" + gap);
+
+                Log.e("tag", "111111111111111");
+                return;
+            }
+
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "face detect gap is:" + gap);
+
+            final List<byte[]> combineBmps = BitmapToVideoUtil.getCombineData(faceModel, mAnimationView.getAnimationModel(), tempBitmap, mAnimationView.getEyesBitmapArr(), mAnimationView.getMouthBitmapArr(), mAnimationView.getBottomBitmapArr());
+            gap = System.currentTimeMillis() - startTime;
+            startTime = System.currentTimeMillis();
+            Log.i("QQQ", "combine gap is :" + gap);
+            combineVideo(combineBmps);
+            Log.i("QQQ", "combine video called ");
+        }
+
+    }*/
 
 
     private CvMat rotateImage(CvMat input, int angle) {
@@ -419,7 +499,9 @@ public class RecorderManager {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Log.i("QQQ", "recorder frame start ....");
                     onPreviewFrame(combineBmps.get(picIndex));
+                    Log.i("QQQ", "recorder frame complete ....");
                     picIndex++;
 
                     if (picIndex >= combineBmps.size()) {
@@ -432,8 +514,8 @@ public class RecorderManager {
         }).start();
     }
 
-    public void recordVideo(byte[] data) {
-        onPreviewFrameOld(data);
+    public void recordVideo(byte[] data, Camera camera, YMDetector mDetector) {
+        onPreviewFrameOld(data, camera, mDetector);
     }
 
 

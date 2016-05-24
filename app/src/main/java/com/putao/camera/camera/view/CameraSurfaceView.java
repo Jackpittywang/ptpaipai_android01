@@ -12,6 +12,7 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -174,6 +175,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
         }
         int rotate = (info.orientation - degrees + 360) % 360;
         Loger.d(Tag + ".......................rotate=====>" + rotate);
+        //Log.i("QQQ", "update camera parame riation:" + rotate);
         Parameters params = mCamera.getParameters();
         Size pictureSize = findBestPictureSize(params);
         params.setPictureSize(pictureSize.width, pictureSize.height);

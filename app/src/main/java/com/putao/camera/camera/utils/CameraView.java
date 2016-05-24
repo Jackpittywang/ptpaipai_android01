@@ -572,12 +572,15 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         } else {
             displayOrientation = (info.orientation - degrees + 360) % 360;
         }
+
         boolean wasInPreview = inPreview;
         if (inPreview) {
             stopPreview();
         }
         Loger.d("displayOrientation:" + displayOrientation);
         camera.setDisplayOrientation(displayOrientation);
+
+        //Log.i("QQQ", "set display orientation:" + displayOrientation);
         if (wasInPreview) {
             startPreview();
         }
@@ -643,6 +646,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
         } else { // back-facing camera
             rotation = (info.orientation + orientation) % 360;
         }
+        //Log.i("QQQ", "camera picture roation is:"+rotation);
         return (rotation);
     }
 
@@ -667,6 +671,7 @@ public class CameraView extends FrameLayout implements AutoFocusCallback {
                     try {
                         Parameters params = camera.getParameters();
                         params.setRotation(outputOrientation);
+                        //Log.i("QQQ", "orientation change:" + outputOrientation);
                         camera.setParameters(params);
                     } catch (Exception e) {
                         Loger.d(getClass().getSimpleName() + "Exception updating camera parameters in orientation change", e);

@@ -2,6 +2,7 @@
 package com.putao.camera.camera.utils;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 
@@ -25,6 +26,7 @@ public class RoundUtil {
 
     public static int getDisplayRotation(Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        //Log.i("QQQ", "round util:" + rotation);
         switch (rotation) {
             case Surface.ROTATION_0:
                 return 0;
@@ -35,6 +37,7 @@ public class RoundUtil {
             case Surface.ROTATION_270:
                 return 270;
         }
+
         return 0;
     }
 }

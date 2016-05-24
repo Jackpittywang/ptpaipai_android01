@@ -434,6 +434,7 @@ public class PCameraFragment extends CameraFragment {
     private Matrix matrix;
 
     public void takeSimplePhoto() {
+        // Log.i("QQQ", "take simple photo, screen orientation is:"+);
         flashScreen();
         Camera camera = cameraView.getCamera();
         Parameters pictureParams = camera.getParameters();
