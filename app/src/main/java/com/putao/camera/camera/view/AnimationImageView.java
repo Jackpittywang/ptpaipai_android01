@@ -123,6 +123,8 @@ public class AnimationImageView extends ImageView {
 
     private void init(Context context) {
         this.context = context;
+        this.setDrawingCacheEnabled(true);
+        this.buildDrawingCache(true);
         screenH = context.getResources().getDisplayMetrics().heightPixels;
 
         paint = new Paint(Color.rgb(57, 138, 243));

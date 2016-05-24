@@ -24,9 +24,12 @@ import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.opengl.GLES20;
+import android.opengl.GLException;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 
 import com.putao.camera.camera.gpuimage.util.TextureRotationUtil;
+import com.putao.camera.util.BitmapHelper;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -108,6 +111,8 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
 
     }
 
+    //int count = 0;
+
     @Override
     public void onDrawFrame(final GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -120,6 +125,13 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
         if (mSurfaceTexture != null) {
             mSurfaceTexture.updateTexImage();
         }
+        // 测试代码 glsurfaceview生成bitmap的方法
+       /* count = count + 1;
+        if(count == 100 || count == 101) {
+            Bitmap bitmap = createBitmapFromGLSurface(0, 0, mOutputWidth, mOutputHeight, gl);
+            BitmapHelper.saveBitmap(bitmap, "/mnt/sdcard/temp2222222222222.jpg");
+        }*/
+
     }
 
     @Override
@@ -148,6 +160,34 @@ public class GPUImageRenderer implements Renderer, PreviewCallback {
                 }
             });
         }
+    }
+
+    private Bitmap createBitmapFromGLSurface(int x, int y, int w, int h, GL10 gl)
+            throws OutOfMemoryError {
+        int bitmapBuffer[] = new int[w * h];
+        int bitmapSource[] = new int[w * h];
+        IntBuffer intBuffer = IntBuffer.wrap(bitmapBuffer);
+        intBuffer.position(0);
+
+        try {
+            gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, intBuffer);
+            int offset1, offset2;
+            for (int i = 0; i < h; i++) {
+                offset1 = i * w;
+                offset2 = (h - i - 1) * w;
+                for (int j = 0; j < w; j++) {
+                    int texturePixel = bitmapBuffer[offset1 + j];
+                    int blue = (texturePixel >> 16) & 0xff;
+                    int red = (texturePixel << 16) & 0x00ff0000;
+                    int pixel = (texturePixel & 0xff00ff00) | red | blue;
+                    bitmapSource[offset2 + j] = pixel;
+                }
+            }
+        } catch (GLException e) {
+            return null;
+        }
+
+        return Bitmap.createBitmap(bitmapSource, w, h, Bitmap.Config.ARGB_8888);
     }
 
     public void setUpSurfaceTexture(final Camera camera) {
