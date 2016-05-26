@@ -40,6 +40,7 @@ import com.putao.camera.user.CompleteActivity;
 import com.putao.camera.user.LoginActivity;
 import com.putao.camera.util.ActivityHelper;
 import com.putao.camera.util.BitmapHelper;
+import com.putao.camera.util.NetManager;
 import com.putao.camera.util.NetType;
 import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.UmengUpdateHelper;
@@ -211,10 +212,7 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     @Override
     protected void onPause() {
         super.onPause();
-        if (!AccountHelper.isLogin()) {
-        } else if (AccountHelper.isLogin()) {
-            getUserInfo();
-        }
+
     }
 
     private String setSmallImageUrl(String str) {
@@ -234,7 +232,12 @@ public class MenuActivity<App extends BasicApplication> extends BasicFragmentAct
     @Override
     public void onResume() {
         super.onResume();
-
+        if (!NetManager.isNetworkAvailable(MenuActivity.this)) {
+            if (!AccountHelper.isLogin()) {
+            } else if (AccountHelper.isLogin()) {
+                getUserInfo();
+            }
+        }
     }
 
     @OnClick({R.id.menu_home_material_btn, R.id.menu_home_stickers_btn, R.id.menu_home_camera_btn, R.id.menu_home_jigsaw_btn, R.id.menu_home_movie_btn,

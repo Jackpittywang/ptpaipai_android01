@@ -5,9 +5,9 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -15,8 +15,10 @@ import android.widget.FrameLayout;
 
 import com.putao.camera.camera.gpuimage.GPUImageRenderer;
 import com.putao.camera.camera.view.AnimationImageView;
+import com.putao.camera.constants.PuTaoConstants;
 import com.putao.camera.util.CommonUtils;
 import com.putao.camera.util.Loger;
+import com.sunnybear.library.controller.eventbus.EventBusHelper;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -56,7 +58,8 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
         if (!isStart) {
             recorderManager.stopRecording();
             recorderManager.releaseRecord();
-            recorderManager=null;
+            haveSetAnimation = false;
+            recorderManager = null;
         } else {
             recorderManager.startRecord();
         }
@@ -134,13 +137,12 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
     private boolean detecting = false;
     float[] points;
     private RecorderManager recorderManager = null;
+    boolean haveSetAnimation = false;
+    String savePath=CommonUtils.getOutputVideoFile().getAbsolutePath();
 
     @Override
-    public void onPreviewFrame(final byte[] data, Camera camera) {
-        if (recorderManager == null){
-            //            recorderManager = new RecorderManager(10 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, FileUtils.getSdcardPath() + File.separator + "test.mp4");
-            recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, CommonUtils.getOutputVideoFile().getAbsolutePath());
-        }
+    public void onPreviewFrame(final byte[] data, final Camera camera) {
+
         /*if (isStartVedio) {
             recorderManager.recordVideo(data,camera,mDetector);
         }*/
@@ -175,11 +177,7 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
                             points[i * 2] = x;
                             points[i * 2 + 1] = y;
                         }
-                    }/*else {
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("noface", true);
-                    EventBusHelper.post(bundle, PuTaoConstants.HAVE_NO_FACE+"");
-                }*/
+                    }
                     detecting = false;
                 }
             });
@@ -193,13 +191,22 @@ public class GlSurfacePreviewStrategy implements PreviewStrategy, SurfaceTexture
             }
            // Log.i("QQQ", "on preview frame .... is start vedieo called 222..."+isStartVedio);
             if (isStartVedio) {
-                recorderManager.setAnimationview(animationImageView);
-                recorderManager.onPreviewFrameOldAR(data,camera,mDetector);
+                if (!haveSetAnimation) {
+                    recorderManager.setAnimationview(animationImageView);
+                    haveSetAnimation = true;
+                }
+                recorderManager.onPreviewFrameOldAR(data, camera, mDetector);
             }
         }else {
+            if (recorderManager == null) {
+                recorderManager = new RecorderManager(20 * 1000, camera.getParameters().getPreviewSize().width, camera.getParameters().getPreviewSize().height, savePath);
+            }
 
             if (isStartVedio) {
-                recorderManager.recordVideo(data,camera,mDetector);
+                recorderManager.recordVideo(data);
+                Bundle bundle = new Bundle();
+                bundle.putString("path",savePath);
+                EventBusHelper.post(bundle, PuTaoConstants.SAVE_SHOW_IMAGE_FINISH + "");
             }
         }
 

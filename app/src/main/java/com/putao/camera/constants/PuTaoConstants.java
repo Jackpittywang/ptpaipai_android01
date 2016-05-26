@@ -60,6 +60,9 @@ public class PuTaoConstants {
     // 保存AR动态视频的时候，整组图片保存结束事件
     public static final int SAVE_AR_SHOW_IMAGE_COMPELTE = 0x21;
 
+    public static final int SAVE_AR_SHOW_IMAGE_FINISH= 0x44;
+    public static final int SAVE_SHOW_IMAGE_FINISH= 0x43;
+
     public static final String CUT_TYPE = "CUT_TYPE";
 
     public static final String WEIBO_APP_KEY = "2876121208";
@@ -146,7 +149,7 @@ public class PuTaoConstants {
     //素材列表
     public static final String PAIPAI_MATTER_LIST_PATH = "/material/list";
     //
-    public static final String PAIPAI_MATTER_LIST_MATERIAL = "/media/property";
+    public static final String PAIPAI_MATTER_LIST_MATERIAL = "/medias/property";
 
 
     // 有声贺卡资源上传host

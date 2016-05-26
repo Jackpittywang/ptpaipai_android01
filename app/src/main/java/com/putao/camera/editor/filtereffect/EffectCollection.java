@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by jidongdong on 14/12/30.
  */
 public class EffectCollection {
-    public static final String none = "none";
+    public static final String none = "None";
     public static final String autofix = "autofix";
     public static final String tint = "tint";
     public static final String temperature = "temperature";

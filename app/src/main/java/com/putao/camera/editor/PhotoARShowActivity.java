@@ -717,7 +717,7 @@ public class PhotoARShowActivity extends BaseActivity implements View.OnClickLis
         String dynamic = SharedPreferencesHelper.readStringValue(mContext, "dynamic", "");
         String sticker = SharedPreferencesHelper.readStringValue(mContext, "sticker", "");
         String template = SharedPreferencesHelper.readStringValue(mContext, "template", "");
-        String filtername = SharedPreferencesHelper.readStringValue(mContext,"filtername","NONE");
+        String filtername = SharedPreferencesHelper.readStringValue(mContext,"filtername","None");
         BeautifyInfo beautifyInfo = new BeautifyInfo();
         HashMap<String, String> objectObjectHashMap = new HashMap<>();
         objectObjectHashMap.put("filtername", filtername);

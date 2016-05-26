@@ -3,6 +3,7 @@ package com.putao.camera.camera;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +12,11 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +39,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.google.gson.Gson;
 import com.putao.camera.R;
 import com.putao.camera.RedDotReceiver;
@@ -61,6 +67,7 @@ import com.putao.camera.editor.CitySelectActivity;
 import com.putao.camera.editor.FestivalSelectActivity;
 import com.putao.camera.editor.PhotoARShowActivity;
 import com.putao.camera.editor.PhotoEditorActivity;
+import com.putao.camera.editor.PhotoShareActivity;
 import com.putao.camera.editor.dialog.WaterTextDialog;
 import com.putao.camera.editor.filtereffect.EffectCollection;
 import com.putao.camera.editor.filtereffect.EffectImageTask;
@@ -91,6 +98,7 @@ import com.putao.camera.util.SharedPreferencesHelper;
 import com.putao.camera.util.StringHelper;
 import com.putao.camera.util.ToasterHelper;
 import com.putao.camera.util.WaterMarkHelper;
+import com.putao.video.VideoHelper;
 import com.sunnybear.library.controller.BasicFragmentActivity;
 import com.sunnybear.library.controller.eventbus.Subcriber;
 import com.sunnybear.library.util.PreferenceUtils;
@@ -101,6 +109,7 @@ import com.sunnybear.library.view.recycler.listener.OnItemClickListener;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -218,9 +227,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
 
     private boolean isActionUp = false;
     private boolean isOver = true;
-
-
-
+    private ProgressDialog saveDialog;
 
     @Override
     protected int getLayoutId() {
@@ -229,6 +236,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         curVersionCode = MainApplication.getVersionCode();
         return R.layout.activity_camera;
     }
+
     public void doInitSubViews() {
 //        fullScreen(true);
         DisplayMetrics metric = new DisplayMetrics();
@@ -342,13 +350,93 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     isActionUp = true;
                     if (isOver) {
                         takePhoto();
-
                     } else {
                         current.isStart(false);
                         ToastUtils.showToast(mContext, "录制完成", 500);
+                        saveDialog = new ProgressDialog(mContext);
+                        saveDialog.setMessage("正在保存视频请稍后...");
+                        saveDialog.setCancelable(false);
+                        saveDialog.show();
+//                        imagesToVideo();
                     }
                 }
                 return true;
+            }
+        });
+    }
+
+    @Subcriber(tag = PuTaoConstants.SAVE_AR_SHOW_IMAGE_FINISH + "")
+    public void saveAR(Bundle bundle) {
+
+        imagesToVideo();
+    }
+
+    @Subcriber(tag = PuTaoConstants.SAVE_SHOW_IMAGE_FINISH + "")
+    public void saveNoface(Bundle bundle) {
+        saveDialog.dismiss();
+        String path = bundle.getString("path");
+        Bundle bundleShare = new Bundle();
+        bundleShare.putString("savefile", path);
+        ActivityHelper.startActivity(ActivityCamera.this, PhotoShareActivity.class, bundle);
+
+    }
+
+
+    String videoImagePath = "";
+
+    private void imagesToVideo() {
+
+        videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/temp/";
+        // 保存视频
+        String sizeStr = "480x" + "854";
+        String model = android.os.Build.MODEL.toLowerCase();
+        String brand = Build.BRAND.toLowerCase();
+        final String videoPath;
+        if (model.contains("meizu") || brand.contains("meizu") || model.contains("mx5") || model.contains("mx4")) {
+            videoPath = CommonUtils.getOutputVideoFileMX().getAbsolutePath();
+        } else {
+            videoPath = CommonUtils.getOutputVideoFile().getAbsolutePath();
+        }
+        File videoFile = new File(videoPath);
+        if (videoFile.exists()) videoFile.delete();
+
+        final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
+                + " -vcodec mpeg4 -r " + 6 + " -b 200k -s " + sizeStr + " " + videoPath;
+        VideoHelper.getInstance(this).exectueFFmpegCommand(command.split(" "), new ExecuteBinaryResponseHandler() {
+            @Override
+            public void onFailure(String s) {
+                ToasterHelper.show(ActivityCamera.this, "处理失败:" + s);
+            }
+
+            @Override
+            public void onSuccess(String s) {
+                ToasterHelper.show(ActivityCamera.this, "视频成功保存到相册");
+                MediaScannerConnection.scanFile(ActivityCamera.this, new String[]{videoPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        saveDialog.dismiss();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("savefile", videoPath);
+                        bundle.putString("imgpath", videoImagePath + "image00.jpg");
+                        bundle.putString("from", "dynamic");
+                        ActivityHelper.startActivity(ActivityCamera.this, PhotoShareActivity.class, bundle);
+                        finish();
+                    }
+                });
+            }
+
+            @Override
+            public void onProgress(String s) {
+                Log.d(TAG, "progress : " + s);
+            }
+
+            @Override
+            public void onStart() {
+                Log.d(TAG, "Started command : ffmpeg " + command);
+            }
+
+            @Override
+            public void onFinish() {
             }
         });
 
@@ -362,14 +450,35 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                 if (isActionUp) {
 //                    ToastUtils.showToast(mContext, "拍照", 500);
                 } else {
+                    videoImagePath = Environment.getExternalStorageDirectory() + File.separator + PuTaoConstants.PAIAPI_PHOTOS_FOLDER + "/temp/";
+                    File file = new File(videoImagePath);
+                    if (file.exists() == false) file.mkdir();
+                    clearImageList();
                     isOver = false;
                     current.isStart(true);
                     ToastUtils.showToast(mContext, "开始录制", 500);
+
                 }
             }
 
         }
     };
+
+    private void clearImageList() {
+        File folder = new File(videoImagePath);
+        File[] childFile = folder.listFiles();
+        if (childFile == null) return;
+        for (int i = 0; i < childFile.length; i++) {
+            try {
+                File file = childFile[i];
+                if (file.exists()) {
+                    file.delete();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     protected void onViewCreatedFinish(Bundle saveInstanceState) {
@@ -409,7 +518,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     current.setAnimationView(animation_view);
                     currentSelectDynamic = position;
                     currentSelectDynamicName = list.get(0).zipName;
-                    SharedPreferencesHelper.saveStringValue(mContext,"dynamic",currentSelectDynamicName);
+                    SharedPreferencesHelper.saveStringValue(mContext, "dynamic", currentSelectDynamicName);
                 } else {
                     dynamicIconInfo.setShowProgress(true);
                     mDynamicPicAdapter.notifyItemChanged(position);
@@ -471,6 +580,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
             }).execute();
         }
     }
+
     private void AddFilterView(final String item, Bitmap bitmap_sample) {
         Log.e(TAG, "AddFilterView: " + item);
         View view = LayoutInflater.from(this).inflate(R.layout.filter_item, null);
@@ -516,7 +626,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                         tv.setTextColor(getResources().getColor(R.color.text_color_dark_898989));
                     }
                 }
-                SharedPreferencesHelper.saveStringValue(mContext,"filtername",item.toString());
+                SharedPreferencesHelper.saveStringValue(mContext, "filtername", item.toString());
                 //设置当前滤镜
                 GPUImageFilter filter = null;
                 if (item.equals(EffectCollection.none)) {
@@ -559,13 +669,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
                     //素描
                     filter = filters.getFilterByType(CustomerFilter.FilterType.SM, mContext);
                     filterName = CustomerFilter.FilterType.SM;
-                }
-                else if (item.equals(EffectCollection.test1)) {
+                } else if (item.equals(EffectCollection.test1)) {
                     //素描
                     filter = filters.getFilterByType(CustomerFilter.FilterType.TEST1, mContext);
                     filterName = CustomerFilter.FilterType.TEST1;
-                }
-                else if (item.equals(EffectCollection.test2)) {
+                } else if (item.equals(EffectCollection.test2)) {
                     //素描
                     filter = filters.getFilterByType(CustomerFilter.FilterType.TEST2, mContext);
                     filterName = CustomerFilter.FilterType.TEST2;
@@ -578,7 +686,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         filterEffectViews.add(view);
         filterNameViews.add(tv_filter_name);
     }
-
 
 
     public void doInitData() {
@@ -612,17 +719,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     private void startDownloadService(final String url, final String folderPath, final int position) {
         boolean isExistRunning = CommonUtils.isServiceRunning(mContext, DownloadFileService.class.getName());
         if (isExistRunning) {
@@ -641,8 +737,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         bindIntent.putExtra("type", DownloadFileService.DOWNLOAD_TYPE_DYNAMIC);
         mContext.startService(bindIntent);
     }
-
-
 
 
     TakePictureListener photoListener = new TakePictureListener() {
@@ -693,8 +787,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
 
-
-
     private DynamicListInfo aDynamicListInfo;
     ArrayList<DynamicIconInfo> mDynamicIconInfo;
 
@@ -725,11 +817,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         CacheRequest mCacheRequest = new CacheRequest(PuTaoConstants.PAIPAI_MATTER_LIST_PATH + "?type=dynamic_pic&page=1", map, mWaterMarkUpdateCallback);
         mCacheRequest.startGetRequest();
     }
-
-
-
-
-
 
 
     @Override
@@ -894,9 +981,11 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
         switch (v.getId()) {
             case R.id.flash_light_ll:
                 showFlashMenu(this, flash_light_iv);
+//                imagesToVideo();
                 break;
             case R.id.flash_light_iv:
                 showFlashMenu(this, flash_light_iv);
+//                imagesToVideo();
                 break;
             case R.id.camera_timer_ll:
                 setTakeDelay();
@@ -1082,7 +1171,6 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     }
 
     private boolean isMirror = false;
-
 
 
     private void setEnhanceButton() {
@@ -1814,9 +1902,7 @@ public class ActivityCamera extends BasicFragmentActivity implements OnClickList
     List<TextView> filterNameViews = new ArrayList<TextView>();
 
 
-
     private CustomerFilter filters = new CustomerFilter();
-
 
 
     private static Bitmap zoomSmall(Bitmap bitmap) {

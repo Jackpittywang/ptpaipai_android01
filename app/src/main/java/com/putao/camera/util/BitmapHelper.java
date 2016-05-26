@@ -478,6 +478,24 @@ public class BitmapHelper {
 
     }
 
+    public static void saveBitmapPng(Bitmap bitmap, String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * 裁剪图片
      */

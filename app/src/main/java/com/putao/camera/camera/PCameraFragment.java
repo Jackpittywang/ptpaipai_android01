@@ -233,7 +233,8 @@ public class PCameraFragment extends CameraFragment {
             cameraParams.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         }
 //        cameraParams.setFlashMode();
-        setOptimalPreviewSize(cameraParams, 800, 480);
+        setOptimalPreviewSize(cameraParams, 1280, 720);
+//        setOptimalPreviewSize(cameraParams, 800, 480);
         setOptimalPictureSize(cameraParams, 1280);
 //        setOptimalPictureSize(cameraParams, 2592);
         cameraView.getCamera().setParameters(cameraParams);
@@ -422,9 +423,14 @@ public class PCameraFragment extends CameraFragment {
     }
 
     public void isStart(boolean isStart) {
-        if (isStart)
+        if (isStart){
             setOptimalPictureSize(cameraParams, 800);
-        else setOptimalPictureSize(cameraParams, 1280);
+            setOptimalPreviewSize(cameraParams, 800, 480);
+        }
+        else{
+            setOptimalPictureSize(cameraParams, 1280);
+            setOptimalPreviewSize(cameraParams, 1280, 720);
+        }
 
         cameraView.setIsStart(isStart);
     }
@@ -464,7 +470,6 @@ public class PCameraFragment extends CameraFragment {
             public void onPictureTaken(byte[] data, final Camera camera) {
 //                获取当前情景模式设置。
                 camera.getParameters().getSceneMode();
-
                 camera.getParameters().flatten();
                 camera.getParameters().getWhiteBalance();
                 camera.startPreview();
@@ -480,7 +485,7 @@ public class PCameraFragment extends CameraFragment {
 
 //                if (model.contains("OPPO") || brand.contains("OPPO")) {
                 if (isFFC) {
-                    if (model.contains("huawei") || brand.contains("huawei") || model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi") || brand.contains("nubia")) {
+                    if (model.contains("huawei") || brand.contains("huawei") || model.contains("honor") || brand.contains("honor") || brand.contains("xiaomi") || brand.contains("nubia")|| brand.contains("meizu")) {
 
                     } else {
                         saveBitmap = BitmapHelper.orientBitmap(saveBitmap, ExifInterface.ORIENTATION_ROTATE_180);

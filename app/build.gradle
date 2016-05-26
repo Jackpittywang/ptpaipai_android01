@@ -8,8 +8,8 @@ android {
         applicationId "com.putao.camera"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 15
-        versionName "1.2.6"
+        versionCode 16
+        versionName "1.2.7"
         multiDexEnabled true
         ndk {
             moduleName "gpuimage-library"

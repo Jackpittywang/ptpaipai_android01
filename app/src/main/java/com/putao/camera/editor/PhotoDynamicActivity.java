@@ -443,6 +443,7 @@ public class PhotoDynamicActivity extends BasicFragmentActivity implements View.
 //        String videoPath =getExternalFilesDir(Environment.DIRECTORY_DCIM).getPath() + File.separator + videoFileName;
         File videoFile = new File(videoPath);
         if (videoFile.exists()) videoFile.delete();
+//        ffmpeg -r 0.5 -i d:/tmpImg/image%04d.jpg -i d:/time.mp3 -vcodec mpeg4 d:/video5.avi
         final String command = "-f image2 -i " + videoImagePath + "image%02d.jpg"
                 + " -vcodec mpeg4 -r " + 12 + " -b 200k -s " + sizeStr + " " + videoPath;
         Log.i(TAG, "videPath is:" + videoPath);

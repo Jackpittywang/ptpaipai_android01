@@ -5,6 +5,7 @@ import android.graphics.PointF;
 
 import com.putao.camera.camera.gpuimage.GPUImageBrightnessFilter;
 import com.putao.camera.camera.gpuimage.GPUImageContrastFilter;
+import com.putao.camera.camera.gpuimage.GPUImageExposureFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilter;
 import com.putao.camera.camera.gpuimage.GPUImageFilterGroup;
 import com.putao.camera.camera.gpuimage.GPUImageMagicBeautyFilter;
@@ -13,7 +14,6 @@ import com.putao.camera.camera.gpuimage.GPUImageSaturationFilter;
 import com.putao.camera.camera.gpuimage.GPUImageSepiaFilter;
 import com.putao.camera.camera.gpuimage.GPUImageVignetteFilter;
 import com.putao.camera.camera.gpuimage.GPUImageWhiteBalanceFilter;
-import com.putao.camera.camera.gpuimage.MagicSketchFilter;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -97,8 +97,17 @@ public class CustomerFilter {
         List<GPUImageFilter> filters = new LinkedList<GPUImageFilter>();
         //高斯模糊0.0f, 15.0f
 //        filters.add(new GPUImageBilateralFilter(progress));
-        filters.add(new MagicSketchFilter(mContext));
-        filters.add(new GPUImageMagicBeautyFilter());
+//        filters.add(new MagicSketchFilter(mContext));
+//        filters.add(new GPUImageMagicBeautyFilter());
+        filters.add(new GPUImageSaturationFilter(0.9f));
+        filters.add(new GPUImageBrightnessFilter(0.1f));
+        filters.add(new GPUImageExposureFilter(-0.1f));
+        filters.add(new GPUImageRGBFilter());
+        filters.add(new GPUImageWhiteBalanceFilter(7500.0f, 0.0f));
+        filters.add(new GPUImageSepiaFilter(0.6f));
+
+
+
         return new GPUImageFilterGroup(filters);
     }
 
